@@ -8,12 +8,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
+        * {
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f0f9ff;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            min-height: 100vh;
         }
         
         .container {
@@ -24,21 +30,28 @@
         
         .draggable-container {
             position: relative;
-            height: 500px;
+            height: 60vh;
+            min-height: 400px;
+            max-height: 600px;
             background-color: #f8fafc;
             border-radius: 12px;
             overflow: hidden;
             background: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
             border: 1px solid #cbd5e1;
             margin-top: 1rem;
+            touch-action: none;
         }
         
         .test-tube {
             touch-action: none;
             pointer-events: all;
             position: absolute;
-            width: 60px;
-            height: 180px;
+            width: 12vw;
+            min-width: 50px;
+            max-width: 60px;
+            height: 36vw;
+            min-height: 150px;
+            max-height: 180px;
             background: linear-gradient(to bottom, #e2e8f0, #f8fafc);
             border: 2px solid #94a3b8;
             border-bottom-left-radius: 20px;
@@ -60,8 +73,12 @@
             touch-action: none;
             pointer-events: all;
             position: absolute;
-            width: 60px;
-            height: 120px;
+            width: 12vw;
+            min-width: 50px;
+            max-width: 60px;
+            height: 24vw;
+            min-height: 100px;
+            max-height: 120px;
             z-index: 5;
             background-size: contain;
             background-repeat: no-repeat;
@@ -78,7 +95,7 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 60px;
+            height: 50%;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
         }
@@ -86,8 +103,12 @@
         .burner {
             touch-action: none;
             pointer-events: all;
-            width: 120px;
-            height: 140px;
+            width: 24vw;
+            min-width: 100px;
+            max-width: 120px;
+            height: 28vw;
+            min-height: 120px;
+            max-height: 140px;
             z-index: 5;
             position: absolute;
             background-size: contain;
@@ -97,7 +118,9 @@
         
         .flame {
             position: absolute;
-            width: 40px;
+            width: 8vw;
+            min-width: 30px;
+            max-width: 40px;
             height: 0;
             background: linear-gradient(to top, #f97316, #fbbf24);
             border-radius: 20px 20px 0 0;
@@ -110,19 +133,26 @@
         
         .burner-knob {
             position: absolute;
-            width: 25px;
-            height: 25px;
+            width: 5vw;
+            min-width: 20px;
+            max-width: 25px;
+            height: 5vw;
+            min-height: 20px;
+            max-height: 25px;
             background-color: #94a3b8;
             border-radius: 50%;
             cursor: pointer;
-            bottom: 30px;
-            left: 60px;
+            bottom: 6vw;
+            min-bottom: 25px;
+            max-bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 7;
             transition: transform 0.2s;
         }
         
         .burner-knob:active {
-            transform: rotate(30deg);
+            transform: translateX(-50%) rotate(30deg);
         }
         
         .info-icon {
@@ -151,6 +181,7 @@
             z-index: 100;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
         
         .modal-content {
@@ -158,7 +189,9 @@
             padding: 20px;
             border-radius: 10px;
             max-width: 600px;
-            width: 90%;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
         .label {
@@ -209,16 +242,17 @@
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin: 2rem auto;
+            padding: 1rem;
+            margin: 1rem auto;
             max-width: 900px;
+            width: 95%;
         }
         
         .simulation-title {
             color: #1e40af;
-            font-size: 1.875rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
         }
         
@@ -226,12 +260,12 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .control-group {
             flex: 1;
-            min-width: 200px;
+            min-width: 150px;
         }
         
         .control-label {
@@ -262,6 +296,8 @@
             cursor: pointer;
             transition: background-color 0.2s;
             align-self: flex-end;
+            width: 100%;
+            margin-top: 0.5rem;
         }
         
         .reset-button:hover {
@@ -279,24 +315,7 @@
             border-radius: 0.5rem;
             color: #374151;
             font-size: 0.875rem;
-        }
-        
-        @media screen and (max-width: 768px) {
-            .test-tube,
-            .dropper,
-            .burner {
-                transform: scale(0.8);
-                transform-origin: top left;
-            }
-            
-            .control-panel {
-                flex-direction: column;
-            }
-            
-            .simulation-container {
-                padding: 1rem;
-                margin: 1rem;
-            }
+            z-index: 10;
         }
         
         .instructions {
@@ -305,12 +324,14 @@
             padding: 1rem;
             margin-top: 1rem;
             border-left: 4px solid #3b82f6;
+            font-size: 0.9rem;
         }
         
         .instructions h3 {
             color: #1e40af;
             margin-top: 0;
             margin-bottom: 0.5rem;
+            font-size: 1rem;
         }
         
         .instructions ol {
@@ -340,6 +361,81 @@
             0% { opacity: 0.8; transform: translateX(-50%) scaleY(1); }
             100% { opacity: 1; transform: translateX(-50%) scaleY(1.1); }
         }
+        
+        /* Mobile-specific styles */
+        @media screen and (max-width: 768px) {
+            .simulation-title {
+                font-size: 1.25rem;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+            
+            .control-group {
+                min-width: 100%;
+            }
+            
+            .reset-button {
+                margin-top: 0;
+            }
+            
+            .draggable-container {
+                height: 50vh;
+                min-height: 350px;
+            }
+            
+            .instructions {
+                font-size: 0.85rem;
+            }
+            
+            .instructions ol {
+                padding-left: 1.2rem;
+            }
+            
+            .modal-content {
+                padding: 15px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .simulation-container {
+                padding: 0.5rem;
+                margin: 0.5rem auto;
+            }
+            
+            .simulation-title {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .draggable-container {
+                height: 45vh;
+                min-height: 300px;
+            }
+            
+            .status-text {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+            
+            .label {
+                font-size: 0.7rem;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .dropper, .burner-knob, .info-icon {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .test-tube {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -356,7 +452,7 @@
             </div>
             
             <div class="control-group">
-                <label class="control-label" for="glucose-level">Pilih kadar glukosa dalam sampel:</label>
+                <label class="control-label" for="glucose-level">Pilih kadar glukosa:</label>
                 <select class="control-select" id="glucose-level">
                     <option value="none">Tidak ada glukosa</option>
                     <option value="low">Kadar glukosa rendah</option>
@@ -383,35 +479,35 @@
         
         <div class="draggable-container" id="simulation-area">
             <!-- Test tube with urine -->
-            <div class="test-tube" id="test-tube" style="top: 200px; left: 400px;">
-                <div class="test-tube-liquid" id="urine-liquid" style="height: 60px; background-color: #fef08a;"></div>
+            <div class="test-tube" id="test-tube" style="top: 40%; left: 50%;">
+                <div class="test-tube-liquid" id="urine-liquid" style="height: 33%; background-color: #fef08a;"></div>
                 <div class="label">Tabung Reaksi</div>
             </div>
             
             <!-- Benedict dropper -->
-            <div class="dropper lab-item" id="benedict-dropper" style="top: 100px; left: 100px; background-image: url('https://iili.io/Kl1Y5v9.md.png');">
+            <div class="dropper lab-item" id="benedict-dropper" style="top: 20%; left: 10%; background-image: url('https://iili.io/Kl1Y5v9.md.png');">
                 <div class="label">Pipet + Benedict</div>
             </div>
             
             <!-- Fehling A dropper -->
-            <div class="dropper lab-item" id="fehling-a-dropper" style="top: 100px; left: 200px; display: none; background-image: url('https://iili.io/Kl1Y5v9.md.png');">
+            <div class="dropper lab-item" id="fehling-a-dropper" style="top: 20%; left: 25%; display: none; background-image: url('https://iili.io/Kl1Y5v9.md.png');">
                 <div class="label">Pipet + Fehling A</div>
             </div>
             
             <!-- Fehling B dropper -->
-            <div class="dropper lab-item" id="fehling-b-dropper" style="top: 100px; left: 300px; display: none; background-image: url('https://iili.io/Kl1Y5v9.md.png');">
+            <div class="dropper lab-item" id="fehling-b-dropper" style="top: 20%; left: 40%; display: none; background-image: url('https://iili.io/Kl1Y5v9.md.png');">
                 <div class="label">Pipet + Fehling B</div>
             </div>
             
             <!-- Burner -->
-            <div class="burner" id="burner" style="bottom: 50px; left: 600px; background-image: url('https://iili.io/K0iD4Wb.md.png');">
+            <div class="burner" id="burner" style="bottom: 10%; left: 75%; background-image: url('https://iili.io/K0iD4Wb.md.png');">
                 <div class="flame" id="flame"></div>
                 <div class="burner-knob" id="burner-knob"></div>
                 <div class="label">Pembakar Bunsen</div>
             </div>
             
             <!-- Info icon -->
-            <div class="info-icon" id="info-icon" style="top: 20px; right: 20px;">i</div>
+            <div class="info-icon" id="info-icon" style="top: 5%; right: 5%;">i</div>
             
             <!-- Status text -->
             <div class="status-text" id="status-text">
@@ -555,32 +651,59 @@
                 }
             });
             
-            // Make elements draggable
+            // Make elements draggable with touch support
             function makeDraggable(element) {
                 let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                let isDragging = false;
                 
-                element.onmousedown = dragMouseDown;
+                element.addEventListener('mousedown', dragMouseDown);
+                element.addEventListener('touchstart', dragTouchStart, { passive: false });
                 
                 function dragMouseDown(e) {
                     e.preventDefault();
                     pos3 = e.clientX;
                     pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    document.onmousemove = elementDrag;
+                    document.addEventListener('mouseup', closeDragElement);
+                    document.addEventListener('mousemove', elementDrag);
+                    isDragging = true;
+                }
+                
+                function dragTouchStart(e) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    pos3 = touch.clientX;
+                    pos4 = touch.clientY;
+                    document.addEventListener('touchend', closeDragElement);
+                    document.addEventListener('touchmove', elementTouchMove, { passive: false });
+                    isDragging = true;
                 }
                 
                 function elementDrag(e) {
+                    if (!isDragging) return;
                     e.preventDefault();
                     pos1 = pos3 - e.clientX;
                     pos2 = pos4 - e.clientY;
                     pos3 = e.clientX;
                     pos4 = e.clientY;
                     
+                    moveElement(element.offsetTop - pos2, element.offsetLeft - pos1);
+                }
+                
+                function elementTouchMove(e) {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    pos1 = pos3 - touch.clientX;
+                    pos2 = pos4 - touch.clientY;
+                    pos3 = touch.clientX;
+                    pos4 = touch.clientY;
+                    
+                    moveElement(element.offsetTop - pos2, element.offsetLeft - pos1);
+                }
+                
+                function moveElement(newTop, newLeft) {
                     const container = document.querySelector('.draggable-container');
                     const containerRect = container.getBoundingClientRect();
-                    
-                    const newTop = element.offsetTop - pos2;
-                    const newLeft = element.offsetLeft - pos1;
                     
                     // Keep element within container bounds
                     if (newTop >= 0 && newTop + element.offsetHeight <= containerRect.height) {
@@ -596,8 +719,11 @@
                 }
                 
                 function closeDragElement() {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
+                    document.removeEventListener('mouseup', closeDragElement);
+                    document.removeEventListener('mousemove', elementDrag);
+                    document.removeEventListener('touchend', closeDragElement);
+                    document.removeEventListener('touchmove', elementTouchMove);
+                    isDragging = false;
                 }
             }
             
@@ -654,7 +780,7 @@
             // Add Benedict reagent to test tube
             function addBenedict() {
                 urineLiquid.style.backgroundColor = '#93c5fd'; // Light blue
-                urineLiquid.style.height = '120px';
+                urineLiquid.style.height = '66%';
                 simulationState.reagentAdded = true;
                 statusText.textContent = 'Nyalakan pembakar dengan mengklik kenop';
                 
@@ -667,7 +793,7 @@
             // Add Fehling A reagent to test tube
             function addFehlingA() {
                 urineLiquid.style.backgroundColor = '#93c5fd'; // Light blue
-                urineLiquid.style.height = '90px';
+                urineLiquid.style.height = '50%';
                 simulationState.fehlingAAdded = true;
                 statusText.textContent = 'Tarik penetes Fehling B ke tabung reaksi';
                 
@@ -680,7 +806,7 @@
             // Add Fehling B reagent to test tube
             function addFehlingB() {
                 urineLiquid.style.backgroundColor = '#60a5fa'; // Medium blue
-                urineLiquid.style.height = '120px';
+                urineLiquid.style.height = '66%';
                 simulationState.fehlingBAdded = true;
                 simulationState.reagentAdded = true;
                 statusText.textContent = 'Nyalakan pembakar dengan mengklik kenop';
@@ -694,7 +820,23 @@
             // Toggle burner on/off
             burnerKnob.addEventListener('click', () => {
                 if (!simulationState.burnerOn) {
-                    flame.style.height = '60px';
+                    flame.style.height = '12vw';
+                    flame.classList.add('active');
+                    simulationState.burnerOn = true;
+                    statusText.textContent = 'Tarik tabung reaksi ke atas pembakar';
+                } else {
+                    flame.style.height = '0';
+                    flame.classList.remove('active');
+                    simulationState.burnerOn = false;
+                    statusText.textContent = 'Nyalakan pembakar dengan mengklik kenop';
+                }
+            });
+            
+            // Add touch support for burner knob
+            burnerKnob.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (!simulationState.burnerOn) {
+                    flame.style.height = '12vw';
                     flame.classList.add('active');
                     simulationState.burnerOn = true;
                     statusText.textContent = 'Tarik tabung reaksi ke atas pembakar';
@@ -802,6 +944,17 @@
                 }
             });
             
+            // Add touch support for info icon
+            infoIcon.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (simulationState.heated) {
+                    resultContent.innerHTML = simulationState.resultText;
+                    resultModal.style.display = 'flex';
+                } else {
+                    alert('Selesaikan praktikum terlebih dahulu untuk melihat hasil.');
+                }
+            });
+            
             // Close modal
             closeModal.addEventListener('click', () => {
                 resultModal.style.display = 'none';
@@ -813,24 +966,25 @@
             function resetSimulation() {
                 resultModal.style.display = 'none';
                 urineLiquid.style.backgroundColor = '#fef08a'; // Yellow (urine color)
-                urineLiquid.style.height = '60px';
+                urineLiquid.style.height = '33%';
                 flame.style.height = '0';
                 flame.classList.remove('active');
                 
-                benedictDropper.style.top = '100px';
-                benedictDropper.style.left = '100px';
+                // Reset positions using percentages for responsiveness
+                benedictDropper.style.top = '20%';
+                benedictDropper.style.left = '10%';
                 
-                fehlingADropper.style.top = '100px';
-                fehlingADropper.style.left = '200px';
+                fehlingADropper.style.top = '20%';
+                fehlingADropper.style.left = '25%';
                 
-                fehlingBDropper.style.top = '100px';
-                fehlingBDropper.style.left = '300px';
+                fehlingBDropper.style.top = '20%';
+                fehlingBDropper.style.left = '40%';
                 
-                testTube.style.top = '200px';
-                testTube.style.left = '400px';
+                testTube.style.top = '40%';
+                testTube.style.left = '50%';
                 
-                burner.style.bottom = '50px';
-                burner.style.left = '600px';
+                burner.style.bottom = '10%';
+                burner.style.left = '75%';
                 
                 simulationState = {
                     testType: testType.value,
@@ -848,6 +1002,11 @@
                     statusText.textContent = 'Klik atau tarik penetes Fehling A ke tabung reaksi';
                 }
             }
+            
+            // Prevent context menu on long press for mobile
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
         });
     </script>
 </body>
