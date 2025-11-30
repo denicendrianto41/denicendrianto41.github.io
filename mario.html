@@ -1256,6 +1256,26 @@
         </div>
         
         <div class="feedback" id="feedback"></div>
+        
+        <!-- Audio elements for sound effects -->
+        <audio id="jump-sound" preload="auto">
+            <source src="https://denicendrianto41.github.io/jump.wav" type="audio/wav">
+        </audio>
+        <audio id="coin-sound" preload="auto">
+            <source src="https://denicendrianto41.github.io/koin.wav" type="audio/wav">
+        </audio>
+        <audio id="damage-sound" preload="auto">
+            <source src="https://denicendrianto41.github.io/salah.wav" type="audio/wav">
+        </audio>
+        <audio id="gameover-sound" preload="auto">
+            <source src="https://denicendrianto41.github.io/gameover.wav" type="audio/wav">
+        </audio>
+        <audio id="correct-sound" preload="auto">
+            <source src="https://denicendrianto41.github.io/benar.wav" type="audio/wav">
+        </audio>
+        <audio id="wrong-sound" preload="auto">
+            <source src="https://denicendrianto41.github.io/salah.wav" type="audio/wav">
+        </audio>
     </div>
 
     <script>
@@ -1284,6 +1304,14 @@
         
         // Snake question box - hanya satu
         const snakeQuestionBox = document.getElementById('snake-question-box');
+        
+        // Sound effects
+        const jumpSound = document.getElementById('jump-sound');
+        const coinSound = document.getElementById('coin-sound');
+        const damageSound = document.getElementById('damage-sound');
+        const gameoverSound = document.getElementById('gameover-sound');
+        const correctSound = document.getElementById('correct-sound');
+        const wrongSound = document.getElementById('wrong-sound');
         
         let selectedLevel = 1;
         let playerName = '';
@@ -1418,6 +1446,37 @@
                 }
             ]
         };
+        
+        // Sound effect functions
+        function playJumpSound() {
+            jumpSound.currentTime = 0;
+            jumpSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+        
+        function playCoinSound() {
+            coinSound.currentTime = 0;
+            coinSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+        
+        function playDamageSound() {
+            damageSound.currentTime = 0;
+            damageSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+        
+        function playGameOverSound() {
+            gameoverSound.currentTime = 0;
+            gameoverSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+        
+        function playCorrectSound() {
+            correctSound.currentTime = 0;
+            correctSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+        
+        function playWrongSound() {
+            wrongSound.currentTime = 0;
+            wrongSound.play().catch(e => console.log("Audio play failed:", e));
+        }
         
         // Login and Level Selection Functions
         function initializeLoginSystem() {
@@ -1712,6 +1771,9 @@
                 // Add 100 points for correct answer
                 updateScore(100);
                 
+                // Play correct sound
+                playCorrectSound();
+                
                 // Show feedback between question and answers
                 showFeedbackBetween("BENAR! +100", "#4ade80");
                 
@@ -1741,6 +1803,9 @@
                 
                 // Subtract 100 points for wrong answer
                 updateScore(-100);
+                
+                // Play wrong sound
+                playWrongSound();
                 
                 showFeedbackBetween("SALAH! -100", "#f87171");
                 
@@ -1806,6 +1871,10 @@
                 coin.parentNode.removeChild(coin);
                 coinsCollected++;
                 updateScore(10); // Each coin is worth 10 points
+                
+                // Play coin sound
+                playCoinSound();
+                
                 showFeedback("+10", "#FFD700");
             }
         }
@@ -1814,6 +1883,10 @@
         function hitVirus() {
             if (gameActive) {
                 updateScore(-50); // Reduce 50 points for hitting a virus
+                
+                // Play damage sound
+                playDamageSound();
+                
                 showFeedback("-50", "#f87171");
                 showWarning();
             }
@@ -1824,6 +1897,10 @@
                 gameActive = false;
                 clearInterval(timerInterval);
                 clearInterval(flyingCoronaInterval);
+                
+                // Play game over sound
+                playGameOverSound();
+                
                 gameOverScreen.style.display = 'block';
                 document.getElementById('final-coins').textContent = coinsCollected;
                 document.getElementById('final-score').textContent = score;
@@ -1849,6 +1926,10 @@
                     // Check if Mario stomped (landed on top of the enemy)
                     if (isJumping && marioRect.bottom <= enemyRect.top + 20) {
                         updateScore(500); // Bonus score for stomping a virus
+                        
+                        // Play coin sound for stomping enemy
+                        playCoinSound();
+                        
                         showFeedback("+500", "#4ade80");
                         if (enemy.parentNode) {
                             enemy.parentNode.removeChild(enemy);
@@ -2040,6 +2121,10 @@
 
             if (correct) {
                 updateScore(100); // +100 points for correct answer
+                
+                // Play correct sound
+                playCorrectSound();
+                
                 showFeedbackBetween("BENAR! +100", "#4ade80"); // NEW: Use feedback between
                 
                 // Tampilkan animasi untuk jawaban benar
@@ -2074,6 +2159,10 @@
             } else {
                 // Wrong answer
                 updateScore(-100); // -100 points for wrong answer
+                
+                // Play wrong sound
+                playWrongSound();
+                
                 showFeedbackBetween("SALAH! -100", "#f87171"); // NEW: Use feedback between
                 
                 // Tampilkan animasi untuk jawaban salah
@@ -2117,6 +2206,9 @@
             if (gameActive && !isJumping) {
                 isJumping = true;
                 mario.classList.add('jumping');
+                
+                // Play jump sound
+                playJumpSound();
 
                 // Memeriksa tabrakan dengan kotak soal dan jawaban lebih sering selama lompatan
                 const jumpCheckInterval = setInterval(() => {
