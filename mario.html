@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajah Virus: Petualangan Biologi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #5c94fc; /* Mario Sky Blue */
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Add new styles for login screen and level selection */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .login-container {
+            background-color: #5c94fc;
+            padding: 20px;
+            border-radius: 15px;
+            border: 4px solid #ffb700;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            width: 90%;
+            max-width: 450px;
+            color: white;
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #ffb700;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-label {
+            font-size: 10px;
+        }
+        
+        .form-input {
+            padding: 8px;
+            border-radius: 8px;
+            border: 3px solid #ffb700;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: #333333; /* Abu-abu gelap */
+        }
+        
+        .gender-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        .gender-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+        
+        .level-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .level-btn {
+            background-color: #ff5a5a;
+            color: white;
+            border: 3px solid white;
+            padding: 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .level-btn:hover {
+            transform: scale(1.05);
+            background-color: #ff3838;
+        }
+        
+        .level-btn.selected {
+            background-color: #4ade80;
+            box-shadow: 0 0 10px rgba(76, 222, 128, 0.7);
+        }
+        
+        .start-game-btn {
+            background-color: #4ade80;
+            color: white;
+            border: 3px solid white;
+            padding: 12px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .start-game-btn:hover {
+            transform: scale(1.05);
+            background-color: #22c55e;
+        }
+        
+        .player-name-display {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 8px;
+            white-space: nowrap;
+            z-index: 11;
+            display: none;
+        }
+        
+        /* Existing styles continue... */
+        .game-container {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        
+        .game-world {
+            position: absolute;
+            height: 100%;
+            width: 8000px; /* Extended world */
+            transition: transform 0.3s;
+        }
+        
+        .mario {
+            width: 50px;
+            height: 70px;
+            position: absolute;
+            bottom: 80px;
+            left: 150px;
+            z-index: 10;
+            transition: transform 0.1s;
+        }
+        
+        .mario.jumping {
+            animation: jump 0.5s;
+        }
+        
+        @keyframes jump {
+            0% { transform: translateY(0) scaleX(1); }
+            50% { transform: translateY(-100px) scaleX(1); }
+            100% { transform: translateY(0) scaleX(1); }
+        }
+        
+        .mario.jumping.flip {
+            animation: jumpFlip 0.5s;
+        }
+        
+        @keyframes jumpFlip {
+            0% { transform: translateY(0) scaleX(-1); }
+            50% { transform: translateY(-100px) scaleX(-1); }
+            100% { transform: translateY(0) scaleX(-1); }
+        }
+        
+        .coin {
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            animation: float 1s infinite alternate ease-in-out;
+            z-index: 8;
+        }
+        
+        .ground {
+            height: 80px;
+            background-color: #5a3700;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            z-index: 5;
+        }
+        
+        .grass {
+            height: 20px;
+            background-color: #00a800;
+            position: absolute;
+            bottom: 80px;
+            width: 100%;
+            z-index: 5;
+        }
+        
+        .cloud {
+            position: absolute;
+            z-index: 3;
+            animation: cloudMove 60s linear infinite;
+        }
+        
+        @keyframes cloudMove {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-200px); }
+        }
+        
+        .question-box {
+            width: 60px;
+            height: 60px;
+            background-color: #ffb700;
+            border: 4px solid #ffffff;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            text-shadow: 2px 2px 0 #000;
+            animation: pulse 0.8s infinite alternate;
+            z-index: 8;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .question-box.activated {
+            background-color: #888888;
+            animation: none;
+            box-shadow: none;
+            transform: scale(0.8);
+        }
+        
+        .question-box.hit {
+            animation: hitAnimation 0.5s ease-out;
+        }
+        
+        @keyframes hitAnimation {
+            0% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-20px) scale(1.2); }
+            50% { transform: translateY(-40px) scale(1.1); }
+            75% { transform: translateY(-20px) scale(1.05); }
+            100% { transform: translateY(0) scale(0.8); }
+        }
+        
+        .question-sparkle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            animation: sparkle 0.6s ease-out;
+            z-index: 9;
+            pointer-events: none;
+        }
+        
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .floating-answers {
+            position: fixed;
+            top: 55%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 20;
+            padding: 0 15px;
+        }
+        
+        .floating-answer-btn {
+            background-color: #ff5a5a;
+            color: white;
+            border: 3px solid white;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: floatAnswer 2s infinite ease-in-out;
+        }
+
+        .floating-answer-btn:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .floating-answer-btn:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .floating-answer-btn:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes floatAnswer {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating-answer-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background-color: #ff3838;
+        }
+        
+        .floating-answer-btn.correct {
+            background-color: #4ade80;
+            animation: correctAnswer 0.5s ease-out;
+        }
+        
+        .floating-answer-btn.incorrect {
+            background-color: #f87171;
+            animation: incorrectAnswer 0.5s ease-out;
+        }
+        
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes incorrectAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+            100% { transform: translateX(0); }
+        }
+
+        .question-display {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            z-index: 20;
+            max-width: 80%;
+            border: 4px solid #ffb700;
+            animation: questionPop 0.5s ease-out;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        }
+        
+        @keyframes questionPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .corona-virus-enemy {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            bottom: 80px;
+            z-index: 9;
+            animation: floatEnemy 2s infinite alternate ease-in-out;
+        }
+
+        .flying-corona {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            z-index: 9;
+            animation: floatEnemy 2s infinite alternate ease-in-out, flyDown 3s linear forwards;
+        }
+
+        @keyframes flyDown {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes floatEnemy {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); box-shadow: 0 0 10px rgba(255, 255, 0, 0.7); }
+            to { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 255, 0, 0.9); }
+        }
+        
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        .score-board {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            z-index: 20;
+        }
+        
+        .timer {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            z-index: 20;
+        }
+        
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            z-index: 30;
+            display: none;
+        }
+        
+        .answer-options {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+            display: none;
+        }
+        
+        .answer-btn {
+            background-color: #ff5a5a;
+            color: white;
+            border: 3px solid white;
+            padding: 8px 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .answer-btn:hover {
+            transform: scale(1.1);
+            background-color: #ff3838;
+        }
+        
+        .pipe {
+            position: absolute;
+            bottom: 80px; /* Posisi pipa diubah menjadi 80px */
+            width: 70px;
+            height: 90px;
+            z-index: 7;
+        }
+        
+        .bush {
+            position: absolute;
+            bottom: 80px;
+            z-index: 6;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+        }
+        
+        .control-btn {
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .hill {
+            position: absolute;
+            bottom: 80px;
+            z-index: 4;
+        }
+        
+        .level-complete {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            z-index: 30;
+            display: none;
+        }
+        
+        .level-indicator {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            z-index: 20;
+        }
+        
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            font-weight: bold;
+            text-shadow: 3px 3px 0 #000;
+            z-index: 25;
+            display: none;
+            animation: pop 0.5s;
+        }
+
+        /* NEW: Feedback between question and answers */
+        .feedback-between {
+            position: fixed;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 3px 3px 0 #000;
+            z-index: 25;
+            display: none;
+            animation: pop 0.5s;
+        }
+        
+        @keyframes pop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .correct {
+            color: #4ade80;
+        }
+        
+        .incorrect {
+            color: #f87171;
+        }
+        
+        .jump-indicator {
+            position: absolute;
+            width: 70px;
+            height: 8px;
+            background-color: rgba(255, 255, 0, 0.5);
+            z-index: 11;
+            display: none;
+        }
+
+        .warning-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: red;
+            z-index: 15;
+            display: none;
+            animation: warningFlash 0.5s infinite alternate;
+        }
+
+        @keyframes warningFlash {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        .question-hit-effect {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, rgba(255,215,0,0) 70%);
+            border-radius: 50%;
+            z-index: 12;
+            pointer-events: none;
+            animation: questionHit 0.6s ease-out;
+        }
+
+        @keyframes questionHit {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .answer-hit-effect {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, rgba(76,222,128,0.8) 0%, rgba(76,222,128,0) 70%);
+            border-radius: 50%;
+            z-index: 21;
+            pointer-events: none;
+            animation: answerHit 0.6s ease-out;
+        }
+
+        @keyframes answerHit {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        /* New styles for books and snake */
+        .book-box {
+            width: 60px;
+            height: 60px;
+            background-color: #ffb700;
+            border: 4px solid #ffffff;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            text-shadow: 2px 2px 0 #000;
+            animation: pulse 0.8s infinite alternate;
+            z-index: 8;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .book-box.activated {
+            background-color: #888888;
+            animation: none;
+            box-shadow: none;
+            transform: scale(0.8);
+        }
+        
+        .snake {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            bottom: 80px;
+            z-index: 9;
+            font-size: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 2px 2px 0 #000;
+            animation: snakeMove 2s infinite alternate ease-in-out;
+        }
+        
+        @keyframes snakeMove {
+            0% { transform: translateX(0) scaleX(1); }
+            50% { transform: translateX(10px) scaleX(1); }
+            100% { transform: translateX(0) scaleX(1); }
+        }
+        
+        .history-popup {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            z-index: 20;
+            max-width: 80%;
+            border: 4px solid #ffb700;
+            animation: questionPop 0.5s ease-out;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            display: none;
+        }
+        
+        .snake-question-container {
+            position: fixed;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            z-index: 20;
+            max-width: 80%;
+            border: 4px solid #ffb700;
+            animation: questionPop 0.5s ease-out;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            display: none;
+        }
+        
+        .snake-answers-container {
+            position: fixed;
+            bottom: 45%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            z-index: 20;
+            padding: 0 15px;
+            flex-wrap: wrap;
+        }
+        
+        .snake-answer-btn {
+            background-color: #ff5a5a;
+            color: white;
+            border: 3px solid white;
+            padding: 10px 12px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .snake-answer-btn:hover {
+            transform: scale(1.05);
+            background-color: #ff3838;
+        }
+        
+        .snake-answer-btn.correct {
+            background-color: #4ade80;
+        }
+        
+        .snake-answer-btn.incorrect {
+            background-color: #f87171;
+        }
+        
+        .safe-distance {
+            position: absolute;
+            width: 180px;
+            height: 8px;
+            background-color: rgba(255, 0, 0, 0.3);
+            bottom: 80px;
+            z-index: 8;
+        }
+        
+        /* New style for close button */
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: #ff5a5a;
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 21;
+        }
+        
+        .close-btn:hover {
+            transform: scale(1.1);
+            background-color: #ff3838;
+        }
+
+        /* Media Queries for Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 15px;
+                max-width: 90%;
+            }
+            
+            .login-title {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .form-label {
+                font-size: 9px;
+            }
+            
+            .form-input {
+                padding: 6px;
+                font-size: 9px;
+            }
+            
+            .gender-option {
+                font-size: 9px;
+            }
+            
+            .level-btn {
+                padding: 8px;
+                font-size: 9px;
+            }
+            
+            .start-game-btn {
+                padding: 10px;
+                font-size: 10px;
+            }
+            
+            .question-display {
+                font-size: 12px;
+                padding: 12px 15px;
+            }
+            
+            .floating-answer-btn {
+                padding: 8px 12px;
+                font-size: 9px;
+                min-width: 100px;
+            }
+            
+            .score-board, .timer, .level-indicator {
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+            
+            .controls {
+                bottom: 10px;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .feedback, .feedback-between {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-title {
+                font-size: 12px;
+            }
+            
+            .form-label {
+                font-size: 8px;
+            }
+            
+            .form-input {
+                padding: 5px;
+                font-size: 8px;
+            }
+            
+            .gender-options {
+                gap: 10px;
+            }
+            
+            .gender-option {
+                font-size: 8px;
+            }
+            
+            .level-btn {
+                padding: 6px;
+                font-size: 8px;
+            }
+            
+            .start-game-btn {
+                padding: 8px;
+                font-size: 9px;
+            }
+            
+            .floating-answer-btn {
+                padding: 6px 10px;
+                font-size: 8px;
+                min-width: 90px;
+            }
+            
+            .question-display {
+                font-size: 10px;
+                padding: 10px 12px;
+            }
+            
+            .score-board, .timer, .level-indicator {
+                font-size: 9px;
+                padding: 5px 10px;
+            }
+            
+            .controls {
+                bottom: 8px;
+                gap: 8px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .feedback, .feedback-between {
+                font-size: 20px;
+            }
+            
+            .history-popup, .snake-question-container {
+                font-size: 10px;
+                padding: 10px 15px;
+            }
+            
+            .snake-answer-btn {
+                padding: 8px 10px;
+                font-size: 8px;
+                min-width: 100px;
+            }
+        }
+        
+        /* New style for score popup */
+        .score-popup {
+            position: absolute;
+            color: #4ade80;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 2px 2px 0 #000;
+            z-index: 15;
+            animation: scoreFloat 1s ease-out forwards;
+        }
+        
+        @keyframes scoreFloat {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+        
+        /* New style for snake message - balloon tooltip */
+        .snake-message {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 8px;
+            white-space: nowrap;
+            z-index: 11;
+            text-align: center;
+            width: 220px;
+            border: 2px solid #ffb700;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            animation: floatMessage 3s infinite ease-in-out;
+            line-height: 1.4;
+        }
+        
+        /* Arrow for balloon tooltip */
+        .snake-message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #ffb700;
+        }
+        
+        @keyframes floatMessage {
+            0% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+            100% { transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen">
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-container">
+            <h1 class="login-title">JELAJAH VIRUS</h1>
+            <div class="login-form">
+                <div class="form-group">
+                    <label class="form-label">NAMA USER:</label>
+                    <input type="text" id="user-name" class="form-input" placeholder="Masukkan nama Anda">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">JENIS KELAMIN:</label>
+                    <div class="gender-options">
+                        <div class="gender-option">
+                            <input type="radio" id="male" name="gender" value="Laki-laki" checked>
+                            <label for="male">Laki-laki</label>
+                        </div>
+                        <div class="gender-option">
+                            <input type="radio" id="female" name="gender" value="Perempuan">
+                            <label for="female">Perempuan</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">NPSN SEKOLAH:</label>
+                    <input type="text" id="school-npsn" class="form-input" placeholder="Masukkan NPSN sekolah">
+                </div>
+                
+                <div class="level-selection">
+                    <h2 class="form-label">PILIH LEVEL:</h2>
+                    <button class="level-btn" data-level="1">SEJARAH VIRUS</button>
+                    <button class="level-btn" data-level="2">STRUKTUR DAN JENIS VIRUS</button>
+                    <button class="level-btn" data-level="3">REPRODUKSI VIRUS</button>
+                    <button class="level-btn" data-level="4">PERANAN VIRUS</button>
+                </div>
+                
+                <button class="start-game-btn" id="start-game-btn">MULAI PERMAINAN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container" style="display: none;" id="game-container">
+        <div class="warning-indicator" id="warning-indicator"></div>
+        <div class="game-world" id="game-world">
+            <!-- Player Name Display -->
+            <div class="player-name-display" id="player-name-display"></div>
+            
+            <!-- Books for Level 1 - Now in yellow boxes with book icon -->
+            <div class="book-box" id="book1" style="bottom: 180px; left: 700px;">📚</div>
+            <div class="book-box" id="book2" style="bottom: 180px; left: 1200px;">📚</div>
+            <div class="book-box" id="book3" style="bottom: 180px; left: 1800px;">📚</div>
+            <div class="book-box" id="book4" style="bottom: 180px; left: 2400px;">📚</div>
+            
+            <!-- Snake Question Box - Hanya satu yang muncul setelah buku terkumpul -->
+            <div class="question-box" id="snake-question-box" style="bottom: 180px; left: 3000px; display: none;">?</div>
+            
+            <!-- Snake Obstacle for Level 1 - Posisi setelah pertanyaan ular -->
+            <div class="snake" id="snake-obstacle" style="left: 3200px; display: none;">
+                🐍
+                <div class="snake-message">Jawab tiga pertanyaan<br/>kalau mau lewat!</div>
+            </div>
+            
+            <!-- Safe distance indicator -->
+            <div class="safe-distance" id="safe-distance" style="left: 2800px; display: none;"></div>
+            
+            <!-- Existing game elements -->
+            <div class="hill" style="left: 100px;">
+                <img src="https://iili.io/fnFjtsV.png" alt="Gunung" width="200" height="120">
+            </div>
+            
+            <!-- Awan yang bergerak -->
+            <div class="cloud" style="top: 80px; left: 200px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="120" height="70">
+            </div>
+            <div class="cloud" style="top: 120px; left: 600px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="100" height="60">
+            </div>
+            <div class="cloud" style="top: 60px; left: 1000px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="150" height="80">
+            </div>
+            <div class="cloud" style="top: 150px; left: 1600px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="130" height="75">
+            </div>
+            <div class="cloud" style="top: 90px; left: 2200px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="110" height="65">
+            </div>
+            <div class="cloud" style="top: 130px; left: 2800px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="140" height="80">
+            </div>
+            <div class="cloud" style="top: 70px; left: 3400px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="120" height="70">
+            </div>
+            <div class="cloud" style="top: 110px; left: 4000px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="100" height="60">
+            </div>
+            <div class="cloud" style="top: 50px; left: 4600px;">
+                <img src="https://iili.io/fnFM07f.png" alt="Awan" width="160" height="90">
+            </div>
+            
+            <!-- Pipa yang sudah diturunkan ke posisi 80px -->
+            <div class="pipe" style="left: 500px;">
+                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
+            </div>
+            
+            <!-- 3 Pipa tambahan -->
+            <div class="pipe" style="left: 1200px;">
+                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
+            </div>
+            <div class="pipe" style="left: 2500px;">
+                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
+            </div>
+            <div class="pipe" style="left: 3800px;">
+                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
+            </div>
+
+            <!-- Semak dengan gambar baru -->
+            <div class="bush" style="left: 1400px;">
+                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+            </div>
+            
+            <!-- 3 Semak tambahan dengan gambar baru -->
+            <div class="bush" style="left: 2200px;">
+                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+            </div>
+            
+            <div class="bush" style="left: 3200px;">
+                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+            </div>
+            
+            <div class="bush" style="left: 4300px;">
+                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+            </div>
+
+            <!-- 10 koin yang tersebar di sepanjang perjalanan -->
+            <!-- Koin diposisikan agar tidak berada di bawah kotak pertanyaan -->
+            <div class="coin" style="bottom: 150px; left: 600px;"></div>
+            <div class="coin" style="bottom: 150px; left: 900px;"></div>
+            <div class="coin" style="bottom: 150px; left: 1200px;"></div>
+            <div class="coin" style="bottom: 150px; left: 1500px;"></div>
+            <div class="coin" style="bottom: 150px; left: 1800px;"></div>
+            <div class="coin" style="bottom: 150px; left: 2100px;"></div>
+            <div class="coin" style="bottom: 150px; left: 2400px;"></div>
+            <div class="coin" style="bottom: 150px; left: 2700px;"></div>
+            <div class="coin" style="bottom: 150px; left: 3000px;"></div>
+            <div class="coin" style="bottom: 150px; left: 3300px;"></div>
+            
+            <!-- 5 KOIN TAMBAHAN antara ular dan finish -->
+            <div class="coin" style="bottom: 150px; left: 3500px;"></div>
+            <div class="coin" style="bottom: 150px; left: 3800px;"></div>
+            <div class="coin" style="bottom: 150px; left: 4100px;"></div>
+            <div class="coin" style="bottom: 150px; left: 4400px;"></div>
+            <div class="coin" style="bottom: 150px; left: 4700px;"></div>
+
+            <div class="corona-virus-enemy" style="left: 800px;">
+                <img src="https://iili.io/fnFvbqv.png" alt="Virus Corona" width="60" height="60">
+            </div>
+
+            <div class="corona-virus-enemy" style="left: 2000px;">
+                <img src="https://iili.io/fnFvbqv.png" alt="Virus Corona" width="60" height="60">
+            </div>
+            
+            <div id="finish-flag" style="position: absolute; bottom: 80px; left: 5000px; width: 50px; height: 300px; z-index: 10; background-color: #333;">
+                <div style="width: 50px; height: 50px; background-color: white; border: 3px solid black; position: relative; top: -53px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: red;">F</div>
+            </div>
+
+            <div class="ground"></div>
+            <div class="grass"></div>
+        </div>
+        
+        <div class="mario" id="mario">
+            <img src="https://iili.io/fn3ijcJ.png" alt="Mario" width="60" height="80" style="display: block;">
+        </div>
+        
+        <div class="jump-indicator" id="jump-indicator"></div>
+        
+        <div class="score-board">SKOR: <span id="score">0</span></div>
+        <div class="timer">WAKTU: <span id="time">120</span></div>
+        <div class="level-indicator">LEVEL: <span id="level">1</span></div>
+        
+        <div class="question-display" id="question-display" style="display: none;">
+            <p id="question-text"></p>
+        </div>
+        
+        <div class="floating-answers" id="floating-answers" style="display: none;">
+            <button class="floating-answer-btn" id="floating-option1">Pilihan A</button>
+            <button class="floating-answer-btn" id="floating-option2">Pilihan B</button>
+            <button class="floating-answer-btn" id="floating-option3">Pilihan C</button>
+        </div>
+        
+        <!-- NEW: Feedback between question and answers -->
+        <div class="feedback-between" id="feedback-between"></div>
+        
+        <div class="answer-options" id="answer-options" style="display: none;">
+            <button class="answer-btn" id="option1">Pilihan A</button>
+            <button class="answer-btn" id="option2">Pilihan B</button>
+            <button class="answer-btn" id="option3">Pilihan C</button>
+        </div>
+        
+        <!-- History Popups -->
+        <div class="history-popup" id="history-popup">
+            <div class="close-btn" id="close-history-btn">X</div>
+            <p id="history-text"></p>
+        </div>
+        
+        <!-- Snake Question Popup - Now separated from answers -->
+        <div class="snake-question-container" id="snake-question-container">
+            <div class="close-btn" id="close-snake-question-btn" style="display: none;">X</div>
+            <p id="snake-question-text"></p>
+        </div>
+        
+        <div class="snake-answers-container" id="snake-answers-container">
+            <!-- Snake answer buttons will be added dynamically -->
+        </div>
+        
+        <div class="controls">
+            <div class="control-btn" id="left-btn">←</div>
+            <div class="control-btn" id="jump-btn">↑</div>
+            <div class="control-btn" id="right-btn">→</div>
+        </div>
+        
+        <div class="game-over" id="game-over">
+            <h2 class="text-2xl mb-4">GAME OVER!</h2>
+            <p class="mb-6">Anda mengumpulkan <span id="final-coins">0</span> koin!</p>
+            <p class="mb-6">Skor Akhir: <span id="final-score">0</span></p>
+            <button class="answer-btn" id="restart-btn">Main Lagi</button>
+        </div>
+
+        <div class="level-complete" id="level-complete">
+            <h2 class="text-2xl mb-4">SELAMAT! LEVEL SELESAI!</h2>
+            <p class="mb-6">Anda mengumpulkan <span id="complete-coins">0</span> koin Biologi!</p>
+            <p class="mb-6">Skor Akhir: <span id="complete-score">0</span></p>
+            <button class="answer-btn" id="play-again-btn">Main Lagi</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        // New variables for login system
+        const loginScreen = document.getElementById('login-screen');
+        const gameContainer = document.getElementById('game-container');
+        const userNameInput = document.getElementById('user-name');
+        const schoolNpsnInput = document.getElementById('school-npsn');
+        const levelButtons = document.querySelectorAll('.level-btn');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const playerNameDisplay = document.getElementById('player-name-display');
+        
+        // New variables for history and snake
+        const historyPopup = document.getElementById('history-popup');
+        const historyText = document.getElementById('history-text');
+        const closeHistoryBtn = document.getElementById('close-history-btn');
+        const snakeObstacle = document.getElementById('snake-obstacle');
+        const safeDistance = document.getElementById('safe-distance');
+        const snakeQuestionContainer = document.getElementById('snake-question-container');
+        const snakeQuestionText = document.getElementById('snake-question-text');
+        const snakeAnswersContainer = document.getElementById('snake-answers-container');
+        const closeSnakeQuestionBtn = document.getElementById('close-snake-question-btn');
+        
+        // NEW: Feedback between question and answers
+        const feedbackBetween = document.getElementById('feedback-between');
+        
+        // Snake question box - hanya satu
+        const snakeQuestionBox = document.getElementById('snake-question-box');
+        
+        let selectedLevel = 1;
+        let playerName = '';
+        let playerGender = 'Laki-laki';
+        let schoolNpsn = '';
+        let booksCollected = [];
+        let snakeQuestionsAnswered = 0;
+        let snakeQuestions = [];
+        let marioStoppedPosition = 0;
+        let currentSnakeQuestionIndex = 0;
+
+        // Existing game variables
+        const mario = document.getElementById('mario');
+        const gameWorld = document.getElementById('game-world');
+        const scoreDisplay = document.getElementById('score');
+        const timeDisplay = document.getElementById('time');
+        const levelDisplay = document.getElementById('level');
+        const questionDisplay = document.getElementById('question-display');
+        const questionText = document.getElementById('question-text');
+        const floatingAnswers = document.getElementById('floating-answers');
+        const floatingOption1 = document.getElementById('floating-option1');
+        const floatingOption2 = document.getElementById('floating-option2');
+        const floatingOption3 = document.getElementById('floating-option3');
+        const answerOptions = document.getElementById('answer-options');
+        const option1 = document.getElementById('option1');
+        const option2 = document.getElementById('option2');
+        const option3 = document.getElementById('option3');
+        const gameOverScreen = document.getElementById('game-over');
+        const levelCompleteScreen = document.getElementById('level-complete');
+        const restartBtn = document.getElementById('restart-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const feedbackDisplay = document.getElementById('feedback');
+        const jumpIndicator = document.getElementById('jump-indicator');
+        const warningIndicator = document.getElementById('warning-indicator');
+        
+        const leftBtn = document.getElementById('left-btn');
+        const rightBtn = document.getElementById('right-btn');
+        const jumpBtn = document.getElementById('jump-btn');
+
+        let marioPosition = 150;
+        let worldOffset = 0;
+        let isJumping = false;
+        let gameActive = true;
+        let score = 0;
+        let coinsCollected = 0;
+        let timeLeft = 120;
+        let currentLevel = 1;
+        let timerInterval;
+        let activeQuestionBox = null;
+        let currentQuestion = null;
+        let keysPressed = {};
+        let flyingCoronas = [];
+        let flyingCoronaInterval;
+        let answerButtons = [];
+
+        // History data for Level 1
+        const historyData = {
+            book1: {
+                scientist: "Adolf Mayer",
+                year: "1883",
+                discovery: "Mayer menemukan penyakit mosaik pada tanaman tembakau yang dapat menular melalui getah tanaman yang sakit. Ia menyebutnya 'kontagium vivum fluidum' (cairan hidup menular)."
+            },
+            book2: {
+                scientist: "Dimitri Ivanovski",
+                year: "1892",
+                discovery: "Ivanovski membuktikan bahwa penyebab penyakit mosaik tembakau dapat melewati saringan bakteri, menunjukkan bahwa patogennya lebih kecil dari bakteri."
+            },
+            book3: {
+                scientist: "Martinus Beijerinck",
+                year: "1898",
+                discovery: "Beijerinck menamai patogen tersebut 'virus' (berarti racun dalam bahasa Latin) dan menyimpulkan bahwa virus hanya dapat bereproduksi dalam sel hidup."
+            },
+            book4: {
+                scientist: "Wendell Stanley",
+                year: "1935",
+                discovery: "Stanley berhasil mengkristalkan virus mosaik tembakau, membuktikan bahwa virus memiliki sifat seperti makhluk hidup dan benda mati."
+            }
+        };
+
+        // Snake questions for Level 1
+        const snakeQuestionData = [
+            {
+                question: "Siapa ilmuwan yang pertama kali menemukan penyakit mosaik pada tanaman tembakau?",
+                answer: "Adolf Mayer",
+                options: ["Adolf Mayer", "Dimitri Ivanovski", "Martinus Beijerinck"]
+            },
+            {
+                question: "Ilmuwan mana yang membuktikan bahwa penyebab penyakit mosaik dapat melewati saringan bakteri?",
+                answer: "Dimitri Ivanovski",
+                options: ["Adolf Mayer", "Dimitri Ivanovski", "Wendell Stanley"]
+            },
+            {
+                question: "Siapa yang pertama kali menggunakan istilah 'virus' untuk patogen penyebab penyakit mosaik?",
+                answer: "Martinus Beijerinck",
+                options: ["Dimitri Ivanovski", "Martinus Beijerinck", "Wendell Stanley"]
+            }
+        ];
+
+        // Biology questions for all levels
+        const biologyQuestions = {
+            level1: [
+                {
+                    question: "Siapa ilmuwan yang pertama kali menemukan penyakit mosaik pada tanaman tembakau?",
+                    answer: "Adolf Mayer",
+                    options: ["Adolf Mayer", "Dimitri Ivanovski", "Martinus Beijerinck"]
+                },
+                {
+                    question: "Ilmuwan mana yang membuktikan bahwa penyebab penyakit mosaik dapat melewati saringan bakteri?",
+                    answer: "Dimitri Ivanovski",
+                    options: ["Adolf Mayer", "Dimitri Ivanovski", "Wendell Stanley"]
+                }
+            ],
+            level2: [
+                {
+                    question: "Apa bagian utama dari struktur virus?",
+                    answer: "Kapsid dan asam nukleat",
+                    options: ["Kapsid dan asam nukleat", "Membran sel dan sitoplasma", "Mitokondria dan ribosom"]
+                }
+            ],
+            level3: [
+                {
+                    question: "Apa nama proses reproduksi virus?",
+                    answer: "Replikasi",
+                    options: ["Replikasi", "Fotosintesis", "Respirasi"]
+                }
+            ],
+            level4: [
+                {
+                    question: "Apa peranan virus dalam bioteknologi?",
+                    answer: "Vektor untuk terapi gen",
+                    options: ["Vektor untuk terapi gen", "Pembuatan roti", "Produksi antibiotik"]
+                }
+            ]
+        };
+        
+        // Login and Level Selection Functions
+        function initializeLoginSystem() {
+            // Level selection
+            levelButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    levelButtons.forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedLevel = parseInt(button.getAttribute('data-level'));
+                });
+            });
+            
+            // Gender selection
+            document.querySelectorAll('input[name="gender"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    playerGender = radio.value;
+                });
+            });
+            
+            // Start game button
+            startGameBtn.addEventListener('click', startGame);
+            
+            // Close history button
+            closeHistoryBtn.addEventListener('click', () => {
+                historyPopup.style.display = 'none';
+                gameActive = true;
+                // Tambah poin setelah membaca buku
+                updateScore(100);
+                // Tampilkan efek poin
+                showScorePopup(historyPopup, "+100");
+            });
+            
+            // Close snake question button
+            closeSnakeQuestionBtn.addEventListener('click', () => {
+                snakeQuestionContainer.style.display = 'none';
+                snakeAnswersContainer.style.display = 'none';
+                gameActive = true;
+            });
+        }
+        
+        function startGame() {
+            playerName = userNameInput.value.trim();
+            schoolNpsn = schoolNpsnInput.value.trim();
+            
+            if (!playerName) {
+                alert('Silakan masukkan nama Anda!');
+                return;
+            }
+            
+            if (!schoolNpsn) {
+                alert('Silakan masukkan NPSN sekolah Anda!');
+                return;
+            }
+            
+            // Set current level based on selection
+            currentLevel = selectedLevel;
+            levelDisplay.textContent = currentLevel;
+            
+            // Show player name above Mario
+            playerNameDisplay.textContent = playerName;
+            playerNameDisplay.style.display = 'block';
+            
+            // Hide login screen and show game
+            loginScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            
+            // Initialize level-specific elements
+            initializeLevel();
+            
+            // Start the game
+            restartGame();
+        }
+        
+        function initializeLevel() {
+            // Reset level-specific variables
+            booksCollected = [];
+            snakeQuestionsAnswered = 0;
+            currentSnakeQuestionIndex = 0;
+            
+            // Show/hide elements based on level
+            if (currentLevel === 1) {
+                // Show books for Level 1
+                document.querySelectorAll('.book-box').forEach(book => {
+                    book.style.display = 'flex';
+                });
+                
+                // Show snake from the beginning
+                snakeObstacle.style.display = 'block';
+                safeDistance.style.display = 'block';
+                snakeQuestionBox.style.display = 'none';
+                
+                // Initialize snake questions
+                snakeQuestions = [...snakeQuestionData];
+            } else {
+                // Hide books and snake for other levels
+                document.querySelectorAll('.book-box').forEach(book => {
+                    book.style.display = 'none';
+                });
+                snakeObstacle.style.display = 'none';
+                safeDistance.style.display = 'none';
+                snakeQuestionBox.style.display = 'none';
+            }
+            
+            // Initialize coins
+            initializeCoins();
+        }
+
+        // Initialize coins throughout the journey
+        function initializeCoins() {
+            // Coins are already in the HTML, just make sure they have the correct content
+            const coins = document.querySelectorAll('.coin');
+            coins.forEach(coin => {
+                coin.innerHTML = `
+                    <svg width="25" height="25" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="15" cy="15" r="12" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+                        <text x="15" y="20" font-family="Press Start 2P" font-size="10" fill="#FFA500" text-anchor="middle">$</text>
+                    </svg>
+                `;
+            });
+        }
+
+        // Utility function to shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function generateQuestion() {
+            const levelQuestions = biologyQuestions[`level${currentLevel}`];
+            const randomIndex = Math.floor(Math.random() * levelQuestions.length);
+            const questionData = levelQuestions[randomIndex];
+            currentQuestion = questionData;
+            
+            // Shuffle options
+            const shuffledOptions = shuffleArray([...questionData.options]);
+
+            return {
+                question: questionData.question,
+                options: shuffledOptions,
+                answer: questionData.answer
+            };
+        }
+
+        // Update player name display position - FIXED to follow Mario properly
+        function updatePlayerNameDisplay() {
+            const marioRect = mario.getBoundingClientRect();
+            const gameWorldRect = gameWorld.getBoundingClientRect();
+            
+            // Calculate position relative to game world
+            const relativeX = marioRect.left - gameWorldRect.left + marioRect.width / 2;
+            const relativeY = marioRect.top - gameWorldRect.top - 25;
+            
+            playerNameDisplay.style.left = `${relativeX}px`;
+            playerNameDisplay.style.top = `${relativeY}px`;
+        }
+
+        // Book collection function for Level 1
+        function checkBookCollection() {
+            if (currentLevel !== 1) return;
+            
+            const books = document.querySelectorAll('.book-box');
+            const marioRect = mario.getBoundingClientRect();
+            
+            books.forEach(book => {
+                if (booksCollected.includes(book.id)) return;
+                
+                const bookRect = book.getBoundingClientRect();
+                
+                // Check if Mario hits the book from below while jumping
+                if (marioRect.left < bookRect.right - 10 &&
+                    marioRect.right > bookRect.left + 10 &&
+                    marioRect.top < bookRect.bottom &&
+                    marioRect.bottom > bookRect.top &&
+                    isJumping) {
+                    
+                    // Collect the book
+                    booksCollected.push(book.id);
+                    book.classList.add('activated');
+                    book.textContent = '✓';
+                    
+                    // Show history popup
+                    showHistoryPopup(book.id);
+                    
+                    // Check if all books are collected and show snake question box
+                    if (booksCollected.length === 4) {
+                        // Show snake question box
+                        snakeQuestionBox.style.display = 'flex';
+                        safeDistance.style.display = 'block';
+                    }
+                }
+            });
+        }
+        
+        function showHistoryPopup(bookId) {
+            gameActive = false;
+            const history = historyData[bookId];
+            historyText.textContent = `${history.scientist} (${history.year}): ${history.discovery}`;
+            historyPopup.style.display = 'block';
+        }
+        
+        // Show score popup animation
+        function showScorePopup(element, text) {
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.textContent = text;
+            
+            const rect = element.getBoundingClientRect();
+            popup.style.left = `${rect.left + rect.width / 2}px`;
+            popup.style.top = `${rect.top}px`;
+            
+            document.body.appendChild(popup);
+            
+            // Remove popup after animation
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.parentNode.removeChild(popup);
+                }
+            }, 1000);
+        }
+        
+        // Snake question box function for Level 1
+        function checkSnakeQuestionBox() {
+            if (currentLevel !== 1 || snakeQuestionsAnswered >= 3) return;
+            
+            const marioRect = mario.getBoundingClientRect();
+            const boxRect = snakeQuestionBox.getBoundingClientRect();
+            
+            // Check if Mario hits the question box from below while jumping
+            if (marioRect.left < boxRect.right - 10 &&
+                marioRect.right > boxRect.left + 10 &&
+                marioRect.top < boxRect.bottom &&
+                marioRect.bottom > boxRect.top &&
+                isJumping &&
+                !snakeQuestionBox.classList.contains('activated')) {
+                
+                // Show snake question
+                showSnakeQuestion();
+                snakeQuestionBox.classList.add('activated');
+                snakeQuestionBox.textContent = '√';
+                snakeQuestionBox.style.backgroundColor = '#888888';
+                snakeQuestionBox.style.animation = 'none';
+            }
+        }
+        
+        function showSnakeQuestion() {
+            if (currentSnakeQuestionIndex >= snakeQuestions.length) {
+                // All questions answered, hide snake
+                snakeObstacle.style.display = 'none';
+                gameActive = true;
+                return;
+            }
+            
+            // Get the next question
+            const question = snakeQuestions[currentSnakeQuestionIndex];
+            
+            // Display question in separate container
+            snakeQuestionText.textContent = question.question;
+            snakeQuestionContainer.style.display = 'block';
+            
+            // Clear previous answers
+            snakeAnswersContainer.innerHTML = '';
+            
+            // Add answer buttons in separate container
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'snake-answer-btn';
+                button.textContent = option;
+                button.addEventListener('click', () => handleSnakeAnswer(option, question.answer, button));
+                snakeAnswersContainer.appendChild(button);
+            });
+            
+            // Show the answers container
+            snakeAnswersContainer.style.display = 'flex';
+            
+            // Show close button
+            closeSnakeQuestionBtn.style.display = 'block';
+            
+            // Pause the game
+            gameActive = false;
+        }
+        
+        function handleSnakeAnswer(selectedAnswer, correctAnswer, button) {
+            if (selectedAnswer === correctAnswer) {
+                // Correct answer
+                button.classList.add('correct');
+                snakeQuestionsAnswered++;
+                currentSnakeQuestionIndex++;
+                
+                // Add 100 points for correct answer
+                updateScore(100);
+                
+                // Show feedback between question and answers
+                showFeedbackBetween("BENAR! +100", "#4ade80");
+                
+                // Close popup after delay
+                setTimeout(() => {
+                    snakeQuestionContainer.style.display = 'none';
+                    snakeAnswersContainer.style.display = 'none';
+                    closeSnakeQuestionBtn.style.display = 'none';
+                    
+                    if (snakeQuestionsAnswered >= 3) {
+                        // All questions answered, hide snake
+                        snakeObstacle.style.display = 'none';
+                        showFeedback("ULAR HILANG! LANJUTKAN!", "#4ade80");
+                    } else {
+                        // Reset question box for next question
+                        snakeQuestionBox.classList.remove('activated');
+                        snakeQuestionBox.textContent = '?';
+                        snakeQuestionBox.style.backgroundColor = '#ffb700';
+                        snakeQuestionBox.style.animation = 'pulse 0.8s infinite alternate';
+                    }
+                    
+                    gameActive = true;
+                }, 1500);
+            } else {
+                // Wrong answer
+                button.classList.add('incorrect');
+                
+                // Subtract 100 points for wrong answer
+                updateScore(-100);
+                
+                showFeedbackBetween("SALAH! -100", "#f87171");
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    button.classList.remove('incorrect');
+                }, 1000);
+            }
+        }
+
+        // NEW: Function to show feedback between question and answers
+        function showFeedbackBetween(text, color) {
+            feedbackBetween.textContent = text;
+            feedbackBetween.style.color = color;
+            feedbackBetween.style.display = 'block';
+            
+            setTimeout(() => {
+                feedbackBetween.style.display = 'none';
+            }, 1000);
+        }
+
+        // Existing game functions (slightly modified to include player name update)
+        function createFlyingCorona() {
+            if (!gameActive) return;
+            
+            const flyingCorona = document.createElement('div');
+            flyingCorona.className = 'flying-corona';
+            
+            // Posisi acak di bagian atas layar
+            const randomX = Math.random() * (window.innerWidth - 50);
+            flyingCorona.style.left = `${randomX}px`;
+            flyingCorona.style.top = '-50px';
+            
+            flyingCorona.innerHTML = `<img src="https://iili.io/fnFvbqv.png" alt="Virus Corona Terbang" width="50" height="50">`;
+            
+            gameWorld.appendChild(flyingCorona);
+            flyingCoronas.push(flyingCorona);
+            
+            // Hapus virus setelah selesai animasi
+            setTimeout(() => {
+                if (flyingCorona.parentNode) {
+                    flyingCorona.parentNode.removeChild(flyingCorona);
+                    flyingCoronas = flyingCoronas.filter(c => c !== flyingCorona);
+                }
+            }, 3000);
+        }
+
+        function startFlyingCoronaSpawn() {
+            // Spawn virus lebih sering di level yang lebih tinggi
+            const spawnRate = Math.max(1000, 3000 - (currentLevel * 200));
+            flyingCoronaInterval = setInterval(createFlyingCorona, spawnRate);
+        }
+
+        // FIXED: Perbaikan sistem penghitungan poin - BOLEH skor negatif
+        function updateScore(points) {
+            // PERUBAHAN: Skor boleh negatif
+            score = score + points;
+            scoreDisplay.textContent = score;
+        }
+
+        function collectCoin(coin) {
+            if (coin.parentNode) {
+                coin.parentNode.removeChild(coin);
+                coinsCollected++;
+                updateScore(10); // Each coin is worth 10 points
+                showFeedback("+10", "#FFD700");
+            }
+        }
+
+        // Modified virus collision - only reduces points, doesn't end game
+        function hitVirus() {
+            if (gameActive) {
+                updateScore(-50); // Reduce 50 points for hitting a virus
+                showFeedback("-50", "#f87171");
+                showWarning();
+            }
+        }
+
+        function hitEnemy() {
+            if (gameActive) {
+                gameActive = false;
+                clearInterval(timerInterval);
+                clearInterval(flyingCoronaInterval);
+                gameOverScreen.style.display = 'block';
+                document.getElementById('final-coins').textContent = coinsCollected;
+                document.getElementById('final-score').textContent = score;
+            }
+        }
+
+        function checkCollisions() {
+            if (!gameActive) return;
+
+            // Check for Enemy collision (Corona Virus di tanah)
+            const enemies = document.querySelectorAll('.corona-virus-enemy');
+            const marioRect = mario.getBoundingClientRect();
+            
+            enemies.forEach(enemy => {
+                const enemyRect = enemy.getBoundingClientRect();
+                
+                // Improved AABB collision check
+                if (marioRect.left + 10 < enemyRect.right - 10 &&
+                    marioRect.right - 10 > enemyRect.left + 10 &&
+                    marioRect.top + 10 < enemyRect.bottom - 10 &&
+                    marioRect.bottom - 10 > enemyRect.top + 10) {
+                        
+                    // Check if Mario stomped (landed on top of the enemy)
+                    if (isJumping && marioRect.bottom <= enemyRect.top + 20) {
+                        updateScore(500); // Bonus score for stomping a virus
+                        showFeedback("+500", "#4ade80");
+                        if (enemy.parentNode) {
+                            enemy.parentNode.removeChild(enemy);
+                        }
+                    } else {
+                        hitVirus(); // Got hit by the side - only reduces points
+                    }
+                }
+            });
+
+            // Check for Flying Corona collision
+            flyingCoronas.forEach(corona => {
+                const coronaRect = corona.getBoundingClientRect();
+                
+                if (marioRect.left + 15 < coronaRect.right - 15 &&
+                    marioRect.right - 15 > coronaRect.left + 15 &&
+                    marioRect.top + 15 < coronaRect.bottom - 15 &&
+                    marioRect.bottom - 15 > coronaRect.top + 15) {
+                    
+                    // Tampilkan peringatan sebelum terkena
+                    hitVirus(); // Only reduces points, doesn't end game
+                }
+            });
+
+            // Check for Coin collision - koin bisa diambil saat dilompati
+            const coins = document.querySelectorAll('.coin');
+            coins.forEach(coin => {
+                const coinRect = coin.getBoundingClientRect();
+                if (marioRect.left < coinRect.right &&
+                    marioRect.right > coinRect.left &&
+                    marioRect.top < coinRect.bottom &&
+                    marioRect.bottom > coinRect.top) {
+                    collectCoin(coin);
+                }
+            });
+
+            // Check for Book collection (Level 1 only)
+            checkBookCollection();
+            
+            // Check for Snake question box (Level 1 only)
+            checkSnakeQuestionBox();
+            
+            // Check for Snake collision - jika Mario menyentuh ular, game over
+            if (currentLevel === 1 && snakeObstacle.style.display !== 'none') {
+                const snakeRect = snakeObstacle.getBoundingClientRect();
+                
+                if (marioRect.left + 10 < snakeRect.right - 10 &&
+                    marioRect.right - 10 > snakeRect.left + 10 &&
+                    marioRect.top + 10 < snakeRect.bottom - 10 &&
+                    marioRect.bottom - 10 > snakeRect.top + 10) {
+                    
+                    showFeedback("KENA ULAR!", "#f87171");
+                    hitEnemy();
+                }
+            }
+
+            // Check for Finish Flag
+            const finishFlag = document.getElementById('finish-flag');
+            const flagRect = finishFlag.getBoundingClientRect();
+            if (marioRect.right > flagRect.left) {
+                levelComplete();
+            }
+            
+            // Update player name display position
+            updatePlayerNameDisplay();
+        }
+
+        function triggerAnswerHit(button) {
+            const hitEffect = document.createElement('div');
+            hitEffect.className = 'answer-hit-effect';
+            hitEffect.style.left = `${button.getBoundingClientRect().left + button.getBoundingClientRect().width/2 - 40}px`;
+            hitEffect.style.top = `${button.getBoundingClientRect().top + button.getBoundingClientRect().height/2 - 40}px`;
+            document.body.appendChild(hitEffect);
+            
+            setTimeout(() => {
+                if (hitEffect.parentNode) {
+                    hitEffect.parentNode.removeChild(hitEffect);
+                }
+            }, 600);
+        }
+
+        function showWarning() {
+            warningIndicator.style.display = 'block';
+            setTimeout(() => {
+                warningIndicator.style.display = 'none';
+            }, 500);
+        }
+        
+        function levelComplete() {
+            if (gameActive) {
+                gameActive = false;
+                clearInterval(timerInterval);
+                clearInterval(flyingCoronaInterval);
+                levelCompleteScreen.style.display = 'block';
+                document.getElementById('complete-coins').textContent = coinsCollected;
+                document.getElementById('complete-score').textContent = score;
+            }
+        }
+
+        function checkQuestionBoxHits() {
+            const questionBoxes = document.querySelectorAll('.question-box');
+            const marioRect = mario.getBoundingClientRect();
+            
+            questionBoxes.forEach(box => {
+                // Skip snake question box
+                if (box.id.includes('snake-question-box')) return;
+                
+                if (box.classList.contains('activated')) return;
+                
+                const boxRect = box.getBoundingClientRect();
+                
+                // Deteksi tabrakan yang lebih akurat
+                // Memeriksa apakah Mario menyentuh kotak soal dari bawah saat melompat
+                if (marioRect.left < boxRect.right - 10 &&
+                    marioRect.right > boxRect.left + 10 &&
+                    marioRect.top < boxRect.bottom &&
+                    marioRect.bottom > boxRect.top &&
+                    isJumping) {
+                    
+                    // Tampilkan efek animasi ketika kotak soal tersentuh
+                    triggerQuestionBoxHit(box);
+                    
+                    activeQuestionBox = box;
+                    showQuestion();
+                    box.classList.add('activated');
+                    box.textContent = '√'; // Mark as answered
+                    box.style.backgroundColor = '#888888';
+                    box.style.animation = 'none';
+                }
+            });
+        }
+
+        function triggerQuestionBoxHit(box) {
+            // Tambahkan class untuk animasi hit
+            box.classList.add('hit');
+            
+            // Buat efek sparkle
+            const sparkle = document.createElement('div');
+            sparkle.className = 'question-sparkle';
+            box.appendChild(sparkle);
+            
+            // Buat efek visual di sekitar kotak
+            const hitEffect = document.createElement('div');
+            hitEffect.className = 'question-hit-effect';
+            hitEffect.style.left = `${box.getBoundingClientRect().left - 15}px`;
+            hitEffect.style.top = `${box.getBoundingClientRect().top - 15}px`;
+            document.body.appendChild(hitEffect);
+            
+            // Hapus efek setelah animasi selesai
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+                if (hitEffect.parentNode) {
+                    hitEffect.parentNode.removeChild(hitEffect);
+                }
+            }, 600);
+        }
+        
+        function showQuestion() {
+            gameActive = false; // Pause game
+            const q = generateQuestion();
+            questionText.textContent = q.question;
+            
+            // Tampilkan jawaban yang berada di bawah pertanyaan
+            floatingOption1.textContent = q.options[0];
+            floatingOption2.textContent = q.options[1];
+            floatingOption3.textContent = q.options[2];
+            
+            questionDisplay.style.display = 'block';
+            floatingAnswers.style.display = 'flex';
+        }
+
+        function showFeedback(text, color) {
+            feedbackDisplay.textContent = text;
+            feedbackDisplay.style.color = color;
+            feedbackDisplay.style.display = 'block';
+            
+            setTimeout(() => {
+                feedbackDisplay.style.display = 'none';
+            }, 1000);
+        }
+
+        function handleAnswer(selectedAnswer) {
+            let correct = false;
+            if (selectedAnswer === currentQuestion.answer) {
+                correct = true;
+            }
+
+            if (correct) {
+                updateScore(100); // +100 points for correct answer
+                showFeedbackBetween("BENAR! +100", "#4ade80"); // NEW: Use feedback between
+                
+                // Tampilkan animasi untuk jawaban benar
+                const correctButton = Array.from(document.querySelectorAll('.floating-answer-btn'))
+                    .find(btn => btn.textContent === selectedAnswer);
+                if (correctButton) {
+                    correctButton.classList.add('correct');
+                }
+                
+                if (activeQuestionBox) {
+                    // Spawn a coin or power-up (Visual Feedback)
+                    const bonusCoin = createCoin(parseInt(activeQuestionBox.style.left) + 20, parseInt(activeQuestionBox.style.bottom) + 60);
+                    setTimeout(() => {
+                        collectCoin(bonusCoin);
+                    }, 100);
+                }
+                
+                // Sembunyikan pertanyaan setelah jeda singkat
+                setTimeout(() => {
+                    questionDisplay.style.display = 'none';
+                    floatingAnswers.style.display = 'none';
+                    
+                    // Hapus kelas animasi
+                    document.querySelectorAll('.floating-answer-btn').forEach(btn => {
+                        btn.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Resume game
+                    gameActive = true;
+                }, 1500);
+                
+            } else {
+                // Wrong answer
+                updateScore(-100); // -100 points for wrong answer
+                showFeedbackBetween("SALAH! -100", "#f87171"); // NEW: Use feedback between
+                
+                // Tampilkan animasi untuk jawaban salah
+                const incorrectButton = Array.from(document.querySelectorAll('.floating-answer-btn'))
+                    .find(btn => btn.textContent === selectedAnswer);
+                if (incorrectButton) {
+                    incorrectButton.classList.add('incorrect');
+                }
+                
+                // Sembunyikan pertanyaan setelah jeda singkat
+                setTimeout(() => {
+                    questionDisplay.style.display = 'none';
+                    floatingAnswers.style.display = 'none';
+                    
+                    // Hapus kelas animasi
+                    document.querySelectorAll('.floating-answer-btn').forEach(btn => {
+                        btn.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Resume game
+                    gameActive = true;
+                }, 1500);
+            }
+        }
+
+        function createCoin(x, y) {
+             const coin = document.createElement('div');
+            coin.className = 'coin';
+            coin.style.left = `${x}px`;
+            coin.style.bottom = `${y}px`;
+            coin.innerHTML = ` 
+                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="15" cy="15" r="12" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+                    <text x="15" y="20" font-family="Press Start 2P" font-size="10" fill="#FFA500" text-anchor="middle">$</text>
+                 </svg>`;
+             gameWorld.appendChild(coin);
+             return coin;
+        }
+
+        function jump() {
+            if (gameActive && !isJumping) {
+                isJumping = true;
+                mario.classList.add('jumping');
+
+                // Memeriksa tabrakan dengan kotak soal dan jawaban lebih sering selama lompatan
+                const jumpCheckInterval = setInterval(() => {
+                    checkQuestionBoxHits();
+                    checkBookCollection(); // Check for book collection
+                    checkSnakeQuestionBox(); // Check for snake question box
+                    checkCollisions(); // Juga periksa tabrakan dengan jawaban
+                }, 50);
+
+                setTimeout(() => {
+                    mario.classList.remove('jumping');
+                    isJumping = false;
+                    clearInterval(jumpCheckInterval);
+                    checkCollisions(); // Check for collisions after landing
+                }, 500);
+            }
+        }
+
+        function gameLoop() {
+            if (!gameActive) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+
+            const moveSpeed = 5;
+            let moved = false;
+            
+            // Handle horizontal movement
+            if (keysPressed['ArrowRight'] || keysPressed['d']) {
+                marioPosition += moveSpeed;
+                // Flip gambar Mario dengan CSS transform
+                mario.style.transform = 'scaleX(1)';
+                moved = true;
+            } else if (keysPressed['ArrowLeft'] || keysPressed['a']) {
+                marioPosition -= moveSpeed;
+                // Flip gambar Mario dengan CSS transform
+                mario.style.transform = 'scaleX(-1)';
+                moved = true;
+            }
+
+            // Keep Mario on screen boundary
+            if (marioPosition < 150) marioPosition = 150;
+            
+            // Update world scroll (Parallax/Side-scrolling effect)
+            if (marioPosition > window.innerWidth / 2) {
+                worldOffset = -(marioPosition - window.innerWidth / 2);
+            } else {
+                worldOffset = 0;
+            }
+            
+            gameWorld.style.transform = `translateX(${worldOffset}px)`;
+            mario.style.left = `${marioPosition + worldOffset}px`;
+            
+            // Update player name display - FIXED to always follow Mario
+            updatePlayerNameDisplay();
+            
+            // Check collisions every frame
+            checkCollisions();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (gameActive) {
+                    timeLeft--;
+                    timeDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        hitEnemy(); // Time's up is game over
+                    }
+                }
+            }, 1000);
+        }
+
+        // NEW: Function to recreate coins when restarting game
+        function recreateCoins() {
+            // Hapus semua koin yang ada
+            const existingCoins = document.querySelectorAll('.coin');
+            existingCoins.forEach(coin => {
+                if (coin.parentNode) {
+                    coin.parentNode.removeChild(coin);
+                }
+            });
+            
+            // Tambahkan kembali semua koin
+            const coinPositions = [
+                {left: 600, bottom: 150},
+                {left: 900, bottom: 150},
+                {left: 1200, bottom: 150},
+                {left: 1500, bottom: 150},
+                {left: 1800, bottom: 150},
+                {left: 2100, bottom: 150},
+                {left: 2400, bottom: 150},
+                {left: 2700, bottom: 150},
+                {left: 3000, bottom: 150},
+                {left: 3300, bottom: 150},
+                // 5 koin tambahan
+                {left: 3500, bottom: 150},
+                {left: 3800, bottom: 150},
+                {left: 4100, bottom: 150},
+                {left: 4400, bottom: 150},
+                {left: 4700, bottom: 150}
+            ];
+            
+            coinPositions.forEach(pos => {
+                const coin = document.createElement('div');
+                coin.className = 'coin';
+                coin.style.left = `${pos.left}px`;
+                coin.style.bottom = `${pos.bottom}px`;
+                coin.innerHTML = `
+                    <svg width="25" height="25" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="15" cy="15" r="12" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+                        <text x="15" y="20" font-family="Press Start 2P" font-size="10" fill="#FFA500" text-anchor="middle">$</text>
+                    </svg>
+                `;
+                gameWorld.appendChild(coin);
+            });
+        }
+
+        function restartGame() {
+            // Reset state
+            marioPosition = 150;
+            worldOffset = 0;
+            isJumping = false;
+            gameActive = true;
+            score = 0;
+            coinsCollected = 0;
+            timeLeft = 120 - (currentLevel * 10); // Decrease time with each level
+            if (timeLeft < 60) timeLeft = 60; // Minimum time
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = timeLeft;
+            mario.style.left = '150px';
+            mario.style.bottom = '80px';
+            mario.style.transform = 'scaleX(1)';
+            gameWorld.style.transform = `translateX(0px)`;
+
+            // Bersihkan virus terbang
+            flyingCoronas.forEach(corona => {
+                if (corona.parentNode) {
+                    corona.parentNode.removeChild(corona);
+                }
+            });
+            flyingCoronas = [];
+
+            // NEW: Recreate coins
+            recreateCoins();
+
+            // Hide UI
+            gameOverScreen.style.display = 'none';
+            levelCompleteScreen.style.display = 'none';
+            questionDisplay.style.display = 'none';
+            floatingAnswers.style.display = 'none';
+            answerOptions.style.display = 'none';
+            feedbackDisplay.style.display = 'none';
+            feedbackBetween.style.display = 'none'; // NEW: Hide feedback between
+            jumpIndicator.style.display = 'none';
+            warningIndicator.style.display = 'none';
+            historyPopup.style.display = 'none';
+            snakeQuestionContainer.style.display = 'none';
+            snakeAnswersContainer.style.display = 'none';
+            closeSnakeQuestionBtn.style.display = 'none';
+
+            // Clear and recreate dynamic elements (enemies, boxes) for a fresh start
+            const allBoxes = document.querySelectorAll('.question-box');
+            allBoxes.forEach(box => {
+                // Skip snake question box for now
+                if (box.id.includes('snake-question-box')) return;
+                
+                box.classList.remove('activated');
+                box.classList.remove('hit');
+                box.textContent = '?';
+                box.style.backgroundColor = '#ffb700';
+                box.style.animation = 'pulse 0.8s infinite alternate';
+                box.style.transform = 'scale(1)';
+                
+                // Hapus efek sparkle jika ada
+                const sparkles = box.querySelectorAll('.question-sparkle');
+                sparkles.forEach(sparkle => sparkle.remove());
+            });
+            
+            // Reset book boxes
+            const allBookBoxes = document.querySelectorAll('.book-box');
+            allBookBoxes.forEach(book => {
+                book.classList.remove('activated');
+                book.textContent = '📚';
+                book.style.backgroundColor = '#ffb700';
+                book.style.animation = 'pulse 0.8s infinite alternate';
+                book.style.transform = 'scale(1)';
+            });
+            
+            // Reset snake question box
+            snakeQuestionBox.classList.remove('activated');
+            snakeQuestionBox.textContent = '?';
+            snakeQuestionBox.style.backgroundColor = '#ffb700';
+            snakeQuestionBox.style.animation = 'pulse 0.8s infinite alternate';
+            snakeQuestionBox.style.transform = 'scale(1)';
+            
+            // Hapus kelas animasi dari tombol jawaban
+            document.querySelectorAll('.floating-answer-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+            
+            // Re-spawn enemies (simplification: enemies are static in the HTML for now)
+            const oldEnemies = document.querySelectorAll('.corona-virus-enemy');
+            oldEnemies.forEach(e => e.remove());
+
+            // Initialize level-specific elements
+            initializeLevel();
+
+            // Restart game loop and timer
+            startTimer();
+            startFlyingCoronaSpawn();
+            gameLoop();
+        }
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            keysPressed[e.key] = true;
+            if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w') {
+                jump();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keysPressed[e.key] = false;
+        });
+        
+        // Touch/Mobile controls
+        leftBtn.addEventListener('touchstart', (e) => { 
+            e.preventDefault(); 
+            keysPressed['ArrowLeft'] = true; 
+        });
+        leftBtn.addEventListener('touchend', () => { 
+            keysPressed['ArrowLeft'] = false; 
+        });
+        rightBtn.addEventListener('touchstart', (e) => { 
+            e.preventDefault(); 
+            keysPressed['ArrowRight'] = true; 
+        });
+        rightBtn.addEventListener('touchend', () => { 
+            keysPressed['ArrowRight'] = false; 
+        });
+        jumpBtn.addEventListener('touchstart', (e) => { 
+            e.preventDefault(); 
+            jump(); 
+        });
+
+        // Mouse controls fallback
+        leftBtn.addEventListener('mousedown', () => { 
+            keysPressed['ArrowLeft'] = true; 
+        });
+        leftBtn.addEventListener('mouseup', () => { 
+            keysPressed['ArrowLeft'] = false; 
+        });
+        leftBtn.addEventListener('mouseleave', () => { 
+            keysPressed['ArrowLeft'] = false; 
+        });
+        rightBtn.addEventListener('mousedown', () => { 
+            keysPressed['ArrowRight'] = true; 
+        });
+        rightBtn.addEventListener('mouseup', () => { 
+            keysPressed['ArrowRight'] = false; 
+        });
+        rightBtn.addEventListener('mouseleave', () => { 
+            keysPressed['ArrowRight'] = false; 
+        });
+        jumpBtn.addEventListener('mousedown', jump);
+        
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize login system
+            initializeLoginSystem();
+            
+            // Initialize keysPressed with default values
+            keysPressed = {
+                'ArrowLeft': false,
+                'ArrowRight': false,
+                'ArrowUp': false,
+                ' ': false,
+                'a': false,
+                'd': false,
+                'w': false
+            };
+            
+            // Answer button listeners (untuk klik mouse sebagai fallback)
+            floatingOption1.addEventListener('click', () => handleAnswer(floatingOption1.textContent));
+            floatingOption2.addEventListener('click', () => handleAnswer(floatingOption2.textContent));
+            floatingOption3.addEventListener('click', () => handleAnswer(floatingOption3.textContent));
+            
+            // Restart buttons
+            restartBtn.addEventListener('click', restartGame);
+            playAgainBtn.addEventListener('click', restartGame);
+        });
+    </script>
+</body>
+</html>
