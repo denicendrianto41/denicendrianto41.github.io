@@ -88,11 +88,9 @@
             font-size: 10px;
         }
         
+        /* Hapus bagian level selection */
         .level-selection {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
+            display: none; /* Sembunyikan pilihan level */
         }
         
         .level-btn {
@@ -452,6 +450,19 @@
             z-index: 20;
         }
         
+        .level-indicator {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            z-index: 20;
+        }
+        
         .game-over {
             position: fixed;
             top: 50%;
@@ -548,19 +559,6 @@
             text-align: center;
             z-index: 30;
             display: none;
-        }
-        
-        .level-indicator {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 8px 15px;
-            border-radius: 10px;
-            color: white;
-            font-size: 12px;
-            z-index: 20;
         }
         
         .feedback {
@@ -1052,13 +1050,7 @@
                     <input type="text" id="school-npsn" class="form-input" placeholder="Masukkan NPSN sekolah">
                 </div>
                 
-                <div class="level-selection">
-                    <h2 class="form-label">PILIH LEVEL:</h2>
-                    <button class="level-btn" data-level="1">SEJARAH VIRUS</button>
-                    <button class="level-btn" data-level="2">STRUKTUR DAN JENIS VIRUS</button>
-                    <button class="level-btn" data-level="3">REPRODUKSI VIRUS</button>
-                    <button class="level-btn" data-level="4">PERANAN VIRUS</button>
-                </div>
+                <!-- Hapus bagian pilihan level -->
                 
                 <button class="start-game-btn" id="start-game-btn">MULAI PERMAINAN</button>
             </div>
@@ -1194,8 +1186,9 @@
             <div class="grass"></div>
         </div>
         
+        <!-- Character image will be set based on gender -->
         <div class="mario" id="mario">
-            <img src="https://iili.io/fn3ijcJ.png" alt="Mario" width="60" height="80" style="display: block;">
+            <!-- Gambar akan diatur oleh JavaScript berdasarkan jenis kelamin -->
         </div>
         
         <div class="jump-indicator" id="jump-indicator"></div>
@@ -1288,7 +1281,6 @@
         const gameContainer = document.getElementById('game-container');
         const userNameInput = document.getElementById('user-name');
         const schoolNpsnInput = document.getElementById('school-npsn');
-        const levelButtons = document.querySelectorAll('.level-btn');
         const startGameBtn = document.getElementById('start-game-btn');
         const playerNameDisplay = document.getElementById('player-name-display');
         
@@ -1317,6 +1309,7 @@
         const correctSound = document.getElementById('correct-sound');
         const wrongSound = document.getElementById('wrong-sound');
         
+        // Set default level to 1 (tidak ada pilihan level lagi)
         let selectedLevel = 1;
         let playerName = '';
         let playerGender = 'Laki-laki';
@@ -1482,17 +1475,18 @@
             wrongSound.play().catch(e => console.log("Audio play failed:", e));
         }
         
+        // Function to set character image based on gender
+        function setCharacterImage() {
+            const marioElement = document.getElementById('mario');
+            if (playerGender === 'Laki-laki') {
+                marioElement.innerHTML = '<img src="https://denicendrianto41.github.io/kabayan.png" alt="Kabayan" width="60" height="80" style="display: block;">';
+            } else if (playerGender === 'Perempuan') {
+                marioElement.innerHTML = '<img src="https://denicendrianto41.github.io/iteung.png" alt="Iteung" width="60" height="80" style="display: block;">';
+            }
+        }
+        
         // Login and Level Selection Functions
         function initializeLoginSystem() {
-            // Level selection
-            levelButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    levelButtons.forEach(btn => btn.classList.remove('selected'));
-                    button.classList.add('selected');
-                    selectedLevel = parseInt(button.getAttribute('data-level'));
-                });
-            });
-            
             // Gender selection
             document.querySelectorAll('input[name="gender"]').forEach(radio => {
                 radio.addEventListener('change', () => {
@@ -1535,11 +1529,14 @@
                 return;
             }
             
-            // Set current level based on selection
-            currentLevel = selectedLevel;
+            // Set current level (selalu level 1 karena tidak ada pilihan)
+            currentLevel = 1;
             levelDisplay.textContent = currentLevel;
             
-            // Show player name above Mario
+            // Set character image based on gender
+            setCharacterImage();
+            
+            // Show player name above character
             playerNameDisplay.textContent = playerName;
             playerNameDisplay.style.display = 'block';
             
@@ -1560,29 +1557,18 @@
             snakeQuestionsAnswered = 0;
             currentSnakeQuestionIndex = 0;
             
-            // Show/hide elements based on level
-            if (currentLevel === 1) {
-                // Show books for Level 1
-                document.querySelectorAll('.book-box').forEach(book => {
-                    book.style.display = 'flex';
-                });
-                
-                // Show snake from the beginning
-                snakeObstacle.style.display = 'block';
-                safeDistance.style.display = 'block';
-                snakeQuestionBox.style.display = 'none';
-                
-                // Initialize snake questions
-                snakeQuestions = [...snakeQuestionData];
-            } else {
-                // Hide books and snake for other levels
-                document.querySelectorAll('.book-box').forEach(book => {
-                    book.style.display = 'none';
-                });
-                snakeObstacle.style.display = 'none';
-                safeDistance.style.display = 'none';
-                snakeQuestionBox.style.display = 'none';
-            }
+            // Show books for Level 1 (selalu level 1)
+            document.querySelectorAll('.book-box').forEach(book => {
+                book.style.display = 'flex';
+            });
+            
+            // Show snake from the beginning
+            snakeObstacle.style.display = 'block';
+            safeDistance.style.display = 'block';
+            snakeQuestionBox.style.display = 'none';
+            
+            // Initialize snake questions
+            snakeQuestions = [...snakeQuestionData];
             
             // Initialize coins
             initializeCoins();
