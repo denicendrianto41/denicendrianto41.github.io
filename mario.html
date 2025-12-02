@@ -222,7 +222,7 @@
             position: absolute;
             bottom: 80px;
             width: 100%;
-            z-index: 5;
+            z-index: 6; /* DIUBAH: dari 5 menjadi 6 */
         }
         
         .cloud {
@@ -506,9 +506,9 @@
         
         .pipe {
             position: absolute;
-            bottom: 90px; /* DIUBAH: dari 80px menjadi 90px (naik 10px) */
-            width: 140px; /* DIUBAH: dari 70px menjadi 140px */
-            height: 180px; /* DIUBAH: dari 90px menjadi 180px */
+            bottom: 100px; /* DIUBAH: dari 90px menjadi 100px (naik 10px lagi) */
+            width: 140px;
+            height: 180px;
             z-index: 7;
         }
         
@@ -518,27 +518,28 @@
             z-index: 6;
         }
         
-        /* Navigasi game di pojok kiri */
+        /* Navigasi game di tengah bawah - DIUBAH jadi sejajar */
         .controls {
             position: fixed;
             bottom: 20px;
-            left: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            gap: 10px; /* DIUBAH: dari 5px menjadi 10px */
             z-index: 20;
+            align-items: center;
         }
         
         .control-btn {
             background-color: rgba(255, 255, 255, 0.7);
             border: 2px solid white;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -549,17 +550,11 @@
             transform: scale(1.1);
         }
         
-        /* Container untuk tombol kiri/kanan dalam satu baris */
-        .horizontal-controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
+        /* Hapus .horizontal-controls karena sekarang semua tombol sejajar */
         .hill {
             position: absolute;
             bottom: 80px;
-            z-index: 4;
+            z-index: 4; /* DIUBAH: dari z-index: 4 menjadi di bawah tanah dan rumput */
         }
         
         .level-complete {
@@ -888,13 +883,13 @@
             
             .controls {
                 bottom: 15px;
-                left: 15px;
+                gap: 8px;
             }
             
             .control-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 22px;
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
             }
             
             .feedback, .feedback-between {
@@ -952,13 +947,13 @@
             
             .controls {
                 bottom: 10px;
-                left: 10px;
+                gap: 6px;
             }
             
             .control-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
+                width: 25px;
+                height: 25px;
+                font-size: 10px;
             }
             
             .feedback, .feedback-between {
@@ -1097,7 +1092,7 @@
             <!-- Safe distance indicator -->
             <div class="safe-distance" id="safe-distance" style="left: 2800px; display: none;"></div>
             
-            <!-- Existing game elements -->
+            <!-- Pohon beringin dipindahkan ke BELAKANG tanah dan rumput -->
             <div class="hill" style="left: 100px;">
                 <img src="https://denicendrianto41.github.io/beringin.png" alt="Pohon Beringin" width="200" height="120">
             </div>
@@ -1186,6 +1181,7 @@
                 <div style="width: 50px; height: 50px; background-color: white; border: 3px solid black; position: relative; top: -53px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: red;">F</div>
             </div>
 
+            <!-- Tanah dan rumput dipindahkan ke bagian paling bawah -->
             <div class="ground"></div>
             <div class="grass"></div>
         </div>
@@ -1236,15 +1232,12 @@
             <!-- Snake answer buttons will be added dynamically -->
         </div>
         
-        <!-- Navigasi game di pojok kiri -->
+        <!-- Navigasi game di tengah bawah - DIUBAH jadi sejajar (mundur-Lompat-maju) -->
         <div class="controls" id="controls">
-            <!-- Tombol atas/lompat di atas -->
+            <!-- Tombol sejajar: Mundur - Lompat - Maju -->
+            <div class="control-btn" id="left-btn">←</div>
             <div class="control-btn" id="jump-btn">↑</div>
-            <!-- Tombol kiri/kanan dalam satu baris -->
-            <div class="horizontal-controls">
-                <div class="control-btn" id="left-btn">←</div>
-                <div class="control-btn" id="right-btn">→</div>
-            </div>
+            <div class="control-btn" id="right-btn">→</div>
         </div>
         
         <div class="game-over" id="game-over">
@@ -2261,7 +2254,7 @@
             gameWorld.style.transform = `translateX(${worldOffset}px)`;
             mario.style.left = `${marioPosition + worldOffset}px`;
             
-            // Update player name display - FIXED to always follow Mario
+            // Update player name display position
             updatePlayerNameDisplay();
             
             // Check collisions every frame
@@ -2435,28 +2428,40 @@
             keysPressed[e.key] = false;
         });
         
-        // Touch/Mobile controls
+        // Touch/Mobile controls - DIPERBAIKI
         leftBtn.addEventListener('touchstart', (e) => { 
             e.preventDefault(); 
             keysPressed['ArrowLeft'] = true; 
         });
+        leftBtn.addEventListener('touchmove', (e) => { 
+            e.preventDefault(); 
+        });
         leftBtn.addEventListener('touchend', () => { 
             keysPressed['ArrowLeft'] = false; 
         });
+        
         rightBtn.addEventListener('touchstart', (e) => { 
             e.preventDefault(); 
             keysPressed['ArrowRight'] = true; 
         });
+        rightBtn.addEventListener('touchmove', (e) => { 
+            e.preventDefault(); 
+        });
         rightBtn.addEventListener('touchend', () => { 
             keysPressed['ArrowRight'] = false; 
         });
+        
         jumpBtn.addEventListener('touchstart', (e) => { 
             e.preventDefault(); 
             jump(); 
         });
+        jumpBtn.addEventListener('touchmove', (e) => { 
+            e.preventDefault(); 
+        });
 
-        // Mouse controls fallback
-        leftBtn.addEventListener('mousedown', () => { 
+        // Mouse controls fallback - DIPERBAIKI
+        leftBtn.addEventListener('mousedown', (e) => { 
+            e.preventDefault();
             keysPressed['ArrowLeft'] = true; 
         });
         leftBtn.addEventListener('mouseup', () => { 
@@ -2465,7 +2470,9 @@
         leftBtn.addEventListener('mouseleave', () => { 
             keysPressed['ArrowLeft'] = false; 
         });
-        rightBtn.addEventListener('mousedown', () => { 
+        
+        rightBtn.addEventListener('mousedown', (e) => { 
+            e.preventDefault();
             keysPressed['ArrowRight'] = true; 
         });
         rightBtn.addEventListener('mouseup', () => { 
@@ -2474,7 +2481,18 @@
         rightBtn.addEventListener('mouseleave', () => { 
             keysPressed['ArrowRight'] = false; 
         });
-        jumpBtn.addEventListener('mousedown', jump);
+        
+        jumpBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            jump(); 
+        });
+        
+        // Mencegah scroll halaman saat menekan tombol navigasi
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            });
+        });
         
         // Initialize game
         document.addEventListener('DOMContentLoaded', () => {
