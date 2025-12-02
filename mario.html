@@ -506,9 +506,9 @@
         
         .pipe {
             position: absolute;
-            bottom: 80px; /* Posisi pipa diubah menjadi 80px */
-            width: 70px;
-            height: 90px;
+            bottom: 90px; /* DIUBAH: dari 80px menjadi 90px (naik 10px) */
+            width: 140px; /* DIUBAH: dari 70px menjadi 140px */
+            height: 180px; /* DIUBAH: dari 90px menjadi 180px */
             z-index: 7;
         }
         
@@ -518,27 +518,42 @@
             z-index: 6;
         }
         
+        /* Navigasi game di pojok kiri */
         .controls {
             position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 20px;
+            left: 20px;
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
             z-index: 20;
         }
         
         .control-btn {
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.7);
             border: 2px solid white;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: scale(1.1);
+        }
+        
+        /* Container untuk tombol kiri/kanan dalam satu baris */
+        .horizontal-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
         
         .hill {
@@ -872,14 +887,14 @@
             }
             
             .controls {
-                bottom: 10px;
-                gap: 10px;
+                bottom: 15px;
+                left: 15px;
             }
             
             .control-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
+                width: 55px;
+                height: 55px;
+                font-size: 22px;
             }
             
             .feedback, .feedback-between {
@@ -936,14 +951,14 @@
             }
             
             .controls {
-                bottom: 8px;
-                gap: 8px;
+                bottom: 10px;
+                left: 10px;
             }
             
             .control-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
             
             .feedback, .feedback-between {
@@ -1084,7 +1099,7 @@
             
             <!-- Existing game elements -->
             <div class="hill" style="left: 100px;">
-                <img src="https://iili.io/fnFjtsV.png" alt="Gunung" width="200" height="120">
+                <img src="https://denicendrianto41.github.io/beringin.png" alt="Pohon Beringin" width="200" height="120">
             </div>
             
             <!-- Awan yang bergerak -->
@@ -1116,38 +1131,27 @@
                 <img src="https://iili.io/fnFM07f.png" alt="Awan" width="160" height="90">
             </div>
             
-            <!-- Pipa yang sudah diturunkan ke posisi 80px -->
-            <div class="pipe" style="left: 500px;">
-                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
-            </div>
-            
-            <!-- 3 Pipa tambahan -->
+            <!-- Hanya satu pipa yang ditampilkan -->
             <div class="pipe" style="left: 1200px;">
-                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
-            </div>
-            <div class="pipe" style="left: 2500px;">
-                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
-            </div>
-            <div class="pipe" style="left: 3800px;">
-                <img src="https://iili.io/fnFpFql.png" alt="Pipa" width="80" height="100">
+                <img src="https://denicendrianto41.github.io/bentar.png" alt="Bentar" width="160" height="200">
             </div>
 
-            <!-- Semak dengan gambar baru -->
+            <!-- Semak dengan gambar bambu baru -->
             <div class="bush" style="left: 1400px;">
-                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+                <img src="https://denicendrianto41.github.io/bambu.png" alt="Bambu" width="150" height="70">
             </div>
             
-            <!-- 3 Semak tambahan dengan gambar baru -->
+            <!-- 3 Semak tambahan dengan gambar bambu baru -->
             <div class="bush" style="left: 2200px;">
-                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+                <img src="https://denicendrianto41.github.io/bambu.png" alt="Bambu" width="150" height="70">
             </div>
             
             <div class="bush" style="left: 3200px;">
-                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+                <img src="https://denicendrianto41.github.io/bambu.png" alt="Bambu" width="150" height="70">
             </div>
             
             <div class="bush" style="left: 4300px;">
-                <img src="https://iili.io/fodRQ3b.png" alt="Semak" width="150" height="70">
+                <img src="https://denicendrianto41.github.io/bambu.png" alt="Bambu" width="150" height="70">
             </div>
 
             <!-- 10 koin yang tersebar di sepanjang perjalanan -->
@@ -1232,10 +1236,15 @@
             <!-- Snake answer buttons will be added dynamically -->
         </div>
         
-        <div class="controls">
-            <div class="control-btn" id="left-btn">←</div>
+        <!-- Navigasi game di pojok kiri -->
+        <div class="controls" id="controls">
+            <!-- Tombol atas/lompat di atas -->
             <div class="control-btn" id="jump-btn">↑</div>
-            <div class="control-btn" id="right-btn">→</div>
+            <!-- Tombol kiri/kanan dalam satu baris -->
+            <div class="horizontal-controls">
+                <div class="control-btn" id="left-btn">←</div>
+                <div class="control-btn" id="right-btn">→</div>
+            </div>
         </div>
         
         <div class="game-over" id="game-over">
