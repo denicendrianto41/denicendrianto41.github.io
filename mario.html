@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jelajah Virus: Petualangan Biologi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load TensorFlow.js and Teachable Machine Pose -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
@@ -867,6 +870,131 @@
             font-size: 18px;
             font-family: 'Press Start 2P', cursive;
         }
+        
+        /* NEW: Teachable Machine Pose Control Panel */
+        .teachable-machine-control {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 25;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #ffb700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            min-width: 250px;
+            color: white;
+            font-size: 10px;
+        }
+        
+        .teachable-machine-control h3 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            color: #ffb700;
+            font-size: 12px;
+        }
+        
+        .teachable-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .status-indicator.on {
+            background-color: #4ade80;
+            box-shadow: 0 0 5px #4ade80;
+        }
+        
+        .status-indicator.off {
+            background-color: #f87171;
+            box-shadow: 0 0 5px #f87171;
+        }
+        
+        .status-indicator.loading {
+            background-color: #ffb700;
+            box-shadow: 0 0 5px #ffb700;
+            animation: pulse 1s infinite;
+        }
+        
+        .pose-display {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .current-pose {
+            font-weight: bold;
+            color: #ffb700;
+        }
+        
+        .tm-control-btn {
+            background-color: #5c94fc;
+            color: white;
+            border: 2px solid white;
+            padding: 6px 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .tm-control-btn:hover {
+            background-color: #4a7bc9;
+            transform: scale(1.05);
+        }
+        
+        .tm-control-btn:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Webcam preview */
+        .webcam-container {
+            width: 100%;
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        #webcam-canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .pose-instructions {
+            font-size: 8px;
+            margin-top: 8px;
+            color: #ffb700;
+            text-align: center;
+            line-height: 1.4;
+        }
 
         /* Media Queries for Mobile Responsiveness */
         @media (max-width: 768px) {
@@ -943,6 +1071,31 @@
             
             .sound-control i {
                 font-size: 16px;
+            }
+            
+            .teachable-machine-control {
+                top: 70px;
+                right: 15px;
+                padding: 10px;
+                min-width: 200px;
+                font-size: 8px;
+            }
+            
+            .teachable-machine-control h3 {
+                font-size: 10px;
+            }
+            
+            .tm-control-btn {
+                font-size: 7px;
+                padding: 5px 8px;
+            }
+            
+            .webcam-container {
+                height: 120px;
+            }
+            
+            .pose-instructions {
+                font-size: 7px;
             }
         }
 
@@ -1029,6 +1182,32 @@
             
             .sound-control i {
                 font-size: 14px;
+            }
+            
+            .teachable-machine-control {
+                top: 60px;
+                right: 10px;
+                padding: 8px;
+                min-width: 180px;
+                font-size: 7px;
+            }
+            
+            .teachable-machine-control h3 {
+                font-size: 9px;
+            }
+            
+            .tm-control-btn {
+                font-size: 6px;
+                padding: 4px 6px;
+            }
+            
+            .webcam-container {
+                height: 100px;
+            }
+            
+            .pose-instructions {
+                font-size: 6px;
+                line-height: 1.3;
             }
         }
         
@@ -1262,6 +1441,40 @@
             <i id="sound-icon">♪</i>
         </div>
         
+        <!-- NEW: Teachable Machine Pose Control Panel -->
+        <div class="teachable-machine-control" id="tm-control" style="display: none;">
+            <h3>KONTROL POSE (WEBCAM)</h3>
+            <div class="teachable-status">
+                <div>
+                    <span class="status-indicator loading" id="tm-status"></span>
+                    <span id="tm-status-text">Menyiapkan...</span>
+                </div>
+            </div>
+            
+            <div class="webcam-container">
+                <canvas id="webcam-canvas"></canvas>
+            </div>
+            
+            <div class="pose-display">
+                Pose: <span class="current-pose" id="current-pose">-</span>
+            </div>
+            
+            <button class="tm-control-btn" id="tm-start-btn" disabled>
+                AKTIFKAN WEBCAM
+            </button>
+            <button class="tm-control-btn" id="tm-stop-btn" disabled>
+                MATIKAN WEBCAM
+            </button>
+            
+            <div class="pose-instructions">
+                Kontrol Mario dengan pose tubuh:<br/>
+                • <strong>MAJU</strong>: Angkat tangan kanan<br/>
+                • <strong>MUNDUR</strong>: Angkat tangan kiri<br/>
+                • <strong>LOMPAT</strong>: Angkat kedua tangan<br/>
+                • <strong>DIAM</strong>: Turunkan kedua tangan
+            </div>
+        </div>
+        
         <div class="question-display" id="question-display" style="display: none;">
             <p id="question-text"></p>
         </div>
@@ -1377,6 +1590,15 @@
         const soundControl = document.getElementById('sound-control');
         const soundIcon = document.getElementById('sound-icon');
         
+        // NEW: Teachable Machine Pose elements
+        const tmControl = document.getElementById('tm-control');
+        const tmStatus = document.getElementById('tm-status');
+        const tmStatusText = document.getElementById('tm-status-text');
+        const currentPose = document.getElementById('current-pose');
+        const tmStartBtn = document.getElementById('tm-start-btn');
+        const tmStopBtn = document.getElementById('tm-stop-btn');
+        const webcamCanvas = document.getElementById('webcam-canvas');
+        
         // Snake question box - hanya satu
         const snakeQuestionBox = document.getElementById('snake-question-box');
         
@@ -1405,6 +1627,14 @@
         
         // NEW: Sound control state
         let isSoundOn = true;
+        
+        // NEW: Teachable Machine Pose variables
+        let model, webcam, ctx, maxPredictions;
+        let isTMStarted = false;
+        let lastPoseTime = 0;
+        const POSE_COOLDOWN = 800; // 800ms cooldown between pose commands
+        let modelLoaded = false;
+        let poseLabels = [];
 
         // Existing game variables
         const mario = document.getElementById('mario');
@@ -1636,6 +1866,204 @@
             }
         }
         
+        // NEW: Teachable Machine Pose Functions
+        async function initTeachableMachine() {
+            try {
+                updateTMStatus('loading', 'Memuat model pose...');
+                
+                // the link to your model provided by Teachable Machine export panel
+                const URL = "https://teachablemachine.withgoogle.com/models/3zcHAX3HO/";
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
+
+                // load the model and metadata
+                model = await tmPose.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+                poseLabels = model.getClassLabels();
+                
+                console.log('Model pose loaded. Classes:', poseLabels);
+                
+                updateTMStatus('off', 'Model siap!');
+                modelLoaded = true;
+                
+                // Enable start button
+                tmStartBtn.disabled = false;
+                tmStartBtn.textContent = 'AKTIFKAN WEBCAM';
+                
+                // Setup canvas context
+                ctx = webcamCanvas.getContext('2d');
+                
+                console.log('Teachable Machine Pose model loaded successfully');
+            } catch (error) {
+                console.error('Error loading Teachable Machine Pose model:', error);
+                updateTMStatus('off', 'Gagal memuat model');
+                tmStartBtn.disabled = true;
+                tmStartBtn.textContent = 'GAGAL MEMUAT';
+            }
+        }
+        
+        function updateTMStatus(status, text) {
+            tmStatus.className = 'status-indicator ' + status;
+            tmStatusText.textContent = text;
+        }
+        
+        async function startTMPose() {
+            if (!modelLoaded || !gameActive) return;
+            
+            try {
+                // Setup webcam
+                const size = 200;
+                const flip = true; // whether to flip the webcam
+                webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
+                await webcam.setup(); // request access to the webcam
+                await webcam.play();
+                
+                // Start prediction loop
+                window.requestAnimationFrame(loop);
+                
+                isTMStarted = true;
+                updateTMStatus('on', 'Mendeteksi pose...');
+                tmStartBtn.disabled = true;
+                tmStopBtn.disabled = false;
+                currentPose.textContent = 'Menyiapkan...';
+                
+                console.log('Webcam started for pose detection');
+            } catch (error) {
+                console.error('Error starting webcam:', error);
+                updateTMStatus('off', 'Gagal mengakses webcam');
+                alert('Tidak dapat mengakses webcam. Pastikan Anda memberikan izin akses kamera.');
+            }
+        }
+        
+        async function stopTMPose() {
+            if (webcam && isTMStarted) {
+                webcam.stop();
+                isTMStarted = false;
+                updateTMStatus('off', 'Berhenti');
+                tmStartBtn.disabled = false;
+                tmStopBtn.disabled = true;
+                currentPose.textContent = '-';
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+            }
+        }
+        
+        async function loop() {
+            if (!isTMStarted) return;
+            
+            webcam.update(); // update the webcam frame
+            await predict();
+            
+            if (isTMStarted) {
+                window.requestAnimationFrame(loop);
+            }
+        }
+        
+        async function predict() {
+            try {
+                // Prediction #1: run input through posenet
+                const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+                
+                // Prediction #2: run input through teachable machine classification model
+                const prediction = await model.predict(posenetOutput);
+                
+                // Find the highest probability
+                let maxProbability = 0;
+                let predictedPose = '';
+                
+                for (let i = 0; i < maxPredictions; i++) {
+                    if (prediction[i].probability > maxProbability) {
+                        maxProbability = prediction[i].probability;
+                        predictedPose = prediction[i].className;
+                    }
+                }
+                
+                // Only accept predictions with reasonable confidence
+                if (maxProbability > 0.7) {
+                    processPoseCommand(predictedPose, maxProbability);
+                }
+                
+                // Update display with current pose
+                currentPose.textContent = predictedPose || '-';
+                
+                // Draw webcam feed and pose
+                drawWebcam(pose);
+                
+            } catch (error) {
+                console.error('Error in pose prediction:', error);
+            }
+        }
+        
+        function drawWebcam(pose) {
+            if (webcam.canvas) {
+                // Draw webcam feed
+                ctx.drawImage(webcam.canvas, 0, 0, webcamCanvas.width, webcamCanvas.height);
+                
+                // Draw the keypoints and skeleton
+                if (pose) {
+                    const minPartConfidence = 0.5;
+                    tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+                    tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+                }
+            }
+        }
+        
+        function processPoseCommand(pose, probability) {
+            // Apply cooldown to prevent rapid repeated commands
+            const now = Date.now();
+            if (now - lastPoseTime < POSE_COOLDOWN) {
+                return;
+            }
+            lastPoseTime = now;
+            
+            console.log(`Pose detected: ${pose} (${(probability * 100).toFixed(1)}%)`);
+            
+            // Process command based on the Teachable Machine model labels
+            switch(pose.toLowerCase()) {
+                case 'maju':
+                case 'forward':
+                case 'kanan':
+                case 'right':
+                    // Move right
+                    keysPressed['ArrowRight'] = true;
+                    setTimeout(() => {
+                        keysPressed['ArrowRight'] = false;
+                    }, 300);
+                    break;
+                    
+                case 'mundur':
+                case 'backward':
+                case 'kiri':
+                case 'left':
+                    // Move left
+                    keysPressed['ArrowLeft'] = true;
+                    setTimeout(() => {
+                        keysPressed['ArrowLeft'] = false;
+                    }, 300);
+                    break;
+                    
+                case 'lompat':
+                case 'jump':
+                case 'atas':
+                case 'up':
+                    // Jump
+                    jump();
+                    break;
+                    
+                case 'diam':
+                case 'stop':
+                case 'berhenti':
+                    // Stop movement
+                    keysPressed['ArrowLeft'] = false;
+                    keysPressed['ArrowRight'] = false;
+                    break;
+                    
+                default:
+                    console.log('Unknown pose:', pose);
+            }
+        }
+        
         // Function to set character image based on gender
         function setCharacterImage() {
             const marioElement = document.getElementById('mario');
@@ -1677,6 +2105,10 @@
             
             // NEW: Sound control button event listener
             soundControl.addEventListener('click', toggleSound);
+            
+            // NEW: Teachable Machine button listeners
+            tmStartBtn.addEventListener('click', startTMPose);
+            tmStopBtn.addEventListener('click', stopTMPose);
         }
         
         function startGame() {
@@ -1707,6 +2139,9 @@
             // Hide login screen and show game
             loginScreen.style.display = 'none';
             gameContainer.style.display = 'block';
+            
+            // Show Teachable Machine control panel
+            tmControl.style.display = 'block';
             
             // Initialize level-specific elements
             initializeLevel();
@@ -1914,6 +2349,11 @@
             // Show close button
             closeSnakeQuestionBtn.style.display = 'block';
             
+            // Stop Teachable Machine while showing question
+            if (isTMStarted) {
+                stopTMPose();
+            }
+            
             // Pause the game
             gameActive = false;
         }
@@ -1953,6 +2393,13 @@
                     }
                     
                     gameActive = true;
+                    
+                    // Restart Teachable Machine if it was active
+                    if (modelLoaded && !isTMStarted) {
+                        setTimeout(() => {
+                            startTMPose();
+                        }, 500);
+                    }
                 }, 1500);
             } else {
                 // Wrong answer
@@ -2054,6 +2501,11 @@
                 gameActive = false;
                 clearInterval(timerInterval);
                 clearInterval(flyingCoronaInterval);
+                
+                // Stop Teachable Machine
+                if (isTMStarted) {
+                    stopTMPose();
+                }
                 
                 // Hentikan background music
                 stopBackgroundMusic();
@@ -2184,6 +2636,11 @@
                 clearInterval(timerInterval);
                 clearInterval(flyingCoronaInterval);
                 
+                // Stop Teachable Machine
+                if (isTMStarted) {
+                    stopTMPose();
+                }
+                
                 // Mainkan sound level complete
                 playLevelCompleteSound();
                 
@@ -2255,6 +2712,12 @@
         
         function showQuestion() {
             gameActive = false; // Pause game
+            
+            // Stop Teachable Machine while showing question
+            if (isTMStarted) {
+                stopTMPose();
+            }
+            
             const q = generateQuestion();
             questionText.textContent = q.question;
             
@@ -2318,6 +2781,13 @@
                     
                     // Resume game
                     gameActive = true;
+                    
+                    // Restart Teachable Machine if it was active
+                    if (modelLoaded && !isTMStarted) {
+                        setTimeout(() => {
+                            startTMPose();
+                        }, 500);
+                    }
                 }, 1500);
                 
             } else {
@@ -2348,6 +2818,13 @@
                     
                     // Resume game
                     gameActive = true;
+                    
+                    // Restart Teachable Machine if it was active
+                    if (modelLoaded && !isTMStarted) {
+                        setTimeout(() => {
+                            startTMPose();
+                        }, 500);
+                    }
                 }, 1500);
             }
         }
@@ -2400,7 +2877,7 @@
             const moveSpeed = 5;
             let moved = false;
             
-            // Handle horizontal movement
+            // Handle horizontal movement from keyboard AND Teachable Machine
             if (keysPressed['ArrowRight'] || keysPressed['d']) {
                 marioPosition += moveSpeed;
                 // Flip gambar Mario dengan CSS transform
@@ -2587,6 +3064,13 @@
                 playBackgroundMusic();
             }
 
+            // Auto-start Teachable Machine after a delay
+            if (modelLoaded && !isTMStarted) {
+                setTimeout(() => {
+                    startTMPose();
+                }, 1000);
+            }
+
             // Restart game loop and timer
             startTimer();
             startFlyingCoronaSpawn();
@@ -2675,6 +3159,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Load sound preference
             loadSoundPreference();
+            
+            // Initialize Teachable Machine Pose model
+            initTeachableMachine();
             
             // Initialize login system
             initializeLoginSystem();
