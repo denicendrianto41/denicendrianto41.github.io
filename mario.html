@@ -871,115 +871,58 @@
             font-family: 'Press Start 2P', cursive;
         }
         
-        /* NEW: Teachable Machine Pose Control Panel */
-        .teachable-machine-control {
+        /* NEW: Webcam control button styles - moved to bottom right corner */
+        .webcam-control {
             position: fixed;
-            top: 80px;
-            right: 20px;
+            bottom: 20px;
+            right: 70px; /* Position to the left of sound control */
             z-index: 25;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            padding: 15px;
-            border: 2px solid #ffb700;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            min-width: 250px;
-            color: white;
-            font-size: 10px;
-        }
-        
-        .teachable-machine-control h3 {
-            margin: 0 0 10px 0;
-            text-align: center;
-            color: #ffb700;
-            font-size: 12px;
-        }
-        
-        .teachable-status {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .status-indicator {
-            width: 10px;
-            height: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-        }
-        
-        .status-indicator.on {
-            background-color: #4ade80;
-            box-shadow: 0 0 5px #4ade80;
-        }
-        
-        .status-indicator.off {
-            background-color: #f87171;
-            box-shadow: 0 0 5px #f87171;
-        }
-        
-        .status-indicator.loading {
-            background-color: #ffb700;
-            box-shadow: 0 0 5px #ffb700;
-            animation: pulse 1s infinite;
-        }
-        
-        .pose-display {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            border-radius: 5px;
-            text-align: center;
-            margin-top: 10px;
-            min-height: 30px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .current-pose {
-            font-weight: bold;
-            color: #ffb700;
-        }
-        
-        .tm-control-btn {
-            background-color: #5c94fc;
-            color: white;
-            border: 2px solid white;
-            padding: 6px 10px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 5px;
-            width: 100%;
-            margin-top: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
-        .tm-control-btn:hover {
-            background-color: #4a7bc9;
-            transform: scale(1.05);
+        .webcam-control:hover {
+            transform: scale(1.1);
+            background-color: rgba(0, 0, 0, 0.9);
         }
         
-        .tm-control-btn:disabled {
-            background-color: #666;
-            cursor: not-allowed;
-            transform: none;
+        .webcam-control.on {
+            background-color: rgba(59, 130, 246, 0.7); /* Blue when active */
         }
         
-        /* Webcam preview */
-        .webcam-container {
-            width: 100%;
-            height: 150px;
-            background-color: rgba(0, 0, 0, 0.5);
+        .webcam-control.off {
+            background-color: rgba(0, 0, 0, 0.7); /* Dark when inactive */
+        }
+        
+        .webcam-control i {
+            color: white;
+            font-size: 18px;
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        /* NEW: Small webcam preview - DIATAS POHON BERINGIN - DIGESER 10px KE KANAN */
+        .webcam-preview {
+            position: fixed;
+            top: 100px; /* Posisi di atas pohon beringin */
+            left: 60px; /* DIUBAH: dari 50px menjadi 60px (digeser 10px ke kanan) */
+            z-index: 24;
+            width: 160px;
+            height: 120px;
+            background-color: rgba(0, 0, 0, 0.8);
             border-radius: 8px;
             overflow: hidden;
-            margin-top: 10px;
-            position: relative;
+            border: 2px solid #ffb700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            display: none;
         }
         
         #webcam-canvas {
@@ -988,14 +931,6 @@
             object-fit: cover;
         }
         
-        .pose-instructions {
-            font-size: 8px;
-            margin-top: 8px;
-            color: #ffb700;
-            text-align: center;
-            line-height: 1.4;
-        }
-
         /* Media Queries for Mobile Responsiveness */
         @media (max-width: 768px) {
             .login-container {
@@ -1073,29 +1008,22 @@
                 font-size: 16px;
             }
             
-            .teachable-machine-control {
-                top: 70px;
-                right: 15px;
-                padding: 10px;
-                min-width: 200px;
-                font-size: 8px;
+            .webcam-control {
+                bottom: 15px;
+                right: 60px;
+                width: 35px;
+                height: 35px;
             }
             
-            .teachable-machine-control h3 {
-                font-size: 10px;
+            .webcam-control i {
+                font-size: 16px;
             }
             
-            .tm-control-btn {
-                font-size: 7px;
-                padding: 5px 8px;
-            }
-            
-            .webcam-container {
-                height: 120px;
-            }
-            
-            .pose-instructions {
-                font-size: 7px;
+            .webcam-preview {
+                width: 140px;
+                height: 105px;
+                top: 90px;
+                left: 50px; /* DIUBAH: dari 40px menjadi 50px */
             }
         }
 
@@ -1184,30 +1112,22 @@
                 font-size: 14px;
             }
             
-            .teachable-machine-control {
-                top: 60px;
-                right: 10px;
-                padding: 8px;
-                min-width: 180px;
-                font-size: 7px;
+            .webcam-control {
+                bottom: 10px;
+                right: 50px;
+                width: 32px;
+                height: 32px;
             }
             
-            .teachable-machine-control h3 {
-                font-size: 9px;
+            .webcam-control i {
+                font-size: 14px;
             }
             
-            .tm-control-btn {
-                font-size: 6px;
-                padding: 4px 6px;
-            }
-            
-            .webcam-container {
-                height: 100px;
-            }
-            
-            .pose-instructions {
-                font-size: 6px;
-                line-height: 1.3;
+            .webcam-preview {
+                width: 120px;
+                height: 90px;
+                top: 80px;
+                left: 40px; /* DIUBAH: dari 30px menjadi 40px */
             }
         }
         
@@ -1336,6 +1256,11 @@
                 <img src="https://denicendrianto41.github.io/beringin.png" alt="Pohon Beringin" width="200" height="120">
             </div>
             
+            <!-- NEW: Webcam preview di atas pohon beringin - DIGESER 10px KE KANAN -->
+            <div class="webcam-preview" id="webcam-preview" style="top: 100px; left: 60px;">
+                <canvas id="webcam-canvas" width="200" height="200"></canvas>
+            </div>
+            
             <!-- Awan yang bergerak -->
             <div class="cloud" style="top: 80px; left: 200px;">
                 <img src="https://iili.io/fnFM07f.png" alt="Awan" width="120" height="70">
@@ -1436,43 +1361,14 @@
         <div class="timer">WAKTU: <span id="time">120</span></div>
         <div class="level-indicator">LEVEL: <span id="level">1</span></div>
         
+        <!-- NEW: Webcam control button (next to sound control) -->
+        <div class="webcam-control off" id="webcam-control" title="Klik untuk mengaktifkan/mematikan webcam pose control">
+            <i id="webcam-icon">📷</i>
+        </div>
+        
         <!-- NEW: Sound control button -->
         <div class="sound-control on" id="sound-control" title="Klik untuk menyalakan/mematikan suara">
             <i id="sound-icon">♪</i>
-        </div>
-        
-        <!-- NEW: Teachable Machine Pose Control Panel -->
-        <div class="teachable-machine-control" id="tm-control" style="display: none;">
-            <h3>KONTROL POSE (WEBCAM)</h3>
-            <div class="teachable-status">
-                <div>
-                    <span class="status-indicator loading" id="tm-status"></span>
-                    <span id="tm-status-text">Menyiapkan...</span>
-                </div>
-            </div>
-            
-            <div class="webcam-container">
-                <canvas id="webcam-canvas"></canvas>
-            </div>
-            
-            <div class="pose-display">
-                Pose: <span class="current-pose" id="current-pose">-</span>
-            </div>
-            
-            <button class="tm-control-btn" id="tm-start-btn" disabled>
-                AKTIFKAN WEBCAM
-            </button>
-            <button class="tm-control-btn" id="tm-stop-btn" disabled>
-                MATIKAN WEBCAM
-            </button>
-            
-            <div class="pose-instructions">
-                Kontrol Mario dengan pose tubuh:<br/>
-                • <strong>MAJU</strong>: Angkat tangan kanan<br/>
-                • <strong>MUNDUR</strong>: Angkat tangan kiri<br/>
-                • <strong>LOMPAT</strong>: Angkat kedua tangan<br/>
-                • <strong>DIAM</strong>: Turunkan kedua tangan
-            </div>
         </div>
         
         <div class="question-display" id="question-display" style="display: none;">
@@ -1583,21 +1479,18 @@
         const snakeAnswersContainer = document.getElementById('snake-answers-container');
         const closeSnakeQuestionBtn = document.getElementById('close-snake-question-btn');
         
+        // NEW: Webcam control variables
+        const webcamControl = document.getElementById('webcam-control');
+        const webcamIcon = document.getElementById('webcam-icon');
+        const webcamPreview = document.getElementById('webcam-preview');
+        const webcamCanvas = document.getElementById('webcam-canvas');
+        
         // NEW: Feedback between question and answers
         const feedbackBetween = document.getElementById('feedback-between');
         
         // NEW: Sound control button
         const soundControl = document.getElementById('sound-control');
         const soundIcon = document.getElementById('sound-icon');
-        
-        // NEW: Teachable Machine Pose elements
-        const tmControl = document.getElementById('tm-control');
-        const tmStatus = document.getElementById('tm-status');
-        const tmStatusText = document.getElementById('tm-status-text');
-        const currentPose = document.getElementById('current-pose');
-        const tmStartBtn = document.getElementById('tm-start-btn');
-        const tmStopBtn = document.getElementById('tm-stop-btn');
-        const webcamCanvas = document.getElementById('webcam-canvas');
         
         // Snake question box - hanya satu
         const snakeQuestionBox = document.getElementById('snake-question-box');
@@ -1628,7 +1521,7 @@
         // NEW: Sound control state
         let isSoundOn = true;
         
-        // NEW: Teachable Machine Pose variables
+        // NEW: Webcam pose variables - DIPERBAIKI
         let model, webcam, ctx, maxPredictions;
         let isTMStarted = false;
         let lastPoseTime = 0;
@@ -1866,10 +1759,10 @@
             }
         }
         
-        // NEW: Teachable Machine Pose Functions
+        // NEW: Teachable Machine Pose Functions - DIPERBAIKI BERDASARKAN SCRIPT CONTOH
         async function initTeachableMachine() {
             try {
-                updateTMStatus('loading', 'Memuat model pose...');
+                console.log('Memuat model pose...');
                 
                 // the link to your model provided by Teachable Machine export panel
                 const URL = "https://teachablemachine.withgoogle.com/models/3zcHAX3HO/";
@@ -1879,39 +1772,41 @@
                 // load the model and metadata
                 model = await tmPose.load(modelURL, metadataURL);
                 maxPredictions = model.getTotalClasses();
-                poseLabels = model.getClassLabels();
                 
-                console.log('Model pose loaded. Classes:', poseLabels);
-                
-                updateTMStatus('off', 'Model siap!');
+                console.log('Model pose loaded. Max predictions:', maxPredictions);
                 modelLoaded = true;
                 
-                // Enable start button
-                tmStartBtn.disabled = false;
-                tmStartBtn.textContent = 'AKTIFKAN WEBCAM';
-                
                 // Setup canvas context
+                webcamCanvas.width = 200;
+                webcamCanvas.height = 200;
                 ctx = webcamCanvas.getContext('2d');
                 
                 console.log('Teachable Machine Pose model loaded successfully');
             } catch (error) {
                 console.error('Error loading Teachable Machine Pose model:', error);
-                updateTMStatus('off', 'Gagal memuat model');
-                tmStartBtn.disabled = true;
-                tmStartBtn.textContent = 'GAGAL MEMUAT';
+                alert('Gagal memuat model pose. Fitur webcam tidak tersedia.');
+                modelLoaded = false;
             }
         }
         
-        function updateTMStatus(status, text) {
-            tmStatus.className = 'status-indicator ' + status;
-            tmStatusText.textContent = text;
+        // NEW: Simple webcam toggle function
+        async function toggleWebcam() {
+            if (isTMStarted) {
+                await stopTMPose();
+            } else {
+                if (modelLoaded) {
+                    await startTMPose();
+                } else {
+                    alert('Model pose belum siap. Silakan tunggu sebentar atau refresh halaman.');
+                }
+            }
         }
         
         async function startTMPose() {
             if (!modelLoaded || !gameActive) return;
             
             try {
-                // Setup webcam
+                // Setup webcam sesuai dengan contoh script
                 const size = 200;
                 const flip = true; // whether to flip the webcam
                 webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
@@ -1922,46 +1817,74 @@
                 window.requestAnimationFrame(loop);
                 
                 isTMStarted = true;
-                updateTMStatus('on', 'Mendeteksi pose...');
-                tmStartBtn.disabled = true;
-                tmStopBtn.disabled = false;
-                currentPose.textContent = 'Menyiapkan...';
+                webcamControl.classList.remove('off');
+                webcamControl.classList.add('on');
+                webcamIcon.textContent = '⏹️';
+                webcamPreview.style.display = 'block';
+                webcamControl.title = "Webcam: ON (Klik untuk mematikan)";
                 
                 console.log('Webcam started for pose detection');
+                
             } catch (error) {
                 console.error('Error starting webcam:', error);
-                updateTMStatus('off', 'Gagal mengakses webcam');
-                alert('Tidak dapat mengakses webcam. Pastikan Anda memberikan izin akses kamera.');
+                alert('Tidak dapat mengakses webcam. Pastikan Anda memberikan izin akses kamera dan kamera tersedia.');
+                
+                // Reset UI
+                webcamControl.classList.remove('on');
+                webcamControl.classList.add('off');
+                webcamIcon.textContent = '📷';
+                webcamPreview.style.display = 'none';
+                isTMStarted = false;
             }
         }
         
         async function stopTMPose() {
-            if (webcam && isTMStarted) {
-                webcam.stop();
+            if (isTMStarted) {
+                // Hentikan webcam jika ada
+                if (webcam) {
+                    await webcam.stop();
+                }
+                
                 isTMStarted = false;
-                updateTMStatus('off', 'Berhenti');
-                tmStartBtn.disabled = false;
-                tmStopBtn.disabled = true;
-                currentPose.textContent = '-';
                 
                 // Clear canvas
-                ctx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+                if (ctx) {
+                    ctx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+                }
+                
+                // Update UI
+                webcamControl.classList.remove('on');
+                webcamControl.classList.add('off');
+                webcamIcon.textContent = '📷';
+                webcamPreview.style.display = 'none';
+                webcamControl.title = "Webcam: OFF (Klik untuk mengaktifkan)";
+                
+                console.log('Webcam stopped');
             }
         }
         
-        async function loop() {
-            if (!isTMStarted) return;
+        async function loop(timestamp) {
+            if (!isTMStarted || !webcam) return;
             
-            webcam.update(); // update the webcam frame
-            await predict();
-            
-            if (isTMStarted) {
-                window.requestAnimationFrame(loop);
+            try {
+                webcam.update(); // update the webcam frame
+                await predict();
+                
+                if (isTMStarted) {
+                    window.requestAnimationFrame(loop);
+                }
+            } catch (error) {
+                console.error('Error in webcam loop:', error);
+                if (isTMStarted) {
+                    stopTMPose();
+                }
             }
         }
         
         async function predict() {
             try {
+                if (!webcam || !model || !isTMStarted) return;
+                
                 // Prediction #1: run input through posenet
                 const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
                 
@@ -1984,28 +1907,25 @@
                     processPoseCommand(predictedPose, maxProbability);
                 }
                 
-                // Update display with current pose
-                currentPose.textContent = predictedPose || '-';
-                
                 // Draw webcam feed and pose
-                drawWebcam(pose);
+                drawPose(pose);
                 
             } catch (error) {
                 console.error('Error in pose prediction:', error);
             }
         }
         
-        function drawWebcam(pose) {
-            if (webcam.canvas) {
-                // Draw webcam feed
-                ctx.drawImage(webcam.canvas, 0, 0, webcamCanvas.width, webcamCanvas.height);
-                
-                // Draw the keypoints and skeleton
-                if (pose) {
-                    const minPartConfidence = 0.5;
-                    tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-                    tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-                }
+        function drawPose(pose) {
+            if (!webcam.canvas || !ctx) return;
+            
+            // Draw webcam feed
+            ctx.drawImage(webcam.canvas, 0, 0);
+            
+            // Draw the keypoints and skeleton
+            if (pose) {
+                const minPartConfidence = 0.5;
+                tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+                tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
             }
         }
         
@@ -2020,11 +1940,13 @@
             console.log(`Pose detected: ${pose} (${(probability * 100).toFixed(1)}%)`);
             
             // Process command based on the Teachable Machine model labels
+            // Model ini mungkin memiliki label yang berbeda, sesuaikan dengan model Anda
             switch(pose.toLowerCase()) {
                 case 'maju':
                 case 'forward':
                 case 'kanan':
                 case 'right':
+                case 'class 1': // Coba label default
                     // Move right
                     keysPressed['ArrowRight'] = true;
                     setTimeout(() => {
@@ -2036,6 +1958,7 @@
                 case 'backward':
                 case 'kiri':
                 case 'left':
+                case 'class 2': // Coba label default
                     // Move left
                     keysPressed['ArrowLeft'] = true;
                     setTimeout(() => {
@@ -2047,6 +1970,7 @@
                 case 'jump':
                 case 'atas':
                 case 'up':
+                case 'class 3': // Coba label default
                     // Jump
                     jump();
                     break;
@@ -2054,6 +1978,7 @@
                 case 'diam':
                 case 'stop':
                 case 'berhenti':
+                case 'class 4': // Coba label default
                     // Stop movement
                     keysPressed['ArrowLeft'] = false;
                     keysPressed['ArrowRight'] = false;
@@ -2103,12 +2028,11 @@
                 gameActive = true;
             });
             
+            // NEW: Webcam control button event listener
+            webcamControl.addEventListener('click', toggleWebcam);
+            
             // NEW: Sound control button event listener
             soundControl.addEventListener('click', toggleSound);
-            
-            // NEW: Teachable Machine button listeners
-            tmStartBtn.addEventListener('click', startTMPose);
-            tmStopBtn.addEventListener('click', stopTMPose);
         }
         
         function startGame() {
@@ -2139,9 +2063,6 @@
             // Hide login screen and show game
             loginScreen.style.display = 'none';
             gameContainer.style.display = 'block';
-            
-            // Show Teachable Machine control panel
-            tmControl.style.display = 'block';
             
             // Initialize level-specific elements
             initializeLevel();
@@ -2349,7 +2270,7 @@
             // Show close button
             closeSnakeQuestionBtn.style.display = 'block';
             
-            // Stop Teachable Machine while showing question
+            // Stop webcam while showing question
             if (isTMStarted) {
                 stopTMPose();
             }
@@ -2394,7 +2315,7 @@
                     
                     gameActive = true;
                     
-                    // Restart Teachable Machine if it was active
+                    // Restart webcam if it was active
                     if (modelLoaded && !isTMStarted) {
                         setTimeout(() => {
                             startTMPose();
@@ -2502,7 +2423,7 @@
                 clearInterval(timerInterval);
                 clearInterval(flyingCoronaInterval);
                 
-                // Stop Teachable Machine
+                // Stop webcam
                 if (isTMStarted) {
                     stopTMPose();
                 }
@@ -2636,7 +2557,7 @@
                 clearInterval(timerInterval);
                 clearInterval(flyingCoronaInterval);
                 
-                // Stop Teachable Machine
+                // Stop webcam
                 if (isTMStarted) {
                     stopTMPose();
                 }
@@ -2713,7 +2634,7 @@
         function showQuestion() {
             gameActive = false; // Pause game
             
-            // Stop Teachable Machine while showing question
+            // Stop webcam while showing question
             if (isTMStarted) {
                 stopTMPose();
             }
@@ -2782,7 +2703,7 @@
                     // Resume game
                     gameActive = true;
                     
-                    // Restart Teachable Machine if it was active
+                    // Restart webcam if it was active
                     if (modelLoaded && !isTMStarted) {
                         setTimeout(() => {
                             startTMPose();
@@ -2819,7 +2740,7 @@
                     // Resume game
                     gameActive = true;
                     
-                    // Restart Teachable Machine if it was active
+                    // Restart webcam if it was active
                     if (modelLoaded && !isTMStarted) {
                         setTimeout(() => {
                             startTMPose();
@@ -2877,7 +2798,7 @@
             const moveSpeed = 5;
             let moved = false;
             
-            // Handle horizontal movement from keyboard AND Teachable Machine
+            // Handle horizontal movement from keyboard AND webcam
             if (keysPressed['ArrowRight'] || keysPressed['d']) {
                 marioPosition += moveSpeed;
                 // Flip gambar Mario dengan CSS transform
@@ -3064,7 +2985,7 @@
                 playBackgroundMusic();
             }
 
-            // Auto-start Teachable Machine after a delay
+            // Auto-start webcam after a delay if model is loaded
             if (modelLoaded && !isTMStarted) {
                 setTimeout(() => {
                     startTMPose();
