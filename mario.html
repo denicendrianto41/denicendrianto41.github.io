@@ -177,7 +177,7 @@
             height: 70px;
             position: absolute;
             bottom: 80px;
-            left: 150px;
+            left: 170px; /* DIUBAH: dari 150px menjadi 170px (20px lebih maju) */
             z-index: 10;
             transition: transform 0.1s;
         }
@@ -1252,8 +1252,8 @@
             <!-- Safe distance indicator -->
             <div class="safe-distance" id="safe-distance" style="left: 2800px; display: none;"></div>
             
-            <!-- Pohon beringin dipindahkan ke BELAKANG tanah dan rumput -->
-            <div class="hill" style="left: 100px;">
+            <!-- DIUBAH: Pohon beringin dipindahkan 20px lebih maju ke depan -->
+            <div class="hill" style="left: 120px;"> <!-- DIUBAH: dari 100px menjadi 120px -->
                 <img src="https://denicendrianto41.github.io/beringin.png" alt="Pohon Beringin" width="200" height="120">
             </div>
             
@@ -1347,6 +1347,7 @@
         </div>
         
         <!-- Character image will be set based on gender -->
+        <!-- DIUBAH: Posisi Mario diatur di CSS (.mario) -->
         <div class="mario" id="mario">
             <!-- Gambar akan diatur oleh JavaScript berdasarkan jenis kelamin -->
         </div>
@@ -1563,7 +1564,8 @@
         const rightBtn = document.getElementById('right-btn');
         const jumpBtn = document.getElementById('jump-btn');
 
-        let marioPosition = 150;
+        // DIUBAH: Posisi awal Mario menjadi 170px (20px lebih maju dari 150px)
+        let marioPosition = 170; // DIUBAH: dari 150 menjadi 170
         let worldOffset = 0;
         let isJumping = false;
         let gameActive = true;
@@ -2838,7 +2840,7 @@
             }
 
             // Keep Mario on screen boundary
-            if (marioPosition < 150) marioPosition = 150;
+            if (marioPosition < 170) marioPosition = 170; // DIUBAH: dari 150 menjadi 170
             
             // Update world scroll (Parallax/Side-scrolling effect)
             if (marioPosition > window.innerWidth / 2) {
@@ -2921,7 +2923,7 @@
 
         function restartGame() {
             // Reset state
-            marioPosition = 150;
+            marioPosition = 170; // DIUBAH: dari 150 menjadi 170
             worldOffset = 0;
             isJumping = false;
             gameActive = true;
@@ -2931,7 +2933,7 @@
             if (timeLeft < 60) timeLeft = 60; // Minimum time
             scoreDisplay.textContent = score;
             timeDisplay.textContent = timeLeft;
-            mario.style.left = '150px';
+            mario.style.left = '170px'; // DIUBAH: dari 150px menjadi 170px
             mario.style.bottom = '80px';
             mario.style.transform = 'scaleX(1)';
             gameWorld.style.transform = `translateX(0px)`;
