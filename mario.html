@@ -37,13 +37,53 @@
             z-index: 100;
         }
         
+        /* PERUBAHAN: Login container dengan scaling responsif */
         .login-container {
-            background-color: transparent; /* Ubah menjadi transparan */
-            padding: 20px;
+            background-color: transparent;
+            padding: 0;
             width: 90%;
-            max-width: 450px;
+            max-width: 400px;
             color: white;
-            position: relative; /* Untuk positioning gambar frame */
+            position: relative;
+            transform: scale(0.7); /* Default 70% untuk mobile */
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Media Queries untuk Responsiveness Login Container */
+        @media (min-width: 480px) and (max-width: 767px) {
+            .login-container {
+                transform: scale(0.75);
+                max-width: 380px;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .login-container {
+                transform: scale(0.85);
+                max-width: 420px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .login-container {
+                transform: scale(1);
+                max-width: 450px;
+            }
+        }
+        
+        @media (max-width: 479px) and (orientation: portrait) {
+            .login-container {
+                transform: scale(0.65);
+                max-width: 340px;
+            }
+        }
+        
+        @media (max-width: 479px) and (orientation: landscape) {
+            .login-container {
+                transform: scale(0.6);
+                max-width: 320px;
+            }
         }
         
         /* Frame gambar login */
@@ -61,12 +101,27 @@
             pointer-events: none; /* Tidak mengganggu interaksi form */
         }
         
-        /* Container untuk konten form - DIUBAH: tambah margin top untuk turunkan 20px */
+        /* Container untuk konten form - DIUBAH untuk scaling */
         .login-content {
             position: relative;
             z-index: 1; /* Di depan frame */
-            padding: 40px 30px 30px 30px; /* Sesuaikan padding agar tidak tertutup frame */
-            margin-top: 20px; /* DIUBAH: Turunkan 20px */
+            padding: 30px 25px 25px 25px;
+            margin-top: 20px;
+        }
+        
+        /* Media queries untuk login-content */
+        @media (max-width: 768px) {
+            .login-content {
+                padding: 25px 20px 20px 20px;
+                margin-top: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-content {
+                padding: 20px 15px 15px 15px;
+                margin-top: 10px;
+            }
         }
         
         .login-title {
@@ -90,20 +145,45 @@
             gap: 5px;
         }
         
+        /* PERUBAHAN: Form label yang lebih kecil */
         .form-label {
-            font-size: 10px;
+            font-size: 9px;
             color: #ffb700; /* Warna kuning untuk label */
             text-shadow: 1px 1px 0 #000;
         }
         
+        /* PERUBAHAN: Form input yang lebih kecil */
         .form-input {
-            padding: 8px;
+            padding: 7px;
             border-radius: 8px;
-            border: 3px solid #ffb700;
+            border: 2.5px solid #ffb700;
             font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
+            font-size: 9px;
             color: #333333; /* Abu-abu gelap */
             background-color: rgba(255, 255, 255, 0.9); /* Background putih transparan */
+        }
+        
+        /* Media queries untuk form input */
+        @media (max-width: 768px) {
+            .form-input {
+                padding: 6px;
+                font-size: 8px;
+            }
+            
+            .form-label {
+                font-size: 8px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .form-input {
+                padding: 5px;
+                font-size: 7px;
+            }
+            
+            .form-label {
+                font-size: 7px;
+            }
         }
         
         .gender-options {
@@ -112,14 +192,36 @@
             margin-top: 5px;
         }
         
+        /* PERUBAHAN: Gender option yang lebih kecil */
         .gender-option {
             display: flex;
             align-items: center;
             gap: 5px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 9px;
             color: #ffb700;
             text-shadow: 1px 1px 0 #000;
+        }
+        
+        /* Media queries untuk gender option */
+        @media (max-width: 768px) {
+            .gender-option {
+                font-size: 8px;
+            }
+            
+            .gender-options {
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gender-option {
+                font-size: 7px;
+            }
+            
+            .gender-options {
+                gap: 10px;
+            }
         }
         
         /* Hapus bagian level selection */
@@ -150,13 +252,14 @@
             box-shadow: 0 0 10px rgba(76, 222, 128, 0.7);
         }
         
+        /* PERUBAHAN: Tombol mulai yang lebih kecil */
         .start-game-btn {
             background-color: #4ade80;
             color: white;
             border: 3px solid white;
-            padding: 12px;
+            padding: 10px;
             font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             transition: all 0.2s;
             border-radius: 8px;
@@ -165,6 +268,22 @@
             font-weight: bold;
             text-shadow: 1px 1px 0 #000;
             box-shadow: 0 4px 0 #22c55e;
+        }
+        
+        /* Media queries untuk tombol mulai */
+        @media (max-width: 768px) {
+            .start-game-btn {
+                padding: 9px;
+                font-size: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .start-game-btn {
+                padding: 8px;
+                font-size: 9px;
+                margin-top: 10px;
+            }
         }
         
         .start-game-btn:hover {
@@ -178,11 +297,11 @@
             box-shadow: 0 2px 0 #16a34a;
         }
         
-        /* Radio button custom styling */
+        /* PERUBAHAN: Radio button custom styling yang lebih kecil */
         input[type="radio"] {
             appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid #ffb700;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.9);
@@ -197,12 +316,41 @@
         input[type="radio"]:checked::after {
             content: '';
             position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 8px;
-            height: 8px;
+            top: 3px;
+            left: 3px;
+            width: 6px;
+            height: 6px;
             background-color: #333;
             border-radius: 50%;
+        }
+        
+        /* Media queries untuk radio button */
+        @media (max-width: 768px) {
+            input[type="radio"] {
+                width: 13px;
+                height: 13px;
+            }
+            
+            input[type="radio"]:checked::after {
+                width: 5px;
+                height: 5px;
+                top: 3px;
+                left: 3px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            input[type="radio"] {
+                width: 12px;
+                height: 12px;
+            }
+            
+            input[type="radio"]:checked::after {
+                width: 4px;
+                height: 4px;
+                top: 3px;
+                left: 3px;
+            }
         }
         
         .player-name-display {
@@ -1002,12 +1150,12 @@
         /* Media Queries for Mobile Responsiveness */
         @media (max-width: 768px) {
             .login-container {
-                padding: 15px;
+                padding: 0;
                 max-width: 90%;
             }
             
             .login-content {
-                padding: 30px 20px 20px 20px;
+                padding: 25px 20px 20px 20px;
                 margin-top: 15px; /* DIUBAH: Sesuaikan untuk mobile */
             }
             
@@ -1022,11 +1170,11 @@
             
             .form-input {
                 padding: 6px;
-                font-size: 9px;
+                font-size: 8px;
             }
             
             .gender-option {
-                font-size: 9px;
+                font-size: 8px;
             }
             
             .level-btn {
@@ -1107,12 +1255,12 @@
             }
             
             .login-container {
-                padding: 10px;
+                padding: 0;
                 max-width: 95%;
             }
             
             .login-content {
-                padding: 25px 15px 15px 15px;
+                padding: 20px 15px 15px 15px;
                 margin-top: 10px; /* DIUBAH: Sesuaikan untuk mobile kecil */
             }
             
@@ -1286,12 +1434,12 @@
                 <!-- Hapus h1 JELAJAH VIRUS -->
                 <div class="login-form">
                     <br/><br/>
-                    <div class="form-group" style="margin-top: 10px;"> <!-- DIUBAH: turunkan 20px -->
+                    <div class="form-group" style="margin-top: 5px;"> <!-- DIUBAH: turunkan 5px -->
                         <label class="form-label">NAMA USER:</label>
                         <input type="text" id="user-name" class="form-input" placeholder="Masukkan nama Anda">
                     </div>
                     
-                    <div class="form-group" style="margin-top: 10px;"> <!-- DIUBAH: turunkan 20px -->
+                    <div class="form-group" style="margin-top: 5px;"> <!-- DIUBAH: turunkan 5px -->
                         <label class="form-label">JENIS KELAMIN:</label>
                         <div class="gender-options">
                             <div class="gender-option">
@@ -1305,14 +1453,14 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" style="margin-top: 10px;"> <!-- DIUBAH: turunkan 20px -->
+                    <div class="form-group" style="margin-top: 5px;"> <!-- DIUBAH: turunkan 5px -->
                         <label class="form-label">NPSN SEKOLAH:</label>
                         <input type="text" id="school-npsn" class="form-input" placeholder="Masukkan NPSN sekolah">
                     </div>
                     
                     <!-- Hapus bagian pilihan level -->
                     
-                    <button class="start-game-btn" id="start-game-btn" style="margin-top: 25px;"> <!-- DIUBAH: turunkan tambahan 20px (15px default + 20px) -->
+                    <button class="start-game-btn" id="start-game-btn" style="margin-top: 15px;"> <!-- DIUBAH: turunkan 15px -->
                         MULAI PERMAINAN
                     </button>
                 </div>
@@ -1753,6 +1901,40 @@
                 }
             ]
         };
+        
+        // NEW: Fungsi untuk menyesuaikan ukuran login form secara responsif
+        function adjustLoginFormSize() {
+            const loginContainer = document.querySelector('.login-container');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            
+            // Deteksi orientasi layar
+            const isLandscape = screenWidth > screenHeight;
+            
+            if (screenWidth <= 479) {
+                if (isLandscape) {
+                    // Mobile kecil landscape
+                    loginContainer.style.transform = 'scale(0.6)';
+                } else {
+                    // Mobile kecil portrait
+                    loginContainer.style.transform = 'scale(0.65)';
+                }
+            } else if (screenWidth <= 767) {
+                // Mobile
+                loginContainer.style.transform = 'scale(0.75)';
+            } else if (screenWidth <= 1023) {
+                // Tablet
+                loginContainer.style.transform = 'scale(0.85)';
+            } else {
+                // Desktop
+                loginContainer.style.transform = 'scale(1)';
+            }
+            
+            // Jika layar sangat pendek, perkecil lagi
+            if (screenHeight < 500) {
+                loginContainer.style.transform = 'scale(0.6)';
+            }
+        }
         
         // Sound effect functions with sound control check
         function playJumpSound() {
@@ -3238,6 +3420,11 @@
             // Restart buttons
             restartBtn.addEventListener('click', restartGame);
             playAgainBtn.addEventListener('click', restartGame);
+            
+            // NEW: Adjust login form size on load and resize
+            adjustLoginFormSize();
+            window.addEventListener('resize', adjustLoginFormSize);
+            window.addEventListener('orientationchange', adjustLoginFormSize);
         });
     </script>
 </body>
