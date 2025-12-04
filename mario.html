@@ -38,15 +38,35 @@
         }
         
         .login-container {
-            background-color: rgba(92, 148, 252, 0.9); /* Mengubah menjadi semi-transparan */
+            background-color: transparent; /* Ubah menjadi transparan */
             padding: 20px;
-            border-radius: 15px;
-            border: 4px solid #ffb700;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
             width: 90%;
             max-width: 450px;
             color: white;
-            backdrop-filter: blur(5px); /* Efek blur untuk kontras yang lebih baik */
+            position: relative; /* Untuk positioning gambar frame */
+        }
+        
+        /* Frame gambar login */
+        .login-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://denicendrianto41.github.io/login-frame.png');
+            background-size: 100% 100%; /* Gambar mengikuti ukuran container */
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1; /* Di belakang form */
+            pointer-events: none; /* Tidak mengganggu interaksi form */
+        }
+        
+        /* Container untuk konten form - DIUBAH: tambah margin top untuk turunkan 20px */
+        .login-content {
+            position: relative;
+            z-index: 1; /* Di depan frame */
+            padding: 40px 30px 30px 30px; /* Sesuaikan padding agar tidak tertutup frame */
+            margin-top: 20px; /* DIUBAH: Turunkan 20px */
         }
         
         .login-title {
@@ -55,6 +75,7 @@
             font-size: 16px;
             color: #ffb700;
             text-shadow: 2px 2px 0 #000;
+            display: none; /* Sembunyikan teks JELAJAH VIRUS */
         }
         
         .login-form {
@@ -71,6 +92,8 @@
         
         .form-label {
             font-size: 10px;
+            color: #ffb700; /* Warna kuning untuk label */
+            text-shadow: 1px 1px 0 #000;
         }
         
         .form-input {
@@ -80,6 +103,7 @@
             font-family: 'Press Start 2P', cursive;
             font-size: 10px;
             color: #333333; /* Abu-abu gelap */
+            background-color: rgba(255, 255, 255, 0.9); /* Background putih transparan */
         }
         
         .gender-options {
@@ -94,6 +118,8 @@
             gap: 5px;
             cursor: pointer;
             font-size: 10px;
+            color: #ffb700;
+            text-shadow: 1px 1px 0 #000;
         }
         
         /* Hapus bagian level selection */
@@ -136,11 +162,47 @@
             border-radius: 8px;
             text-align: center;
             margin-top: 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #000;
+            box-shadow: 0 4px 0 #22c55e;
         }
         
         .start-game-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
             background-color: #22c55e;
+            box-shadow: 0 6px 0 #16a34a;
+        }
+        
+        .start-game-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 #16a34a;
+        }
+        
+        /* Radio button custom styling */
+        input[type="radio"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffb700;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        input[type="radio"]:checked {
+            background-color: #ffb700;
+        }
+        
+        input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 8px;
+            height: 8px;
+            background-color: #333;
+            border-radius: 50%;
         }
         
         .player-name-display {
@@ -942,13 +1004,16 @@
             .login-container {
                 padding: 15px;
                 max-width: 90%;
-                background-color: rgba(92, 148, 252, 0.95); /* Sedikit lebih solid di mobile */
+            }
+            
+            .login-content {
+                padding: 30px 20px 20px 20px;
+                margin-top: 15px; /* DIUBAH: Sesuaikan untuk mobile */
             }
             
             .login-title {
                 font-size: 14px;
                 margin-bottom: 10px;
-                text-shadow: 2px 2px 0 #000; /* Menambahkan bayangan untuk keterbacaan yang lebih baik */
             }
             
             .form-label {
@@ -1042,8 +1107,13 @@
             }
             
             .login-container {
-                padding: 15px;
-                background-color: rgba(92, 148, 252, 0.98); /* Lebih solid di perangkat kecil */
+                padding: 10px;
+                max-width: 95%;
+            }
+            
+            .login-content {
+                padding: 25px 15px 15px 15px;
+                margin-top: 10px; /* DIUBAH: Sesuaikan untuk mobile kecil */
             }
             
             .login-title {
@@ -1211,35 +1281,40 @@
     <!-- Login Screen -->
     <div class="login-screen" id="login-screen">
         <div class="login-container">
-            <h1 class="login-title">JELAJAH VIRUS</h1>
-            <div class="login-form">
-                <div class="form-group">
-                    <label class="form-label">NAMA USER:</label>
-                    <input type="text" id="user-name" class="form-input" placeholder="Masukkan nama Anda">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">JENIS KELAMIN:</label>
-                    <div class="gender-options">
-                        <div class="gender-option">
-                            <input type="radio" id="male" name="gender" value="Laki-laki" checked>
-                            <label for="male">Laki-laki</label>
-                        </div>
-                        <div class="gender-option">
-                            <input type="radio" id="female" name="gender" value="Perempuan">
-                            <label for="female">Perempuan</label>
+            <div class="login-frame"></div>
+            <div class="login-content">
+                <!-- Hapus h1 JELAJAH VIRUS -->
+                <div class="login-form">
+                    <div class="form-group" style="margin-top: 20px;"> <!-- DIUBAH: turunkan 20px -->
+                        <label class="form-label">NAMA USER:</label>
+                        <input type="text" id="user-name" class="form-input" placeholder="Masukkan nama Anda">
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;"> <!-- DIUBAH: turunkan 20px -->
+                        <label class="form-label">JENIS KELAMIN:</label>
+                        <div class="gender-options">
+                            <div class="gender-option">
+                                <input type="radio" id="male" name="gender" value="Laki-laki" checked>
+                                <label for="male">Laki-laki</label>
+                            </div>
+                            <div class="gender-option">
+                                <input type="radio" id="female" name="gender" value="Perempuan">
+                                <label for="female">Perempuan</label>
+                            </div>
                         </div>
                     </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;"> <!-- DIUBAH: turunkan 20px -->
+                        <label class="form-label">NPSN SEKOLAH:</label>
+                        <input type="text" id="school-npsn" class="form-input" placeholder="Masukkan NPSN sekolah">
+                    </div>
+                    
+                    <!-- Hapus bagian pilihan level -->
+                    
+                    <button class="start-game-btn" id="start-game-btn" style="margin-top: 35px;"> <!-- DIUBAH: turunkan tambahan 20px (15px default + 20px) -->
+                        MULAI PERMAINAN
+                    </button>
                 </div>
-                
-                <div class="form-group">
-                    <label class="form-label">NPSN SEKOLAH:</label>
-                    <input type="text" id="school-npsn" class="form-input" placeholder="Masukkan NPSN sekolah">
-                </div>
-                
-                <!-- Hapus bagian pilihan level -->
-                
-                <button class="start-game-btn" id="start-game-btn">MULAI PERMAINAN</button>
             </div>
         </div>
     </div>
