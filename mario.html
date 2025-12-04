@@ -909,11 +909,11 @@
             font-family: 'Press Start 2P', cursive;
         }
         
-        /* NEW: Small webcam preview - DIATAS POHON BERINGIN - DIGESER 10px KE KANAN */
+        /* DIUBAH: Webcam preview sekarang absolute di dalam game-world */
         .webcam-preview {
-            position: fixed;
-            top: 100px; /* Posisi di atas pohon beringin */
-            left: 60px; /* DIUBAH: dari 50px menjadi 60px (digeser 10px ke kanan) */
+            position: absolute; /* DIUBAH: dari fixed menjadi absolute */
+            top: 100px;
+            left: 60px;
             z-index: 24;
             width: 160px;
             height: 120px;
@@ -1023,7 +1023,7 @@
                 width: 140px;
                 height: 105px;
                 top: 90px;
-                left: 50px; /* DIUBAH: dari 40px menjadi 50px */
+                left: 60px;
             }
         }
 
@@ -1127,7 +1127,7 @@
                 width: 120px;
                 height: 90px;
                 top: 80px;
-                left: 40px; /* DIUBAH: dari 30px menjadi 40px */
+                left: 40px;
             }
         }
         
@@ -1233,6 +1233,11 @@
             <!-- Player Name Display -->
             <div class="player-name-display" id="player-name-display"></div>
             
+            <!-- NEW: Webcam preview di dalam game-world -->
+            <div class="webcam-preview" id="webcam-preview">
+                <canvas id="webcam-canvas" width="200" height="200"></canvas>
+            </div>
+            
             <!-- Books for Level 1 - Now in yellow boxes with book icon -->
             <div class="book-box" id="book1" style="bottom: 180px; left: 700px;">📚</div>
             <div class="book-box" id="book2" style="bottom: 180px; left: 1200px;">📚</div>
@@ -1254,11 +1259,6 @@
             <!-- Pohon beringin dipindahkan ke BELAKANG tanah dan rumput -->
             <div class="hill" style="left: 100px;">
                 <img src="https://denicendrianto41.github.io/beringin.png" alt="Pohon Beringin" width="200" height="120">
-            </div>
-            
-            <!-- NEW: Webcam preview di atas pohon beringin - DIGESER 10px KE KANAN -->
-            <div class="webcam-preview" id="webcam-preview" style="top: 100px; left: 60px;">
-                <canvas id="webcam-canvas" width="200" height="200"></canvas>
             </div>
             
             <!-- Awan yang bergerak -->
@@ -1987,6 +1987,15 @@
                 default:
                     console.log('Unknown pose:', pose);
             }
+        }
+        
+        // NEW: Function to update webcam preview position
+        function updateWebcamPreview() {
+            if (!webcamPreview || webcamPreview.style.display === 'none') return;
+            
+            // Posisi webcam relatif terhadap worldOffset
+            const webcamX = 60 - worldOffset; // Offset dari kiri layar dikurangi worldOffset
+            webcamPreview.style.left = `${webcamX}px`;
         }
         
         // Function to set character image based on gender
@@ -2827,6 +2836,9 @@
             // Update player name display position
             updatePlayerNameDisplay();
             
+            // UPDATE: Update webcam preview position
+            updateWebcamPreview();
+            
             // Check collisions every frame
             checkCollisions();
 
@@ -2906,6 +2918,12 @@
             mario.style.bottom = '80px';
             mario.style.transform = 'scaleX(1)';
             gameWorld.style.transform = `translateX(0px)`;
+
+            // UPDATE: Reset webcam preview position
+            if (webcamPreview) {
+                webcamPreview.style.left = '60px';
+                webcamPreview.style.top = '100px';
+            }
 
             // Bersihkan virus terbang
             flyingCoronas.forEach(corona => {
