@@ -909,11 +909,11 @@
             font-family: 'Press Start 2P', cursive;
         }
         
-        /* DIUBAH: Webcam preview sekarang absolute di dalam game-world */
+        /* DIUBAH: Webcam preview di pojok kiri bawah dengan pergerakan halus */
         .webcam-preview {
-            position: absolute; /* DIUBAH: dari fixed menjadi absolute */
-            top: 100px;
-            left: 60px;
+            position: fixed; /* Tetap fixed agar tidak bergerak terlalu drastis */
+            bottom: 70px; /* Posisi dari bawah */
+            left: 10px; /* Posisi dari kiri */
             z-index: 24;
             width: 160px;
             height: 120px;
@@ -923,6 +923,7 @@
             border: 2px solid #ffb700;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             display: none;
+            transition: transform 0.2s ease-out; /* Animasi pergerakan halus */
         }
         
         #webcam-canvas {
@@ -1022,8 +1023,8 @@
             .webcam-preview {
                 width: 140px;
                 height: 105px;
-                top: 90px;
-                left: 60px;
+                bottom: 60px;
+                left: 8px;
             }
         }
 
@@ -1126,8 +1127,8 @@
             .webcam-preview {
                 width: 120px;
                 height: 90px;
-                top: 80px;
-                left: 40px;
+                bottom: 50px;
+                left: 5px;
             }
         }
         
@@ -1232,11 +1233,6 @@
         <div class="game-world" id="game-world">
             <!-- Player Name Display -->
             <div class="player-name-display" id="player-name-display"></div>
-            
-            <!-- NEW: Webcam preview di dalam game-world -->
-            <div class="webcam-preview" id="webcam-preview">
-                <canvas id="webcam-canvas" width="200" height="200"></canvas>
-            </div>
             
             <!-- Books for Level 1 - Now in yellow boxes with book icon -->
             <div class="book-box" id="book1" style="bottom: 180px; left: 700px;">📚</div>
@@ -1356,6 +1352,11 @@
         </div>
         
         <div class="jump-indicator" id="jump-indicator"></div>
+        
+        <!-- DIUBAH: Webcam preview ditempatkan di luar game-world, di pojok kiri bawah -->
+        <div class="webcam-preview" id="webcam-preview">
+            <canvas id="webcam-canvas" width="200" height="200"></canvas>
+        </div>
         
         <div class="score-board">SKOR: <span id="score">0</span></div>
         <div class="timer">WAKTU: <span id="time">120</span></div>
@@ -1528,6 +1529,11 @@
         const POSE_COOLDOWN = 800; // 800ms cooldown between pose commands
         let modelLoaded = false;
         let poseLabels = [];
+
+        // NEW: Variables untuk pergerakan halus webcam
+        let targetWebcamX = 10;
+        let currentWebcamX = 10;
+        let webcamFollowSpeed = 0.1; // Kecepatan mengikuti (0-1), semakin kecil semakin halus
 
         // Existing game variables
         const mario = document.getElementById('mario');
@@ -1989,13 +1995,24 @@
             }
         }
         
-        // NEW: Function to update webcam preview position
+        // NEW: Function to update webcam preview position dengan pergerakan halus
         function updateWebcamPreview() {
             if (!webcamPreview || webcamPreview.style.display === 'none') return;
             
-            // Posisi webcam relatif terhadap worldOffset
-            const webcamX = 60 - worldOffset; // Offset dari kiri layar dikurangi worldOffset
-            webcamPreview.style.left = `${webcamX}px`;
+            // Hitung target posisi berdasarkan worldOffset
+            // Ketika Mario bergerak ke kanan (worldOffset negatif), webcam bergerak ke kiri sedikit
+            // Ketika Mario bergerak ke kiri (worldOffset 0), webcam kembali ke posisi normal
+            const parallaxFactor = 0.3; // Faktor parallax untuk pergerakan halus
+            targetWebcamX = 10 + (worldOffset * parallaxFactor / 10);
+            
+            // Interpolasi linear untuk pergerakan halus
+            currentWebcamX += (targetWebcamX - currentWebcamX) * webcamFollowSpeed;
+            
+            // Batasi pergerakan agar tidak terlalu jauh
+            currentWebcamX = Math.max(-30, Math.min(50, currentWebcamX));
+            
+            // Update posisi webcam
+            webcamPreview.style.left = `${currentWebcamX}px`;
         }
         
         // Function to set character image based on gender
@@ -2836,7 +2853,7 @@
             // Update player name display position
             updatePlayerNameDisplay();
             
-            // UPDATE: Update webcam preview position
+            // UPDATE: Update webcam preview position dengan pergerakan halus
             updateWebcamPreview();
             
             // Check collisions every frame
@@ -2921,8 +2938,10 @@
 
             // UPDATE: Reset webcam preview position
             if (webcamPreview) {
-                webcamPreview.style.left = '60px';
-                webcamPreview.style.top = '100px';
+                targetWebcamX = 10;
+                currentWebcamX = 10;
+                webcamPreview.style.left = '10px';
+                webcamPreview.style.bottom = '70px';
             }
 
             // Bersihkan virus terbang
