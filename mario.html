@@ -27,6 +27,10 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
+            background-image: url('https://denicendrianto41.github.io/bg-login.png'); /* Background baru */
+            background-size: cover; /* Mengisi seluruh area */
+            background-position: center; /* Posisi tengah */
+            background-repeat: no-repeat; /* Tidak diulang */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -34,7 +38,7 @@
         }
         
         .login-container {
-            background-color: #5c94fc;
+            background-color: rgba(92, 148, 252, 0.9); /* Mengubah menjadi semi-transparan */
             padding: 20px;
             border-radius: 15px;
             border: 4px solid #ffb700;
@@ -42,6 +46,7 @@
             width: 90%;
             max-width: 450px;
             color: white;
+            backdrop-filter: blur(5px); /* Efek blur untuk kontras yang lebih baik */
         }
         
         .login-title {
@@ -937,11 +942,13 @@
             .login-container {
                 padding: 15px;
                 max-width: 90%;
+                background-color: rgba(92, 148, 252, 0.95); /* Sedikit lebih solid di mobile */
             }
             
             .login-title {
                 font-size: 14px;
                 margin-bottom: 10px;
+                text-shadow: 2px 2px 0 #000; /* Menambahkan bayangan untuk keterbacaan yang lebih baik */
             }
             
             .form-label {
@@ -1029,6 +1036,16 @@
         }
 
         @media (max-width: 480px) {
+            .login-screen {
+                background-size: cover; /* Pastikan background tetap menutupi seluruh area */
+                background-position: center center;
+            }
+            
+            .login-container {
+                padding: 15px;
+                background-color: rgba(92, 148, 252, 0.98); /* Lebih solid di perangkat kecil */
+            }
+            
             .login-title {
                 font-size: 12px;
             }
