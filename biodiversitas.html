@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodiversitas Explorer Indonesia - Game Interaktif</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Tailwind CSS (via CDN for styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        #map, #learning-map {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+            border-radius: 8px;
+        }
+        
+        .fullscreen-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            background-color: #0f172a;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Animasi untuk marker game */
+        .correct-pin {
+            animation: pulse 1s infinite alternate;
+            filter: drop-shadow(0 0 10px #10b981);
+        }
+        
+        .perfect-hit-pin {
+            animation: superPulse 0.5s infinite;
+            filter: drop-shadow(0 0 20px gold);
+        }
+        
+        @keyframes superPulse {
+            0% { transform: scale(1.0); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1.0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.3); }
+        }
+        
+        /* Styling untuk garis biogeografi */
+        .biogeo-line {
+            stroke-width: 3px;
+            stroke-dasharray: 5, 5;
+            opacity: 0.8;
+        }
+        
+        .wallace-line {
+            stroke: #dc2626;
+        }
+        
+        .weber-line {
+            stroke: #2563eb;
+        }
+        
+        /* Responsif untuk mobile */
+        @media (max-width: 768px) {
+            .mobile-flex-col {
+                flex-direction: column;
+            }
+            
+            .mobile-text-sm {
+                font-size: 0.875rem;
+            }
+            
+            .mobile-text-xs {
+                font-size: 0.75rem;
+            }
+            
+            .mobile-p-2 {
+                padding: 0.5rem;
+            }
+            
+            .mobile-w-full {
+                width: 100%;
+            }
+        }
+        
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Styling untuk popup peta pembelajaran */
+        .learning-popup-content {
+            max-width: 280px;
+        }
+        
+        .species-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        /* Custom marker untuk peta pembelajaran */
+        .learning-marker {
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            transition: transform 0.2s;
+        }
+        
+        .learning-marker:hover {
+            transform: scale(1.2) translateY(-5px);
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 6px;
+            background-color: #1e293b;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Statistik box */
+        .stat-box {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            background: rgba(30, 41, 59, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden">
+    
+    <!-- Screen 1: Login -->
+    <div id="login-screen" class="fullscreen-container flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full border border-slate-700">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 mb-4">
+                    <i class="fa-solid fa-earth-asia text-2xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">Biodiversitas Explorer</h1>
+                <p class="text-slate-400 mt-2">Indonesia</p>
+            </div>
+            
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Nama Lengkap *</label>
+                    <input type="text" id="username" name="username" 
+                           class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 transition"
+                           placeholder="Masukkan nama lengkap anda" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Jenis Kelamin *</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="gender" value="Laki-laki" class="mr-2 text-emerald-500 focus:ring-emerald-500" checked required>
+                            <span class="text-slate-300">Laki-laki</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="gender" value="Perempuan" class="mr-2 text-emerald-500 focus:ring-emerald-500" required>
+                            <span class="text-slate-300">Perempuan</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="npsn" class="block text-sm font-medium text-slate-300 mb-2">NPSN (Nomor Pokok Sekolah Nasional)</label>
+                    <input type="text" id="npsn" name="npsn" 
+                           class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 transition"
+                           placeholder="Contoh: 12345678" pattern="[0-9]{8}" title="Masukkan 8 digit NPSN">
+                    <p class="text-xs text-slate-500 mt-1">*Opsional untuk pemain umum</p>
+                </div>
+                
+                <button type="submit" 
+                        class="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <i class="fa-solid fa-play mr-2"></i> Mulai Petualangan
+                </button>
+            </form>
+            
+            <div class="mt-8 pt-6 border-t border-slate-700">
+                <p class="text-sm text-slate-400 text-center">
+                    Game edukasi tentang keanekaragaman hayati Indonesia dan zona biogeografi
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 2: Materi Pembelajaran (FOOTER DIHAPUS) -->
+    <div id="learning-screen" class="fullscreen-container hidden">
+        <div class="h-full flex flex-col">
+            <!-- Header -->
+            <header class="bg-slate-800 p-4 border-b border-slate-700">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button id="back-to-login" class="mr-4 p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition">
+                            <i class="fa-solid fa-arrow-left text-slate-300"></i>
+                        </button>
+                        <div>
+                            <h1 class="text-xl font-bold text-white">Materi Pembelajaran</h1>
+                            <p class="text-sm text-slate-400">Pelajari tentang keanekaragaman hayati Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-sm text-slate-400">Langkah 1/3</div>
+                        <div class="w-24">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 33%"></div>
+                            </div>
+                        </div>
+                        <button id="skip-to-map" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition">
+                            Lanjut ke Peta <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Konten Materi -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-slate-800 rounded-xl p-6 mb-8 border border-slate-700">
+                        <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                            <i class="fa-solid fa-seedling text-emerald-400 mr-3"></i>
+                            Keanekaragaman Hayati Indonesia
+                        </h2>
+                        <p class="text-slate-300 mb-4">
+                            Indonesia adalah negara dengan keanekaragaman hayati tertinggi kedua di dunia setelah Brasil. 
+                            Negara ini memiliki sekitar 17% spesies burung, 16% reptil dan amfibi, 12% mamalia, 
+                            serta 10% tanaman berbunga dari seluruh dunia.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-slate-900 p-4 rounded-lg">
+                                <div class="text-emerald-400 text-2xl mb-2">
+                                    <i class="fa-solid fa-paw"></i>
+                                </div>
+                                <h3 class="font-bold text-white mb-1">Fauna Endemik</h3>
+                                <p class="text-sm text-slate-400">Lebih dari 300 spesies mamalia endemik</p>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-lg">
+                                <div class="text-emerald-400 text-2xl mb-2">
+                                    <i class="fa-solid fa-seedling"></i>
+                                </div>
+                                <h3 class="font-bold text-white mb-1">Flora Endemik</h3>
+                                <p class="text-sm text-slate-400">Lebih dari 29.000 spesies tumbuhan</p>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-lg">
+                                <div class="text-emerald-400 text-2xl mb-2">
+                                    <i class="fa-solid fa-fish"></i>
+                                </div>
+                                <h3 class="font-bold text-white mb-1">Keanekaragaman Laut</h3>
+                                <p class="text-sm text-slate-400">Lebih dari 2.000 spesies ikan karang</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 rounded-xl p-6 mb-8 border border-slate-700">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fa-solid fa-map-signs text-cyan-400 mr-3"></i>
+                            Zona Biogeografi Indonesia
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Zona Asiatic -->
+                            <div class="border-l-4 border-red-500 pl-4">
+                                <h3 class="text-xl font-bold text-white mb-2">Zona Asiatic (Oriental)</h3>
+                                <p class="text-slate-300 mb-3">
+                                    Meliputi Sumatra, Jawa, Bali, dan Kalimantan. Memiliki fauna khas Asia seperti 
+                                    harimau, gajah, orangutan, dan badak. Dipisahkan dari zona Wallacea oleh <span class="font-bold text-red-400">Garis Wallace</span>.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    <span class="px-3 py-1 bg-red-900/30 text-red-300 rounded-full text-sm">Harimau Sumatera</span>
+                                    <span class="px-3 py-1 bg-red-900/30 text-red-300 rounded-full text-sm">Orangutan</span>
+                                    <span class="px-3 py-1 bg-red-900/30 text-red-300 rounded-full text-sm">Badak Jawa</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Zona Wallacea -->
+                            <div class="border-l-4 border-yellow-500 pl-4">
+                                <h3 class="text-xl font-bold text-white mb-2">Zona Wallacea (Peralihan)</h3>
+                                <p class="text-slate-300 mb-3">
+                                    Meliputi Sulawesi, Nusa Tenggara, dan Maluku. Memiliki campuran fauna Asia dan Australia 
+                                    dengan banyak spesies endemik. Dipisahkan oleh <span class="font-bold text-red-400">Garis Wallace</span> dan <span class="font-bold text-blue-400">Garis Weber</span>.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    <span class="px-3 py-1 bg-yellow-900/30 text-yellow-300 rounded-full text-sm">Komodo</span>
+                                    <span class="px-3 py-1 bg-yellow-900/30 text-yellow-300 rounded-full text-sm">Anoa</span>
+                                    <span class="px-3 py-1 bg-yellow-900/30 text-yellow-300 rounded-full text-sm">Maleo</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Zona Australian -->
+                            <div class="border-l-4 border-emerald-500 pl-4 md:col-span-2">
+                                <h3 class="text-xl font-bold text-white mb-2">Zona Australian</h3>
+                                <p class="text-slate-300 mb-3">
+                                    Meliputi Papua dan pulau-pulau sekitarnya. Memiliki fauna khas Australia seperti 
+                                    kanguru pohon, cenderawasih, dan kasuari. Dipisahkan dari zona Wallacea oleh <span class="font-bold text-blue-400">Garis Weber</span>.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    <span class="px-3 py-1 bg-emerald-900/30 text-emerald-300 rounded-full text-sm">Cenderawasih</span>
+                                    <span class="px-3 py-1 bg-emerald-900/30 text-emerald-300 rounded-full text-sm">Kangguru Pohon</span>
+                                    <span class="px-3 py-1 bg-emerald-900/30 text-emerald-300 rounded-full text-sm">Kasuari</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fa-solid fa-dna text-purple-400 mr-3"></i>
+                            Perbedaan Garis Wallace dan Garis Weber
+                        </h2>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-slate-300 border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-700">
+                                        <th class="text-left py-3 px-4 font-bold">Aspek</th>
+                                        <th class="text-left py-3 px-4 font-bold text-red-400">Garis Wallace</th>
+                                        <th class="text-left py-3 px-4 font-bold text-blue-400">Garis Weber</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 font-medium">Penemu</td>
+                                        <td class="py-3 px-4">Alfred Russel Wallace (1859)</td>
+                                        <td class="py-3 px-4">Max Carl Wilhelm Weber (1904)</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 font-medium">Lokasi</td>
+                                        <td class="py-3 px-4">Antara Bali & Lombok, antara Kalimantan & Sulawesi</td>
+                                        <td class="py-3 px-4">Di sebelah timur Sulawesi, melalui Laut Banda</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 font-medium">Fungsi</td>
+                                        <td class="py-3 px-4">Memisahkan zona Asiatic dan Wallacea</td>
+                                        <td class="py-3 px-4">Memisahkan zona Wallacea dan Australian</td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 font-medium">Fauna Barat</td>
+                                        <td class="py-3 px-4">Mamalia plasenta (Asia)</td>
+                                        <td class="py-3 px-4">Campuran Asia-Australia</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 font-medium">Fauna Timur</td>
+                                        <td class="py-3 px-4">Campuran Asia-Australia</td>
+                                        <td class="py-3 px-4">Marsupial & monotremata (Australia)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-8 p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                            <h4 class="font-bold text-white mb-2 flex items-center">
+                                <i class="fa-solid fa-lightbulb text-yellow-400 mr-2"></i>
+                                Fakta Menarik
+                            </h4>
+                            <p class="text-slate-300">
+                                <span class="font-bold text-cyan-300">Garis Wallace</span> ditemukan oleh naturalis Inggris Alfred Russel Wallace 
+                                saat meneliti di Indonesia selama 8 tahun. Sementara <span class="font-bold text-blue-300">Garis Weber</span> 
+                                merupakan modifikasi dari garis Wallace yang diusulkan oleh ahli zoologi Jerman Max Weber.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CATATAN: FOOTER MATERI DIHAPUS SESUAI PERMINTAAN -->
+        </div>
+    </div>
+    
+    <!-- Screen 3: Peta Keanekaragaman Hayati (MODIFIKASI) -->
+    <div id="learning-map-screen" class="fullscreen-container hidden">
+        <div class="h-full flex flex-col">
+            <!-- Header -->
+            <header class="bg-slate-800 p-4 border-b border-slate-700">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button id="back-to-material" class="mr-4 p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition">
+                            <i class="fa-solid fa-arrow-left text-slate-300"></i>
+                        </button>
+                        <div>
+                            <h1 class="text-xl font-bold text-white">Peta Keanekaragaman Hayati Indonesia</h1>
+                            <p class="text-sm text-slate-400">Eksplorasi distribusi 142 spesies endemik Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-sm text-slate-400">Langkah 2/3</div>
+                        <div class="w-24">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 66%"></div>
+                            </div>
+                        </div>
+                        <button id="continue-to-game" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition">
+                            Mulai Game <i class="fa-solid fa-gamepad ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Bar Informasi & Filter DI ATAS PETA -->
+            <div class="bg-slate-900 p-3 border-b border-slate-700">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <!-- Statistik -->
+                        <div class="flex items-center space-x-6">
+                            <div class="flex items-center space-x-2">
+                                <div class="text-emerald-400">
+                                    <i class="fa-solid fa-paw"></i>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-bold text-white">73</div>
+                                    <div class="text-xs text-slate-400">Spesies Fauna</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="text-emerald-400">
+                                    <i class="fa-solid fa-seedling"></i>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-bold text-white">69</div>
+                                    <div class="text-xs text-slate-400">Spesies Flora</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="text-red-400">
+                                    <i class="fa-solid fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-bold text-white">142</div>
+                                    <div class="text-xs text-slate-400">Total Spesies</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="text-cyan-400">
+                                    <i class="fa-solid fa-globe-asia"></i>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-bold text-white">3</div>
+                                    <div class="text-xs text-slate-400">Zona Biogeografi</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Zona Legend -->
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                                <span class="text-xs text-slate-300">Asiatic</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                                <span class="text-xs text-slate-300">Wallacea</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-emerald-500 mr-2"></div>
+                                <span class="text-xs text-slate-300">Australian</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="flex space-x-2">
+                            <button id="learning-filter-all" onclick="filterLearningMarkers('Semua')" 
+                                    class="px-3 py-1.5 text-sm rounded-lg font-semibold bg-emerald-600 text-white">
+                                <i class="fa-solid fa-earth-asia mr-1"></i> Semua
+                            </button>
+                            <button id="learning-filter-fauna" onclick="filterLearningMarkers('Fauna')" 
+                                    class="px-3 py-1.5 text-sm rounded-lg font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600">
+                                <i class="fa-solid fa-paw mr-1"></i> Fauna
+                            </button>
+                            <button id="learning-filter-flora" onclick="filterLearningMarkers('Flora')" 
+                                    class="px-3 py-1.5 text-sm rounded-lg font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600">
+                                <i class="fa-solid fa-seedling mr-1"></i> Flora
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Peta Pembelajaran (MENEMPATI RUANG LEBIH BESAR) -->
+            <div class="flex-1 p-2 md:p-4">
+                <div id="learning-map-container" class="h-full rounded-xl overflow-hidden border border-slate-700">
+                    <div id="learning-map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 4: Game Utama (DIOPTIMALKAN) -->
+    <div id="game-screen" class="fullscreen-container hidden">
+        <div class="h-full flex flex-col">
+            <!-- Game Header -->
+            <header class="bg-slate-800 p-3 md:p-4 border-b border-slate-700">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center mb-3 md:mb-0">
+                        <div class="flex items-center">
+                            <button id="back-to-learning-map" class="mr-3 p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition">
+                                <i class="fa-solid fa-map text-slate-300"></i>
+                            </button>
+                            <div>
+                                <h1 class="text-lg md:text-xl font-bold text-white">
+                                    <i class="fa-solid fa-gamepad text-emerald-400 mr-2"></i>
+                                    <span id="player-name-display"></span>
+                                </h1>
+                                <p class="text-xs text-slate-400">Biodiversitas Explorer Game</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="text-sm text-slate-400">Langkah 3/3</div>
+                        <div class="w-24">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="game-stats" class="flex items-center space-x-4 md:space-x-6 mt-3 md:mt-0">
+                        <div class="text-center">
+                            <div class="text-xs text-slate-400">Skor</div>
+                            <div id="score-display" class="text-lg md:text-xl font-bold text-emerald-400">0</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs text-slate-400">Babak</div>
+                            <div id="round-display" class="text-lg md:text-xl font-bold text-cyan-400">0/10</div>
+                        </div>
+                        <button id="toggle-fullscreen" class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition">
+                            <i class="fa-solid fa-expand text-slate-300"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Bar Informasi Garis Biogeografi (DIPERBAIKI) -->
+            <div class="bg-slate-900 p-3 border-b border-slate-700">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <!-- Zona Legend Saja -->
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                                <span class="text-xs text-slate-300">Asiatic</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                                <span class="text-xs text-slate-300">Wallacea</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-emerald-500 mr-2"></div>
+                                <span class="text-xs text-slate-300">Australian</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Info Garis Biogeografi -->
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <div class="w-4 h-0.5 bg-red-500 mr-2"></div>
+                                <span class="text-xs text-slate-400">Garis Wallace</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-0.5 bg-blue-500 mr-2"></div>
+                                <span class="text-xs text-slate-400">Garis Weber</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game Area (LEBIH LUAAS) -->
+            <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+                <!-- Sidebar Kontrol Game (SISI KIRI) -->
+                <div class="w-full md:w-80 bg-slate-800 border-b md:border-b-0 md:border-r border-slate-700 p-4">
+                    <!-- Status Card -->
+                    <div id="game-status-card" class="bg-gradient-to-r from-slate-700 to-slate-800 p-4 rounded-xl border border-slate-600 mb-4">
+                        <div id="question-text" class="text-lg md:text-xl font-bold text-white mb-2">
+                            Selamat Datang di Biodiversitas Explorer!
+                        </div>
+                        <div id="status-message" class="text-sm text-slate-300 mb-4">
+                            Uji pengetahuanmu tentang kekayaan alam Indonesia. Tekan MULAI untuk memulai 10 babak.
+                        </div>
+                        
+                        <!-- Tombol Aksi -->
+                        <div class="space-y-3">
+                            <button id="start-button" onclick="startGame()" 
+                                    class="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center justify-center">
+                                <i class="fa-solid fa-play mr-2"></i> MULAI GAME
+                            </button>
+                            <button id="next-button" onclick="nextRound()" 
+                                    class="w-full py-3 px-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 hidden flex items-center justify-center">
+                                <i class="fa-solid fa-forward mr-2"></i> BABAK BERIKUTNYA
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Informasi Garis Biogeografi -->
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                        <h3 class="font-bold text-white mb-3 flex items-center">
+                            <i class="fa-solid fa-map-signs text-cyan-400 mr-2"></i>
+                            Garis Biogeografi
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-4 h-0.5 bg-red-500 mr-2"></div>
+                                <div class="flex-1">
+                                    <span class="text-sm text-slate-300">Garis Wallace</span>
+                                    <p class="text-xs text-slate-500">Pemisah Zona Asiatic & Wallacea</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-0.5 bg-blue-500 mr-2"></div>
+                                <div class="flex-1">
+                                    <span class="text-sm text-slate-300">Garis Weber</span>
+                                    <p class="text-xs text-slate-500">Pemisah Zona Wallacea & Australian</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-700">
+                            <h4 class="font-bold text-white mb-2 flex items-center">
+                                <i class="fa-solid fa-lightbulb text-yellow-400 mr-2"></i>
+                                Tips Bermain
+                            </h4>
+                            <ul class="text-xs text-slate-400 space-y-1">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle text-emerald-500 text-xs mt-1 mr-2"></i>
+                                    <span>Klik di peta untuk menebak lokasi spesies</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle text-emerald-500 text-xs mt-1 mr-2"></i>
+                                    <span>Toleransi jarak: 100 km dari lokasi asli</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle text-emerald-500 text-xs mt-1 mr-2"></i>
+                                    <span>Skor maksimal: 10 (1 poin per babak)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Informasi Player -->
+                    <div class="mt-4 bg-slate-900/30 p-3 rounded-lg border border-slate-700">
+                        <h4 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fa-solid fa-user text-emerald-400 mr-2"></i>
+                            Informasi Pemain
+                        </h4>
+                        <div class="text-sm space-y-1">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Nama:</span>
+                                <span id="player-info-name" class="text-white font-medium"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Gender:</span>
+                                <span id="player-info-gender" class="text-white font-medium"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">NPSN:</span>
+                                <span id="player-info-npsn" class="text-white font-medium"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Peta dan Gameplay Area (LEBIH LUAAS) -->
+                <div class="flex-1 flex flex-col">
+                    <!-- Peta Utama (MENEMPATI RUANG LEBIH BESAR) -->
+                    <div id="map-container" class="flex-1 p-2">
+                        <div id="map" class="h-full rounded-lg overflow-hidden border border-slate-700"></div>
+                    </div>
+                    
+                    <!-- Informasi Spesies Saat Ini -->
+                    <div id="current-species-info" class="mx-2 mb-2 bg-slate-800 rounded-lg p-3 border border-slate-700 hidden">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-bold text-white flex items-center">
+                                    <i class="fa-solid fa-circle-info text-cyan-400 mr-2"></i>
+                                    Spesies Target
+                                </h3>
+                                <div id="current-species-name" class="text-lg font-bold text-white mt-1"></div>
+                            </div>
+                            <div id="current-species-zone" class="px-3 py-1 rounded-full text-sm font-semibold"></div>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between">
+                            <div id="current-species-type" class="text-sm text-slate-300"></div>
+                            <div id="current-species-desc" class="text-sm text-slate-400 text-right max-w-md"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        // --- KONSTANTA GAME ---
+        const MAX_ROUNDS = 10;
+        const CLICK_RADIUS_METERS = 100000; // Toleransi klik 100 km
+        const centerIndo = [-2.5489, 118.0149];
+        
+        // --- VARIABEL GLOBAL ---
+        let playerName = "";
+        let playerGender = "";
+        let playerNPSN = "";
+        let score = 0;
+        let currentRound = 0;
+        let targetSpecies = null;
+        let isGameRunning = false;
+        let guessedSpeciesIds = new Set();
+        let correctMarker = null;
+        let guessMarker = null;
+        let currentFilter = 'All';
+        let map = null;
+        let learningMap = null;
+        let learningMarkers = [];
+        
+        // --- DATA SPESIES ENDEMIK LENGKAP (142 spesies dari file kedua) ---
+        const speciesData = [
+            // --- ZONA ASIATIC (Merah) - Sumatra, Jawa, Bali, Kalimantan ---
+            { id: 1, name: "Orangutan Sumatera", coords: [2.5, 99.0], province: "Sumatra Utara/Aceh", zone: 1, color: "#dc2626", type: "Fauna", img: "Orangutan Sumatera", desc: "Primata besar khas Asia, terhenti di Garis Wallace." },
+            { id: 2, name: "Badak Jawa", coords: [-6.7, 105.3], province: "Ujung Kulon, Banten", zone: 1, color: "#dc2626", type: "Fauna", img: "Badak Jawa", desc: "Salah satu mamalia paling langka di dunia." },
+            { id: 3, name: "Harimau Sumatera", coords: [0.0, 102.5], province: "Sumatera", zone: 1, color: "#dc2626", type: "Fauna", img: "Harimau Sumatera", desc: "Karnivora terbesar di Asia." },
+            { id: 10, name: "Rafflesia Arnoldii", coords: [-3.8, 102.3], province: "Bengkulu/Sumatra Selatan", zone: 1, color: "#dc2626", type: "Flora", img: "Rafflesia Arnoldii", desc: "Bunga raksasa tanpa akar dan daun." },
+            { id: 11, name: "Owa Jawa", coords: [-7.0, 107.5], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Owa Jawa", desc: "Jenis kera yang sangat terancam punah." },
+            { id: 14, name: "Gajah Sumatera", coords: [-4.5, 104.5], province: "Lampung/Riau", zone: 1, color: "#dc2626", type: "Fauna", img: "Gajah Sumatera", desc: "Subspesies Gajah Asia." },
+            { id: 15, name: "Elang Jawa", coords: [-7.2, 109.0], province: "Jawa Tengah/Jawa Timur", zone: 1, color: "#dc2626", type: "Fauna", img: "Elang Jawa", desc: "Burung pemangsa yang menjadi lambang Negara (Garuda)." },
+            { id: 16, name: "Bekantan", coords: [-3.2, 114.7], province: "Kalimantan Selatan", zone: 1, color: "#dc2626", type: "Fauna", img: "Bekantan", desc: "Kera berhidung panjang yang unik." },
+            { id: 17, name: "Jalak Bali", coords: [-8.3, 115.1], province: "Bali Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Jalak Bali", desc: "Burung berwarna putih bersih dengan mata biru." },
+            { id: 24, name: "Kupiah Darat", coords: [5.0, 96.5], province: "Aceh", zone: 1, color: "#dc2626", type: "Fauna", img: "Kupiah Darat", desc: "Jenis kura-kura endemik dan langka di kawasan hutan Aceh." },
+            { id: 25, name: "Bunga Bangkai Raksasa", coords: [-0.2, 100.2], province: "Sumatra Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Bunga Bangkai Raksasa", desc: "Flora khas Sumatera (Amorphophallus titanum)." },
+            { id: 26, name: "Ikan Semah", coords: [-1.5, 102.5], province: "Jambi", zone: 1, color: "#dc2626", type: "Fauna", img: "Ikan Semah", desc: "Ikan air tawar konsumsi yang bernilai ekonomi tinggi." },
+            { id: 27, name: "Tarsius Bancanus Saltator", coords: [2.0, 106.0], province: "Bangka Belitung", zone: 1, color: "#dc2626", type: "Fauna", img: "Tarsius Bancanus Saltator", desc: "Primata kecil endemik Pulau Belitung." },
+            { id: 28, name: "Pesut Mahakam", coords: [0.0, 116.5], province: "Kalimantan Timur/Utara", zone: 1, color: "#dc2626", type: "Fauna", img: "Pesut Mahakam", desc: "Lumba-lumba air tawar yang langka." },
+            { id: 29, name: "Anggrek Hitam Kalimantan", coords: [0.5, 114.5], province: "Kalimantan Tengah", zone: 1, color: "#dc2626", type: "Flora", img: "Anggrek Hitam Kalimantan", desc: "Anggrek langka dengan warna hitam pekat dan labellum kuning." },
+            { id: 30, name: "Beras Merah Bali", coords: [-8.4, 115.3], province: "Bali", zone: 1, color: "#dc2626", type: "Flora", img: "Beras Merah Bali", desc: "Varietas padi unggul lokal yang dikembangkan secara tradisional di Bali." },
+            { id: 42, name: "Anggrek Tebu", coords: [-6.5, 107.0], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Anggrek Tebu", desc: "Anggrek terbesar di dunia." },
+            { id: 43, name: "Kayu Ulin", coords: [1.0, 112.0], province: "Kalimantan Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Kayu Ulin", desc: "Kayu besi yang sangat keras dan endemik hutan hujan tropis Kalimantan." },
+            { id: 44, name: "Bunga Padma (Rafflesia)", coords: [-1.0, 101.5], province: "Sumatra Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Bunga Padma", desc: "Spesies Rafflesia (Patma), flora langka endemik di pegunungan Sumatera." },
+            { id: 54, name: "Siamang", coords: [3.0, 100.0], province: "Sumatera Utara", zone: 1, color: "#dc2626", type: "Fauna", img: "Siamang", desc: "Jenis kera hitam besar yang memiliki kantung suara." },
+            { id: 55, name: "Beruang Madu", coords: [-0.5, 115.0], province: "Kalimantan Tengah", zone: 1, color: "#dc2626", type: "Fauna", img: "Beruang Madu", desc: "Beruang terkecil di dunia." },
+            { id: 56, name: "Lutung Jawa", coords: [-7.5, 108.0], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Lutung Jawa", desc: "Primata berwarna hitam pekat, endemik Pulau Jawa." },
+            { id: 57, name: "Trenggiling Sunda", coords: [-0.5, 103.5], province: "Sumatra", zone: 1, color: "#dc2626", type: "Fauna", img: "Trenggiling Sunda", desc: "Mamalia bersisik yang terancam punah." },
+            { id: 58, name: "Bekantan (Kalbar)", coords: [1.5, 110.0], province: "Kalimantan Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Bekantan Kalbar", desc: "Populasi Bekantan di wilayah barat Kalimantan." },
+            { id: 59, name: "Kukang Jawa", coords: [-7.0, 109.5], province: "Jawa Tengah", zone: 1, color: "#dc2626", type: "Fauna", img: "Kukang Jawa", desc: "Primata nokturnal yang berbisa." },
+            { id: 60, name: "Macan Tutul Jawa", coords: [-8.0, 112.0], province: "Jawa Timur", zone: 1, color: "#dc2626", type: "Fauna", img: "Macan Tutul Jawa", desc: "Satu-satunya kucing besar di Jawa." },
+            { id: 61, name: "Badak Sumatera", coords: [-4.0, 103.0], province: "Lampung/Bengkulu", zone: 1, color: "#dc2626", type: "Fauna", img: "Badak Sumatera", desc: "Badak bercula dua terkecil di dunia." },
+            { id: 62, name: "Ikan Arwana Merah", coords: [0.8, 113.0], province: "Kalimantan Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Ikan Arwana Merah", desc: "Ikan air tawar hias yang mahal." },
+            { id: 63, name: "Kancil Jawa", coords: [-6.5, 106.0], province: "Banten/Jawa Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Kancil Jawa", desc: "Mamalia berkuku genap terkecil di dunia." },
+            { id: 64, name: "Babi Hutan Jawa", coords: [-8.2, 114.8], province: "Bali/Jawa", zone: 1, color: "#dc2626", type: "Fauna", img: "Babi Hutan Jawa", desc: "Babi hutan endemik Jawa dan Bali." },
+            { id: 66, name: "Burung Enggang Gading", coords: [2.0, 116.0], province: "Kalimantan Utara", zone: 1, color: "#dc2626", type: "Fauna", img: "Enggang Gading", desc: "Burung rangkong dengan casque solid." },
+            { id: 68, name: "Kucing Emas Asia", coords: [1.0, 101.0], province: "Riau", zone: 1, color: "#dc2626", type: "Fauna", img: "Kucing Emas Asia", desc: "Kucing liar berukuran sedang dengan warna bulu keemasan." },
+            { id: 69, name: "Tapir Asia", coords: [-2.0, 102.0], province: "Jambi", zone: 1, color: "#dc2626", type: "Fauna", img: "Tapir Asia", desc: "Mamalia herbivora dengan hidung seperti belalai." },
+            { id: 70, name: "Bunga Edelweis Jawa", coords: [-7.9, 110.0], province: "Jawa Tengah/Timur", zone: 1, color: "#dc2626", type: "Flora", img: "Edelweis Jawa", desc: "Bunga abadi, endemik di pegunungan tinggi Pulau Jawa." },
+            { id: 71, name: "Tumbuhan Kantong Semar", coords: [-1.0, 114.0], province: "Kalimantan Tengah", zone: 1, color: "#dc2626", type: "Flora", img: "Kantong Semar Kalimantan", desc: "Tumbuhan karnivora dengan kantong penangkap serangga." },
+            { id: 72, name: "Kayu Meranti", coords: [0.0, 112.5], province: "Kalimantan Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Kayu Meranti", desc: "Kayu komersial penting (Shorea)." },
+            { id: 73, name: "Anggrek Vanda Tricolor", coords: [-6.8, 106.5], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Anggrek Vanda Tricolor", desc: "Anggrek hias khas Jawa yang ditemukan di daerah pegunungan." },
+            { id: 74, name: "Pohon Jati", coords: [-7.5, 111.0], province: "Jawa Tengah/Timur", zone: 1, color: "#dc2626", type: "Flora", img: "Pohon Jati", desc: "Kayu keras bernilai tinggi." },
+            { id: 75, name: "Pohon Rasamala", coords: [-6.6, 107.8], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Pohon Rasamala", desc: "Pohon penghasil getah." },
+            { id: 76, name: "Rotan Manau", coords: [3.5, 98.0], province: "Sumatera Utara", zone: 1, color: "#dc2626", type: "Flora", img: "Rotan Manau", desc: "Jenis rotan berkualitas tinggi." },
+            { id: 77, name: "Daun Sang (Rafflesia host)", coords: [-3.0, 101.5], province: "Bengkulu", zone: 1, color: "#dc2626", type: "Flora", img: "Daun Sang", desc: "Tumbuhan yang menjadi inang bagi bunga Rafflesia." },
+            { id: 78, name: "Bunga Bangkai Mini", coords: [0.8, 100.5], province: "Sumatra Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Bunga Bangkai Mini", desc: "Spesies Amorphophallus yang lebih kecil." },
+            { id: 79, name: "Durian Merah", coords: [-0.5, 117.0], province: "Kalimantan Timur", zone: 1, color: "#dc2626", type: "Flora", img: "Durian Merah", desc: "Varietas durian langka dengan daging buah berwarna merah." },
+            { id: 80, name: "Bunga Kasturi", coords: [-8.5, 115.2], province: "Bali", zone: 1, color: "#dc2626", type: "Flora", img: "Bunga Kasturi Bali", desc: "Tanaman bunga yang digunakan dalam upacara adat Bali." },
+            { id: 81, name: "Gaharu Buaya", coords: [1.8, 115.0], province: "Kalimantan Utara", zone: 1, color: "#dc2626", type: "Flora", img: "Gaharu Buaya", desc: "Kayu penghasil resin wangi." },
+            { id: 83, name: "Pohon Kruing", coords: [-1.0, 103.0], province: "Jambi/Riau", zone: 1, color: "#dc2626", type: "Flora", img: "Pohon Kruing", desc: "Pohon penghasil kayu komersial." },
+            { id: 84, name: "Pohon Meranti Merah", coords: [0.3, 115.5], province: "Kalimantan Tengah", zone: 1, color: "#dc2626", type: "Flora", img: "Pohon Meranti Merah", desc: "Jenis Meranti dengan kayu berwarna kemerahan." },
+            { id: 85, name: "Liana Hutan", coords: [4.0, 97.5], province: "Aceh", zone: 1, color: "#dc2626", type: "Flora", img: "Liana Hutan Sumatra", desc: "Tumbuhan memanjat berkayu." },
+
+            // --- ZONA PERALIHAN / WALLACEA (Kuning) ---
+            { id: 4, name: "Komodo", coords: [-8.5, 119.5], province: "Pulau Komodo, NTT", zone: 2, color: "#fbbf24", type: "Fauna", img: "Komodo", desc: "Kadal terbesar di dunia." },
+            { id: 5, name: "Anoa", coords: [-4.0, 122.0], province: "Sulawesi Tenggara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Anoa", desc: "Kerbau kerdil endemik Sulawesi." },
+            { id: 6, name: "Maleo", coords: [-1.0, 120.0], province: "Sulawesi Tengah", zone: 2, color: "#fbbf24", type: "Fauna", img: "Maleo", desc: "Burung yang meletakkan telurnya di pasir panas." },
+            { id: 12, name: "Nuri Raja Ambon", coords: [-3.7, 128.1], province: "Maluku", zone: 2, color: "#fbbf24", type: "Fauna", img: "Nuri Raja Ambon", desc: "Salah satu burung paruh bengkok yang memiliki warna merah menyala." },
+            { id: 18, name: "Rangkong Sumba", coords: [-9.8, 120.0], province: "Sumba, NTT", zone: 2, color: "#fbbf24", type: "Fauna", img: "Rangkong Sumba", desc: "Jenis Rangkong yang endemik Sumba." },
+            { id: 19, name: "Tarsius", coords: [1.5, 124.5], province: "Sulawesi Utara/Gorontalo", zone: 2, color: "#fbbf24", type: "Fauna", img: "Tarsius Sulawesi", desc: "Primata terkecil di dunia dengan mata besar." },
+            { id: 20, name: "Pala Banda", coords: [-4.5, 130.0], province: "Maluku Utara/Maluku", zone: 2, color: "#fbbf24", type: "Flora", img: "Pala Banda", desc: "Tanaman rempah asli Maluku." },
+            { id: 31, name: "Kakatua Jambul Kuning", coords: [-8.5, 117.5], province: "Sumbawa, NTB", zone: 2, color: "#fbbf24", type: "Fauna", img: "Kakatua Jambul Kuning", desc: "Burung paruh bengkok endemik Wallacea." },
+            { id: 32, name: "Pohon Cendana", coords: [-10.0, 124.0], province: "Timor, NTT", zone: 2, color: "#fbbf24", type: "Flora", img: "Pohon Cendana", desc: "Pohon penghasil kayu wangi." },
+            { id: 33, name: "Babi Rusa", coords: [-2.0, 121.0], province: "Sulawesi Selatan", zone: 2, color: "#fbbf24", type: "Fauna", img: "Babi Rusa", desc: "Hewan unik dengan taring menembus moncong." },
+            { id: 34, name: "Mandar Dengkur", coords: [-2.5, 119.5], province: "Sulawesi Barat", zone: 2, color: "#fbbf24", type: "Fauna", img: "Mandar Dengkur", desc: "Burung air endemik Sulawesi Barat." },
+            { id: 35, name: "Kuskus Beruang Sulawesi", coords: [0.5, 122.0], province: "Gorontalo/Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Kuskus Beruang Sulawesi", desc: "Hewan marsupial yang memiliki hubungan dengan fauna Australia." },
+            { id: 36, name: "Pohon Eboni", coords: [-3.0, 123.0], province: "Sulawesi Tenggara", zone: 2, color: "#fbbf24", type: "Flora", img: "Pohon Eboni", desc: "Pohon kayu keras yang sangat mahal." },
+            { id: 37, name: "Pohon Damar", coords: [0.0, 121.0], province: "Sulawesi Tengah", zone: 2, color: "#fbbf24", type: "Flora", img: "Pohon Damar Sulawesi", desc: "Pohon penghasil getah (resin)." },
+            { id: 38, name: "Bidadari Halmahera", coords: [0.5, 128.0], province: "Maluku Utara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Bidadari Halmahera", desc: "Burung dari famili Cenderawasih yang unik." },
+            { id: 45, name: "Kayu Putih", coords: [-3.5, 126.0], province: "Pulau Buru, Maluku", zone: 2, color: "#fbbf24", type: "Flora", img: "Kayu Putih", desc: "Pohon penghasil minyak atsiri." },
+            { id: 46, name: "Ampupu", coords: [-9.0, 123.0], province: "Timor, NTT", zone: 2, color: "#fbbf24", type: "Flora", img: "Pohon Ampupu", desc: "Jenis Eucalyptus yang endemik Nusa Tenggara." },
+            { id: 47, name: "Anggrek Hartinah", coords: [-3.0, 120.0], province: "Sulawesi Selatan", zone: 2, color: "#fbbf24", type: "Flora", img: "Anggrek Hartinah", desc: "Anggrek tebu khas Sulawesi yang terancam punah." },
+            { id: 48, name: "Jati Putih", coords: [-8.0, 118.0], province: "Pulau Sumbawa, NTB", zone: 2, color: "#fbbf24", type: "Flora", img: "Jati Putih", desc: "Kayu keras endemik Sumbawa yang tahan kekeringan." },
+            { id: 49, name: "Kayu Manis", coords: [1.0, 125.0], province: "Minahasa, Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Flora", img: "Kayu Manis", desc: "Pohon rempah endemik di wilayah pegunungan Wallacea." },
+            { id: 86, name: "Kuskus Kerdil", coords: [-4.5, 122.5], province: "Sulawesi Tenggara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Kuskus Kerdil", desc: "Kuskus terkecil di Sulawesi." },
+            { id: 87, name: "Monyet Hitam Sulawesi", coords: [1.8, 125.0], province: "Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Monyet Hitam Sulawesi", desc: "Macaca nigra, primata khas Sulawesi Utara." },
+            { id: 88, name: "Burung Gosong", coords: [-0.5, 123.0], province: "Gorontalo/Sulawesi", zone: 2, color: "#fbbf24", type: "Fauna", img: "Burung Gosong", desc: "Burung tanah yang mengubur telurnya di pasir." },
+            { id: 89, name: "Tarsius Sangihe", coords: [4.0, 125.5], province: "Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Tarsius Sangihe", desc: "Spesies Tarsius yang hanya ditemukan di Kepulauan Sangihe." },
+            { id: 90, name: "Kakatua Putih", coords: [1.0, 127.5], province: "Halmahera, Maluku Utara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Kakatua Putih Maluku", desc: "Kakatua putih besar yang endemik di Maluku Utara." },
+            { id: 91, name: "Burung Kepodang Hitam", coords: [-9.5, 121.0], province: "Sumba", zone: 2, color: "#fbbf24", type: "Fauna", img: "Kepodang Hitam", desc: "Burung kicau endemik Pulau Sumba." },
+            { id: 92, name: "Biawak Timor", coords: [-9.3, 125.0], province: "Timor", zone: 2, color: "#fbbf24", type: "Fauna", img: "Biawak Timor", desc: "Jenis biawak berukuran sedang, endemik Timor." },
+            { id: 93, name: "Burung Maleo (Sulsel)", coords: [-3.5, 120.5], province: "Sulawesi Selatan", zone: 2, color: "#fbbf24", type: "Fauna", img: "Maleo Sulsel", desc: "Populasi Maleo yang hidup di Sulawesi Selatan." },
+            { id: 94, name: "Burung Sikatan Sumba", coords: [-9.7, 120.5], province: "Sumba", zone: 2, color: "#fbbf24", type: "Fauna", img: "Sikatan Sumba", desc: "Burung insektivora kecil, endemik Sumba." },
+            { id: 95, name: "Elang Flores", coords: [-8.8, 121.0], province: "Flores", zone: 2, color: "#fbbf24", type: "Fauna", img: "Elang Flores", desc: "Elang besar yang terancam punah." },
+            { id: 96, name: "Duyung (Maluku)", coords: [-5.0, 129.0], province: "Laut Banda", zone: 2, color: "#fbbf24", type: "Fauna", img: "Duyung Maluku", desc: "Mamalia laut herbivora." },
+            { id: 97, name: "Monyet Hitam Moor", coords: [-4.0, 120.0], province: "Sulawesi Selatan", zone: 2, color: "#fbbf24", type: "Fauna", img: "Monyet Hitam Moor", desc: "Primata endemik Sulawesi Selatan." },
+            { id: 98, name: "Rangkong Sulawesi", coords: [0.0, 124.0], province: "Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Fauna", img: "Rangkong Sulawesi", desc: "Jenis Rangkong yang memiliki ciri khas di Sulawesi." },
+            { id: 99, name: "Kuskus Tali", coords: [-1.5, 127.0], province: "Maluku", zone: 2, color: "#fbbf24", type: "Fauna", img: "Kuskus Tali Maluku", desc: "Jenis marsupial kecil, endemik pulau-pulau Maluku." },
+            { id: 100, name: "Babi Rusa Togian", coords: [0.5, 121.5], province: "Kep. Togian, Sulteng", zone: 2, color: "#fbbf24", type: "Fauna", img: "Babi Rusa Togian", desc: "Subspesies Babi Rusa endemik Kepulauan Togian." },
+            { id: 101, name: "Anoa Pegunungan", coords: [-1.5, 122.5], province: "Sulawesi Tengah", zone: 2, color: "#fbbf24", type: "Fauna", img: "Anoa Pegunungan", desc: "Salah satu jenis Anoa yang hidup di dataran tinggi Sulawesi." },
+            { id: 102, name: "Lumba-lumba Spinner", coords: [-7.0, 120.0], province: "Laut Flores", zone: 2, color: "#fbbf24", type: "Fauna", img: "Lumba-lumba Spinner", desc: "Lumba-lumba laut yang sering melompat dan berputar." },
+            { id: 103, name: "Kenari Maluku", coords: [-3.0, 129.0], province: "Maluku", zone: 2, color: "#fbbf24", type: "Flora", img: "Kenari Maluku", desc: "Pohon penghasil kacang kenari yang bernilai ekonomi tinggi." },
+            { id: 104, name: "Lontar (Borassus)", coords: [-8.0, 122.0], province: "NTT", zone: 2, color: "#fbbf24", type: "Flora", img: "Lontar", desc: "Pohon palem multiguna, sumber makanan dan gula." },
+            { id: 105, name: "Anggrek Larat", coords: [-7.5, 131.5], province: "Kep. Maluku Tenggara", zone: 2, color: "#fbbf24", type: "Flora", img: "Anggrek Larat", desc: "Anggrek ikon Maluku." },
+            { id: 106, name: "Pohon Pala (Sulawesi)", coords: [1.5, 124.0], province: "Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Flora", img: "Pala Sulawesi", desc: "Varietas Pala yang tumbuh di Sulawesi." },
+            { id: 107, name: "Kelapa Sawit Hutan", coords: [-0.2, 120.5], province: "Sulawesi Tengah", zone: 2, color: "#fbbf24", type: "Flora", img: "Kelapa Sawit Hutan Sulawesi", desc: "Jenis palem endemik yang tumbuh liar di hutan Sulawesi." },
+            { id: 108, name: "Pohon Cemara Gunung (Maluku)", coords: [-4.0, 127.0], province: "Pulau Buru, Maluku", zone: 2, color: "#fbbf24", type: "Flora", img: "Cemara Gunung Maluku", desc: "Tumbuhan khas dataran tinggi Wallacea." },
+            { id: 109, name: "Bunga Asoka", coords: [-1.0, 123.0], province: "Sulawesi Tengah", zone: 2, color: "#fbbf24", type: "Flora", img: "Bunga Asoka Sulawesi", desc: "Tumbuhan perdu berbunga, spesies lokal endemik Sulawesi." },
+            { id: 110, name: "Pohon Jarak Merah", coords: [-9.2, 124.5], province: "Timor", zone: 2, color: "#fbbf24", type: "Flora", img: "Jarak Merah", desc: "Tanaman obat tradisional yang tumbuh subur di iklim kering NTT." },
+            { id: 111, name: "Pohon Bambu Timor", coords: [-9.5, 123.5], province: "Timor", zone: 2, color: "#fbbf24", type: "Flora", img: "Bambu Timor", desc: "Jenis bambu endemik yang digunakan untuk kerajinan dan bangunan." },
+            { id: 112, name: "Pohon Pinus Khas Sulawesi", coords: [-4.0, 121.5], province: "Sulawesi Selatan", zone: 2, color: "#fbbf24", type: "Flora", img: "Pinus Sulawesi", desc: "Jenis Pinus yang adaptif dengan ekosistem pegunungan Sulawesi." },
+            { id: 113, name: "Anggrek Bulan Sulawesi", coords: [-3.5, 122.0], province: "Sulawesi Tenggara", zone: 2, color: "#fbbf24", type: "Flora", img: "Anggrek Bulan Sulawesi", desc: "Phalaenopsis amabilis, spesies Anggrek Bulan khas Sulawesi." },
+            { id: 114, name: "Pohon Kayu Besi Maluku", coords: [0.8, 127.0], province: "Halmahera, Maluku Utara", zone: 2, color: "#fbbf24", type: "Flora", img: "Kayu Besi Maluku", desc: "Kayu keras yang endemik di Maluku Utara." },
+            { id: 115, name: "Pohon Ketapang", coords: [-8.2, 120.5], province: "Flores/NTT", zone: 2, color: "#fbbf24", type: "Flora", img: "Pohon Ketapang", desc: "Pohon peneduh yang umum di pesisir." },
+            { id: 116, name: "Anggrek Ekor Tupai", coords: [0.8, 123.5], province: "Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Flora", img: "Anggrek Ekor Tupai Sulawesi", desc: "Anggrek Vanda dengan untaian bunga panjang." },
+            { id: 117, name: "Tanaman Obat Goroho", coords: [1.0, 124.8], province: "Sulawesi Utara", zone: 2, color: "#fbbf24", type: "Flora", img: "Goroho", desc: "Pisang Goroho, bahan makanan pokok dan obat tradisional di Minahasa." },
+            { id: 118, name: "Tanaman Obat Sumbawa", coords: [-8.6, 118.5], province: "Sumbawa, NTB", zone: 2, color: "#fbbf24", type: "Flora", img: "Tanaman Obat Sumbawa", desc: "Aneka tumbuhan obat tradisional khas Sumbawa." },
+            { id: 119, name: "Buah Merah Maluku", coords: [-2.5, 128.5], province: "Pulau Seram, Maluku", zone: 2, color: "#fbbf24", type: "Flora", img: "Buah Merah Maluku", desc: "Buah kaya antioksidan, varietas yang berbeda dengan Papua." },
+
+            // --- ZONA AUSTRALIAN (Hijau) ---
+            { id: 7, name: "Cenderawasih Merah", coords: [-1.5, 131.0], province: "Papua Barat Daya/Papua Barat", zone: 3, color: "#10b981", type: "Fauna", img: "Cenderawasih Merah", desc: "Burung surga yang terkenal dengan bulunya yang indah." },
+            { id: 8, name: "Kangguru Pohon", coords: [-4.5, 138.0], province: "Papua/Papua Tengah", zone: 3, color: "#10b981", type: "Fauna", img: "Kangguru Pohon", desc: "Marsupial yang menghabiskan sebagian besar hidupnya di atas pohon." },
+            { id: 9, name: "Kasuri", coords: [-3.0, 135.0], province: "Papua", zone: 3, color: "#10b981", type: "Fauna", img: "Kasuri", desc: "Burung besar tidak bisa terbang, mirip Emu/Ostrich." },
+            { id: 13, name: "Walabi Kecil", coords: [-7.0, 138.0], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Fauna", img: "Walabi Kecil", desc: "Hewan berkantung mirip kangguru berukuran kecil." },
+            { id: 21, name: "Pohon Matoa", coords: [-2.0, 133.0], province: "Papua Barat/Papua", zone: 3, color: "#10b981", type: "Flora", img: "Pohon Matoa", desc: "Pohon buah endemik Papua dengan rasa khas lychee/rambutan." },
+            { id: 22, name: "Ekidna Moncong Panjang", coords: [-4.5, 139.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Fauna", img: "Ekidna Moncong Panjang", desc: "Mamalia yang bertelur (monotremata)." },
+            { id: 23, name: "Ikan Rainbow Papua", coords: [-3.0, 140.0], province: "Papua", zone: 3, color: "#10b981", type: "Fauna", img: "Ikan Rainbow Papua", desc: "Ikan air tawar dengan warna-warni yang indah." },
+            { id: 39, name: "Buaya Irian", coords: [-0.5, 132.0], province: "Papua Barat Daya", zone: 3, color: "#10b981", type: "Fauna", img: "Buaya Irian", desc: "Salah satu jenis buaya air tawar endemik Pulau Papua." },
+            { id: 40, name: "Anggrek Hitam Papua", coords: [-4.0, 137.0], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Flora", img: "Anggrek Hitam Papua", desc: "Spesies Anggrek khas Papua yang sangat dilindungi." },
+            { id: 41, name: "Pohon Merbau", coords: [-2.0, 136.0], province: "Papua", zone: 3, color: "#10b981", type: "Flora", img: "Pohon Merbau", desc: "Pohon kayu keras tropis, sering disebut 'besi Papua'." },
+            { id: 50, name: "Kayu Gaharu", coords: [-5.0, 140.0], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Flora", img: "Kayu Gaharu Papua", desc: "Kayu wangi langka yang dihasilkan dari reaksi pohon terhadap jamur." },
+            { id: 51, name: "Pohon Sagu", coords: [-2.0, 134.0], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Flora", img: "Pohon Sagu", desc: "Sumber karbohidrat utama, sangat dominan di rawa-rawa Papua." },
+            { id: 52, name: "Anggrek Kantung", coords: [-4.5, 137.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Flora", img: "Anggrek Kantung Papua", desc: "Spesies Anggrek unik dengan bentuk kantung." },
+            { id: 53, name: "Cemara Gunung", coords: [-7.5, 139.0], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Flora", img: "Cemara Gunung Papua", desc: "Tumbuhan khas dataran tinggi Australian." },
+            { id: 120, name: "Kuskus Tutul Biasa", coords: [-3.5, 132.5], province: "Papua Barat", zone: 3, color: "#10b981", type: "Fauna", img: "Kuskus Tutul Biasa", desc: "Marsupial yang memiliki bintik putih." },
+            { id: 121, name: "Kangguru Pohon Mantel Emas", coords: [-5.0, 137.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Fauna", img: "Kangguru Pohon Mantel Emas", desc: "Salah satu jenis kangguru pohon yang paling terancam." },
+            { id: 122, name: "Walabi Agil", coords: [-6.5, 139.5], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Fauna", img: "Walabi Agil", desc: "Jenis walabi yang lincah dan beradaptasi dengan hutan rawa Papua." },
+            { id: 123, name: "Burung Kasuari Leher Kuning", coords: [-0.5, 135.0], province: "Papua", zone: 3, color: "#10b981", type: "Fauna", img: "Kasuari Leher Kuning", desc: "Salah satu subspesies Kasuari, khas di Papua bagian utara." },
+            { id: 124, name: "Cenderawasih Botak", coords: [-0.0, 130.5], province: "Waigeo, Raja Ampat", zone: 3, color: "#10b981", type: "Fauna", img: "Cenderawasih Botak", desc: "Cenderawasih dengan kepala biru dan tanpa bulu." },
+            { id: 125, name: "Burung Rajawali Papua", coords: [-4.0, 135.5], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Fauna", img: "Rajawali Papua", desc: "Elang besar yang mendominasi langit pegunungan Papua." },
+            { id: 126, name: "Kura-kura Leher Panjang", coords: [-6.0, 138.5], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Fauna", img: "Kura-kura Leher Panjang", desc: "Kura-kura air tawar dengan leher panjang." },
+            { id: 127, name: "Ular Pohon Hijau", coords: [-1.0, 134.0], province: "Papua", zone: 3, color: "#10b981", type: "Fauna", img: "Ular Pohon Hijau", desc: "Ular tidak berbisa yang sangat terdistribusi di hutan Papua." },
+            { id: 128, name: "Dingo Papua (Anjing Hutan)", coords: [-5.5, 136.0], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Fauna", img: "Dingo Papua", desc: "Spesies anjing liar yang unik." },
+            { id: 129, name: "Kuskus Cincin", coords: [-0.5, 133.0], province: "Papua Barat", zone: 3, color: "#10b981", type: "Fauna", img: "Kuskus Cincin", desc: "Marsupial yang menggunakan ekornya untuk menggantung." },
+            { id: 130, name: "Burung Paruh Kodok", coords: [-7.0, 137.0], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Fauna", img: "Burung Paruh Kodok", desc: "Burung nokturnal dengan paruh lebar." },
+            { id: 131, name: "Burung Nuri Kepala Hitam", coords: [-1.8, 130.5], province: "Papua Barat Daya", zone: 3, color: "#10b981", type: "Fauna", img: "Nuri Kepala Hitam", desc: "Jenis Nuri yang banyak ditemukan di Papua." },
+            { id: 132, name: "Platypus Papua", coords: [-5.0, 135.0], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Fauna", img: "Platypus Papua", desc: "Mamalia monotremata yang ditemukan di Papua." },
+            { id: 133, name: "Sagu (Papua Selatan)", coords: [-6.0, 139.0], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Flora", img: "Sagu Papua Selatan", desc: "Populasi Sagu yang menjadi makanan utama di wilayah rawa selatan Papua." },
+            { id: 134, name: "Pohon Musang", coords: [-3.0, 133.5], province: "Papua", zone: 3, color: "#10b981", type: "Flora", img: "Pohon Musang", desc: "Pohon buah-buahan hutan yang disukai oleh mamalia kecil." },
+            { id: 135, name: "Pohon Damar (Papua)", coords: [-4.0, 136.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Flora", img: "Damar Papua", desc: "Jenis Damar yang tumbuh di dataran tinggi Papua." },
+            { id: 136, name: "Anggrek Dendrobium", coords: [-1.0, 132.0], province: "Papua Barat Daya", zone: 3, color: "#10b981", type: "Flora", img: "Anggrek Dendrobium Papua", desc: "Salah satu marga anggrek paling beragam." },
+            { id: 137, name: "Kayu Besi Papua", coords: [-3.5, 135.0], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Flora", img: "Kayu Besi Papua", desc: "Kayu keras yang digunakan untuk konstruksi." },
+            { id: 138, name: "Pohon Kayu Putih Papua", coords: [-6.0, 137.5], province: "Papua Selatan", zone: 3, color: "#10b981", type: "Flora", img: "Kayu Putih Papua", desc: "Varietas Melaleuca cajuputi yang tumbuh subur di iklim Papua." },
+            { id: 139, name: "Tumbuhan Pacing", coords: [-5.5, 137.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Flora", img: "Tumbuhan Pacing Papua", desc: "Tumbuhan obat yang mudah ditemukan di hutan basah Papua." },
+            { id: 140, name: "Kayu Cemara Papua", coords: [-4.5, 134.5], province: "Papua Tengah", zone: 3, color: "#10b981", type: "Flora", img: "Cemara Papua", desc: "Jenis cemara khas yang tumbuh di hutan dataran rendah Papua." },
+            { id: 141, name: "Pohon Bintangur", coords: [-2.5, 131.5], province: "Papua Barat Daya", zone: 3, color: "#10b981", type: "Flora", img: "Pohon Bintangur", desc: "Pohon penghasil bahan baku obat." },
+            { id: 142, name: "Buah Merah Papua", coords: [-3.8, 138.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Flora", img: "Buah Merah Papua", desc: "Buah berukuran besar yang kaya nutrisi." }
+        ];
+        
+        // --- GARIS BIOGEOGRAFI ---
+        const wallaceCoords = [
+            [8.0, 117.0], // Utara Borneo
+            [0.5, 117.0], // Antara Borneo dan Sulawesi
+            [-1.0, 117.5], // Antara Kalimantan dan Sulawesi
+            [-8.5, 116.0]  // Antara Bali dan Lombok
+        ];
+        
+        const weberCoords = [
+            [-10.0, 131.0], // Selatan Timor
+            [-5.0, 130.5], // Antara Maluku dan Papua
+            [0.0, 130.0],  // Antara Halmahera dan Papua
+            [5.0, 130.5]
+        ];
+        
+        // --- FUNGSI UTILITAS ---
+        function getZoneName(zone) {
+            switch (zone) {
+                case 1: return "Asiatic";
+                case 2: return "Wallacea";
+                case 3: return "Australian";
+                default: return "Tidak Diketahui";
+            }
+        }
+        
+        function getZoneColor(zone) {
+            switch (zone) {
+                case 1: return "#dc2626";
+                case 2: return "#fbbf24";
+                case 3: return "#10b981";
+                default: return "#6b7280";
+            }
+        }
+        
+        function getZoneFullName(zone) {
+            switch (zone) {
+                case 1: return "Asiatic (Oriental)";
+                case 2: return "Wallacea (Peralihan)";
+                case 3: return "Australian";
+                default: return "Tidak Diketahui";
+            }
+        }
+        
+        // --- FUNGSI PETA PEMBELAJARAN ---
+        function initLearningMap() {
+            if (learningMap) {
+                learningMap.remove();
+            }
+            
+            learningMap = L.map('learning-map', {
+                zoomControl: true,
+                minZoom: 4,
+                maxZoom: 9
+            }).setView(centerIndo, 5);
+            
+            // Tambahkan tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(learningMap);
+            
+            // Tambahkan garis biogeografi
+            L.polyline(wallaceCoords, {
+                color: '#dc2626',
+                className: 'biogeo-line wallace-line',
+                weight: 3,
+            }).bindPopup('Garis Wallace (Pemisah Fauna Asia & Wallacea)').addTo(learningMap);
+            
+            L.polyline(weberCoords, {
+                color: '#2563eb',
+                className: 'biogeo-line weber-line',
+                weight: 3,
+            }).bindPopup('Garis Weber (Pemisah Fauna Wallacea & Australia)').addTo(learningMap);
+            
+            // Render semua marker untuk peta pembelajaran
+            renderLearningMarkers();
+        }
+        
+        function createLearningIcon(color) {
+            const svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="30" height="40">
+                    <path fill="${color}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z"/>
+                    <circle cx="192" cy="192" r="80" fill="white"/>
+                </svg>
+            `;
+            
+            return L.divIcon({
+                className: "learning-marker",
+                html: svgIcon,
+                iconSize: [30, 40],
+                iconAnchor: [15, 40],
+                popupAnchor: [0, -40]
+            });
+        }
+        
+        function renderLearningMarkers() {
+            // Hapus marker lama
+            learningMarkers.forEach(marker => learningMap.removeLayer(marker));
+            learningMarkers = [];
+            
+            speciesData.forEach(data => {
+                const imageUrl = `https://placehold.co/300x150/1e293b/ffffff?text=${encodeURIComponent(data.img)}`;
+                const isFlora = data.type === 'Flora';
+                const iconFaunaFlora = isFlora ? 'fa-solid fa-seedling' : 'fa-solid fa-paw';
+                
+                const marker = L.marker(data.coords, {
+                    icon: createLearningIcon(data.color)
+                });
+                
+                // Tambahkan data type untuk filter
+                marker.options.speciesType = data.type;
+                marker.options.speciesZone = data.zone;
+                
+                // Konten Popup HTML
+                const popupContent = `
+                    <div class="learning-popup-content font-sans">
+                        <div class="w-full h-[120px] bg-gray-800 flex items-center justify-center overflow-hidden mb-2 rounded">
+                            <img src="${imageUrl}"
+                                 alt="Gambar ${data.name}"
+                                 class="w-full h-full object-cover"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/300x150/ef4444/ffffff?text=Gambar%20Tidak%20Tersedia';"
+                            />
+                        </div>
+                        <div class="p-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <i class="${iconFaunaFlora} ${isFlora ? 'text-emerald-400' : 'text-amber-400'}"></i> 
+                                    ${data.name}
+                                </h3>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <p class="text-xs text-slate-400 mb-1">Lokasi Endemik</p>
+                                <p class="text-sm text-white leading-snug font-semibold">${data.province}</p>
+                            </div>
+                            
+                            <div class="mt-2 pt-2 border-t border-slate-700">
+                                <p class="text-xs font-bold flex items-center gap-1 text-slate-400">
+                                    <i class="fa-solid fa-earth-asia" style="color: ${data.color};"></i> Zona Biogeografi
+                                </p>
+                                <p class="text-sm font-extrabold mt-1" style="color: ${data.color};">${getZoneFullName(data.zone)}</p>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-2 italic">${data.desc}</p>
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                marker.addTo(learningMap);
+                learningMarkers.push(marker);
+            });
+            
+            // Set filter default ke "Semua"
+            filterLearningMarkers('Semua');
+        }
+        
+        function filterLearningMarkers(filterType) {
+            // Update tampilan tombol
+            document.querySelectorAll('#learning-map-screen .filter-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('bg-slate-700', 'text-slate-300');
+            });
+            
+            const activeBtn = document.getElementById(`learning-filter-${filterType.toLowerCase()}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-700', 'text-slate-300');
+                activeBtn.classList.add('bg-emerald-600', 'text-white');
+            }
+            
+            // Filter marker
+            learningMarkers.forEach(marker => {
+                const markerType = marker.options.speciesType;
+                let isVisible = false;
+                
+                if (filterType === 'Semua') {
+                    isVisible = true;
+                } else if (filterType === markerType) {
+                    isVisible = true;
+                }
+                
+                if (isVisible) {
+                    if (!learningMap.hasLayer(marker)) {
+                        marker.addTo(learningMap);
+                    }
+                } else {
+                    if (learningMap.hasLayer(marker)) {
+                        learningMap.removeLayer(marker);
+                    }
+                }
+            });
+            
+            learningMap.closePopup();
+        }
+        
+        // --- FUNGSI GAME UTAMA ---
+        function initGameMap() {
+            if (map) {
+                map.remove();
+            }
+            
+            map = L.map('map', {
+                zoomControl: true,
+                minZoom: 4,
+                maxZoom: 9,
+                worldCopyJump: true
+            }).setView(centerIndo, 5);
+            
+            // Tambahkan tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Tambahkan garis biogeografi
+            L.polyline(wallaceCoords, {
+                color: '#dc2626',
+                className: 'biogeo-line wallace-line',
+                weight: 3,
+            }).bindPopup('Garis Wallace (Pemisah Fauna Asia & Wallacea)').addTo(map);
+            
+            L.polyline(weberCoords, {
+                color: '#2563eb',
+                className: 'biogeo-line weber-line',
+                weight: 3,
+            }).bindPopup('Garis Weber (Pemisah Fauna Wallacea & Australia)').addTo(map);
+            
+            // Tambahkan event listener untuk klik peta
+            map.on('click', handleMapClick);
+        }
+        
+        function createCustomIcon(color, isCorrect = false, isPerfectHit = false) {
+            const size = isPerfectHit ? 50 : (isCorrect ? 40 : 30);
+            const className = isCorrect ? "custom-pin correct-pin" : "custom-pin";
+            const finalClassName = isPerfectHit ? className + " perfect-hit-pin" : className;
+            
+            const iconContent = isCorrect ?
+                `<i class="fa-solid fa-check-circle text-white text-base absolute top-1 right-1" style="z-index: 10;"></i>` : '';
+            
+            const svgIcon = `
+                <div style="position: relative; width: ${size}px; height: ${size + 10}px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="${size}" height="${size + 10}">
+                        <path fill="${color}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z"/>
+                        <circle cx="192" cy="192" r="80" fill="white"/>
+                    </svg>
+                    ${iconContent}
+                </div>
+            `;
+            
+            return L.divIcon({
+                className: finalClassName,
+                html: svgIcon,
+                iconSize: [size, size + 10],
+                iconAnchor: [size / 2, size + 10],
+                popupAnchor: [0, -45]
+            });
+        }
+        
+        function createGuessIcon() {
+            const size = 20;
+            const svgIcon = `
+                <div style="position: relative; width: ${size}px; height: ${size}px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="${size}" height="${size}">
+                        <circle cx="256" cy="256" r="256" fill="#ef4444"/>
+                        <circle cx="256" cy="256" r="100" fill="white"/>
+                    </svg>
+                </div>
+            `;
+            return L.divIcon({
+                className: "guess-pin",
+                html: svgIcon,
+                iconSize: [size, size],
+                iconAnchor: [size / 2, size / 2],
+            });
+        }
+        
+        function selectRandomSpecies() {
+            // Filter untuk game (gunakan subset yang lebih kecil untuk game)
+            const gameSpecies = speciesData.filter(s => s.id <= 70); // Gunakan 70 spesies pertama untuk game
+            
+            const filteredSpecies = gameSpecies.filter(s => {
+                if (currentFilter === 'All') return true;
+                return s.type === currentFilter;
+            });
+            
+            const availableSpecies = filteredSpecies.filter(s => !guessedSpeciesIds.has(s.id));
+            
+            if (availableSpecies.length === 0) {
+                if (filteredSpecies.length > 0) {
+                    guessedSpeciesIds.clear();
+                    const resetAvailableSpecies = filteredSpecies.filter(s => !guessedSpeciesIds.has(s.id));
+                    if (resetAvailableSpecies.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * resetAvailableSpecies.length);
+                        return resetAvailableSpecies[randomIndex];
+                    }
+                }
+                return null;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableSpecies.length);
+            return availableSpecies[randomIndex];
+        }
+        
+        function setFilter(type) {
+            currentFilter = type;
+        }
+        
+        function startNewRound() {
+            if (currentRound >= MAX_ROUNDS) {
+                endGame();
+                return;
+            }
+            
+            if (correctMarker) {
+                map.removeLayer(correctMarker);
+                correctMarker = null;
+            }
+            
+            if (guessMarker) {
+                map.removeLayer(guessMarker);
+                guessMarker = null;
+            }
+            
+            targetSpecies = selectRandomSpecies();
+            if (!targetSpecies) {
+                isGameRunning = false;
+                document.getElementById('question-text').innerHTML =
+                    `<i class="fa-solid fa-triangle-exclamation mr-2 text-yellow-300"></i> Data Tidak Cukup!`;
+                document.getElementById('status-message').innerHTML =
+                    `Tidak cukup spesies ${currentFilter} yang tersedia untuk 10 babak. Coba ganti filter atau ulangi.`;
+                document.getElementById('start-button').classList.remove('hidden');
+                document.getElementById('start-button').innerHTML = '<i class="fa-solid fa-redo mr-2"></i> Ulangi/Ganti Filter';
+                document.getElementById('next-button').classList.add('hidden');
+                return;
+            }
+            
+            currentRound++;
+            updateUI();
+            
+            isGameRunning = true;
+            document.getElementById('question-text').innerHTML =
+                `<i class="fa-solid fa-question-circle mr-2 text-cyan-300"></i> Di mana habitat endemik ${targetSpecies.name}?`;
+            document.getElementById('status-message').innerHTML =
+                `<span class="font-bold uppercase">${targetSpecies.type}</span> dari Zona ${getZoneName(targetSpecies.zone)}. Klik di peta!`;
+            
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('start-button').classList.add('hidden');
+            
+            // Tampilkan info spesies
+            document.getElementById('current-species-info').classList.remove('hidden');
+            document.getElementById('current-species-name').textContent = targetSpecies.name;
+            document.getElementById('current-species-type').innerHTML = 
+                `<i class="fa-solid ${targetSpecies.type === 'Fauna' ? 'fa-paw' : 'fa-seedling'} mr-1"></i> ${targetSpecies.type}`;
+            document.getElementById('current-species-zone').textContent = `Zona ${getZoneName(targetSpecies.zone)}`;
+            document.getElementById('current-species-zone').style.backgroundColor = getZoneColor(targetSpecies.zone) + '40';
+            document.getElementById('current-species-zone').style.color = getZoneColor(targetSpecies.zone);
+            document.getElementById('current-species-desc').textContent = targetSpecies.desc;
+        }
+        
+        function handleMapClick(e) {
+            if (!isGameRunning || !targetSpecies) return;
+            
+            isGameRunning = false;
+            const clickedLatLong = e.latlng;
+            const targetLatLong = L.latLng(targetSpecies.coords[0], targetSpecies.coords[1]);
+            
+            const distance = clickedLatLong.distanceTo(targetLatLong);
+            const isCorrect = distance <= CLICK_RADIUS_METERS;
+            
+            showCorrectAnswer(targetSpecies, isCorrect);
+            
+            if (isCorrect) {
+                score++;
+                guessedSpeciesIds.add(targetSpecies.id);
+                showFeedback(true, distance);
+            } else {
+                guessMarker = L.marker(clickedLatLong, { icon: createGuessIcon() })
+                    .bindPopup("<h4 class='font-bold text-red-600'>Tebakan Anda</h4><p class='text-xs'>Lokasi ini terlalu jauh.</p>")
+                    .openPopup()
+                    .addTo(map);
+                
+                showFeedback(false, distance);
+            }
+            
+            updateUI();
+            document.getElementById('next-button').classList.remove('hidden');
+        }
+        
+        function showCorrectAnswer(species, isGuessCorrect) {
+            const targetLatLong = L.latLng(species.coords[0], species.coords[1]);
+            const pinColor = isGuessCorrect ? '#10b981' : species.color;
+            const headerColor = isGuessCorrect ? 'text-emerald-700' : 'text-cyan-700';
+            const headerText = isGuessCorrect ? 'Jawaban Benar! 🎉' : 'Lokasi Asli';
+            
+            const icon = createCustomIcon(pinColor, true, isGuessCorrect);
+            
+            correctMarker = L.marker(targetLatLong, { icon: icon })
+                .bindPopup(`
+                    <div class="font-sans">
+                        <h4 class="font-bold text-lg ${headerColor}">${species.name} (${headerText})</h4>
+                        <p class="text-sm">Lokasi Asli: <b>${species.province}</b></p>
+                        <p class="text-xs italic mt-1">${species.desc}</p>
+                    </div>
+                `)
+                .openPopup()
+                .addTo(map);
+            
+            map.flyTo(targetLatLong, 6, { duration: 1.5 });
+            
+            if (guessMarker) {
+                guessMarker.setIcon(L.divIcon({
+                    className: "guess-pin-done",
+                    html: '<i class="fa-solid fa-location-dot text-gray-500 text-xl"></i>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 20],
+                }));
+            }
+        }
+        
+        function showFeedback(correct, distance) {
+            const distanceKm = (distance / 1000).toFixed(1);
+            const statusCard = document.getElementById('game-status-card');
+            
+            statusCard.classList.remove('bg-gradient-to-r', 'from-red-700', 'to-red-800', 'from-emerald-700', 'to-emerald-800');
+            
+            if (correct) {
+                document.getElementById('question-text').innerHTML =
+                    `<i class="fa-solid fa-check-double mr-2 text-white"></i> BENAR!`;
+                document.getElementById('status-message').innerHTML =
+                    `Luar biasa! Kamu hanya meleset ${distanceKm} km. Lokasi tepat di ${targetSpecies.province}.`;
+                statusCard.classList.add('bg-gradient-to-r', 'from-emerald-700', 'to-emerald-800');
+            } else {
+                document.getElementById('question-text').innerHTML =
+                    `<i class="fa-solid fa-times-circle mr-2 text-white"></i> SALAH, TAPI JANGAN MENYERAH!`;
+                document.getElementById('status-message').innerHTML =
+                    `Jarakmu meleset ${distanceKm} km dari lokasi aslinya. Habitat asli ${targetSpecies.name} ada di ${targetSpecies.province}.`;
+                statusCard.classList.add('bg-gradient-to-r', 'from-red-700', 'to-red-800');
+            }
+        }
+        
+        function updateUI() {
+            document.getElementById('score-display').textContent = score;
+            document.getElementById('round-display').textContent = `${currentRound}/${MAX_ROUNDS}`;
+        }
+        
+        function nextRound() {
+            const statusCard = document.getElementById('game-status-card');
+            statusCard.classList.remove('bg-gradient-to-r', 'from-red-700', 'to-red-800', 'from-emerald-700', 'to-emerald-800');
+            statusCard.classList.add('bg-gradient-to-r', 'from-slate-700', 'to-slate-800');
+            startNewRound();
+        }
+        
+        function startGame() {
+            score = 0;
+            currentRound = 0;
+            guessedSpeciesIds.clear();
+            
+            document.getElementById('start-button').classList.add('hidden');
+            
+            const statusCard = document.getElementById('game-status-card');
+            statusCard.classList.remove('bg-gradient-to-r', 'from-red-700', 'to-red-800', 'from-emerald-700', 'to-emerald-800');
+            statusCard.classList.add('bg-gradient-to-r', 'from-slate-700', 'to-slate-800');
+            
+            document.getElementById('current-species-info').classList.add('hidden');
+            
+            startNewRound();
+            resetMapView();
+        }
+        
+        function endGame() {
+            isGameRunning = false;
+            if (correctMarker) {
+                map.removeLayer(correctMarker);
+                correctMarker = null;
+            }
+            if (guessMarker) {
+                map.removeLayer(guessMarker);
+                guessMarker = null;
+            }
+            
+            const statusCard = document.getElementById('game-status-card');
+            statusCard.classList.remove('bg-gradient-to-r', 'from-red-700', 'to-red-800', 'from-emerald-700', 'to-emerald-800', 'from-slate-700', 'to-slate-800');
+            statusCard.classList.add('bg-gradient-to-r', 'from-blue-700', 'to-indigo-800');
+            
+            document.getElementById('question-text').innerHTML =
+                `<i class="fa-solid fa-trophy mr-2 text-yellow-300"></i> GAME SELESAI!`;
+            document.getElementById('status-message').innerHTML =
+                `Skor Akhirmu: <span class="font-bold">${score}</span> dari <span class="font-bold">${MAX_ROUNDS}</span>! Persentase kebenaran: <span class="font-bold">${(score/MAX_ROUNDS * 100).toFixed(0)}%</span>.`;
+            
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('start-button').classList.remove('hidden');
+            document.getElementById('start-button').innerHTML = '<i class="fa-solid fa-redo mr-2"></i> COBA LAGI';
+            document.getElementById('current-species-info').classList.add('hidden');
+        }
+        
+        function resetMapView() {
+            map.flyTo(centerIndo, 5, { duration: 1 });
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+        
+        // --- MANAJEMEN LAYAR (URUTAN BARU) ---
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            playerName = document.getElementById('username').value.trim() || "Explorer";
+            playerGender = document.querySelector('input[name="gender"]:checked').value;
+            playerNPSN = document.getElementById('npsn').value.trim() || "Tidak diisi";
+            
+            // Update info player di game screen
+            document.getElementById('player-name-display').textContent = playerName;
+            document.getElementById('player-info-name').textContent = playerName;
+            document.getElementById('player-info-gender').textContent = playerGender;
+            document.getElementById('player-info-npsn').textContent = playerNPSN;
+            
+            // Pindah ke layar MATERI (Langkah 1)
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('learning-screen').classList.remove('hidden');
+        });
+        
+        // Tombol kembali dari materi ke login
+        document.getElementById('back-to-login').addEventListener('click', function() {
+            document.getElementById('learning-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        });
+        
+        // Tombol skip dari materi ke peta
+        document.getElementById('skip-to-map').addEventListener('click', function() {
+            document.getElementById('learning-screen').classList.add('hidden');
+            document.getElementById('learning-map-screen').classList.remove('hidden');
+            initLearningMap();
+        });
+        
+        // Tombol continue dari materi ke peta (DIHAPUS KARENA FOOTER DIHAPUS)
+        // Tombol "skip-to-map" di header tetap berfungsi
+        
+        // Tombol kembali dari peta ke materi
+        document.getElementById('back-to-material').addEventListener('click', function() {
+            document.getElementById('learning-map-screen').classList.add('hidden');
+            document.getElementById('learning-screen').classList.remove('hidden');
+        });
+        
+        // Tombol continue dari peta ke game
+        document.getElementById('continue-to-game').addEventListener('click', function() {
+            document.getElementById('learning-map-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            initGameMap();
+            setFilter('All');
+        });
+        
+        // Tombol kembali dari game ke peta
+        document.getElementById('back-to-learning-map').addEventListener('click', function() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('learning-map-screen').classList.remove('hidden');
+        });
+        
+        document.getElementById('toggle-fullscreen').addEventListener('click', toggleFullscreen);
+        
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default gender
+            document.querySelector('input[name="gender"][value="Laki-laki"]').checked = true;
+            
+            // Handle exit fullscreen
+            document.addEventListener('fullscreenchange', function() {
+                const fullscreenBtn = document.getElementById('toggle-fullscreen');
+                if (document.fullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fa-solid fa-compress text-slate-300"></i>';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fa-solid fa-expand text-slate-300"></i>';
+                }
+            });
+            
+            // Handle resize untuk responsif
+            window.addEventListener('resize', function() {
+                if (map) map.invalidateSize();
+                if (learningMap) learningMap.invalidateSize();
+            });
+            
+            // Auto resize map saat layar berubah
+            const resizeObserver = new ResizeObserver(() => {
+                if (map) map.invalidateSize();
+                if (learningMap) learningMap.invalidateSize();
+            });
+            
+            const mapContainer = document.getElementById('map-container');
+            const learningMapContainer = document.getElementById('learning-map-container');
+            
+            if (mapContainer) resizeObserver.observe(mapContainer);
+            if (learningMapContainer) resizeObserver.observe(learningMapContainer);
+        });
+    </script>
+</body>
+</html>
