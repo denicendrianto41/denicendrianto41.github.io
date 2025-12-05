@@ -32,7 +32,7 @@
             height: 100vh;
         }
         
-        #map, #learning-map {
+        #map, #learning-map, #login-map {
             height: 100%;
             width: 100%;
             z-index: 1;
@@ -111,6 +111,49 @@
             .mobile-w-full {
                 width: 100%;
             }
+            
+            /* Responsif login form */
+            .login-container {
+                max-width: 90% !important;
+                padding: 1rem !important;
+            }
+            
+            .login-card {
+                padding: 1.5rem !important;
+            }
+            
+            .login-title {
+                font-size: 1.5rem !important;
+            }
+            
+            .login-input {
+                padding: 0.75rem !important;
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 1.25rem !important;
+            }
+            
+            .login-title {
+                font-size: 1.25rem !important;
+            }
+            
+            .login-subtitle {
+                font-size: 0.75rem !important;
+            }
+            
+            .login-input {
+                padding: 0.625rem !important;
+                font-size: 0.8125rem !important;
+            }
+            
+            .login-button {
+                padding: 0.75rem !important;
+                font-size: 0.875rem !important;
+            }
         }
         
         /* Scrollbar custom */
@@ -183,61 +226,140 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+        
+        /* MODIFIKASI: Login overlay menjadi transparan */
+        .login-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.1); /* Diubah menjadi lebih transparan */
+            backdrop-filter: blur(4px); /* Blur dikurangi */
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        /* MODIFIKASI: Login container lebih kecil */
+        .login-container {
+            position: relative;
+            z-index: 3;
+            max-width: 24rem; /* Diperkecil dari 28rem */
+            width: 100%;
+        }
+        
+        /* Efek untuk peta background */
+        .leaflet-tile {
+            filter: brightness(0.8) saturate(1.2); /* Dikurangi efek gelap */
+        }
+        
+        /* Animasi untuk login screen */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-card {
+            animation: fadeIn 0.6s ease-out;
+            background: rgba(30, 41, 59, 0.85); /* Tambah transparansi */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* MODIFIKASI: Login form lebih kompak */
+        .compact-form .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .compact-form label {
+            font-size: 0.875rem;
+            margin-bottom: 0.375rem;
+        }
+        
+        .compact-form input {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        /* MODIFIKASI: Login header lebih kecil */
+        .login-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-icon {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 0.75rem;
+        }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
     
-    <!-- Screen 1: Login -->
-    <div id="login-screen" class="fullscreen-container flex flex-col items-center justify-center p-4">
-        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full border border-slate-700">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 mb-4">
-                    <i class="fa-solid fa-earth-asia text-2xl text-white"></i>
-                </div>
-                <h1 class="text-3xl font-bold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">Biodiversitas Explorer</h1>
-                <p class="text-slate-400 mt-2">Indonesia</p>
-            </div>
-            
-            <form id="login-form" class="space-y-6">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Nama Lengkap *</label>
-                    <input type="text" id="username" name="username" 
-                           class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 transition"
-                           placeholder="Masukkan nama lengkap anda" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Jenis Kelamin *</label>
-                    <div class="flex space-x-4">
-                        <label class="flex items-center">
-                            <input type="radio" name="gender" value="Laki-laki" class="mr-2 text-emerald-500 focus:ring-emerald-500" checked required>
-                            <span class="text-slate-300">Laki-laki</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="gender" value="Perempuan" class="mr-2 text-emerald-500 focus:ring-emerald-500" required>
-                            <span class="text-slate-300">Perempuan</span>
-                        </label>
+    <!-- Screen 1: Login dengan Background Peta -->
+    <div id="login-screen" class="fullscreen-container">
+        <!-- Peta Background - TANPA OVERLAY GELAP -->
+        <div id="login-map-container" class="absolute inset-0">
+            <div id="login-map" class="h-full w-full"></div>
+        </div>
+        
+        <!-- Overlay dengan efek transparan -->
+        <div class="login-overlay">
+            <div class="login-container">
+                <!-- MODIFIKASI: Login card lebih kecil -->
+                <div class="p-6 rounded-2xl shadow-2xl w-full border border-slate-700 login-card compact-form">
+                    <div class="text-center mb-6 login-header">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 mb-3 login-icon">
+                            <i class="fa-solid fa-earth-asia text-xl text-white"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent login-title">Biodiversitas Explorer</h1>
+                        <p class="text-slate-400 mt-1 text-sm login-subtitle">Indonesia</p>
+                    </div>
+                    
+                    <form id="login-form" class="space-y-4">
+                        <div class="form-group">
+                            <label for="username" class="block text-sm font-medium text-slate-300 mb-1">Nama Lengkap *</label>
+                            <input type="text" id="username" name="username" 
+                                   class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 transition text-sm login-input"
+                                   placeholder="Masukkan nama lengkap anda" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Jenis Kelamin *</label>
+                            <div class="flex space-x-3">
+                                <label class="flex items-center">
+                                    <input type="radio" name="gender" value="Laki-laki" class="mr-2 text-emerald-500 focus:ring-emerald-500" checked required>
+                                    <span class="text-sm text-slate-300">Laki-laki</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="gender" value="Perempuan" class="mr-2 text-emerald-500 focus:ring-emerald-500" required>
+                                    <span class="text-sm text-slate-300">Perempuan</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="npsn" class="block text-sm font-medium text-slate-300 mb-1">NPSN (Nomor Pokok Sekolah Nasional)</label>
+                            <input type="text" id="npsn" name="npsn" 
+                                   class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 transition text-sm login-input"
+                                   placeholder="Contoh: 12345678" pattern="[0-9]{8}" title="Masukkan 8 digit NPSN">
+                            <p class="text-xs text-slate-500 mt-1">*Opsional untuk pemain umum</p>
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full py-2 px-4 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 text-sm login-button">
+                            <i class="fa-solid fa-play mr-2"></i> Mulai Petualangan
+                        </button>
+                    </form>
+                    
+                    <div class="mt-6 pt-4 border-t border-slate-700">
+                        <p class="text-xs text-slate-400 text-center">
+                            Game edukasi tentang keanekaragaman hayati Indonesia dan zona biogeografi
+                        </p>
                     </div>
                 </div>
-                
-                <div>
-                    <label for="npsn" class="block text-sm font-medium text-slate-300 mb-2">NPSN (Nomor Pokok Sekolah Nasional)</label>
-                    <input type="text" id="npsn" name="npsn" 
-                           class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 transition"
-                           placeholder="Contoh: 12345678" pattern="[0-9]{8}" title="Masukkan 8 digit NPSN">
-                    <p class="text-xs text-slate-500 mt-1">*Opsional untuk pemain umum</p>
-                </div>
-                
-                <button type="submit" 
-                        class="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                    <i class="fa-solid fa-play mr-2"></i> Mulai Petualangan
-                </button>
-            </form>
-            
-            <div class="mt-8 pt-6 border-t border-slate-700">
-                <p class="text-sm text-slate-400 text-center">
-                    Game edukasi tentang keanekaragaman hayati Indonesia dan zona biogeografi
-                </p>
             </div>
         </div>
     </div>
@@ -767,7 +889,173 @@
         let currentFilter = 'All';
         let map = null;
         let learningMap = null;
+        let loginMap = null;
         let learningMarkers = [];
+        
+        // --- GARIS BIOGEOGRAFI ---
+        const wallaceCoords = [
+            [8.0, 117.0], // Utara Borneo
+            [0.5, 117.0], // Antara Borneo dan Sulawesi
+            [-1.0, 117.5], // Antara Kalimantan dan Sulawesi
+            [-8.5, 116.0]  // Antara Bali dan Lombok
+        ];
+        
+        const weberCoords = [
+            [-10.0, 131.0], // Selatan Timor
+            [-5.0, 130.5], // Antara Maluku dan Papua
+            [0.0, 130.0],  // Antara Halmahera dan Papua
+            [5.0, 130.5]
+        ];
+        
+        // --- FUNGSI UTILITAS ---
+        function getZoneName(zone) {
+            switch (zone) {
+                case 1: return "Asiatic";
+                case 2: return "Wallacea";
+                case 3: return "Australian";
+                default: return "Tidak Diketahui";
+            }
+        }
+        
+        function getZoneColor(zone) {
+            switch (zone) {
+                case 1: return "#dc2626";
+                case 2: return "#fbbf24";
+                case 3: return "#10b981";
+                default: return "#6b7280";
+            }
+        }
+        
+        function getZoneFullName(zone) {
+            switch (zone) {
+                case 1: return "Asiatic (Oriental)";
+                case 2: return "Wallacea (Peralihan)";
+                case 3: return "Australian";
+                default: return "Tidak Diketahui";
+            }
+        }
+        
+        // --- FUNGSI PETA LOGIN ---
+        function initLoginMap() {
+            if (loginMap) {
+                loginMap.remove();
+            }
+            
+            loginMap = L.map('login-map', {
+                zoomControl: false,
+                minZoom: 4,
+                maxZoom: 9,
+                attributionControl: false,
+                dragging: false,
+                touchZoom: false,
+                scrollWheelZoom: false,
+                doubleClickZoom: false,
+                boxZoom: false,
+                keyboard: false
+            }).setView(centerIndo, 5);
+            
+            // Tambahkan tile layer dengan style gelap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: ''
+            }).addTo(loginMap);
+            
+            // Tambahkan garis biogeografi untuk login screen
+            L.polyline(wallaceCoords, {
+                color: '#dc2626',
+                className: 'biogeo-line wallace-line',
+                weight: 2,
+                opacity: 0.7
+            }).addTo(loginMap);
+            
+            L.polyline(weberCoords, {
+                color: '#2563eb',
+                className: 'biogeo-line weber-line',
+                weight: 2,
+                opacity: 0.7
+            }).addTo(loginMap);
+            
+            // Tambahkan beberapa marker acak untuk visual
+            addRandomMarkersForLogin();
+        }
+        
+        function addRandomMarkersForLogin() {
+            // Koordinat acak untuk visual login
+            const randomLocations = [
+                { coords: [2.5, 99.0], color: "#dc2626" }, // Sumatra
+                { coords: [-6.7, 105.3], color: "#dc2626" }, // Jawa
+                { coords: [-8.5, 119.5], color: "#fbbf24" }, // NTT
+                { coords: [-1.5, 131.0], color: "#10b981" }, // Papua
+                { coords: [-3.2, 114.7], color: "#dc2626" }, // Kalimantan
+                { coords: [-4.0, 122.0], color: "#fbbf24" }, // Sulawesi
+            ];
+            
+            randomLocations.forEach(loc => {
+                const icon = L.divIcon({
+                    className: "login-marker",
+                    html: `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="30">
+                            <path fill="${loc.color}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z"/>
+                            <circle cx="192" cy="192" r="60" fill="white" opacity="0.8"/>
+                        </svg>
+                    `,
+                    iconSize: [20, 30],
+                    iconAnchor: [10, 30],
+                });
+                
+                L.marker(loc.coords, { icon: icon }).addTo(loginMap);
+            });
+        }
+        
+        // --- FUNGSI PETA PEMBELAJARAN ---
+        function initLearningMap() {
+            if (learningMap) {
+                learningMap.remove();
+            }
+            
+            learningMap = L.map('learning-map', {
+                zoomControl: true,
+                minZoom: 4,
+                maxZoom: 9
+            }).setView(centerIndo, 5);
+            
+            // Tambahkan tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(learningMap);
+            
+            // Tambahkan garis biogeografi
+            L.polyline(wallaceCoords, {
+                color: '#dc2626',
+                className: 'biogeo-line wallace-line',
+                weight: 3,
+            }).bindPopup('Garis Wallace (Pemisah Fauna Asia & Wallacea)').addTo(learningMap);
+            
+            L.polyline(weberCoords, {
+                color: '#2563eb',
+                className: 'biogeo-line weber-line',
+                weight: 3,
+            }).bindPopup('Garis Weber (Pemisah Fauna Wallacea & Australia)').addTo(learningMap);
+            
+            // Render semua marker untuk peta pembelajaran
+            renderLearningMarkers();
+        }
+        
+        function createLearningIcon(color) {
+            const svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="30" height="40">
+                    <path fill="${color}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z"/>
+                    <circle cx="192" cy="192" r="80" fill="white"/>
+                </svg>
+            `;
+            
+            return L.divIcon({
+                className: "learning-marker",
+                html: svgIcon,
+                iconSize: [30, 40],
+                iconAnchor: [15, 40],
+                popupAnchor: [0, -40]
+            });
+        }
         
         // --- DATA SPESIES ENDEMIK LENGKAP (142 spesies dari file kedua) ---
         const speciesData = [
@@ -791,7 +1079,7 @@
             { id: 42, name: "Anggrek Tebu", coords: [-6.5, 107.0], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Anggrek Tebu", desc: "Anggrek terbesar di dunia." },
             { id: 43, name: "Kayu Ulin", coords: [1.0, 112.0], province: "Kalimantan Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Kayu Ulin", desc: "Kayu besi yang sangat keras dan endemik hutan hujan tropis Kalimantan." },
             { id: 44, name: "Bunga Padma (Rafflesia)", coords: [-1.0, 101.5], province: "Sumatra Barat", zone: 1, color: "#dc2626", type: "Flora", img: "Bunga Padma", desc: "Spesies Rafflesia (Patma), flora langka endemik di pegunungan Sumatera." },
-            { id: 54, name: "Siamang", coords: [3.0, 100.0], province: "Sumatera Utara", zone: 1, color: "#dc2626", type: "Fauna", img: "Siamang", desc: "Jenis kera hitam besar yang memiliki kantung suara." },
+            { id: 54, name: "Siamang", coords: [3.0, 100.0], province: "Sumatra Utara", zone: 1, color: "#dc2626", type: "Fauna", img: "Siamang", desc: "Jenis kera hitam besar yang memiliki kantung suara." },
             { id: 55, name: "Beruang Madu", coords: [-0.5, 115.0], province: "Kalimantan Tengah", zone: 1, color: "#dc2626", type: "Fauna", img: "Beruang Madu", desc: "Beruang terkecil di dunia." },
             { id: 56, name: "Lutung Jawa", coords: [-7.5, 108.0], province: "Jawa Barat", zone: 1, color: "#dc2626", type: "Fauna", img: "Lutung Jawa", desc: "Primata berwarna hitam pekat, endemik Pulau Jawa." },
             { id: 57, name: "Trenggiling Sunda", coords: [-0.5, 103.5], province: "Sumatra", zone: 1, color: "#dc2626", type: "Fauna", img: "Trenggiling Sunda", desc: "Mamalia bersisik yang terancam punah." },
@@ -916,100 +1204,6 @@
             { id: 141, name: "Pohon Bintangur", coords: [-2.5, 131.5], province: "Papua Barat Daya", zone: 3, color: "#10b981", type: "Flora", img: "Pohon Bintangur", desc: "Pohon penghasil bahan baku obat." },
             { id: 142, name: "Buah Merah Papua", coords: [-3.8, 138.0], province: "Papua Pegunungan", zone: 3, color: "#10b981", type: "Flora", img: "Buah Merah Papua", desc: "Buah berukuran besar yang kaya nutrisi." }
         ];
-        
-        // --- GARIS BIOGEOGRAFI ---
-        const wallaceCoords = [
-            [8.0, 117.0], // Utara Borneo
-            [0.5, 117.0], // Antara Borneo dan Sulawesi
-            [-1.0, 117.5], // Antara Kalimantan dan Sulawesi
-            [-8.5, 116.0]  // Antara Bali dan Lombok
-        ];
-        
-        const weberCoords = [
-            [-10.0, 131.0], // Selatan Timor
-            [-5.0, 130.5], // Antara Maluku dan Papua
-            [0.0, 130.0],  // Antara Halmahera dan Papua
-            [5.0, 130.5]
-        ];
-        
-        // --- FUNGSI UTILITAS ---
-        function getZoneName(zone) {
-            switch (zone) {
-                case 1: return "Asiatic";
-                case 2: return "Wallacea";
-                case 3: return "Australian";
-                default: return "Tidak Diketahui";
-            }
-        }
-        
-        function getZoneColor(zone) {
-            switch (zone) {
-                case 1: return "#dc2626";
-                case 2: return "#fbbf24";
-                case 3: return "#10b981";
-                default: return "#6b7280";
-            }
-        }
-        
-        function getZoneFullName(zone) {
-            switch (zone) {
-                case 1: return "Asiatic (Oriental)";
-                case 2: return "Wallacea (Peralihan)";
-                case 3: return "Australian";
-                default: return "Tidak Diketahui";
-            }
-        }
-        
-        // --- FUNGSI PETA PEMBELAJARAN ---
-        function initLearningMap() {
-            if (learningMap) {
-                learningMap.remove();
-            }
-            
-            learningMap = L.map('learning-map', {
-                zoomControl: true,
-                minZoom: 4,
-                maxZoom: 9
-            }).setView(centerIndo, 5);
-            
-            // Tambahkan tile layer
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(learningMap);
-            
-            // Tambahkan garis biogeografi
-            L.polyline(wallaceCoords, {
-                color: '#dc2626',
-                className: 'biogeo-line wallace-line',
-                weight: 3,
-            }).bindPopup('Garis Wallace (Pemisah Fauna Asia & Wallacea)').addTo(learningMap);
-            
-            L.polyline(weberCoords, {
-                color: '#2563eb',
-                className: 'biogeo-line weber-line',
-                weight: 3,
-            }).bindPopup('Garis Weber (Pemisah Fauna Wallacea & Australia)').addTo(learningMap);
-            
-            // Render semua marker untuk peta pembelajaran
-            renderLearningMarkers();
-        }
-        
-        function createLearningIcon(color) {
-            const svgIcon = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="30" height="40">
-                    <path fill="${color}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0z"/>
-                    <circle cx="192" cy="192" r="80" fill="white"/>
-                </svg>
-            `;
-            
-            return L.divIcon({
-                className: "learning-marker",
-                html: svgIcon,
-                iconSize: [30, 40],
-                iconAnchor: [15, 40],
-                popupAnchor: [0, -40]
-            });
-        }
         
         function renderLearningMarkers() {
             // Hapus marker lama
@@ -1456,9 +1650,6 @@
             initLearningMap();
         });
         
-        // Tombol continue dari materi ke peta (DIHAPUS KARENA FOOTER DIHAPUS)
-        // Tombol "skip-to-map" di header tetap berfungsi
-        
         // Tombol kembali dari peta ke materi
         document.getElementById('back-to-material').addEventListener('click', function() {
             document.getElementById('learning-map-screen').classList.add('hidden');
@@ -1486,6 +1677,9 @@
             // Set default gender
             document.querySelector('input[name="gender"][value="Laki-laki"]').checked = true;
             
+            // Inisialisasi peta login
+            initLoginMap();
+            
             // Handle exit fullscreen
             document.addEventListener('fullscreenchange', function() {
                 const fullscreenBtn = document.getElementById('toggle-fullscreen');
@@ -1500,19 +1694,23 @@
             window.addEventListener('resize', function() {
                 if (map) map.invalidateSize();
                 if (learningMap) learningMap.invalidateSize();
+                if (loginMap) loginMap.invalidateSize();
             });
             
             // Auto resize map saat layar berubah
             const resizeObserver = new ResizeObserver(() => {
                 if (map) map.invalidateSize();
                 if (learningMap) learningMap.invalidateSize();
+                if (loginMap) loginMap.invalidateSize();
             });
             
             const mapContainer = document.getElementById('map-container');
             const learningMapContainer = document.getElementById('learning-map-container');
+            const loginMapContainer = document.getElementById('login-map-container');
             
             if (mapContainer) resizeObserver.observe(mapContainer);
             if (learningMapContainer) resizeObserver.observe(learningMapContainer);
+            if (loginMapContainer) resizeObserver.observe(loginMapContainer);
         });
     </script>
 </body>
