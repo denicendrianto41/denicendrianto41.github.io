@@ -57,7 +57,7 @@
         }
         .leaflet-popup-content {
             margin: 0;
-            width: 320px !important; /* Diperlebar untuk teks ciri-ciri */
+            width: 320px !important; 
         }
 
         .input-focus-ring:focus {
@@ -67,7 +67,7 @@
             border-color: #10B981;
         }
         
-        /* Custom Scrollbar for Tutorial */
+        /* Custom Scrollbar */
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -78,6 +78,28 @@
             background: #10B981;
             border-radius: 10px;
         }
+
+        /* Leaderboard Table Styles */
+        .leaderboard-table th {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .leaderboard-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+        .rank-1 { color: #d97706; font-weight: bold; } /* Gold */
+        .rank-2 { color: #9ca3af; font-weight: bold; } /* Silver */
+        .rank-3 { color: #b45309; font-weight: bold; } /* Bronze */
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -88,10 +110,8 @@
     <!-- UI LAYER -->
     <div class="absolute inset-0 pointer-events-none z-[1000] flex flex-col justify-between p-2 md:p-4">
         
-        <!-- TOP HUD (PERSISTENT) -->
+        <!-- TOP HUD -->
         <div id="game-hud" class="hidden pointer-events-auto flex flex-col gap-2 w-full max-w-6xl mx-auto">
-            
-            <!-- Row 1: Player Info, Level, Score -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 w-full">
                 <!-- Player Profile -->
                 <div class="glass-panel rounded-xl p-2 px-3 shadow-lg flex items-center gap-3 w-full md:w-auto">
@@ -102,14 +122,14 @@
                         <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Explorer</p>
                         <p id="player-name-display" class="text-blue-900 font-bold text-sm truncate">Guest</p>
                     </div>
-                    <!-- Mobile Score (Compact) -->
+                    <!-- Mobile Score -->
                     <div class="md:hidden text-right border-l pl-3 ml-2">
                         <p class="text-[10px] text-gray-500 uppercase font-bold">Skor</p>
                         <p id="score-display-mobile" class="text-emerald-600 font-bold text-lg leading-none">0</p>
                     </div>
                 </div>
 
-                <!-- Desktop Score & Level Panel -->
+                <!-- Desktop Score -->
                 <div class="hidden md:flex glass-panel rounded-xl p-2 px-6 shadow-lg items-center gap-8">
                     <div class="text-center">
                         <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Level Saat Ini</p>
@@ -123,32 +143,18 @@
                 </div>
             </div>
 
-            <!-- Row 2: EXPLORATION CONTROLS (Levels 1 & 2) -->
+            <!-- CONTROLS -->
             <div id="exploration-controls" class="hidden pointer-events-auto w-full transition-all duration-300">
                 <div class="glass-panel rounded-xl p-3 shadow-lg flex flex-col md:flex-row justify-between items-center gap-3">
-                    
-                    <!-- Filters (Only visible in Level 1) -->
                     <div id="level1-filters" class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-                        <button onclick="filterMarkers('all')" id="btn-all" class="filter-btn active px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap">
-                            Semua
-                        </button>
-                        <button onclick="filterMarkers('flora')" id="btn-flora" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap">
-                            <i class="fa-solid fa-seedling mr-1 text-green-500"></i> Flora
-                        </button>
-                        <button onclick="filterMarkers('fauna')" id="btn-fauna" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap">
-                            <i class="fa-solid fa-paw mr-1 text-orange-500"></i> Fauna
-                        </button>
+                        <button onclick="filterMarkers('all')" id="btn-all" class="filter-btn active px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap">Semua</button>
+                        <button onclick="filterMarkers('flora')" id="btn-flora" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap"><i class="fa-solid fa-seedling mr-1 text-green-500"></i> Flora</button>
+                        <button onclick="filterMarkers('fauna')" id="btn-fauna" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap"><i class="fa-solid fa-paw mr-1 text-orange-500"></i> Fauna</button>
                     </div>
-
-                    <!-- Level 2 Indicator (Only visible in Level 2) -->
                     <div id="level2-indicator" class="hidden flex gap-2 items-center">
-                         <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold border border-purple-200 shadow-sm">
-                            <i class="fa-solid fa-layer-group mr-1"></i> Zona Biogeografi
-                         </span>
+                         <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold border border-purple-200 shadow-sm"><i class="fa-solid fa-layer-group mr-1"></i> Zona Biogeografi</span>
                          <span class="text-xs text-gray-500 italic hidden md:inline">Klik hewan untuk melihat ciri khasnya</span>
                     </div>
-
-                    <!-- Progress Bar & Action -->
                     <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                         <div class="text-right">
                             <p class="text-[10px] text-gray-500 font-bold uppercase">Target Misi</p>
@@ -159,30 +165,23 @@
                                 <p id="explore-count" class="text-blue-700 font-bold text-sm">0/20</p>
                             </div>
                         </div>
-                        <button id="btn-finish-explore" onclick="finishExploration()" disabled class="bg-gray-200 text-gray-400 px-5 py-2 rounded-lg font-bold shadow-none cursor-not-allowed transition flex items-center gap-2 text-sm">
-                            Lanjut <i class="fa-solid fa-lock"></i>
-                        </button>
+                        <button id="btn-finish-explore" onclick="finishExploration()" disabled class="bg-gray-200 text-gray-400 px-5 py-2 rounded-lg font-bold shadow-none cursor-not-allowed transition flex items-center gap-2 text-sm">Lanjut <i class="fa-solid fa-lock"></i></button>
                     </div>
                 </div>
             </div>
             
-            <!-- Row 2 (Alternative): QUIZ INFO (Level 3) -->
             <div id="quiz-hud-info" class="hidden pointer-events-auto self-end mt-2">
                  <div class="glass-panel rounded-full px-4 py-1 shadow-md flex items-center gap-2">
                     <span class="text-xs font-bold text-gray-500 uppercase">Zona Target:</span>
                     <span id="zone-display-hud" class="text-sm font-bold text-purple-700">...</span>
                  </div>
             </div>
-
         </div>
 
-        <!-- Bottom Bar: Clue Card (Level 3 Only) -->
+        <!-- Clue Card -->
         <div id="clue-card" class="hidden pointer-events-auto w-full max-w-md mx-auto mb-4 transition-all duration-500 transform translate-y-0">
             <div class="glass-panel rounded-2xl shadow-2xl p-5 border-l-8 border-yellow-400 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-2 opacity-10">
-                    <i class="fa-solid fa-paw text-6xl"></i>
-                </div>
-                
+                <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-paw text-6xl"></i></div>
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider mb-1 bg-yellow-100 inline-block px-2 rounded">Misi Pencarian</h3>
@@ -191,21 +190,12 @@
                     </div>
                     <div class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded" id="quiz-progress-badge">1/10</div>
                 </div>
-
-                <p id="species-quiz-desc" class="text-sm text-gray-700 mb-4 leading-relaxed border-t pt-2 mt-1">
-                    Menunggu data misi...
-                </p>
-                
+                <p id="species-quiz-desc" class="text-sm text-gray-700 mb-4 leading-relaxed border-t pt-2 mt-1">Menunggu data misi...</p>
                 <div class="flex justify-between items-center gap-2">
-                    <button onclick="toggleMapLayers()" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition">
-                        <i class="fa-solid fa-layer-group"></i> Peta Zona
-                    </button>
-                    <button id="hint-btn" onclick="showHint()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition text-center">
-                        <i class="fa-regular fa-lightbulb"></i> Bantuan (-5 Poin)
-                    </button>
+                    <button onclick="toggleMapLayers()" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition"><i class="fa-solid fa-layer-group"></i> Peta Zona</button>
+                    <button id="hint-btn" onclick="showHint()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition text-center"><i class="fa-regular fa-lightbulb"></i> Bantuan (-5 Poin)</button>
                 </div>
-                <div id="hint-text" class="hidden mt-3 p-2 bg-yellow-50 text-xs text-yellow-800 rounded border border-yellow-200 animate-pulse">
-                </div>
+                <div id="hint-text" class="hidden mt-3 p-2 bg-yellow-50 text-xs text-yellow-800 rounded border border-yellow-200 animate-pulse"></div>
             </div>
         </div>
     </div>
@@ -219,7 +209,7 @@
                 <p class="text-emerald-100 text-sm relative z-10 font-medium tracking-wide">EKSPEDISI FLORA & FAUNA</p>
             </div>
             <div class="p-8">
-                <form id="login-form" class="space-y-5">
+                <form id="login-form" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nama Lengkap</label>
                         <div class="relative">
@@ -227,13 +217,66 @@
                             <input type="text" id="input-name" required class="input-focus-ring block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-800 font-semibold" placeholder="Nama Siswa">
                         </div>
                     </div>
+                    
+                    <!-- INPUT SEKOLAH -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">NISN</label>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sekolah</label>
                         <div class="relative">
-                            <i class="fa-solid fa-id-card absolute left-3 top-3 text-gray-400"></i>
-                            <input type="number" id="input-nisn" required class="input-focus-ring block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-800 font-semibold" placeholder="Nomor Induk">
+                            <i class="fa-solid fa-school absolute left-3 top-3 text-gray-400"></i>
+                            <input type="text" id="input-school" required class="input-focus-ring block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-800 font-semibold" placeholder="Nama Sekolah">
                         </div>
                     </div>
+
+                    <!-- DROPDOWN PROVINSI -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Provinsi</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-map-location-dot absolute left-3 top-3 text-gray-400"></i>
+                            <select id="input-province" required class="input-focus-ring block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-800 font-semibold bg-white appearance-none cursor-pointer">
+                                <option value="" disabled selected>Pilih Provinsi</option>
+                                <option value="Nanggroe Aceh Darussalam">Nanggroe Aceh Darussalam</option>
+                                <option value="Sumatera Utara">Sumatera Utara</option>
+                                <option value="Sumatera Selatan">Sumatera Selatan</option>
+                                <option value="Sumatera Barat">Sumatera Barat</option>
+                                <option value="Bengkulu">Bengkulu</option>
+                                <option value="Riau">Riau</option>
+                                <option value="Kepulauan Riau">Kepulauan Riau</option>
+                                <option value="Jambi">Jambi</option>
+                                <option value="Lampung">Lampung</option>
+                                <option value="Bangka Belitung">Bangka Belitung</option>
+                                <option value="Kalimantan Barat">Kalimantan Barat</option>
+                                <option value="Kalimantan Timur">Kalimantan Timur</option>
+                                <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                                <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                                <option value="Kalimantan Utara">Kalimantan Utara</option>
+                                <option value="Banten">Banten</option>
+                                <option value="DKI Jakarta">DKI Jakarta</option>
+                                <option value="Jawa Barat">Jawa Barat</option>
+                                <option value="Jawa Tengah">Jawa Tengah</option>
+                                <option value="Daerah Istimewa Yogyakarta">Daerah Istimewa Yogyakarta</option>
+                                <option value="Jawa Timur">Jawa Timur</option>
+                                <option value="Bali">Bali</option>
+                                <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                                <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                                <option value="Gorontalo">Gorontalo</option>
+                                <option value="Sulawesi Barat">Sulawesi Barat</option>
+                                <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                                <option value="Sulawesi Utara">Sulawesi Utara</option>
+                                <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                                <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                                <option value="Maluku Utara">Maluku Utara</option>
+                                <option value="Maluku">Maluku</option>
+                                <option value="Papua Barat">Papua Barat</option>
+                                <option value="Papua">Papua</option>
+                                <option value="Papua Tengah">Papua Tengah</option>
+                                <option value="Papua Pegunungan">Papua Pegunungan</option>
+                                <option value="Papua Selatan">Papua Selatan</option>
+                                <option value="Papua Barat Daya">Papua Barat Daya</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-gray-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+
                     <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-lg transform hover:translate-y-[-1px] transition-all">
                         Mulai Petualangan
                     </button>
@@ -252,14 +295,10 @@
                     <h1 id="tut-title" class="text-2xl font-bold text-white">Selamat Datang</h1>
                 </div>
             </div>
-            <div class="p-6 flex-1 overflow-y-auto custom-scroll" id="tutorial-content">
-                <!-- Content injected here -->
-            </div>
+            <div class="p-6 flex-1 overflow-y-auto custom-scroll" id="tutorial-content"></div>
             <div class="p-4 border-t bg-gray-50 flex justify-between items-center">
                 <div class="flex space-x-2" id="tutorial-dots"></div>
-                <button id="tutorial-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2.5 rounded-lg font-bold shadow-lg transition transform hover:scale-105">
-                    Lanjut
-                </button>
+                <button id="tutorial-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2.5 rounded-lg font-bold shadow-lg transition transform hover:scale-105">Lanjut</button>
             </div>
         </div>
     </div>
@@ -268,10 +307,8 @@
     <div id="result-modal" class="hidden fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-bounce-in">
             <div id="result-icon" class="w-20 h-20 rounded-full flex items-center justify-center mx-auto -mt-12 mb-4 border-4 border-white shadow-xl text-4xl bg-white"></div>
-            
             <h2 id="result-title" class="text-2xl font-black mb-1 text-gray-800">Hebat!</h2>
             <p id="result-message" class="text-gray-600 text-sm mb-6 px-4">Tebakan Anda sangat akurat.</p>
-            
             <div class="flex gap-3 mb-6">
                 <div class="flex-1 bg-gray-50 p-3 rounded-xl border border-gray-100">
                     <div class="text-[10px] text-gray-400 uppercase font-bold">Jarak</div>
@@ -282,10 +319,47 @@
                     <div id="result-points" class="font-mono font-bold text-lg text-emerald-600">+100</div>
                 </div>
             </div>
+            <button id="result-btn" onclick="nextLevel()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">Lanjut Level Berikutnya</button>
+        </div>
+    </div>
 
-            <button onclick="nextLevel()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-                Lanjut Level Berikutnya
-            </button>
+    <!-- LEADERBOARD MODAL -->
+    <div id="leaderboard-modal" class="hidden fixed inset-0 z-[2500] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white"><i class="fa-solid fa-trophy text-yellow-300 mr-2"></i> Papan Peringkat</h2>
+                <div class="text-white text-right">
+                    <p class="text-xs opacity-75 uppercase font-bold">Skor Anda</p>
+                    <p id="leaderboard-my-score" class="text-2xl font-bold">0</p>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-gray-50 border-b border-gray-200">
+                <p id="submission-status" class="text-center text-sm font-semibold text-gray-500 animate-pulse">Mengirim data ke server...</p>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll p-0">
+                <table class="w-full leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th class="w-16 text-center">#</th>
+                            <th>Nama</th>
+                            <th>Sekolah</th>
+                            <th class="hidden sm:table-cell">Provinsi</th>
+                            <th class="text-right">Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Data injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-4 bg-white border-t border-gray-200 text-center">
+                <button onclick="location.reload()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition transform hover:scale-105">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Main Lagi
+                </button>
+            </div>
         </div>
     </div>
 
@@ -319,20 +393,24 @@
         window.handleLoginSubmit = async (e) => {
             e.preventDefault();
             const name = document.getElementById('input-name').value;
-            const nisn = document.getElementById('input-nisn').value;
-            if (name && nisn) {
-                window.playerProfile = { name, nisn };
+            const school = document.getElementById('input-school').value;
+            const province = document.getElementById('input-province').value;
+
+            if (name && school && province) {
+                // UPDATE GLOBAL STATE
+                window.playerProfile = { name, school, province };
+                
                 document.getElementById('player-name-display').innerText = name;
                 document.getElementById('login-modal').classList.add('hidden');
                 
                 // Show Level 1 Tutorial
                 window.showTutorialForLevel(1);
                 
-                // Analytics
+                // Analytics (Save login info)
                 if (db && currentUser) {
                     try {
                         await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'profiles'), {
-                            name, nisn, loginTime: serverTimestamp()
+                            name, school, province, loginTime: serverTimestamp()
                         });
                     } catch (error) { console.error(error); }
                 }
@@ -342,13 +420,18 @@
     </script>
 
     <script>
+        /**
+         * KONFIGURASI LEADERBOARD
+         * URL Web App Google Apps Script
+         */
+        const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbyNuPZ2Hyt_qdTha4ftIdH7Lhekpq3DhFkUl0XVPZGifaPY2IahHBvFf9q8-Lu_KNXo/exec"; 
+
         // --- GAME STATE & VARIABLES ---
         let map;
         let markersClusterGroup;
         let quizMarkers = [];
         let polylines = [];
         
-        // Levels: 1=General Explore, 2=Zone Explore, 3=Quiz
         let gameState = {
             phase: 'tutorial', 
             level: 1, 
@@ -358,7 +441,7 @@
             currentQuizIndex: 0
         };
 
-        // --- REAL DATABASE WITH SPECIFIC TRAITS ---
+        // --- DATABASE --- 
         const realSpeciesDatabase = [
             // SUMATERA & SEKITARNYA (Asiatis)
             { 
@@ -987,9 +1070,12 @@
         }
 
         function endGame() {
+            // 1. Hide Game UI
             document.getElementById('clue-card').classList.add('hidden');
             document.getElementById('quiz-hud-info').classList.add('hidden');
-            
+            document.getElementById('result-modal').classList.add('hidden'); // Ensure result is closed
+
+            // 2. Show Final Score in Result Modal (Temporary view before Leaderboard)
             const modal = document.getElementById('result-modal');
             modal.classList.remove('hidden');
             
@@ -999,14 +1085,105 @@
             document.getElementById('result-icon').className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto -mt-12 mb-4 border-4 border-white shadow-xl text-4xl bg-yellow-100";
             
             document.getElementById('result-distance').parentElement.style.display = 'none'; 
-            document.getElementById('result-points').parentElement.className = "flex-1 bg-emerald-50 p-4 rounded-xl border border-emerald-100 w-full";
             document.getElementById('result-points').innerText = gameState.score;
             document.querySelector('#result-points').previousElementSibling.innerText = "SKOR AKHIR";
 
-            const btn = document.querySelector('#result-modal button');
-            btn.innerText = "Main Ulang";
-            btn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold shadow-lg mt-4";
-            btn.onclick = () => location.reload();
+            // 3. Change Button to "Submit & View Leaderboard"
+            const btn = document.getElementById('result-btn');
+            btn.innerText = "Kirim Skor & Lihat Peringkat";
+            btn.className = "w-full bg-purple-600 hover:bg-purple-700 text-white py-3.5 rounded-xl font-bold shadow-lg mt-4";
+            btn.onclick = submitAndShowLeaderboard;
+        }
+
+        async function submitAndShowLeaderboard() {
+            // Close result modal, open leaderboard modal
+            document.getElementById('result-modal').classList.add('hidden');
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+            document.getElementById('leaderboard-my-score').innerText = gameState.score;
+
+            // Prepare Data
+            const payload = {
+                nama: window.playerProfile.name,
+                sekolah: window.playerProfile.school,
+                provinsi: window.playerProfile.province,
+                skor: gameState.score,
+                action: 'submit'
+            };
+
+            const statusEl = document.getElementById('submission-status');
+
+            // SUBMIT DATA (Fire and Forget strategy via no-cors mode to avoid preflight issues)
+            try {
+                if (LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
+                    // Send POST request (no-cors mode is safest for simple Google Script triggers)
+                    await fetch(LEADERBOARD_API_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    statusEl.innerText = "Skor terkirim! Memuat peringkat...";
+                    statusEl.className = "text-center text-sm font-semibold text-green-600";
+                } else {
+                    statusEl.innerText = "Mode Demo (API URL belum diset)";
+                }
+            } catch (e) {
+                console.error("Submission error", e);
+                statusEl.innerText = "Gagal mengirim skor, memuat data lokal...";
+            }
+
+            // FETCH LEADERBOARD (Delay slightly to allow sheet update)
+            setTimeout(fetchLeaderboard, 1500);
+        }
+
+        async function fetchLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4"><i class="fa-solid fa-spinner fa-spin text-purple-600"></i> Memuat data...</td></tr>';
+
+            try {
+                if (LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
+                    const response = await fetch(LEADERBOARD_API_URL);
+                    const data = await response.json();
+                    renderLeaderboardTable(data);
+                    document.getElementById('submission-status').classList.add('hidden');
+                } else {
+                    // Dummy data for demo
+                    renderLeaderboardTable([
+                        {nama: "Budi", sekolah: "SMAN 1 Jakarta", provinsi: "DKI Jakarta", skor: 2500},
+                        {nama: window.playerProfile.name, sekolah: window.playerProfile.school, provinsi: window.playerProfile.province, skor: gameState.score},
+                        {nama: "Siti", sekolah: "SMA 3 Bandung", provinsi: "Jawa Barat", skor: 1800}
+                    ].sort((a,b) => b.skor - a.skor));
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-red-500">Gagal memuat data. Silakan coba lagi.</td></tr>';
+            }
+        }
+
+        function renderLeaderboardTable(data) {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+
+            data.forEach((row, index) => {
+                const rank = index + 1;
+                let rankClass = "text-gray-600";
+                let icon = "";
+                
+                if (rank === 1) { rankClass = "rank-1"; icon = '<i class="fa-solid fa-crown text-yellow-400 mr-1"></i>'; }
+                else if (rank === 2) { rankClass = "rank-2"; icon = '<i class="fa-solid fa-medal text-gray-400 mr-1"></i>'; }
+                else if (rank === 3) { rankClass = "rank-3"; icon = '<i class="fa-solid fa-medal text-orange-400 mr-1"></i>'; }
+
+                const tr = document.createElement('tr');
+                tr.className = (row.nama === window.playerProfile.name && row.skor == gameState.score) ? "bg-purple-50 border-l-4 border-purple-500" : "hover:bg-gray-50";
+                
+                tr.innerHTML = `
+                    <td class="text-center ${rankClass}">${icon}${rank}</td>
+                    <td class="font-bold text-gray-700">${row.nama}</td>
+                    <td class="text-gray-600">${row.sekolah}</td>
+                    <td class="hidden sm:table-cell text-gray-500 text-xs uppercase tracking-wide">${row.provinsi}</td>
+                    <td class="text-right font-mono font-bold text-purple-700">${row.skor}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
     </script>
 </body>
