@@ -100,6 +100,27 @@
         .rank-1 { color: #d97706; font-weight: bold; } /* Gold */
         .rank-2 { color: #9ca3af; font-weight: bold; } /* Silver */
         .rank-3 { color: #b45309; font-weight: bold; } /* Bronze */
+
+        /* Pulsing animation for quiz markers */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pulse-marker {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Bounce animation for result modal */
+        @keyframes bounce-in {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -367,64 +388,14 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 
-    <!-- FIREBASE MODULE -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-
-        let db, auth, currentUser, appId = 'default-bioexplorer';
-
-        const initFirebase = async () => {
-            try {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    const firebaseConfig = JSON.parse(__firebase_config);
-                    appId = typeof __app_id !== 'undefined' ? __app_id : 'default-bioexplorer';
-                    const app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-                    const userCredential = await signInAnonymously(auth);
-                    currentUser = userCredential.user;
-                }
-            } catch (e) { console.error("Firebase init error:", e); }
-        };
-        initFirebase();
-
-        window.handleLoginSubmit = async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('input-name').value;
-            const school = document.getElementById('input-school').value;
-            const province = document.getElementById('input-province').value;
-
-            if (name && school && province) {
-                // UPDATE GLOBAL STATE
-                window.playerProfile = { name, school, province };
-                
-                document.getElementById('player-name-display').innerText = name;
-                document.getElementById('login-modal').classList.add('hidden');
-                
-                // Show Level 1 Tutorial
-                window.showTutorialForLevel(1);
-                
-                // Analytics (Save login info)
-                if (db && currentUser) {
-                    try {
-                        await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'profiles'), {
-                            name, school, province, loginTime: serverTimestamp()
-                        });
-                    } catch (error) { console.error(error); }
-                }
-            }
-        };
-        document.getElementById('login-form').addEventListener('submit', window.handleLoginSubmit);
-    </script>
-
+    <!-- GAME SCRIPT -->
     <script>
         /**
          * KONFIGURASI LEADERBOARD
          * URL Web App Google Apps Script
+         * GANTI DENGAN URL APPS SCRIPT ANDA SETELAH DEPLOY
          */
-        const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbyNuPZ2Hyt_qdTha4ftIdH7Lhekpq3DhFkUl0XVPZGifaPY2IahHBvFf9q8-Lu_KNXo/exec"; 
+        const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbxrH9hJK9dEt77kXk6hW6lO5ocnJ4vZn9bdlz7F-QFW2f3m6Q6mOaOww5D3bAplRXrM/exec";
 
         // --- GAME STATE & VARIABLES ---
         let map;
@@ -439,6 +410,12 @@
             explorationCount: 0,
             visitedExplorationIds: new Set(),
             currentQuizIndex: 0
+        };
+
+        window.playerProfile = {
+            name: '',
+            school: '',
+            province: ''
         };
 
         // --- DATABASE --- 
@@ -571,7 +548,7 @@
                     desc: template.desc,
                     lat: template.lat + latOffset,
                     lng: template.lng + lngOffset,
-                    traits: template.traits, // Inherit traits
+                    traits: template.traits,
                     isClone: true
                 });
             }
@@ -604,6 +581,7 @@
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
+            setupEventListeners();
         });
 
         function initMap() {
@@ -627,6 +605,29 @@
             polylines.push(wallace, weber);
             
             map.on('click', handleMapClick);
+        }
+
+        function setupEventListeners() {
+            // Login form submit
+            document.getElementById('login-form').addEventListener('submit', handleLoginSubmit);
+        }
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value;
+            const school = document.getElementById('input-school').value;
+            const province = document.getElementById('input-province').value;
+
+            if (name && school && province) {
+                // UPDATE GLOBAL STATE
+                window.playerProfile = { name, school, province };
+                
+                document.getElementById('player-name-display').innerText = name;
+                document.getElementById('login-modal').classList.add('hidden');
+                
+                // Show Level 1 Tutorial
+                showTutorialForLevel(1);
+            }
         }
 
         function toggleMapLayers() {
@@ -819,8 +820,7 @@
             const zone = getZoneFromLong(item.lng);
             
             if (isLevel2) {
-                // LEVEL 2: Show SPECIFIC ANIMAL TRAITS (Updated per user request)
-                // Fallback traits if missing (for safety, though DB is populated)
+                // LEVEL 2: Show SPECIFIC ANIMAL TRAITS
                 const animalTraits = item.traits || "<ul><li>Spesies unik endemik Indonesia.</li><li>Memiliki adaptasi khusus di habitatnya.</li></ul>";
                 
                 descriptionHTML = `
@@ -1073,9 +1073,9 @@
             // 1. Hide Game UI
             document.getElementById('clue-card').classList.add('hidden');
             document.getElementById('quiz-hud-info').classList.add('hidden');
-            document.getElementById('result-modal').classList.add('hidden'); // Ensure result is closed
+            document.getElementById('result-modal').classList.add('hidden');
 
-            // 2. Show Final Score in Result Modal (Temporary view before Leaderboard)
+            // 2. Show Final Score in Result Modal
             const modal = document.getElementById('result-modal');
             modal.classList.remove('hidden');
             
@@ -1112,32 +1112,39 @@
 
             const statusEl = document.getElementById('submission-status');
 
-            // SUBMIT DATA (Fire and Forget strategy via no-cors mode to avoid preflight issues)
+            // SUBMIT DATA to Google Apps Script
             try {
                 if (LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
-                    // Send POST request using URLSearchParams to handle no-cors better for Apps Script
+                    // Send POST request
                     const formData = new URLSearchParams();
                     for (const key in payload) {
                         formData.append(key, payload[key]);
                     }
 
-                    await fetch(LEADERBOARD_API_URL, {
+                    const response = await fetch(LEADERBOARD_API_URL, {
                         method: 'POST',
-                        mode: 'no-cors', 
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
                     });
-                    statusEl.innerText = "Skor terkirim! Memuat peringkat...";
-                    statusEl.className = "text-center text-sm font-semibold text-green-600";
+
+                    if (response.ok) {
+                        statusEl.innerText = "Skor berhasil dikirim! Memuat peringkat...";
+                        statusEl.className = "text-center text-sm font-semibold text-green-600";
+                    } else {
+                        statusEl.innerText = "Gagal mengirim skor, coba lagi...";
+                        statusEl.className = "text-center text-sm font-semibold text-red-600";
+                    }
                 } else {
-                    statusEl.innerText = "Mode Demo (API URL belum diset)";
+                    statusEl.innerText = "Mode Demo (API URL belum dikonfigurasi)";
+                    statusEl.className = "text-center text-sm font-semibold text-yellow-600";
                 }
             } catch (e) {
                 console.error("Submission error", e);
                 statusEl.innerText = "Gagal mengirim skor, memuat data lokal...";
+                statusEl.className = "text-center text-sm font-semibold text-red-600";
             }
 
-            // FETCH LEADERBOARD (Delay slightly to allow sheet update)
+            // FETCH LEADERBOARD
             setTimeout(fetchLeaderboard, 1500);
         }
 
@@ -1153,14 +1160,25 @@
                     document.getElementById('submission-status').classList.add('hidden');
                 } else {
                     // Dummy data for demo
-                    renderLeaderboardTable([
-                        {nama: "Budi", sekolah: "SMAN 1 Jakarta", provinsi: "DKI Jakarta", skor: 2500},
+                    const demoData = [
+                        {nama: "Budi Santoso", sekolah: "SMAN 1 Jakarta", provinsi: "DKI Jakarta", skor: 2850},
                         {nama: window.playerProfile.name, sekolah: window.playerProfile.school, provinsi: window.playerProfile.province, skor: gameState.score},
-                        {nama: "Siti", sekolah: "SMA 3 Bandung", provinsi: "Jawa Barat", skor: 1800}
-                    ].sort((a,b) => b.skor - a.skor));
+                        {nama: "Siti Nurhaliza", sekolah: "SMA 3 Bandung", provinsi: "Jawa Barat", skor: 2450},
+                        {nama: "Ahmad Yani", sekolah: "SMK Teknologi", provinsi: "Jawa Timur", skor: 2200},
+                        {nama: "Rina Dewi", sekolah: "SMA Negeri 5", provinsi: "Bali", skor: 1950},
+                        {nama: "Andi Pratama", sekolah: "SMAN 2 Makassar", provinsi: "Sulawesi Selatan", skor: 1800},
+                        {nama: "Dewi Lestari", sekolah: "SMA Taruna", provinsi: "Kalimantan Timur", skor: 1650},
+                        {nama: "Fajar Siddik", sekolah: "SMAN 1 Medan", provinsi: "Sumatera Utara", skor: 1500},
+                        {nama: "Maya Sari", sekolah: "SMA Kristen", provinsi: "Papua", skor: 1350},
+                        {nama: "Rizky Ramadhan", sekolah: "SMAN 4 Surabaya", provinsi: "Jawa Timur", skor: 1200}
+                    ].sort((a,b) => b.skor - a.skor);
+                    
+                    renderLeaderboardTable(demoData);
+                    document.getElementById('submission-status').innerText = "Mode Demo: Data contoh ditampilkan";
+                    document.getElementById('submission-status').className = "text-center text-sm font-semibold text-yellow-600";
                 }
             } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-red-500">Gagal memuat data. Silakan coba lagi.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-red-500">Gagal memuat data leaderboard. Silakan coba lagi nanti.</td></tr>';
             }
         }
 
