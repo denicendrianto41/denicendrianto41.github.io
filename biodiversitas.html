@@ -601,7 +601,7 @@
         }
 
         function playWrongSound() {
-            playSound('wrong-sound');
+            playSound('wrong-sound'); // Memainkan suara salah.wav
         }
 
         // --- FUNGSI UNTUK MENAMPILKAN POPUP SKOR SEMENTARA ---
@@ -975,7 +975,7 @@
                 feedback.className = "text-green-600 font-bold text-sm";
                 playSuccessSound(); // Play success sound
             } else {
-                gameState.score = Math.max(0, gameState.score - question.penalty);
+                gameState.score -= question.penalty; // POIN BOLEH NEGATIF
                 feedback.textContent = `Salah! -${question.penalty} poin`;
                 feedback.className = "text-red-600 font-bold text-sm";
                 playWrongSound(); // Play wrong sound
@@ -1326,14 +1326,15 @@
                     
                     setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
                 } else {
-                    // Marker SUDAH PERNAH dikunjungi - kurangi 5 poin (setiap kali diklik)
-                    gameState.score = Math.max(0, gameState.score - 5);
+                    // PERUBAHAN PENTING: Marker SUDAH PERNAH dikunjungi - kurangi 5 poin (setiap kali diklik)
+                    // POIN BOLEH NEGATIF - hapus Math.max(0, ...)
+                    gameState.score -= 5;
                     updateScoreDisplays();
                     
                     // Play wrong sound untuk penalti
-                    playWrongSound();
+                    playWrongSound(); // Memainkan suara salah.wav
                     
-                    // Tampilkan pesan penalti di popup
+                    // Tampilkan pesan penalti di popup dengan warna merah
                     const penaltyPopupHTML = `
                         <div class="font-sans">
                             <div class="bg-gradient-to-r from-gray-500 to-gray-600 p-3 text-white">
@@ -1346,8 +1347,8 @@
                             <div class="p-3 bg-white">
                                 ${descriptionHTML}
                                 
-                                <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded">
-                                    <i class="fa-solid fa-exclamation-circle"></i> Sudah Dibaca -5 Poin!
+                                <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200">
+                                    <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
                                 </div>
                             </div>
                         </div>
@@ -1481,7 +1482,7 @@
 
         window.showHint = function() {
             document.getElementById('hint-text').classList.remove('hidden');
-            gameState.score = Math.max(0, gameState.score - 5);
+            gameState.score -= 5; // POIN BOLEH NEGATIF
             updateScoreDisplays();
             
             // Play wrong sound for using hint (minus points)
