@@ -178,6 +178,12 @@
         <source src="https://denicendrianto41.github.io/misi-selesai.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
+    
+    <!-- Audio untuk Mini Quiz -->
+    <audio id="mini-quiz-sound" preload="auto">
+        <source src="https://denicendrianto41.github.io/tring.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
 
     <!-- MAP CONTAINER -->
     <div id="map"></div>
@@ -578,6 +584,10 @@
             playSound('mission-complete-sound');
         }
 
+        function playMiniQuizSound() {
+            playSound('mini-quiz-sound');
+        }
+
         function playCoinSound() {
             playSound('coin-sound');
         }
@@ -896,6 +906,10 @@
             
             document.getElementById('mini-quiz-modal').classList.remove('hidden');
             document.getElementById('mini-quiz-level').textContent = `Review Level ${level}`;
+            
+            // Mainkan sound tring untuk mini quiz
+            playMiniQuizSound();
+            
             loadMiniQuizQuestion();
         }
 
@@ -1312,7 +1326,7 @@
                     
                     setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
                 } else {
-                    // Marker SUDAH PERNAH dikunjungi - kurangi 5 poin
+                    // Marker SUDAH PERNAH dikunjungi - kurangi 5 poin (setiap kali diklik)
                     gameState.score = Math.max(0, gameState.score - 5);
                     updateScoreDisplays();
                     
@@ -1381,13 +1395,9 @@
 
         window.finishExploration = function() {
             if (gameState.level === 1) {
-                // Mainkan sound misi selesai untuk Level 1
-                playMissionCompleteSound();
                 // Tampilkan mini quiz level 1
                 startMiniQuiz(1);
             } else if (gameState.level === 2) {
-                // Mainkan sound misi selesai untuk Level 2
-                playMissionCompleteSound();
                 // Tampilkan mini quiz level 2
                 startMiniQuiz(2);
             }
@@ -1430,7 +1440,6 @@
         }
 
         function finishZoneExploration() {
-            // Sound misi selesai sudah dimainkan di finishMiniQuiz() untuk Level 2
             map.removeLayer(markersClusterGroup);
             const controls = document.getElementById('exploration-controls');
             controls.style.opacity = '0';
