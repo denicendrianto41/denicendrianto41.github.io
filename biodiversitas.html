@@ -57,7 +57,9 @@
         }
         .leaflet-popup-content {
             margin: 0;
-            width: 320px !important; 
+            width: 350px !important; 
+            max-height: 500px;
+            overflow-y: auto;
         }
 
         .input-focus-ring:focus {
@@ -184,6 +186,101 @@
             padding: 0.4rem 0.75rem !important;
             font-size: 0.7rem !important;
         }
+
+        /* CSS untuk gambar di popup */
+        .species-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .popup-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .popup-image-container img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .popup-image-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-caption {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10B981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Error message */
+        .error-message {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        /* Debug loading animation */
+        .debug-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .debug-loading .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            border-top-color: #10B981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        /* Debug info styling */
+        .debug-details {
+            font-family: monospace;
+            font-size: 0.7rem;
+            line-height: 1.4;
+        }
+        
+        .debug-details p {
+            margin-bottom: 0.25rem;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -282,7 +379,7 @@
                 <div class="hidden md:flex glass-panel rounded-xl p-2 px-6 shadow-lg items-center gap-8">
                     <div class="text-center">
                         <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Level Saat Ini</p>
-                        <p id="level-display" class="text-purple-700 font-bold text-lg">1: Eksplorasi Umum</p>
+                        <p id="level-display" class="text-purple-700 font-bold text-lg">Memuat data...</p>
                     </div>
                     <div class="h-10 w-px bg-gray-300"></div>
                     <div class="text-center">
@@ -312,7 +409,7 @@
                     </div>
                     <div class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded" id="quiz-progress-badge">1/10</div>
                 </div>
-                <p id="species-quiz-desc" class="text-sm text-gray-700 mb-4 leading-relaxed border-t pt-2 mt-1">Menunggu data misi...</p>
+                <div id="species-quiz-desc" class="text-sm text-gray-700 mb-4 leading-relaxed border-t pt-2 mt-1">Menunggu data misi...</div>
                 <div class="flex justify-between items-center gap-2">
                     <button onclick="toggleMapLayers()" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition"><i class="fa-solid fa-layer-group"></i> Peta Zona</button>
                     <button id="hint-btn" onclick="showHint()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition text-center"><i class="fa-regular fa-lightbulb"></i> Bantuan (-5 Poin)</button>
@@ -322,8 +419,33 @@
         </div>
     </div>
 
+    <!-- LOADING MODAL -->
+    <div id="loading-modal" class="fixed inset-0 z-[4000] bg-gray-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
+            <div class="loading-spinner mx-auto mb-6"></div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Memuat Data Spesies</h2>
+            <p id="loading-message" class="text-gray-600 text-sm mb-4">Mengambil data flora dan fauna dari database...</p>
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div id="loading-progress" class="bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="loading-status" class="text-xs text-gray-500">Menghubungkan ke server...</p>
+            <div id="connection-test-result" class="mt-4"></div>
+            <div id="api-debug-info" class="mt-4 text-left text-xs bg-gray-50 p-3 rounded hidden">
+                <h4 class="font-bold mb-2">Status Koneksi:</h4>
+                <div id="debug-loading" class="debug-loading">
+                    <div class="spinner"></div>
+                    <span>Menguji koneksi ke server...</span>
+                </div>
+                <div id="debug-details" class="debug-details hidden">
+                    <p id="api-url-display"></p>
+                    <p id="api-response-status"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIN MODAL -->
-    <div id="login-modal" class="fixed inset-0 z-[3000] bg-gray-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div id="login-modal" class="hidden fixed inset-0 z-[3000] bg-gray-900/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
             <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-8 text-center relative overflow-hidden">
                 <i class="fa-solid fa-leaf text-white/20 text-9xl absolute -bottom-8 -left-8 transform rotate-12"></i>
@@ -331,6 +453,13 @@
                 <p class="text-emerald-100 text-sm relative z-10 font-medium tracking-wide">EKSPEDISI FLORA & FAUNA</p>
             </div>
             <div class="p-8">
+                <div id="database-status" class="mb-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                    <p class="text-sm text-blue-700 font-medium">
+                        <i class="fas fa-database mr-2"></i>
+                        <span id="db-status-text">Menggunakan data lokal</span>
+                    </p>
+                </div>
+                
                 <form id="login-form" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nama Lengkap</label>
@@ -590,10 +719,14 @@
 
     <script>
         /**
-         * KONFIGURASI LEADERBOARD
-         * URL Web App Google Apps Script
+         * KONFIGURASI DATABASE
+         * GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA
          */
+        const SPECIES_API_URL = "https://script.google.com/macros/s/AKfycbx7axI1BI7B79H6XEIWbUPJSa8TmLsivdx6feh5avUzxBVplrykEdNvo71YFVOe5Wkp/exec";
         const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbyodd3NTLH2B0Qi43v5ffN9bcmLNjKreYbIQseDMP9JNTZOYey7hI9hKmJIyGcq4rCo/exec"; 
+
+        // Mode debug - set true untuk melihat detail koneksi
+        const DEBUG_MODE = false; // Ubah menjadi false untuk menyembunyikan debug info
 
         // --- GAME STATE & VARIABLES ---
         let map;
@@ -602,13 +735,409 @@
         let polylines = [];
         
         let gameState = {
-            phase: 'tutorial', 
+            phase: 'loading', 
             level: 1, 
             score: 0,
             explorationCount: 0,
             visitedExplorationIds: new Set(),
             currentQuizIndex: 0
         };
+
+        // --- DATABASE (DINAMIS DARI SPREADSHEET) --- 
+        let fullData = [];
+        let quizData = [];
+        let useOnlineDatabase = false;
+
+        // Fungsi untuk test koneksi ke server
+        async function testConnection() {
+            try {
+                updateLoadingStatus("Testing koneksi ke server...", 20);
+                
+                // Tampilkan animasi loading di debug info jika DEBUG_MODE aktif
+                const debugInfo = document.getElementById('api-debug-info');
+                const debugLoading = document.getElementById('debug-loading');
+                const debugDetails = document.getElementById('debug-details');
+                
+                if (DEBUG_MODE) {
+                    debugInfo.classList.remove('hidden');
+                    debugLoading.classList.remove('hidden');
+                    debugDetails.classList.add('hidden');
+                } else {
+                    // Sembunyikan debug info jika tidak dalam DEBUG_MODE
+                    debugInfo.classList.add('hidden');
+                }
+                
+                // Tambahkan timestamp untuk menghindari cache
+                const testUrl = `${SPECIES_API_URL}?action=test&timestamp=${Date.now()}`;
+                
+                // Sembunyikan URL dari tampilan kecuali benar-benar diperlukan
+                if (DEBUG_MODE && document.getElementById('api-url-display')) {
+                    // Hanya tampilkan domain saja, bukan full URL
+                    const urlObj = new URL(testUrl);
+                    document.getElementById('api-url-display').textContent = `URL: ${urlObj.origin}...`;
+                }
+                
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                // Sembunyikan loading animasi
+                if (DEBUG_MODE && debugLoading) {
+                    debugLoading.classList.add('hidden');
+                    debugDetails.classList.remove('hidden');
+                }
+                
+                if (DEBUG_MODE && document.getElementById('api-response-status')) {
+                    document.getElementById('api-response-status').textContent = 
+                        `Status: ${response.status} ${response.statusText}`;
+                }
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Connection test successful:", data);
+                    return { success: true, data: data };
+                } else {
+                    console.warn("Server responded with error:", response.status);
+                    
+                    // Sembunyikan debug info jika terjadi error dan tidak dalam DEBUG_MODE
+                    if (!DEBUG_MODE) {
+                        debugInfo.classList.add('hidden');
+                    }
+                    
+                    return { 
+                        success: false, 
+                        error: `Server error: ${response.status} ${response.statusText}` 
+                    };
+                }
+                
+            } catch (error) {
+                console.error("Connection test failed:", error);
+                
+                // Sembunyikan debug info jika terjadi error dan tidak dalam DEBUG_MODE
+                if (!DEBUG_MODE) {
+                    document.getElementById('api-debug-info').classList.add('hidden');
+                }
+                
+                return { 
+                    success: false, 
+                    error: error.message || "Tidak dapat terhubung ke server" 
+                };
+            }
+        }
+
+        // Fungsi untuk mengambil data dari Google Apps Script
+        async function fetchSpeciesData() {
+            try {
+                updateLoadingStatus("Menginisialisasi sistem...", 10);
+                
+                // Test koneksi dulu
+                const connectionTest = await testConnection();
+                
+                if (!connectionTest.success) {
+                    console.warn("Cannot connect to server, using fallback data");
+                    showConnectionError(connectionTest.error);
+                    updateLoadingStatus("Menggunakan data lokal...", 50);
+                    setTimeout(() => {
+                        generateFallbackData();
+                        hideLoadingShowLogin();
+                        updateDatabaseStatus("Tidak terhubung ke database. Menggunakan data lokal.");
+                    }, 1000);
+                    return;
+                }
+                
+                // Jika koneksi berhasil, ambil data spesies
+                useOnlineDatabase = true;
+                updateLoadingStatus("Mengambil data spesies dari database...", 40);
+                
+                // Ambil data spesies
+                const speciesUrl = `${SPECIES_API_URL}?action=getSpecies&timestamp=${Date.now()}`;
+                const response = await fetch(speciesUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                updateLoadingStatus("Memproses data...", 70);
+                
+                // Check jika ada error dari server
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                
+                // Pastikan ada data
+                let speciesArray = [];
+                if (result.data && Array.isArray(result.data)) {
+                    speciesArray = result.data;
+                } else if (Array.isArray(result)) {
+                    speciesArray = result;
+                } else {
+                    throw new Error("Format data tidak valid");
+                }
+                
+                if (speciesArray.length === 0) {
+                    throw new Error("Data kosong dari server");
+                }
+                
+                // Format data dari spreadsheet
+                fullData = speciesArray.map((item, index) => {
+                    // Debug: log item untuk melihat struktur data
+                    if (DEBUG_MODE && index < 3) {
+                        console.log(`Sample data item ${index}:`, item);
+                    }
+                    
+                    // Access properties - handle both lowercase and original case
+                    const name = item.nama || item.Nama || item.name || item.Name || `Spesies ${index + 1}`;
+                    const scientific = item.nama_ilmiah || item.Nama_Ilmiah || item.scientific_name || item.Scientific_Name || item.sc ||"Nama Ilmiah";
+                    const typeRaw = item.jenis || item.Jenis || item.type || item.Type || "fauna";
+                    const type = typeRaw.toString().toLowerCase();
+                    const region = item.region || item.Region || item.pulau || item.Pulau || "Indonesia";
+                    const desc = item.deskripsi || item.Deskripsi || item.description || item.Description || item.desc ||"Deskripsi tidak tersedia";
+                    const lat = parseFloat(item.latitude || item.Latitude || item.lat || item.Lat) || getRandomLat();
+                    const lng = parseFloat(item.longitude || item.Longitude || item.lng || item.Lng) || getRandomLng();
+                    const traits = item.ciri_khas || item.Ciri_Khas || item.traits || item.Traits || "<ul><li>Ciri khas tidak tersedia</li></ul>";
+                    const image = item.gambar || item.Gambar || item.image_url || item.Image_URL || getDefaultImage(type);
+                    
+                    return {
+                        id: `spec_${index}`,
+                        name: name,
+                        sc: scientific,
+                        type: type,
+                        region: region,
+                        desc: desc,
+                        lat: lat,
+                        lng: lng,
+                        traits: traits,
+                        image_url: image,
+                        isClone: false
+                    };
+                });
+                
+                updateLoadingStatus("Menyiapkan data quiz...", 85);
+                
+                // Setup Quiz Data (hanya fauna untuk level 3)
+                const faunaData = fullData.filter(s => s.type === 'fauna');
+                quizData = faunaData
+                    .sort(() => 0.5 - Math.random()) 
+                    .slice(0, Math.min(10, faunaData.length))
+                    .map(s => {
+                        let z = getZoneFromLong(s.lng);
+                        return {
+                            ...s,
+                            zone: z,
+                            hint: `Habitat spesies ini ada di ${s.region}.`
+                        };
+                    });
+                    
+                console.log("✅ Data berhasil diambil dari server:", fullData.length, "spesies");
+                console.log("✅ Data quiz disiapkan:", quizData.length, "spesies fauna");
+                
+                updateLoadingStatus("Data siap!", 100);
+                
+                // Tampilkan status database berhasil
+                setTimeout(() => {
+                    hideLoadingShowLogin();
+                    updateDatabaseStatus(`Terhubung ke database online (${fullData.length} spesies)`);
+                    showSuccessMessage("Berhasil terhubung ke database!");
+                }, 500);
+                
+            } catch (error) {
+                console.error("❌ Error fetching data from server:", error);
+                showConnectionError(error.message);
+                updateLoadingStatus(`Gagal: ${error.message}. Menggunakan data lokal...`, 50);
+                
+                // Fallback ke data lokal jika fetch gagal
+                setTimeout(() => {
+                    generateFallbackData();
+                    hideLoadingShowLogin();
+                    updateDatabaseStatus("Tidak terhubung ke database. Menggunakan data lokal.");
+                }, 1000);
+            }
+        }
+
+        // Fungsi untuk menampilkan error koneksi
+        function showConnectionError(errorMessage) {
+            const debugDiv = document.getElementById('connection-test-result');
+            if (debugDiv) {
+                debugDiv.innerHTML = `
+                    <div class="error-message">
+                        <p class="font-bold mb-1"><i class="fas fa-exclamation-triangle mr-2"></i>Koneksi Gagal</p>
+                        <p class="text-sm">${errorMessage}</p>
+                        <p class="text-xs mt-2">Game akan menggunakan data lokal.</p>
+                    </div>
+                `;
+            }
+            
+            // Sembunyikan debug info ketika terjadi error
+            if (!DEBUG_MODE) {
+                document.getElementById('api-debug-info').classList.add('hidden');
+            }
+        }
+
+        // Fungsi untuk menampilkan pesan sukses
+        function showSuccessMessage(message) {
+            const debugDiv = document.getElementById('connection-test-result');
+            if (debugDiv) {
+                debugDiv.innerHTML = `
+                    <div class="bg-green-50 border border-green-200 text-green-700 p-3 rounded-lg">
+                        <p class="font-bold mb-1"><i class="fas fa-check-circle mr-2"></i>${message}</p>
+                    </div>
+                `;
+            }
+            
+            // Sembunyikan debug info setelah sukses jika tidak dalam DEBUG_MODE
+            if (!DEBUG_MODE) {
+                document.getElementById('api-debug-info').classList.add('hidden');
+            }
+        }
+
+        // Fungsi untuk update status database di login modal
+        function updateDatabaseStatus(message) {
+            const statusEl = document.getElementById('db-status-text');
+            if (statusEl) {
+                statusEl.textContent = message;
+                
+                // Update warna berdasarkan status
+                const statusContainer = document.getElementById('database-status');
+                if (message.includes("Terhubung")) {
+                    statusContainer.className = "mb-4 p-3 rounded-lg bg-green-50 border border-green-200";
+                    statusEl.className = "text-sm text-green-700 font-medium";
+                } else {
+                    statusContainer.className = "mb-4 p-3 rounded-lg bg-yellow-50 border border-yellow-200";
+                    statusEl.className = "text-sm text-yellow-700 font-medium";
+                }
+            }
+        }
+
+        // Fungsi untuk update status loading
+        function updateLoadingStatus(message, progress) {
+            const statusEl = document.getElementById('loading-status');
+            const messageEl = document.getElementById('loading-message');
+            const progressBar = document.getElementById('loading-progress');
+            
+            if (statusEl) statusEl.textContent = message;
+            if (messageEl) messageEl.textContent = message;
+            if (progressBar) progressBar.style.width = `${progress}%`;
+        }
+
+        function hideLoadingShowLogin() {
+            document.getElementById('loading-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        // Fungsi untuk data fallback lokal
+        function generateFallbackData() {
+            console.log("🔄 Menggunakan data fallback lokal...");
+            
+            const fallbackData = [
+                { 
+                    name: "Harimau Sumatera", sc: "Panthera tigris sumatrae", type: "fauna", region: "Sumatera", 
+                    desc: "Predator puncak yang kritis terancam punah. Hanya tersisa di Pulau Sumatera.", 
+                    lat: -0.5, lng: 101.5,
+                    traits: "<ul><li>Tubuh paling kecil di antara semua subspesies harimau.</li><li>Loreng hitam lebih rapat dan tebal.</li><li>Janggut atau surai di pipi terlihat jelas.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Rafflesia Arnoldii", sc: "Rafflesia arnoldii", type: "flora", region: "Sumatera", 
+                    desc: "Bunga tunggal terbesar di dunia, ikon Bengkulu.", 
+                    lat: -3.8, lng: 102.3,
+                    traits: "<ul><li>Bunga raksasa tanpa batang, daun, atau akar sejati.</li><li>Diameter bunga bisa mencapai 1 meter.</li><li>Mengeluarkan bau busuk untuk menarik lalat.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1516048015719-fb6a4c7c71f1?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Orangutan Sumatera", sc: "Pongo abelii", type: "fauna", region: "Sumatera", 
+                    desc: "Primata cerdas penghuni hutan Leuser.", 
+                    lat: 3.5, lng: 97.5,
+                    traits: "<ul><li>Bulu berwarna oranye kemerahan terang.</li><li>Lengan panjang dan kuat untuk bergelantungan.</li><li>Wajah jantan dewasa memiliki bantalan pipi (cheekpad) lebar.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1559253664-ca249d4608c6?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Komodo", sc: "Varanus komodoensis", type: "fauna", region: "Nusa Tenggara", 
+                    desc: "Kadal purba terbesar di dunia.", 
+                    lat: -8.6, lng: 119.5,
+                    traits: "<ul><li>Memiliki tubuh besar dengan panjang bisa mencapai 2–3 meter.</li><li>Kulit bersisik kasar berwarna cokelat keabu-abuan.</li><li>Lidah panjang bercabang seperti ular dan sering menjilati udara.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1578774632741-8559c7a52e53?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Cendrawasih Botak", sc: "Cicinnurus respublica", type: "fauna", region: "Papua", 
+                    desc: "Burung surga cantik dari Raja Ampat.", 
+                    lat: -0.5, lng: 130.8,
+                    traits: "<ul><li>Kepala botak dengan kulit berwarna biru cerah.</li><li>Pola salib hitam di atas punggung merah.</li><li>Dua bulu ekor melengkung spiral.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1551085254-e96b210db58a?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Badak Jawa", sc: "Rhinoceros sondaicus", type: "fauna", region: "Jawa", 
+                    desc: "Mamalia paling langka di dunia, hanya ada di Ujung Kulon.", 
+                    lat: -6.75, lng: 105.35,
+                    traits: "<ul><li>Hanya memiliki satu cula kecil (betina sering tanpa cula).</li><li>Kulit abu-abu dengan lipatan menyerupai baju zirah.</li><li>Bibir atas meruncing untuk memegang daun.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Bunga Bangkai", sc: "Amorphophallus titanum", type: "flora", region: "Sumatera", 
+                    desc: "Bunga majemuk tertinggi di dunia, baunya memikat serangga.", 
+                    lat: -0.1, lng: 100.6,
+                    traits: "<ul><li>Memiliki tongkol (spadix) yang menjulang tinggi.</li><li>Kelopak (spatha) berwarna merah hati.</li><li>Mengeluarkan bau menyengat seperti daging busuk saat mekar.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1597076881087-8b96c6dcf8e9?q=80&w=800&auto=format&fit=crop"
+                },
+                { 
+                    name: "Bekantan", sc: "Nasalis larvatus", type: "fauna", region: "Kalimantan", 
+                    desc: "Monyet hidung panjang penghuni hutan bakau.", 
+                    lat: -3.3, lng: 114.6,
+                    traits: "<ul><li>Hidung jantan sangat besar dan menggantung.</li><li>Perut buncit karena sistem pencernaan khusus daun.</li><li>Bulu oranye kemerahan dengan punggung abu-abu.</li></ul>",
+                    image_url: "https://images.unsplash.com/photo-1559253664-ca249d4608c6?q=80&w=800&auto=format&fit=crop"
+                }
+            ];
+            
+            fullData = fallbackData.map((d, index) => ({ ...d, id: `spec_${index}` }));
+            
+            // Setup Quiz Data
+            quizData = fullData
+                .filter(s => s.type === 'fauna')
+                .sort(() => 0.5 - Math.random()) 
+                .slice(0, Math.min(10, fullData.filter(s => s.type === 'fauna').length))
+                .map(s => {
+                    let z = getZoneFromLong(s.lng);
+                    return {
+                        ...s,
+                        zone: z,
+                        hint: `Habitat spesies ini ada di ${s.region}.`
+                    };
+                });
+                
+            console.log("✅ Data fallback siap:", fullData.length, "spesies");
+        }
+
+        // Helper function untuk random lat/lng jika tidak ada data
+        function getRandomLat() {
+            return -2 + (Math.random() * 10 - 5);
+        }
+
+        function getRandomLng() {
+            return 118 + (Math.random() * 20 - 10);
+        }
+
+        // Helper function untuk gambar default berdasarkan jenis
+        function getDefaultImage(type) {
+            const isFlora = type.toString().toLowerCase() === 'flora';
+            if (isFlora) {
+                return "https://images.unsplash.com/photo-1516048015719-fb6a4c7c71f1?q=80&w=800&auto=format&fit=crop";
+            } else {
+                return "https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop";
+            }
+        }
+
+        function getZoneFromLong(lng) {
+            if(lng < 117) return "Asiatis";
+            if(lng < 129) return "Wallacea";
+            return "Australis";
+        }
 
         // --- AUDIO FUNCTIONS ---
         function playSound(soundId) {
@@ -642,7 +1171,7 @@
         }
 
         function playWrongSound() {
-            playSound('wrong-sound'); // Memainkan suara salah.wav
+            playSound('wrong-sound');
         }
 
         // --- FUNGSI UNTUK MENAMPILKAN POPUP SKOR SEMENTARA ---
@@ -687,166 +1216,6 @@
             }
         }
 
-        // --- DATABASE --- 
-        const realSpeciesDatabase = [
-            // SUMATERA & SEKITARNYA (Asiatis)
-            { 
-                name: "Harimau Sumatera", sc: "Panthera tigris sumatrae", type: "fauna", region: "Sumatera", 
-                desc: "Predator puncak yang kritis terancam punah. Hanya tersisa di Pulau Sumatera.", 
-                lat: -0.5, lng: 101.5,
-                traits: "<ul><li>Tubuh paling kecil di antara semua subspesies harimau.</li><li>Loreng hitam lebih rapat dan tebal.</li><li>Janggut atau surai di pipi terlihat jelas.</li><li>Selaput di sela jari kaki untuk berenang cepat.</li></ul>"
-            },
-            { 
-                name: "Gajah Sumatera", sc: "Elephas maximus sumatranus", type: "fauna", region: "Sumatera", 
-                desc: "Gajah Asia yang berhabitat di hutan dataran rendah Sumatera.", 
-                lat: -4.5, lng: 105.2,
-                traits: "<ul><li>Tubuh lebih kecil dari gajah Afrika.</li><li>Memiliki 5 kuku di kaki depan dan 4 di kaki belakang.</li><li>Hanya gajah jantan yang memiliki gading panjang.</li><li>Belalai fleksibel dengan satu 'jari' di ujungnya.</li></ul>"
-            },
-            { 
-                name: "Badak Sumatera", sc: "Dicerorhinus sumatrensis", type: "fauna", region: "Sumatera", 
-                desc: "Badak terkecil di dunia dan satu-satunya badak Asia bercula dua.", 
-                lat: -2.5, lng: 102.5,
-                traits: "<ul><li>Satu-satunya badak Asia dengan dua cula.</li><li>Tubuh ditutupi rambut kasar kemerahan.</li><li>Ukuran tubuh paling kecil dibanding spesies badak lain.</li><li>Hidup soliter di hutan hujan lebat.</li></ul>"
-            },
-            { 
-                name: "Orangutan Sumatera", sc: "Pongo abelii", type: "fauna", region: "Sumatera", 
-                desc: "Primata cerdas penghuni hutan Leuser.", 
-                lat: 3.5, lng: 97.5,
-                traits: "<ul><li>Bulu berwarna oranye kemerahan terang.</li><li>Lengan panjang dan kuat untuk bergelantungan.</li><li>Wajah jantan dewasa memiliki bantalan pipi (cheekpad) lebar.</li><li>Lebih sering berada di pohon dibanding tanah.</li></ul>"
-            },
-            { 
-                name: "Orangutan Tapanuli", sc: "Pongo tapanuliensis", type: "fauna", region: "Sumatera", 
-                desc: "Spesies orangutan terbaru yang ditemukan di Tapanuli Selatan.", 
-                lat: 1.5, lng: 99.0,
-                traits: "<ul><li>Bulu lebih keriting dibanding jenis lain.</li><li>Tengkorak dan rahang lebih kecil.</li><li>Panggilan suara jantan (long call) berbeda frekuensinya.</li><li>Hanya ditemukan di Ekosistem Batang Toru.</li></ul>"
-            },
-            { 
-                name: "Rafflesia Arnoldii", sc: "Rafflesia arnoldii", type: "flora", region: "Sumatera", 
-                desc: "Bunga tunggal terbesar di dunia, ikon Bengkulu.", 
-                lat: -3.8, lng: 102.3,
-                traits: "<ul><li>Bunga raksasa tanpa batang, daun, atau akar sejati.</li><li>Diameter bunga bisa mencapai 1 meter.</li><li>Mengeluarkan bau busuk untuk menarik lalat.</li><li>Hanya mekar selama 5-7 hari.</li></ul>"
-            },
-            { 
-                name: "Bunga Bangkai", sc: "Amorphophallus titanum", type: "flora", region: "Sumatera", 
-                desc: "Bunga majemuk tertinggi di dunia, baunya memikat serangga.", 
-                lat: -0.1, lng: 100.6,
-                traits: "<ul><li>Memiliki tongkol (spadix) yang menjulang tinggi.</li><li>Kelopak (spatha) berwarna merah hati.</li><li>Fase vegetatif berupa pohon batang semu, fase generatif berupa bunga.</li><li>Bau menyengat seperti daging busuk saat mekar.</li></ul>"
-            },
-            { 
-                name: "Siamang", sc: "Symphalangus syndactylus", type: "fauna", region: "Sumatera", 
-                desc: "Owa terbesar, terkenal dengan suaranya yang keras.", 
-                lat: -1.0, lng: 100.5,
-                traits: "<ul><li>Bulu hitam pekat di seluruh tubuh.</li><li>Memiliki kantung tenggorokan besar untuk memperkeras suara.</li><li>Jari kedua dan ketiga kaki menyatu (sindaktili).</li><li>Lengan sangat panjang, merentang hingga 1,5 meter.</li></ul>"
-            },
-            { name: "Tapir Asia", sc: "Tapirus indicus", type: "fauna", region: "Sumatera", desc: "Mamalia herbivora unik dengan warna hitam putih.", lat: 0.5, lng: 101.8, traits: "<ul><li>Pola warna tubuh hitam dan putih seperti memakai pelana.</li><li>Hidung mancung fleksibel mirip belalai pendek.</li><li>Bayi tapir memiliki pola bercak dan garis untuk kamuflase.</li><li>Aktif di malam hari (nokturnal).</li></ul>" },
-            { name: "Kuau Raja", sc: "Argusianus argus", type: "fauna", region: "Sumatera", desc: "Burung dengan bulu ekor indah bermata banyak.", lat: 2.0, lng: 98.5, traits: "<ul><li>Bulu sayap dan ekor memiliki pola bulatan 'mata'.</li><li>Jantan memamerkan bulu untuk menarik betina (tarian kipas).</li><li>Kepala botak berwarna biru cerah.</li><li>Suara panggilan 'ku-au' yang keras bergema.</li></ul>" },
-            { name: "Daun Payung", sc: "Johannesteijsmannia altifrons", type: "flora", region: "Sumatera", desc: "Palem dengan daun raksasa berbentuk berlian.", lat: 3.0, lng: 98.0, traits: "<ul><li>Daun tunggal raksasa berbentuk jajar genjang/berlian.</li><li>Panjang daun bisa mencapai 6 meter.</li><li>Sering digunakan penduduk sebagai atap gubuk.</li><li>Tumbuh di hutan hujan tropis yang lembap.</li></ul>" },
-
-            // JAWA & BALI (Asiatis)
-            { name: "Badak Jawa", sc: "Rhinoceros sondaicus", type: "fauna", region: "Jawa", desc: "Mamalia paling langka di dunia, hanya ada di Ujung Kulon.", lat: -6.75, lng: 105.35, traits: "<ul><li>Hanya memiliki satu cula kecil (betina sering tanpa cula).</li><li>Kulit abu-abu dengan lipatan menyerupai baju zirah.</li><li>Bibir atas meruncing untuk memegang daun.</li><li>Sangat pemalu dan soliter.</li></ul>" },
-            { name: "Elang Jawa", sc: "Nisaetus bartelsi", type: "fauna", region: "Jawa", desc: "Burung pemangsa yang identik dengan lambang Garuda.", lat: -7.1, lng: 107.5, traits: "<ul><li>Jambul khas di kepala yang menjulang.</li><li>Warna bulu cokelat kemerahan di dada.</li><li>Sayap lebar membulat untuk manuver di hutan.</li><li>Predator puncak di ekosistem hutan Jawa.</li></ul>" },
-            { name: "Owa Jawa", sc: "Hylobates moloch", type: "fauna", region: "Jawa", desc: "Primata endemik Jawa bagian barat yang setia pada pasangan.", lat: -6.8, lng: 106.5, traits: "<ul><li>Bulu abu-abu keperakan yang halus.</li><li>Wajah hitam legam dengan alis putih.</li><li>Tidak memiliki ekor.</li><li>Hidup monogami dalam keluarga kecil.</li></ul>" },
-            { name: "Macan Tutul Jawa", sc: "Panthera pardus melas", type: "fauna", region: "Jawa", desc: "Kucing besar terakhir yang tersisa di Pulau Jawa.", lat: -8.0, lng: 113.0, traits: "<ul><li>Ukuran tubuh lebih kecil dibanding macan tutul lain.</li><li>Pola totol (rosette) khas di bulu kuning emas.</li><li>Ada variasi warna hitam legam (macan kumbang).</li><li>Kemampuan memanjat pohon yang sangat baik.</li></ul>" },
-            { name: "Banteng Jawa", sc: "Bos javanicus", type: "fauna", region: "Jawa", desc: "Leluhur sapi Bali, hidup liar di Baluran dan Alas Purwo.", lat: -7.8, lng: 114.4, traits: "<ul><li>Jantan berwarna hitam, betina cokelat kemerahan.</li><li>Memiliki 'kaus kaki' putih di bagian bawah kaki.</li><li>Bercak putih besar (pantat) di bagian belakang.</li><li>Tanduk melengkung ke atas di kepalanya.</li></ul>" },
-            { name: "Jalak Bali", sc: "Leucopsar rothschildi", type: "fauna", region: "Bali", desc: "Burung putih cantik maskot pulau Dewata.", lat: -8.15, lng: 114.55, traits: "<ul><li>Bulu putih bersih di seluruh tubuh.</li><li>Kulit biru cerah di sekitar mata tanpa bulu.</li><li>Jambul panjang yang bisa ditegakkan.</li><li>Ujung sayap dan ekor berwarna hitam.</li></ul>" },
-            { name: "Pohon Kepel", sc: "Stelechocarpus burahol", type: "flora", region: "Jawa", desc: "Flora identitas DIY, buah favorit putri keraton.", lat: -7.8, lng: 110.4, traits: "<ul><li>Buah tumbuh bergerombol langsung di batang (cauliflory).</li><li>Daun muda berwarna merah muda cerah.</li><li>Buah dipercaya mengharumkan keringat.</li><li>Tajuk pohon berbentuk kerucut yang rapi.</li></ul>" },
-
-            // KALIMANTAN (Asiatis)
-            { name: "Orangutan Kalimantan", sc: "Pongo pygmaeus", type: "fauna", region: "Kalimantan", desc: "Spesies orangutan terbesar dan terbanyak populasinya.", lat: -1.5, lng: 113.5, traits: "<ul><li>Wajah lebih lebar dan gelap dibanding sepupu Sumatera.</li><li>Rambut lebih kasar dan berwarna merah gelap.</li><li>Bantalan pipi jantan melebar ke depan.</li><li>Lebih banyak menghabiskan waktu di tanah (terestrial).</li></ul>" },
-            { name: "Bekantan", sc: "Nasalis larvatus", type: "fauna", region: "Kalimantan", desc: "Monyet hidung panjang penghuni hutan bakau.", lat: -3.3, lng: 114.6, traits: "<ul><li>Hidung jantan sangat besar dan menggantung.</li><li>Perut buncit karena sistem pencernaan khusus daun.</li><li>Bulu oranye kemerahan dengan punggung abu-abu.</li><li>Pandai berenang dan menyelam di sungai.</li></ul>" },
-            { name: "Beruang Madu", sc: "Helarctos malayanus", type: "fauna", region: "Kalimantan", desc: "Beruang terkecil di dunia, maskot Balikpapan.", lat: -1.2, lng: 116.8, traits: "<ul><li>Tanda 'V' atau 'U' berwarna oranye di dada.</li><li>Lidah sangat panjang untuk menjilat madu/serangga.</li><li>Bulu hitam pendek dan mengilap.</li><li>Kuku panjang melengkung untuk memanjat pohon.</li></ul>" },
-            { name: "Pesut Mahakam", sc: "Orcaella brevirostris", type: "fauna", region: "Kalimantan", desc: "Lumba-lumba air tawar yang langka di Sungai Mahakam.", lat: -0.5, lng: 117.0, traits: "<ul><li>Kepala bulat tumpul dengan dahi menonjol.</li><li>Sirip punggung kecil dan membulat.</li><li>Warna tubuh abu-abu kelabu.</li><li>Hidup di air tawar keruh Sungai Mahakam.</li></ul>" },
-            { name: "Anggrek Hitam", sc: "Coelogyne pandurata", type: "flora", region: "Kalimantan", desc: "Anggrek eksotis dengan lidah berwarna hitam.", lat: 0.1, lng: 115.5, traits: "<ul><li>Kelopak bunga berwarna hijau muda cerah.</li><li>Bagian lidah (labellum) berwarna hitam dengan garis-garis.</li><li>Mengeluarkan aroma wangi lembut.</li><li>Mekar dalam tandan yang menjuntai.</li></ul>" },
-            { name: "Kantong Semar Raksasa", sc: "Nepenthes rajah", type: "flora", region: "Kalimantan", desc: "Tumbuhan karnivora terbesar.", lat: 2.5, lng: 116.0, traits: "<ul><li>Memiliki kantong jebakan yang sangat besar.</li><li>Mampu menampung hingga 3 liter air.</li><li>Dapat menjebak tikus atau katak kecil.</li><li>Tumbuh di tanah pegunungan yang miskin hara.</li></ul>" },
-
-            // SULAWESI (Wallacea)
-            { name: "Anoa Dataran Rendah", sc: "Bubalus depressicornis", type: "fauna", region: "Sulawesi", desc: "Kerbau kerdil endemik Sulawesi.", lat: -4.0, lng: 122.0, traits: "<ul><li>Ukuran tubuh kecil seperti kambing.</li><li>Tanduk lurus meruncing ke belakang.</li><li>Kaki putih (stocking) pada bagian bawah.</li><li>Hidup soliter di hutan rawa atau dataran rendah.</li></ul>" },
-            { name: "Babirusa", sc: "Babyrousa babyrussa", type: "fauna", region: "Sulawesi", desc: "Babi dengan taring melengkung menembus moncong.", lat: -0.8, lng: 121.5, traits: "<ul><li>Taring atas tumbuh menembus kulit moncong ke atas.</li><li>Tubuh hampir tidak berbulu, kulit abu-abu.</li><li>Kaki panjang dan kuat untuk berlari.</li><li>Taring jantan digunakan untuk pertarungan.</li></ul>" },
-            { name: "Burung Maleo", sc: "Macrocephalon maleo", type: "fauna", region: "Sulawesi", desc: "Mengubur telurnya di pasir panas bumi.", lat: -0.5, lng: 123.5, traits: "<ul><li>Tonjolan keras (casque) hitam di kepala.</li><li>Bulu dada berwarna putih merah muda.</li><li>Tidak mengerami telur, menguburnya di pasir panas.</li><li>Anak burung bisa langsung terbang setelah menetas.</li></ul>" },
-            { name: "Tarsius", sc: "Tarsius tarsier", type: "fauna", region: "Sulawesi", desc: "Primata karnivora terkecil di dunia.", lat: 1.4, lng: 125.0, traits: "<ul><li>Mata sangat besar (lebih besar dari otaknya).</li><li>Kepala dapat berputar 180 derajat.</li><li>Kaki belakang panjang untuk melompat jauh.</li><li>Aktif berburu serangga di malam hari.</li></ul>" },
-            { name: "Kuskus Beruang", sc: "Ailurops ursinus", type: "fauna", region: "Sulawesi", desc: "Marsupial pendiam yang hidup di pohon.", lat: -2.5, lng: 120.5, traits: "<ul><li>Bulu tebal berwarna cokelat tua/hitam.</li><li>Ekor prehensil (bisa menggenggam) tanpa bulu di ujung.</li><li>Gerakan sangat lambat di atas pohon.</li><li>Memiliki kantung perut (marsupial).</li></ul>" },
-            { name: "Monyet Hitam Sulawesi", sc: "Macaca nigra", type: "fauna", region: "Sulawesi", desc: "Yaki, monyet berjambul khas Sulawesi Utara.", lat: 1.6, lng: 125.1, traits: "<ul><li>Seluruh tubuh dan wajah berwarna hitam pekat.</li><li>Jambul rambut panjang di atas kepala.</li><li>Bantalan pantat berwarna merah muda cerah.</li><li>Ekor sangat pendek (hampir tidak terlihat).</li></ul>" },
-
-            // NUSA TENGGARA (Wallacea)
-            { 
-                name: "Komodo", sc: "Varanus komodoensis", type: "fauna", region: "Nusa Tenggara", 
-                desc: "Kadal purba terbesar di dunia.", 
-                lat: -8.6, lng: 119.5,
-                traits: "<ul><li>Memiliki tubuh besar dengan panjang bisa mencapai 2–3 meter.</li><li>Kulit bersisik kasar berwarna cokelat keabu-abuan.</li><li>Lidah panjang bercabang seperti ular dan sering menjilati udara.</li><li>Gigi tajam dan air liurnya mengandung banyak bakteri.</li><li>Berlari cepat dan mampu menyerang mangsa dengan gigitan kuat.</li></ul>"
-            },
-            { name: "Kuda Sumba", sc: "Equus caballus", type: "fauna", region: "Nusa Tenggara", desc: "Kuda poni tangguh dari padang savana Sumba.", lat: -9.7, lng: 120.0, traits: "<ul><li>Tubuh relatif kecil namun berotot dan kuat.</li><li>Tahan panas dan mampu menempuh jarak jauh.</li><li>Leher tebal dengan surai lebat.</li><li>Hidup liar di padang savana.</li></ul>" },
-            { name: "Penyu Hijau", sc: "Chelonia mydas", type: "fauna", region: "Nusa Tenggara", desc: "Sering bertelur di pantai selatan Lombok/Sumbawa.", lat: -8.8, lng: 117.0, traits: "<ul><li>Cangkang (karapas) halus berbentuk hati.</li><li>Lemak tubuh berwarna hijau (asal namanya).</li><li>Kepala kecil dan tumpul.</li><li>Pemakan lamun dan alga (herbivora).</li></ul>" },
-            { name: "Rusa Timor", sc: "Rusa timorensis", type: "fauna", region: "Nusa Tenggara", desc: "Mangsa utama Komodo.", lat: -8.5, lng: 119.4, traits: "<ul><li>Ukuran tubuh lebih kecil dari Rusa Sambar.</li><li>Jantan memiliki tanduk bercabang tiga.</li><li>Bulu cokelat kasar, leher bergelambir.</li><li>Hidup berkelompok di padang rumput terbuka.</li></ul>" },
-            { name: "Flores Hawk-Eagle", sc: "Nisaetus floris", type: "fauna", region: "Nusa Tenggara", desc: "Elang endemik Flores yang terancam punah.", lat: -8.6, lng: 121.0, traits: "<ul><li>Bagian bawah tubuh putih bersih.</li><li>Kepala cokelat dengan jambul tipis.</li><li>Sayap lebar untuk soaring (melayang).</li><li>Endemik asli pulau Flores, Sumbawa, Lombok.</li></ul>" },
-            { name: "Pohon Cendana", sc: "Santalum album", type: "flora", region: "Nusa Tenggara", desc: "Kayu wangi legendaris dari NTT.", lat: -9.5, lng: 124.2, traits: "<ul><li>Kayu teras mengandung minyak atsiri harum.</li><li>Daun kecil berbentuk elips saling berhadapan.</li><li>Tumbuhan parasit yang mengambil nutrisi inang.</li><li>Batang abu-abu kecokelatan.</li></ul>" },
-            { name: "Lontar", sc: "Borassus flabellifer", type: "flora", region: "Nusa Tenggara", desc: "Pohon kehidupan masyarakat NTT/Sulsel.", lat: -10.2, lng: 123.6, traits: "<ul><li>Batang tunggal lurus tinggi dan kokoh.</li><li>Daun berbentuk kipas besar dengan tangkai berduri.</li><li>Menghasilkan nira manis dari mayang bunga.</li><li>Tahan kekeringan ekstrem.</li></ul>" },
-
-            // MALUKU (Wallacea/Australis Transition)
-            { name: "Burung Bidadari", sc: "Semioptera wallacii", type: "fauna", region: "Maluku", desc: "Cendrawasih endemik Halmahera, ditemukan oleh Wallace.", lat: 1.0, lng: 127.5, traits: "<ul><li>Jantan memiliki dua pasang bulu putih panjang di bahu.</li><li>Dada berwarna hijau zamrud berkilau.</li><li>Melakukan tarian udara untuk memikat betina.</li><li>Endemik pulau Halmahera dan Bacan.</li></ul>" },
-            { name: "Nuri Raja Ambon", sc: "Alisterus amboinensis", type: "fauna", region: "Maluku", desc: "Burung paruh bengkok berwarna cerah.", lat: -3.7, lng: 128.2, traits: "<ul><li>Kepala dan dada merah menyala.</li><li>Sayap dan punggung hijau gelap.</li><li>Ekor panjang berwarna biru keunguan.</li><li>Suara pekikan yang tajam.</li></ul>" },
-            { name: "Kuskus Tutul", sc: "Spilocuscus maculatus", type: "fauna", region: "Maluku", desc: "Marsupial dengan bulu bermotif tutul.", lat: -3.0, lng: 128.0, traits: "<ul><li>Bulu putih dengan tutul-tutul cokelat/hitam (jantan).</li><li>Mata merah atau oranye mencolok.</li><li>Wajah bulat dengan telinga kecil.</li><li>Pemakan buah dan daun di tajuk pohon.</li></ul>" },
-            { name: "Pala", sc: "Myristica fragrans", type: "flora", region: "Maluku", desc: "Rempah asli Kepulauan Banda yang mendunia.", lat: -4.5, lng: 129.9, traits: "<ul><li>Buah kuning merekah memperlihatkan biji.</li><li>Biji diselimuti selaput merah (fuli).</li><li>Daun hijau gelap mengilap dan aromatik.</li><li>Tanaman berumah dua (jantan/betina terpisah).</li></ul>" },
-            { name: "Cengkeh", sc: "Syzygium aromaticum", type: "flora", region: "Maluku", desc: "Tanaman rempah asli Maluku Utara.", lat: 0.8, lng: 127.4, traits: "<ul><li>Kuncup bunga kering berbau aromatik kuat.</li><li>Daun muda berwarna kemerahan.</li><li>Pohon rimbun berbentuk kerucut.</li><li>Bunga berwarna merah muda sebelum kering.</li></ul>" },
-
-            // PAPUA (Australis)
-            { name: "Cendrawasih Botak", sc: "Cicinnurus respublica", type: "fauna", region: "Papua", desc: "Burung surga cantik dari Raja Ampat.", lat: -0.5, lng: 130.8, traits: "<ul><li>Kepala botak dengan kulit berwarna biru cerah.</li><li>Pola salib hitam di atas punggung merah.</li><li>Dua bulu ekor melengkung spiral.</li><li>Hanya ditemukan di Waigeo dan Batanta.</li></ul>" },
-            { name: "Cendrawasih Merah", sc: "Paradisaea rubra", type: "fauna", region: "Papua", desc: "Cendrawasih berekor kawat melengkung.", lat: -0.8, lng: 131.0, traits: "<ul><li>Bulu samping tubuh merah darah dan panjang.</li><li>Memiliki sepasang kawat ekor hitam melengkung.</li><li>Wajah hijau zamrud gelap.</li><li>Melakukan tarian di dahan pohon.</li></ul>" },
-            { name: "Kakatua Raja", sc: "Probosciger aterrimus", type: "fauna", region: "Papua", desc: "Kakatua hitam terbesar dengan jambul megah.", lat: -6.0, lng: 138.0, traits: "<ul><li>Bulu hitam pekat di seluruh tubuh.</li><li>Pipi merah tanpa bulu yang bisa berubah warna.</li><li>Jambul besar seperti mahkota kipas.</li><li>Paruh sangat besar dan kuat untuk memecah biji kenari.</li></ul>" },
-            { name: "Kasuari Gelambir Ganda", sc: "Casuarius casuarius", type: "fauna", region: "Papua", desc: "Burung besar tak bisa terbang, berbahaya.", lat: -5.0, lng: 139.0, traits: "<ul><li>Burung setinggi manusia yang tidak bisa terbang.</li><li>Memiliki 'helm' (casque) keras di kepala.</li><li>Leher biru dengan dua gelambir merah.</li><li>Cakar kaki tajam seperti pisau belati.</li></ul>" },
-            { name: "Kanguru Pohon Mantel Emas", sc: "Dendrolagus pulcherrimus", type: "fauna", region: "Papua", desc: "Mamalia berkantung yang hidup di pohon.", lat: -2.8, lng: 136.5, traits: "<ul><li>Bulu cokelat dengan leher/bahu keemasan.</li><li>Ekor panjang untuk keseimbangan di pohon.</li><li>Lengan kuat untuk memanjat.</li><li>Wajah pucat merah muda.</li></ul>" },
-            { name: "Echidna Moncong Panjang", sc: "Zaglossus", type: "fauna", region: "Papua", desc: "Mamalia bertelur (monotremata) purba.", lat: -3.5, lng: 136.0, traits: "<ul><li>Tubuh berduri seperti landak.</li><li>Moncong panjang melengkung ke bawah.</li><li>Memiliki kantung untuk mengerami telur.</li><li>Pemakan cacing tanah.</li></ul>" },
-            { name: "Matoa", sc: "Pometia pinnata", type: "flora", region: "Papua", desc: "Buah manis khas Papua, mirip kelengkeng.", lat: -2.6, lng: 140.6, traits: "<ul><li>Kulit buah keras berwarna hijau/merah/hitam.</li><li>Daging buah bening, manis, beraroma durian.</li><li>Pohon besar berakar banir tinggi.</li><li>Daun majemuk menyirip ganjil.</li></ul>" }
-        ];
-
-        // Generate markers for Level 1 (Flora/Fauna Mix) and Level 2 (Fauna Focus)
-        function generateGameData() {
-            let data = [...realSpeciesDatabase]; 
-            
-            // Add slight variations to reach 150 markers
-            let needed = 49 - data.length;
-            for (let i = 0; i < needed; i++) {
-                let template = realSpeciesDatabase[Math.floor(Math.random() * realSpeciesDatabase.length)];
-                let latOffset = (Math.random() - 0.5) * 0.8;
-                let lngOffset = (Math.random() - 0.5) * 0.8;
-                
-                data.push({
-                    name: template.name,
-                    sc: template.sc,
-                    type: template.type,
-                    region: template.region,
-                    desc: template.desc,
-                    lat: template.lat + latOffset,
-                    lng: template.lng + lngOffset,
-                    traits: template.traits, // Inherit traits
-                    isClone: true
-                });
-            }
-            
-            return data.map((d, index) => ({ ...d, id: `spec_${index}` }));
-        }
-
-        const fullData = generateGameData();
-        
-        // Setup Quiz Data
-        const quizData = realSpeciesDatabase
-            .filter(s => s.type === 'fauna')
-            .sort(() => 0.5 - Math.random()) 
-            .slice(0, 10)
-            .map(s => {
-                let z = getZoneFromLong(s.lng);
-                return {
-                    ...s,
-                    zone: z,
-                    hint: `Habitat spesies ini ada di pulau ${s.region}.`
-                };
-            });
-
-        function getZoneFromLong(lng) {
-            if(lng < 117) return "Asiatis";
-            if(lng < 129) return "Wallacea";
-            return "Australis";
-        }
-
         // --- MINI QUIZ SYSTEM ---
         const miniQuizQuestions = {
             level1: [
@@ -858,7 +1227,7 @@
                         "Warnanya yang cerah",
                         "Batangnya yang tinggi"
                     ],
-                    correct: 1, // index 1 = "Ukurannya yang besar"
+                    correct: 1,
                     points: 100,
                     penalty: 50
                 },
@@ -1014,12 +1383,12 @@
                 gameState.score += question.points;
                 feedback.textContent = `Benar! +${question.points} poin`;
                 feedback.className = "text-green-600 font-bold text-sm";
-                playSuccessSound(); // Play success sound
+                playSuccessSound();
             } else {
-                gameState.score -= question.penalty; // POIN BOLEH NEGATIF
+                gameState.score -= question.penalty;
                 feedback.textContent = `Salah! -${question.penalty} poin`;
                 feedback.className = "text-red-600 font-bold text-sm";
-                playWrongSound(); // Play wrong sound
+                playWrongSound();
             }
             
             feedback.classList.remove('hidden');
@@ -1045,7 +1414,6 @@
             
             // Tampilkan popup skor sementara
             if (currentMiniQuiz.level === 1) {
-                // Setelah mini quiz level 1
                 showTemporaryScorePopup(
                     "Level 1 Selesai!",
                     `Selamat! Anda menyelesaikan eksplorasi umum.`,
@@ -1053,7 +1421,6 @@
                     1
                 );
             } else if (currentMiniQuiz.level === 2) {
-                // Setelah mini quiz level 2
                 showTemporaryScorePopup(
                     "Level 2 Selesai!",
                     `Hebat! Anda memahami zona biogeografi dengan baik.`,
@@ -1064,8 +1431,28 @@
         }
 
         // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log("🚀 Initializing BioExplorer Nusantara...");
+            
+            // Inisialisasi peta
             initMap();
+            
+            // Tampilkan loading modal
+            document.getElementById('loading-modal').classList.remove('hidden');
+            
+            // Load data dari database
+            try {
+                await fetchSpeciesData();
+            } catch (error) {
+                console.error("Error in initialization:", error);
+                // Fallback jika semua gagal
+                updateLoadingStatus("Error inisialisasi, menggunakan data lokal...", 30);
+                setTimeout(() => {
+                    generateFallbackData();
+                    hideLoadingShowLogin();
+                    updateDatabaseStatus("Error inisialisasi. Menggunakan data lokal.");
+                }, 1000);
+            }
         });
 
         function initMap() {
@@ -1198,7 +1585,7 @@
         }
 
         // --- LEVEL 1: GENERAL EXPLORATION ---
-        function startExplorationPhase() {
+        async function startExplorationPhase() {
             gameState.phase = 'exploration';
             gameState.level = 1;
             
@@ -1255,156 +1642,174 @@
             });
         }
 
-        // Helper to create marker (Shared logic but content differs by Level)
+        // Helper to create marker (Shared logic but content differs by Level) DENGAN GAMBAR
         function createMarker(item, isLevel2) {
-            const isFlora = item.type === 'flora';
-            const iconClass = isFlora ? 'fa-seedling' : 'fa-paw';
-            
-            const trackingId = item.id + (isLevel2 ? '_L2' : '_L1');
-            const isVisited = gameState.visitedExplorationIds.has(trackingId);
-            
-            // WARNA BERDASARKAN STATUS KUNJUNGAN
-            let markerColorClass = '';
-            if (isVisited) {
-                markerColorClass = 'marker-visited bg-gray-300'; // Abu-abu untuk yang sudah dikunjungi
-            } else {
-                markerColorClass = isFlora ? 'bg-white text-green-600' : 'bg-white text-orange-600';
-            }
-            
-            const customIcon = L.divIcon({
-                className: 'bg-transparent',
-                html: `
-                    <div class="relative group">
-                        <div class="w-8 h-8 rounded-full shadow-md border border-gray-200 flex items-center justify-center text-sm hover:scale-125 transition-transform duration-300 cursor-pointer ${markerColorClass}">
-                            <i class="fa-solid ${iconClass}"></i>
-                        </div>
+    const isFlora = item.type === 'flora';
+    const iconClass = isFlora ? 'fa-seedling' : 'fa-paw';
+    
+    const trackingId = item.id + (isLevel2 ? '_L2' : '_L1');
+    const isVisited = gameState.visitedExplorationIds.has(trackingId);
+    
+    // WARNA BERDASARKAN STATUS KUNJUNGAN
+    let markerColorClass = '';
+    if (isVisited) {
+        markerColorClass = 'marker-visited bg-gray-300';
+    } else {
+        markerColorClass = isFlora ? 'bg-white text-green-600' : 'bg-white text-orange-600';
+    }
+    
+    const customIcon = L.divIcon({
+        className: 'bg-transparent',
+        html: `
+            <div class="relative group">
+                <div class="w-8 h-8 rounded-full shadow-md border border-gray-200 flex items-center justify-center text-sm hover:scale-125 transition-transform duration-300 cursor-pointer ${markerColorClass}">
+                    <i class="fa-solid ${iconClass}"></i>
+                </div>
+            </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+    });
+
+    const marker = L.marker([item.lat, item.lng], { icon: customIcon });
+
+    // GENERATE CONTENT DENGAN GAMBAR
+    let descriptionHTML = "";
+    const zone = getZoneFromLong(item.lng);
+    
+    // Gambar untuk semua level
+    const imageHTML = `
+        <div class="popup-image-container mb-3">
+            <img src="${item.image_url}" 
+                 alt="${item.name}" 
+                 class="w-full h-40 object-cover"
+                 onerror="this.onerror=null; this.src='${getDefaultImage(item.type)}';">
+            <div class="image-caption">${item.name}</div>
+        </div>
+    `;
+    
+    if (isLevel2) {
+        // LEVEL 2: Show SPECIFIC ANIMAL TRAITS dengan gambar
+        const animalTraits = item.traits || "<ul><li>Ciri khas tidak tersedia</li></ul>";
+        
+        descriptionHTML = `
+            ${imageHTML}
+            <div class="mb-3">
+                <p class="text-sm text-gray-700 mb-3">${item.desc || "Deskripsi tidak tersedia"}</p>
+                <div class="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                    <div class="flex items-center justify-between mb-1">
+                         <p class="text-xs font-bold text-purple-700 uppercase"><i class="fa-solid fa-paw mr-1"></i> Ciri Khas Spesies</p>
                     </div>
-                `,
-                iconSize: [32, 32],
-                iconAnchor: [16, 16]
-            });
+                    <div class="text-sm text-purple-900 leading-snug font-medium pl-4 list-disc space-y-1">
+                        ${animalTraits}
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // LEVEL 1: Show General Description dengan gambar
+        descriptionHTML = `
+            ${imageHTML}
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">${item.region || "Indonesia"}</span>
+                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${isFlora ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.type || "fauna"}</span>
+            </div>
+            <p class="text-sm text-gray-700 leading-snug mb-3">${item.desc || "Deskripsi tidak tersedia"}</p>
+        `;
+    }
 
-            const marker = L.marker([item.lat, item.lng], { icon: customIcon });
-
-            // GENERATE CONTENT BASED ON LEVEL
-            let descriptionHTML = "";
-            const zone = getZoneFromLong(item.lng);
-            
-            if (isLevel2) {
-                // LEVEL 2: Show SPECIFIC ANIMAL TRAITS (Updated per user request)
-                // Fallback traits if missing (for safety, though DB is populated)
-                const animalTraits = item.traits || "<ul><li>Spesies unik endemik Indonesia.</li><li>Memiliki adaptasi khusus di habitatnya.</li></ul>";
+    const popupHTML = `
+        <div class="font-sans">
+            <div class="bg-gradient-to-r ${isVisited ? 'from-gray-500 to-gray-600' : (isFlora ? 'from-green-500 to-emerald-600' : 'from-orange-500 to-red-500')} p-3 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
+                        <p class="text-xs italic opacity-90">${item.sc || "Nama ilmiah tidak tersedia"}</p>
+                    </div>
+                    ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
+                </div>
+            </div>
+            <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
+                ${descriptionHTML}
                 
-                descriptionHTML = `
-                    <div class="bg-purple-50 p-3 rounded-lg border border-purple-200 mb-2">
-                        <div class="flex items-center justify-between mb-1">
-                             <p class="text-xs font-bold text-purple-700 uppercase"><i class="fa-solid fa-paw mr-1"></i> Ciri Khas Spesies</p>
-                        </div>
-                        <div class="text-sm text-purple-900 leading-snug font-medium pl-4 list-disc space-y-1">
-                            ${animalTraits}
-                        </div>
-                    </div>
-                `;
-            } else {
-                // LEVEL 1: Show General Description
-                descriptionHTML = `
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">${item.region}</span>
-                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${item.type === 'flora' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.type}</span>
-                    </div>
-                    <p class="text-sm text-gray-700 leading-snug mb-2">${item.desc}</p>
-                `;
+                ${!isVisited ? 
+                    `<div class="mt-2 text-center text-xs font-bold text-emerald-600 animate-pulse bg-emerald-50 py-1 rounded">
+                        <i class="fa-solid fa-plus-circle"></i> +10 Poin Baru!
+                     </div>` : 
+                    `<div class="mt-2 text-center text-xs font-bold text-gray-400 bg-gray-50 py-1 rounded">
+                        <i class="fa-solid fa-check"></i> Sudah Dibaca
+                     </div>`
+                }
+            </div>
+        </div>
+    `;
+    
+    marker.bindPopup(popupHTML);
+    
+    marker.on('popupopen', () => {
+        if (!isVisited) {
+            // Marker BARU dikunjungi
+            gameState.visitedExplorationIds.add(trackingId);
+            gameState.explorationCount++;
+            gameState.score += 10;
+            
+            updateScoreDisplays();
+            updateExplorationUI();
+            
+            // Update marker appearance menjadi abu-abu
+            const markerElement = marker.getElement();
+            if (markerElement) {
+                const markerDiv = markerElement.querySelector('div > div');
+                if (markerDiv) {
+                    markerDiv.classList.add('marker-visited', 'bg-gray-300');
+                    markerDiv.classList.remove('bg-white', 'text-green-600', 'text-orange-600');
+                }
             }
-
-            const popupHTML = `
+            
+            // Play coin sound for new marker
+            playCoinSound();
+            
+            setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
+        } else {
+            // PERUBAHAN PENTING: Marker SUDAH PERNAH dikunjungi - kurangi 5 poin (setiap kali diklik)
+            gameState.score -= 5;
+            updateScoreDisplays();
+            
+            // Play wrong sound untuk penalti
+            playWrongSound();
+            
+            // Tampilkan pesan penalti di popup dengan warna merah
+            const penaltyPopupHTML = `
                 <div class="font-sans">
-                    <div class="bg-gradient-to-r ${isVisited ? 'from-gray-500 to-gray-600' : (isFlora ? 'from-green-500 to-emerald-600' : 'from-orange-500 to-red-500')} p-3 text-white">
+                    <div class="bg-gradient-to-r from-gray-500 to-gray-600 p-3 text-white">
                         <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-lg leading-tight">${item.name}</h3>
+                            <div>
+                                <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
+                                <p class="text-xs italic opacity-90">${item.sc || "Nama ilmiah tidak tersedia"}</p>
+                            </div>
                             ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
                         </div>
-                        <p class="text-xs italic opacity-90">${item.sc}</p>
                     </div>
-                    <div class="p-3 bg-white">
+                    <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
                         ${descriptionHTML}
                         
-                        ${!isVisited ? 
-                            `<div class="mt-2 text-center text-xs font-bold text-emerald-600 animate-pulse bg-emerald-50 py-1 rounded">
-                                <i class="fa-solid fa-plus-circle"></i> +10 Poin Baru!
-                             </div>` : 
-                            `<div class="mt-2 text-center text-xs font-bold text-gray-400 bg-gray-50 py-1 rounded">
-                                <i class="fa-solid fa-check"></i> Sudah Dibaca
-                             </div>`
-                        }
+                        <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200">
+                            <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
+                        </div>
                     </div>
                 </div>
             `;
+            marker.setPopupContent(penaltyPopupHTML);
             
-            marker.bindPopup(popupHTML);
-            
-            marker.on('popupopen', () => {
-                if (!isVisited) {
-                    // Marker BARU dikunjungi
-                    gameState.visitedExplorationIds.add(trackingId);
-                    gameState.explorationCount++;
-                    gameState.score += 10;
-                    
-                    updateScoreDisplays();
-                    updateExplorationUI();
-                    
-                    // Update marker appearance menjadi abu-abu
-                    const markerElement = marker.getElement();
-                    if (markerElement) {
-                        const markerDiv = markerElement.querySelector('div > div');
-                        if (markerDiv) {
-                            markerDiv.classList.add('marker-visited', 'bg-gray-300');
-                            markerDiv.classList.remove('bg-white', 'text-green-600', 'text-orange-600');
-                        }
-                    }
-                    
-                    // Play coin sound for new marker
-                    playCoinSound();
-                    
-                    setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
-                } else {
-                    // PERUBAHAN PENTING: Marker SUDAH PERNAH dikunjungi - kurangi 5 poin (setiap kali diklik)
-                    // POIN BOLEH NEGATIF - hapus Math.max(0, ...)
-                    gameState.score -= 5;
-                    updateScoreDisplays();
-                    
-                    // Play wrong sound untuk penalti
-                    playWrongSound(); // Memainkan suara salah.wav
-                    
-                    // Tampilkan pesan penalti di popup dengan warna merah
-                    const penaltyPopupHTML = `
-                        <div class="font-sans">
-                            <div class="bg-gradient-to-r from-gray-500 to-gray-600 p-3 text-white">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="font-bold text-lg leading-tight">${item.name}</h3>
-                                    ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
-                                </div>
-                                <p class="text-xs italic opacity-90">${item.sc}</p>
-                            </div>
-                            <div class="p-3 bg-white">
-                                ${descriptionHTML}
-                                
-                                <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200">
-                                    <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    marker.setPopupContent(penaltyPopupHTML);
-                    
-                    // Kembalikan ke popup normal setelah 2 detik
-                    setTimeout(() => {
-                        marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50'));
-                    }, 2000);
-                }
-            });
-
-            return marker;
+            // Kembalikan ke popup normal setelah 2 detik
+            setTimeout(() => {
+                marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50'));
+            }, 2000);
         }
+    });
+
+    return marker;
+}
 
         function updateExplorationUI() {
             document.getElementById('explore-count').innerText = `${gameState.explorationCount}/20`;
@@ -1446,7 +1851,7 @@
         }
 
         // --- LEVEL 2: ZONE EXPLORATION ---
-        function startZoneExplorationPhase() {
+        async function startZoneExplorationPhase() {
             gameState.level = 2;
             gameState.explorationCount = 0; 
             
@@ -1492,15 +1897,16 @@
         }
 
         // --- LEVEL 3: QUIZ ---
-        function startQuizPhase() {
+        async function startQuizPhase() {
             gameState.phase = 'quiz';
             gameState.level = 3;
+            
             document.getElementById('level-display').innerText = "3: Kuis Lokasi";
             
             // Tambahkan class quiz-mode untuk styling khusus
             const clueCard = document.getElementById('clue-card');
             clueCard.classList.remove('hidden');
-            clueCard.classList.add('quiz-mode'); // Tambahkan class khusus
+            clueCard.classList.add('quiz-mode');
             
             document.getElementById('quiz-hud-info').classList.remove('hidden');
             loadQuizLevel();
@@ -1518,7 +1924,20 @@
             const currentSpecies = quizData[gameState.currentQuizIndex];
             document.getElementById('species-quiz-name').innerText = currentSpecies.name;
             document.getElementById('species-quiz-scientific').innerText = currentSpecies.sc;
-            document.getElementById('species-quiz-desc').innerText = currentSpecies.desc;
+            
+            // Tambahkan gambar di deskripsi kuis (Level 3)
+            const descWithImage = `
+                <div class="popup-image-container mb-3">
+                    <img src="${currentSpecies.image_url}" 
+                         alt="${currentSpecies.name}" 
+                         class="w-full h-32 object-cover"
+                         onerror="this.onerror=null; this.src='${getDefaultImage('fauna')}';">
+                    <div class="image-caption">${currentSpecies.name}</div>
+                </div>
+                <p class="text-sm text-gray-700">${currentSpecies.desc}</p>
+            `;
+            
+            document.getElementById('species-quiz-desc').innerHTML = descWithImage;
             document.getElementById('zone-display-hud').innerText = currentSpecies.zone;
             document.getElementById('hint-text').innerText = currentSpecies.hint;
             document.getElementById('quiz-progress-badge').innerText = `${gameState.currentQuizIndex + 1}/${quizData.length}`;
@@ -1528,7 +1947,7 @@
 
         window.showHint = function() {
             document.getElementById('hint-text').classList.remove('hidden');
-            gameState.score -= 5; // POIN BOLEH NEGATIF
+            gameState.score -= 5;
             updateScoreDisplays();
             
             // Play wrong sound for using hint (minus points)
@@ -1617,7 +2036,7 @@
             // 1. Hide Game UI
             document.getElementById('clue-card').classList.add('hidden');
             document.getElementById('quiz-hud-info').classList.add('hidden');
-            document.getElementById('result-modal').classList.add('hidden'); // Ensure result is closed
+            document.getElementById('result-modal').classList.add('hidden');
 
             // 2. Show Final Score in Result Modal (Temporary view before Leaderboard)
             const modal = document.getElementById('result-modal');
@@ -1651,34 +2070,42 @@
                 sekolah: window.playerProfile.school,
                 provinsi: window.playerProfile.province,
                 skor: gameState.score,
-                action: 'submit'
+                action: 'submit',
+                timestamp: new Date().getTime()
             };
 
             const statusEl = document.getElementById('submission-status');
 
-            // SUBMIT DATA (Fire and Forget strategy via no-cors mode to avoid preflight issues)
+            // SUBMIT DATA
             try {
-                if (LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
-                    // Send POST request using URLSearchParams to handle no-cors better for Apps Script
+                if (useOnlineDatabase && LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
+                    // Gunakan CORS proxy untuk leaderboard
                     const formData = new URLSearchParams();
                     for (const key in payload) {
                         formData.append(key, payload[key]);
                     }
 
-                    await fetch(LEADERBOARD_API_URL, {
+                    // Coba submit tanpa proxy dulu
+                    const response = await fetch(LEADERBOARD_API_URL, {
                         method: 'POST',
-                        mode: 'no-cors', 
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        headers: { 
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Accept': 'application/json'
+                        },
                         body: formData.toString()
                     });
+                    
                     statusEl.innerText = "Skor terkirim! Memuat peringkat...";
                     statusEl.className = "text-center text-sm font-semibold text-green-600";
+                    
                 } else {
-                    statusEl.innerText = "Mode Demo (API URL belum diset)";
+                    statusEl.innerText = "Mode offline - skor disimpan lokal";
+                    statusEl.className = "text-center text-sm font-semibold text-yellow-600";
                 }
             } catch (e) {
                 console.error("Submission error", e);
-                statusEl.innerText = "Gagal mengirim skor, memuat data lokal...";
+                statusEl.innerText = "Gagal mengirim skor, menggunakan data lokal...";
+                statusEl.className = "text-center text-sm font-semibold text-red-600";
             }
 
             // FETCH LEADERBOARD (Delay slightly to allow sheet update)
@@ -1690,13 +2117,20 @@
             tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4"><i class="fa-solid fa-spinner fa-spin text-purple-600"></i> Memuat data leaderboard...</td></tr>';
 
             try {
-                if (LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
-                    // Tambahkan parameter untuk sorting
-                    const response = await fetch(`${LEADERBOARD_API_URL}?action=get&sort=desc&limit=10`);
+                if (useOnlineDatabase && LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
+                    // Ambil data leaderboard
+                    const response = await fetch(`${LEADERBOARD_API_URL}?action=get&sort=desc&limit=10&timestamp=${new Date().getTime()}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
                     const data = await response.json();
                     
                     // Pastikan data diurutkan dari skor tertinggi ke terendah
-                    const sortedData = data.sort((a, b) => b.skor - a.skor).slice(0, 10);
+                    const sortedData = Array.isArray(data) ? 
+                        data.sort((a, b) => b.skor - a.skor).slice(0, 10) : [];
                     
                     renderLeaderboardTable(sortedData);
                     document.getElementById('submission-status').classList.add('hidden');
@@ -1704,7 +2138,7 @@
                     // Dummy data for demo - 10 data dengan skor tertinggi
                     const dummyData = [
                         {nama: "Budi Santoso", sekolah: "SMAN 1 Jakarta", provinsi: "DKI JAKARTA", skor: 2850},
-                        {nama: window.playerProfile.name, sekolah: window.playerProfile.school, provinsi: window.playerProfile.province, skor: gameState.score},
+                        {nama: window.playerProfile?.name || "Anda", sekolah: window.playerProfile?.school || "-", provinsi: window.playerProfile?.province || "-", skor: gameState.score},
                         {nama: "Siti Aminah", sekolah: "SMA 3 Bandung", provinsi: "JAWA BARAT", skor: 2450},
                         {nama: "Ahmad Rizki", sekolah: "SMK Teknologi", provinsi: "JAWA TIMUR", skor: 2200},
                         {nama: "Dewi Lestari", sekolah: "MAN 2 Yogyakarta", provinsi: "DIY", skor: 2100},
@@ -1716,6 +2150,7 @@
                     ].sort((a,b) => b.skor - a.skor).slice(0, 10);
                     
                     renderLeaderboardTable(dummyData);
+                    document.getElementById('submission-status').classList.add('hidden');
                 }
             } catch (e) {
                 console.error("Error fetching leaderboard:", e);
@@ -1768,7 +2203,7 @@
                 const tr = document.createElement('tr');
                 
                 // Highlight player's own score
-                const isCurrentPlayer = (row.nama === window.playerProfile.name && row.skor == gameState.score);
+                const isCurrentPlayer = (row.nama === window.playerProfile?.name && row.skor == gameState.score);
                 
                 if (isCurrentPlayer) {
                     tr.className = "bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-500";
@@ -1798,14 +2233,14 @@
                     </td>
                     <td class="font-bold ${rank === 1 ? 'text-yellow-700' : rank === 2 ? 'text-gray-700' : rank === 3 ? 'text-orange-700' : 'text-gray-700'}">
                         <div class="flex items-center">
-                            ${row.nama}
+                            ${row.nama || "Anonymous"}
                             ${isCurrentPlayer ? '<span class="ml-2 px-2 py-0.5 text-xs bg-blue-500 text-white rounded-full">Anda</span>' : ''}
                         </div>
                     </td>
-                    <td class="text-gray-600">${row.sekolah}</td>
-                    <td class="hidden sm:table-cell text-gray-500 text-xs uppercase tracking-wide">${row.provinsi}</td>
+                    <td class="text-gray-600">${row.sekolah || "-"}</td>
+                    <td class="hidden sm:table-cell text-gray-500 text-xs uppercase tracking-wide">${row.provinsi || "-"}</td>
                     <td class="text-right">
-                        <div class="font-mono font-bold text-purple-700 text-lg">${row.skor}</div>
+                        <div class="font-mono font-bold text-purple-700 text-lg">${row.skor || 0}</div>
                         ${rank <= 3 ? 
                             `<div class="text-xs text-gray-500 mt-1">
                                 ${rank === 1 ? '🏆 Juara 1' : rank === 2 ? '🥈 Juara 2' : '🥉 Juara 3'}
@@ -1830,36 +2265,6 @@
                         </td>
                     </tr>
                 `;
-            }
-            
-            // Tambahkan header untuk menunjukkan ini top 10
-            const table = document.querySelector('.leaderboard-table');
-            if (!document.querySelector('.leaderboard-header-info')) {
-                const headerInfo = document.createElement('div');
-                headerInfo.className = "leaderboard-header-info p-3 bg-gradient-to-r from-purple-50 to-blue-50 border-b";
-                headerInfo.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-ranking-star text-purple-600"></i>
-                            <span class="text-sm font-bold text-purple-700">TOP 10 PLAYERS</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="flex items-center gap-1">
-                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                <span class="text-xs text-gray-600">Juara 1</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <div class="w-3 h-3 rounded-full bg-gray-400"></div>
-                                <span class="text-xs text-gray-600">Juara 2</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <div class="w-3 h-3 rounded-full bg-orange-500"></div>
-                                <span class="text-xs text-gray-600">Juara 3</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                table.parentNode.insertBefore(headerInfo, table);
             }
         }
     </script>
