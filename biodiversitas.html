@@ -803,7 +803,7 @@
             let data = [...realSpeciesDatabase]; 
             
             // Add slight variations to reach 150 markers
-            let needed = 150 - data.length;
+            let needed = 50 - data.length;
             for (let i = 0; i < needed; i++) {
                 let template = realSpeciesDatabase[Math.floor(Math.random() * realSpeciesDatabase.length)];
                 let latOffset = (Math.random() - 0.5) * 0.8;
