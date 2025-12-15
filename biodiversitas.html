@@ -143,6 +143,47 @@
         .marker-visited i {
             color: #6b7280 !important;
         }
+
+        /* CSS tambahan untuk clue card di Level 3 */
+        #clue-card.quiz-mode {
+            position: absolute;
+            left: 1rem;
+            bottom: 1rem;
+            width: 280px;
+            max-width: 280px;
+            transform: none;
+            margin: 0;
+            z-index: 1000;
+        }
+
+        #clue-card.quiz-mode .glass-panel {
+            padding: 1rem !important;
+            border-radius: 12px !important;
+        }
+
+        #clue-card.quiz-mode h2 {
+            font-size: 1rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        #clue-card.quiz-mode p {
+            font-size: 0.75rem !important;
+            line-height: 1.2 !important;
+        }
+
+        #clue-card.quiz-mode #species-quiz-desc {
+            margin-bottom: 0.75rem !important;
+            padding-top: 0.5rem !important;
+        }
+
+        #clue-card.quiz-mode .flex.justify-between {
+            gap: 0.5rem !important;
+        }
+
+        #clue-card.quiz-mode button {
+            padding: 0.4rem 0.75rem !important;
+            font-size: 0.7rem !important;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -210,6 +251,33 @@
                     </div>
                 </div>
 
+                <!-- FILTER DAN TARGET MISI (TENGAH) -->
+                <div id="exploration-controls" class="hidden pointer-events-auto w-full md:w-auto transition-all duration-300">
+                    <div class="glass-panel rounded-xl p-3 shadow-lg flex flex-col md:flex-row justify-between items-center gap-3">
+                        <div id="level1-filters" class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                            <button onclick="filterMarkers('all')" id="btn-all" class="filter-btn active px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap">Semua</button>
+                            <button onclick="filterMarkers('flora')" id="btn-flora" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap"><i class="fa-solid fa-seedling mr-1 text-green-500"></i> Flora</button>
+                            <button onclick="filterMarkers('fauna')" id="btn-fauna" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap"><i class="fa-solid fa-paw mr-1 text-orange-500"></i> Fauna</button>
+                        </div>
+                        <div id="level2-indicator" class="hidden flex gap-2 items-center">
+                             <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold border border-purple-200 shadow-sm"><i class="fa-solid fa-layer-group mr-1"></i> Zona Biogeografi</span>
+                             <span class="text-xs text-gray-500 italic hidden md:inline">Klik hewan untuk melihat ciri khasnya</span>
+                        </div>
+                        <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+                            <div class="text-right">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase">Target Misi</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div id="progress-bar" class="h-full bg-blue-500 w-0 transition-all duration-500"></div>
+                                    </div>
+                                    <p id="explore-count" class="text-blue-700 font-bold text-sm">0/20</p>
+                                </div>
+                            </div>
+                            <button id="btn-finish-explore" onclick="finishExploration()" disabled class="bg-gray-200 text-gray-400 px-5 py-2 rounded-lg font-bold shadow-none cursor-not-allowed transition flex items-center gap-2 text-sm">Lanjut <i class="fa-solid fa-lock"></i></button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Desktop Score -->
                 <div class="hidden md:flex glass-panel rounded-xl p-2 px-6 shadow-lg items-center gap-8">
                     <div class="text-center">
@@ -220,33 +288,6 @@
                     <div class="text-center">
                         <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Total Poin</p>
                         <p id="score-display" class="text-emerald-600 font-bold text-2xl leading-none">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CONTROLS -->
-            <div id="exploration-controls" class="hidden pointer-events-auto w-full transition-all duration-300">
-                <div class="glass-panel rounded-xl p-3 shadow-lg flex flex-col md:flex-row justify-between items-center gap-3">
-                    <div id="level1-filters" class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-                        <button onclick="filterMarkers('all')" id="btn-all" class="filter-btn active px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap">Semua</button>
-                        <button onclick="filterMarkers('flora')" id="btn-flora" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap"><i class="fa-solid fa-seedling mr-1 text-green-500"></i> Flora</button>
-                        <button onclick="filterMarkers('fauna')" id="btn-fauna" class="filter-btn px-4 py-1.5 rounded-full border border-gray-300 text-sm font-bold text-gray-600 hover:bg-gray-100 transition whitespace-nowrap"><i class="fa-solid fa-paw mr-1 text-orange-500"></i> Fauna</button>
-                    </div>
-                    <div id="level2-indicator" class="hidden flex gap-2 items-center">
-                         <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold border border-purple-200 shadow-sm"><i class="fa-solid fa-layer-group mr-1"></i> Zona Biogeografi</span>
-                         <span class="text-xs text-gray-500 italic hidden md:inline">Klik hewan untuk melihat ciri khasnya</span>
-                    </div>
-                    <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-                        <div class="text-right">
-                            <p class="text-[10px] text-gray-500 font-bold uppercase">Target Misi</p>
-                            <div class="flex items-center gap-2">
-                                <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                    <div id="progress-bar" class="h-full bg-blue-500 w-0 transition-all duration-500"></div>
-                                </div>
-                                <p id="explore-count" class="text-blue-700 font-bold text-sm">0/20</p>
-                            </div>
-                        </div>
-                        <button id="btn-finish-explore" onclick="finishExploration()" disabled class="bg-gray-200 text-gray-400 px-5 py-2 rounded-lg font-bold shadow-none cursor-not-allowed transition flex items-center gap-2 text-sm">Lanjut <i class="fa-solid fa-lock"></i></button>
                     </div>
                 </div>
             </div>
@@ -1455,7 +1496,12 @@
             gameState.phase = 'quiz';
             gameState.level = 3;
             document.getElementById('level-display').innerText = "3: Kuis Lokasi";
-            document.getElementById('clue-card').classList.remove('hidden');
+            
+            // Tambahkan class quiz-mode untuk styling khusus
+            const clueCard = document.getElementById('clue-card');
+            clueCard.classList.remove('hidden');
+            clueCard.classList.add('quiz-mode'); // Tambahkan class khusus
+            
             document.getElementById('quiz-hud-info').classList.remove('hidden');
             loadQuizLevel();
         }
