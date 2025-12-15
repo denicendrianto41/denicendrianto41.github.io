@@ -687,116 +687,574 @@
             }
         }
 
-        // --- DATABASE --- 
-        const realSpeciesDatabase = [
-            // SUMATERA & SEKITARNYA (Asiatis)
-            { 
-                name: "Harimau Sumatera", sc: "Panthera tigris sumatrae", type: "fauna", region: "Sumatera", 
-                desc: "Predator puncak yang kritis terancam punah. Hanya tersisa di Pulau Sumatera.", 
-                lat: -0.5, lng: 101.5,
-                traits: "<ul><li>Tubuh paling kecil di antara semua subspesies harimau.</li><li>Loreng hitam lebih rapat dan tebal.</li><li>Janggut atau surai di pipi terlihat jelas.</li><li>Selaput di sela jari kaki untuk berenang cepat.</li></ul>"
-            },
-            { 
-                name: "Gajah Sumatera", sc: "Elephas maximus sumatranus", type: "fauna", region: "Sumatera", 
-                desc: "Gajah Asia yang berhabitat di hutan dataran rendah Sumatera.", 
-                lat: -4.5, lng: 105.2,
-                traits: "<ul><li>Tubuh lebih kecil dari gajah Afrika.</li><li>Memiliki 5 kuku di kaki depan dan 4 di kaki belakang.</li><li>Hanya gajah jantan yang memiliki gading panjang.</li><li>Belalai fleksibel dengan satu 'jari' di ujungnya.</li></ul>"
-            },
-            { 
-                name: "Badak Sumatera", sc: "Dicerorhinus sumatrensis", type: "fauna", region: "Sumatera", 
-                desc: "Badak terkecil di dunia dan satu-satunya badak Asia bercula dua.", 
-                lat: -2.5, lng: 102.5,
-                traits: "<ul><li>Satu-satunya badak Asia dengan dua cula.</li><li>Tubuh ditutupi rambut kasar kemerahan.</li><li>Ukuran tubuh paling kecil dibanding spesies badak lain.</li><li>Hidup soliter di hutan hujan lebat.</li></ul>"
-            },
-            { 
-                name: "Orangutan Sumatera", sc: "Pongo abelii", type: "fauna", region: "Sumatera", 
-                desc: "Primata cerdas penghuni hutan Leuser.", 
-                lat: 3.5, lng: 97.5,
-                traits: "<ul><li>Bulu berwarna oranye kemerahan terang.</li><li>Lengan panjang dan kuat untuk bergelantungan.</li><li>Wajah jantan dewasa memiliki bantalan pipi (cheekpad) lebar.</li><li>Lebih sering berada di pohon dibanding tanah.</li></ul>"
-            },
-            { 
-                name: "Orangutan Tapanuli", sc: "Pongo tapanuliensis", type: "fauna", region: "Sumatera", 
-                desc: "Spesies orangutan terbaru yang ditemukan di Tapanuli Selatan.", 
-                lat: 1.5, lng: 99.0,
-                traits: "<ul><li>Bulu lebih keriting dibanding jenis lain.</li><li>Tengkorak dan rahang lebih kecil.</li><li>Panggilan suara jantan (long call) berbeda frekuensinya.</li><li>Hanya ditemukan di Ekosistem Batang Toru.</li></ul>"
-            },
-            { 
-                name: "Rafflesia Arnoldii", sc: "Rafflesia arnoldii", type: "flora", region: "Sumatera", 
-                desc: "Bunga tunggal terbesar di dunia, ikon Bengkulu.", 
-                lat: -3.8, lng: 102.3,
-                traits: "<ul><li>Bunga raksasa tanpa batang, daun, atau akar sejati.</li><li>Diameter bunga bisa mencapai 1 meter.</li><li>Mengeluarkan bau busuk untuk menarik lalat.</li><li>Hanya mekar selama 5-7 hari.</li></ul>"
-            },
-            { 
-                name: "Bunga Bangkai", sc: "Amorphophallus titanum", type: "flora", region: "Sumatera", 
-                desc: "Bunga majemuk tertinggi di dunia, baunya memikat serangga.", 
-                lat: -0.1, lng: 100.6,
-                traits: "<ul><li>Memiliki tongkol (spadix) yang menjulang tinggi.</li><li>Kelopak (spatha) berwarna merah hati.</li><li>Fase vegetatif berupa pohon batang semu, fase generatif berupa bunga.</li><li>Bau menyengat seperti daging busuk saat mekar.</li></ul>"
-            },
-            { 
-                name: "Siamang", sc: "Symphalangus syndactylus", type: "fauna", region: "Sumatera", 
-                desc: "Owa terbesar, terkenal dengan suaranya yang keras.", 
-                lat: -1.0, lng: 100.5,
-                traits: "<ul><li>Bulu hitam pekat di seluruh tubuh.</li><li>Memiliki kantung tenggorokan besar untuk memperkeras suara.</li><li>Jari kedua dan ketiga kaki menyatu (sindaktili).</li><li>Lengan sangat panjang, merentang hingga 1,5 meter.</li></ul>"
-            },
-            { name: "Tapir Asia", sc: "Tapirus indicus", type: "fauna", region: "Sumatera", desc: "Mamalia herbivora unik dengan warna hitam putih.", lat: 0.5, lng: 101.8, traits: "<ul><li>Pola warna tubuh hitam dan putih seperti memakai pelana.</li><li>Hidung mancung fleksibel mirip belalai pendek.</li><li>Bayi tapir memiliki pola bercak dan garis untuk kamuflase.</li><li>Aktif di malam hari (nokturnal).</li></ul>" },
-            { name: "Kuau Raja", sc: "Argusianus argus", type: "fauna", region: "Sumatera", desc: "Burung dengan bulu ekor indah bermata banyak.", lat: 2.0, lng: 98.5, traits: "<ul><li>Bulu sayap dan ekor memiliki pola bulatan 'mata'.</li><li>Jantan memamerkan bulu untuk menarik betina (tarian kipas).</li><li>Kepala botak berwarna biru cerah.</li><li>Suara panggilan 'ku-au' yang keras bergema.</li></ul>" },
-            { name: "Daun Payung", sc: "Johannesteijsmannia altifrons", type: "flora", region: "Sumatera", desc: "Palem dengan daun raksasa berbentuk berlian.", lat: 3.0, lng: 98.0, traits: "<ul><li>Daun tunggal raksasa berbentuk jajar genjang/berlian.</li><li>Panjang daun bisa mencapai 6 meter.</li><li>Sering digunakan penduduk sebagai atap gubuk.</li><li>Tumbuh di hutan hujan tropis yang lembap.</li></ul>" },
+// ==================================================
+// DATABASE SPESIES INDONESIA (1–50)
+// ==================================================
 
-            // JAWA & BALI (Asiatis)
-            { name: "Badak Jawa", sc: "Rhinoceros sondaicus", type: "fauna", region: "Jawa", desc: "Mamalia paling langka di dunia, hanya ada di Ujung Kulon.", lat: -6.75, lng: 105.35, traits: "<ul><li>Hanya memiliki satu cula kecil (betina sering tanpa cula).</li><li>Kulit abu-abu dengan lipatan menyerupai baju zirah.</li><li>Bibir atas meruncing untuk memegang daun.</li><li>Sangat pemalu dan soliter.</li></ul>" },
-            { name: "Elang Jawa", sc: "Nisaetus bartelsi", type: "fauna", region: "Jawa", desc: "Burung pemangsa yang identik dengan lambang Garuda.", lat: -7.1, lng: 107.5, traits: "<ul><li>Jambul khas di kepala yang menjulang.</li><li>Warna bulu cokelat kemerahan di dada.</li><li>Sayap lebar membulat untuk manuver di hutan.</li><li>Predator puncak di ekosistem hutan Jawa.</li></ul>" },
-            { name: "Owa Jawa", sc: "Hylobates moloch", type: "fauna", region: "Jawa", desc: "Primata endemik Jawa bagian barat yang setia pada pasangan.", lat: -6.8, lng: 106.5, traits: "<ul><li>Bulu abu-abu keperakan yang halus.</li><li>Wajah hitam legam dengan alis putih.</li><li>Tidak memiliki ekor.</li><li>Hidup monogami dalam keluarga kecil.</li></ul>" },
-            { name: "Macan Tutul Jawa", sc: "Panthera pardus melas", type: "fauna", region: "Jawa", desc: "Kucing besar terakhir yang tersisa di Pulau Jawa.", lat: -8.0, lng: 113.0, traits: "<ul><li>Ukuran tubuh lebih kecil dibanding macan tutul lain.</li><li>Pola totol (rosette) khas di bulu kuning emas.</li><li>Ada variasi warna hitam legam (macan kumbang).</li><li>Kemampuan memanjat pohon yang sangat baik.</li></ul>" },
-            { name: "Banteng Jawa", sc: "Bos javanicus", type: "fauna", region: "Jawa", desc: "Leluhur sapi Bali, hidup liar di Baluran dan Alas Purwo.", lat: -7.8, lng: 114.4, traits: "<ul><li>Jantan berwarna hitam, betina cokelat kemerahan.</li><li>Memiliki 'kaus kaki' putih di bagian bawah kaki.</li><li>Bercak putih besar (pantat) di bagian belakang.</li><li>Tanduk melengkung ke atas di kepalanya.</li></ul>" },
-            { name: "Jalak Bali", sc: "Leucopsar rothschildi", type: "fauna", region: "Bali", desc: "Burung putih cantik maskot pulau Dewata.", lat: -8.15, lng: 114.55, traits: "<ul><li>Bulu putih bersih di seluruh tubuh.</li><li>Kulit biru cerah di sekitar mata tanpa bulu.</li><li>Jambul panjang yang bisa ditegakkan.</li><li>Ujung sayap dan ekor berwarna hitam.</li></ul>" },
-            { name: "Pohon Kepel", sc: "Stelechocarpus burahol", type: "flora", region: "Jawa", desc: "Flora identitas DIY, buah favorit putri keraton.", lat: -7.8, lng: 110.4, traits: "<ul><li>Buah tumbuh bergerombol langsung di batang (cauliflory).</li><li>Daun muda berwarna merah muda cerah.</li><li>Buah dipercaya mengharumkan keringat.</li><li>Tajuk pohon berbentuk kerucut yang rapi.</li></ul>" },
+const realSpeciesDatabase = [
 
-            // KALIMANTAN (Asiatis)
-            { name: "Orangutan Kalimantan", sc: "Pongo pygmaeus", type: "fauna", region: "Kalimantan", desc: "Spesies orangutan terbesar dan terbanyak populasinya.", lat: -1.5, lng: 113.5, traits: "<ul><li>Wajah lebih lebar dan gelap dibanding sepupu Sumatera.</li><li>Rambut lebih kasar dan berwarna merah gelap.</li><li>Bantalan pipi jantan melebar ke depan.</li><li>Lebih banyak menghabiskan waktu di tanah (terestrial).</li></ul>" },
-            { name: "Bekantan", sc: "Nasalis larvatus", type: "fauna", region: "Kalimantan", desc: "Monyet hidung panjang penghuni hutan bakau.", lat: -3.3, lng: 114.6, traits: "<ul><li>Hidung jantan sangat besar dan menggantung.</li><li>Perut buncit karena sistem pencernaan khusus daun.</li><li>Bulu oranye kemerahan dengan punggung abu-abu.</li><li>Pandai berenang dan menyelam di sungai.</li></ul>" },
-            { name: "Beruang Madu", sc: "Helarctos malayanus", type: "fauna", region: "Kalimantan", desc: "Beruang terkecil di dunia, maskot Balikpapan.", lat: -1.2, lng: 116.8, traits: "<ul><li>Tanda 'V' atau 'U' berwarna oranye di dada.</li><li>Lidah sangat panjang untuk menjilat madu/serangga.</li><li>Bulu hitam pendek dan mengilap.</li><li>Kuku panjang melengkung untuk memanjat pohon.</li></ul>" },
-            { name: "Pesut Mahakam", sc: "Orcaella brevirostris", type: "fauna", region: "Kalimantan", desc: "Lumba-lumba air tawar yang langka di Sungai Mahakam.", lat: -0.5, lng: 117.0, traits: "<ul><li>Kepala bulat tumpul dengan dahi menonjol.</li><li>Sirip punggung kecil dan membulat.</li><li>Warna tubuh abu-abu kelabu.</li><li>Hidup di air tawar keruh Sungai Mahakam.</li></ul>" },
-            { name: "Anggrek Hitam", sc: "Coelogyne pandurata", type: "flora", region: "Kalimantan", desc: "Anggrek eksotis dengan lidah berwarna hitam.", lat: 0.1, lng: 115.5, traits: "<ul><li>Kelopak bunga berwarna hijau muda cerah.</li><li>Bagian lidah (labellum) berwarna hitam dengan garis-garis.</li><li>Mengeluarkan aroma wangi lembut.</li><li>Mekar dalam tandan yang menjuntai.</li></ul>" },
-            { name: "Kantong Semar Raksasa", sc: "Nepenthes rajah", type: "flora", region: "Kalimantan", desc: "Tumbuhan karnivora terbesar.", lat: 2.5, lng: 116.0, traits: "<ul><li>Memiliki kantong jebakan yang sangat besar.</li><li>Mampu menampung hingga 3 liter air.</li><li>Dapat menjebak tikus atau katak kecil.</li><li>Tumbuh di tanah pegunungan yang miskin hara.</li></ul>" },
+/* ================= SUMATERA ================= */
 
-            // SULAWESI (Wallacea)
-            { name: "Anoa Dataran Rendah", sc: "Bubalus depressicornis", type: "fauna", region: "Sulawesi", desc: "Kerbau kerdil endemik Sulawesi.", lat: -4.0, lng: 122.0, traits: "<ul><li>Ukuran tubuh kecil seperti kambing.</li><li>Tanduk lurus meruncing ke belakang.</li><li>Kaki putih (stocking) pada bagian bawah.</li><li>Hidup soliter di hutan rawa atau dataran rendah.</li></ul>" },
-            { name: "Babirusa", sc: "Babyrousa babyrussa", type: "fauna", region: "Sulawesi", desc: "Babi dengan taring melengkung menembus moncong.", lat: -0.8, lng: 121.5, traits: "<ul><li>Taring atas tumbuh menembus kulit moncong ke atas.</li><li>Tubuh hampir tidak berbulu, kulit abu-abu.</li><li>Kaki panjang dan kuat untuk berlari.</li><li>Taring jantan digunakan untuk pertarungan.</li></ul>" },
-            { name: "Burung Maleo", sc: "Macrocephalon maleo", type: "fauna", region: "Sulawesi", desc: "Mengubur telurnya di pasir panas bumi.", lat: -0.5, lng: 123.5, traits: "<ul><li>Tonjolan keras (casque) hitam di kepala.</li><li>Bulu dada berwarna putih merah muda.</li><li>Tidak mengerami telur, menguburnya di pasir panas.</li><li>Anak burung bisa langsung terbang setelah menetas.</li></ul>" },
-            { name: "Tarsius", sc: "Tarsius tarsier", type: "fauna", region: "Sulawesi", desc: "Primata karnivora terkecil di dunia.", lat: 1.4, lng: 125.0, traits: "<ul><li>Mata sangat besar (lebih besar dari otaknya).</li><li>Kepala dapat berputar 180 derajat.</li><li>Kaki belakang panjang untuk melompat jauh.</li><li>Aktif berburu serangga di malam hari.</li></ul>" },
-            { name: "Kuskus Beruang", sc: "Ailurops ursinus", type: "fauna", region: "Sulawesi", desc: "Marsupial pendiam yang hidup di pohon.", lat: -2.5, lng: 120.5, traits: "<ul><li>Bulu tebal berwarna cokelat tua/hitam.</li><li>Ekor prehensil (bisa menggenggam) tanpa bulu di ujung.</li><li>Gerakan sangat lambat di atas pohon.</li><li>Memiliki kantung perut (marsupial).</li></ul>" },
-            { name: "Monyet Hitam Sulawesi", sc: "Macaca nigra", type: "fauna", region: "Sulawesi", desc: "Yaki, monyet berjambul khas Sulawesi Utara.", lat: 1.6, lng: 125.1, traits: "<ul><li>Seluruh tubuh dan wajah berwarna hitam pekat.</li><li>Jambul rambut panjang di atas kepala.</li><li>Bantalan pantat berwarna merah muda cerah.</li><li>Ekor sangat pendek (hampir tidak terlihat).</li></ul>" },
+{
+  name: "Harimau Sumatera",
+  sc: "Panthera tigris sumatrae",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Predator puncak yang kritis terancam punah dan hanya tersisa di Pulau Sumatera.",
+  lat: -0.5,
+  lng: 101.5,
+  traits: "<ul><li>Ukuran tubuh paling kecil di antara subspesies harimau.</li><li>Loreng hitam rapat dan tebal.</li><li>Perenang andal dengan selaput di sela jari.</li><li>Hidup soliter dan sangat teritorial.</li></ul>"
+},
+{
+  name: "Gajah Sumatera",
+  sc: "Elephas maximus sumatranus",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Subspesies gajah Asia yang hidup di hutan dataran rendah Sumatera.",
+  lat: -4.5,
+  lng: 105.2,
+  traits: "<ul><li>Tubuh lebih kecil dari gajah Afrika.</li><li>Belalai multifungsi dengan satu jari.</li><li>Gajah jantan memiliki gading panjang.</li><li>Hidup berkelompok dipimpin betina.</li></ul>"
+},
+{
+  name: "Badak Sumatera",
+  sc: "Dicerorhinus sumatrensis",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Badak terkecil di dunia dan satu-satunya badak Asia bercula dua.",
+  lat: -2.5,
+  lng: 102.5,
+  traits: "<ul><li>Dua cula di hidung.</li><li>Tubuh berbulu kasar kemerahan.</li><li>Indera penciuman tajam.</li><li>Sangat soliter dan pemalu.</li></ul>"
+},
+{
+  name: "Orangutan Sumatera",
+  sc: "Pongo abelii",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Primata arboreal cerdas yang hidup di Ekosistem Leuser.",
+  lat: 3.5,
+  lng: 97.5,
+  traits: "<ul><li>Bulu oranye terang.</li><li>Lengan sangat panjang.</li><li>Kecerdasan tinggi.</li><li>Hidup dominan di pepohonan.</li></ul>"
+},
+{
+  name: "Orangutan Tapanuli",
+  sc: "Pongo tapanuliensis",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Spesies orangutan paling langka di dunia yang hanya hidup di Batang Toru.",
+  lat: 1.5,
+  lng: 99.0,
+  traits: "<ul><li>Bulu lebih keriting.</li><li>Populasi < 800 individu.</li><li>Suara panggilan unik.</li><li>Endemik Tapanuli Selatan.</li></ul>"
+},
+{
+  name: "Rafflesia Arnoldii",
+  sc: "Rafflesia arnoldii",
+  type: "flora",
+  region: "Sumatera",
+  desc: "Bunga tunggal terbesar di dunia dan ikon Bengkulu.",
+  lat: -3.8,
+  lng: 102.3,
+  traits: "<ul><li>Diameter hingga 1 meter.</li><li>Tidak berdaun dan berakar.</li><li>Bau busuk menyengat.</li><li>Mekar singkat.</li></ul>"
+},
+{
+  name: "Bunga Bangkai",
+  sc: "Amorphophallus titanum",
+  type: "flora",
+  region: "Sumatera",
+  desc: "Bunga majemuk tertinggi di dunia dengan aroma menyengat.",
+  lat: -0.1,
+  lng: 100.6,
+  traits: "<ul><li>Tongkol menjulang tinggi.</li><li>Spatha merah gelap.</li><li>Mekar sangat jarang.</li><li>Menarik serangga bangkai.</li></ul>"
+},
+{
+  name: "Siamang",
+  sc: "Symphalangus syndactylus",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Owa terbesar dengan suara terkeras di antara primata.",
+  lat: -1.0,
+  lng: 100.5,
+  traits: "<ul><li>Kantung suara besar.</li><li>Bulu hitam pekat.</li><li>Lengan panjang.</li><li>Hidup berpasangan.</li></ul>"
+},
+{
+  name: "Tapir Asia",
+  sc: "Tapirus indicus",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Mamalia herbivora bercorak hitam-putih unik.",
+  lat: 0.5,
+  lng: 101.8,
+  traits: "<ul><li>Aktif malam hari.</li><li>Hidung fleksibel.</li><li>Perenang baik.</li><li>Bayi bercorak garis.</li></ul>"
+},
+{
+  name: "Kuau Raja",
+  sc: "Argusianus argus",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Burung hutan dengan bulu ekor bermotif mata.",
+  lat: 2.0,
+  lng: 98.5,
+  traits: "<ul><li>Bulu sayap sangat panjang.</li><li>Tarian kawin khas.</li><li>Kepala biru.</li><li>Suara nyaring.</li></ul>"
+},
+{
+  name: "Daun Payung",
+  sc: "Johannesteijsmannia altifrons",
+  type: "flora",
+  region: "Sumatera",
+  desc: "Palem hutan dengan daun raksasa berbentuk berlian.",
+  lat: 3.0,
+  lng: 98.0,
+  traits: "<ul><li>Daun hingga 6 meter.</li><li>Tumbuh di lantai hutan.</li><li>Digunakan atap tradisional.</li><li>Endemik Asia Tenggara.</li></ul>"
+},
 
-            // NUSA TENGGARA (Wallacea)
-            { 
-                name: "Komodo", sc: "Varanus komodoensis", type: "fauna", region: "Nusa Tenggara", 
-                desc: "Kadal purba terbesar di dunia.", 
-                lat: -8.6, lng: 119.5,
-                traits: "<ul><li>Memiliki tubuh besar dengan panjang bisa mencapai 2–3 meter.</li><li>Kulit bersisik kasar berwarna cokelat keabu-abuan.</li><li>Lidah panjang bercabang seperti ular dan sering menjilati udara.</li><li>Gigi tajam dan air liurnya mengandung banyak bakteri.</li><li>Berlari cepat dan mampu menyerang mangsa dengan gigitan kuat.</li></ul>"
-            },
-            { name: "Kuda Sumba", sc: "Equus caballus", type: "fauna", region: "Nusa Tenggara", desc: "Kuda poni tangguh dari padang savana Sumba.", lat: -9.7, lng: 120.0, traits: "<ul><li>Tubuh relatif kecil namun berotot dan kuat.</li><li>Tahan panas dan mampu menempuh jarak jauh.</li><li>Leher tebal dengan surai lebat.</li><li>Hidup liar di padang savana.</li></ul>" },
-            { name: "Penyu Hijau", sc: "Chelonia mydas", type: "fauna", region: "Nusa Tenggara", desc: "Sering bertelur di pantai selatan Lombok/Sumbawa.", lat: -8.8, lng: 117.0, traits: "<ul><li>Cangkang (karapas) halus berbentuk hati.</li><li>Lemak tubuh berwarna hijau (asal namanya).</li><li>Kepala kecil dan tumpul.</li><li>Pemakan lamun dan alga (herbivora).</li></ul>" },
-            { name: "Rusa Timor", sc: "Rusa timorensis", type: "fauna", region: "Nusa Tenggara", desc: "Mangsa utama Komodo.", lat: -8.5, lng: 119.4, traits: "<ul><li>Ukuran tubuh lebih kecil dari Rusa Sambar.</li><li>Jantan memiliki tanduk bercabang tiga.</li><li>Bulu cokelat kasar, leher bergelambir.</li><li>Hidup berkelompok di padang rumput terbuka.</li></ul>" },
-            { name: "Flores Hawk-Eagle", sc: "Nisaetus floris", type: "fauna", region: "Nusa Tenggara", desc: "Elang endemik Flores yang terancam punah.", lat: -8.6, lng: 121.0, traits: "<ul><li>Bagian bawah tubuh putih bersih.</li><li>Kepala cokelat dengan jambul tipis.</li><li>Sayap lebar untuk soaring (melayang).</li><li>Endemik asli pulau Flores, Sumbawa, Lombok.</li></ul>" },
-            { name: "Pohon Cendana", sc: "Santalum album", type: "flora", region: "Nusa Tenggara", desc: "Kayu wangi legendaris dari NTT.", lat: -9.5, lng: 124.2, traits: "<ul><li>Kayu teras mengandung minyak atsiri harum.</li><li>Daun kecil berbentuk elips saling berhadapan.</li><li>Tumbuhan parasit yang mengambil nutrisi inang.</li><li>Batang abu-abu kecokelatan.</li></ul>" },
-            { name: "Lontar", sc: "Borassus flabellifer", type: "flora", region: "Nusa Tenggara", desc: "Pohon kehidupan masyarakat NTT/Sulsel.", lat: -10.2, lng: 123.6, traits: "<ul><li>Batang tunggal lurus tinggi dan kokoh.</li><li>Daun berbentuk kipas besar dengan tangkai berduri.</li><li>Menghasilkan nira manis dari mayang bunga.</li><li>Tahan kekeringan ekstrem.</li></ul>" },
+/* ============== SPESIES KE-50 (TAMBAHAN) ============== */
 
-            // MALUKU (Wallacea/Australis Transition)
-            { name: "Burung Bidadari", sc: "Semioptera wallacii", type: "fauna", region: "Maluku", desc: "Cendrawasih endemik Halmahera, ditemukan oleh Wallace.", lat: 1.0, lng: 127.5, traits: "<ul><li>Jantan memiliki dua pasang bulu putih panjang di bahu.</li><li>Dada berwarna hijau zamrud berkilau.</li><li>Melakukan tarian udara untuk memikat betina.</li><li>Endemik pulau Halmahera dan Bacan.</li></ul>" },
-            { name: "Nuri Raja Ambon", sc: "Alisterus amboinensis", type: "fauna", region: "Maluku", desc: "Burung paruh bengkok berwarna cerah.", lat: -3.7, lng: 128.2, traits: "<ul><li>Kepala dan dada merah menyala.</li><li>Sayap dan punggung hijau gelap.</li><li>Ekor panjang berwarna biru keunguan.</li><li>Suara pekikan yang tajam.</li></ul>" },
-            { name: "Kuskus Tutul", sc: "Spilocuscus maculatus", type: "fauna", region: "Maluku", desc: "Marsupial dengan bulu bermotif tutul.", lat: -3.0, lng: 128.0, traits: "<ul><li>Bulu putih dengan tutul-tutul cokelat/hitam (jantan).</li><li>Mata merah atau oranye mencolok.</li><li>Wajah bulat dengan telinga kecil.</li><li>Pemakan buah dan daun di tajuk pohon.</li></ul>" },
-            { name: "Pala", sc: "Myristica fragrans", type: "flora", region: "Maluku", desc: "Rempah asli Kepulauan Banda yang mendunia.", lat: -4.5, lng: 129.9, traits: "<ul><li>Buah kuning merekah memperlihatkan biji.</li><li>Biji diselimuti selaput merah (fuli).</li><li>Daun hijau gelap mengilap dan aromatik.</li><li>Tanaman berumah dua (jantan/betina terpisah).</li></ul>" },
-            { name: "Cengkeh", sc: "Syzygium aromaticum", type: "flora", region: "Maluku", desc: "Tanaman rempah asli Maluku Utara.", lat: 0.8, lng: 127.4, traits: "<ul><li>Kuncup bunga kering berbau aromatik kuat.</li><li>Daun muda berwarna kemerahan.</li><li>Pohon rimbun berbentuk kerucut.</li><li>Bunga berwarna merah muda sebelum kering.</li></ul>" },
+{
+  name: "Kucing Emas Asia",
+  sc: "Catopuma temminckii",
+  type: "fauna",
+  region: "Sumatera",
+  desc: "Kucing hutan besar yang hidup soliter di hutan hujan Sumatera.",
+  lat: -1.8,
+  lng: 101.2,
+  traits: "<ul><li>Bulu cokelat kemerahan keemasan.</li><li>Pemanjat pohon yang baik.</li><li>Aktif senja dan malam.</li><li>Sangat jarang terlihat.</li></ul>"
+}
 
-            // PAPUA (Australis)
-            { name: "Cendrawasih Botak", sc: "Cicinnurus respublica", type: "fauna", region: "Papua", desc: "Burung surga cantik dari Raja Ampat.", lat: -0.5, lng: 130.8, traits: "<ul><li>Kepala botak dengan kulit berwarna biru cerah.</li><li>Pola salib hitam di atas punggung merah.</li><li>Dua bulu ekor melengkung spiral.</li><li>Hanya ditemukan di Waigeo dan Batanta.</li></ul>" },
-            { name: "Cendrawasih Merah", sc: "Paradisaea rubra", type: "fauna", region: "Papua", desc: "Cendrawasih berekor kawat melengkung.", lat: -0.8, lng: 131.0, traits: "<ul><li>Bulu samping tubuh merah darah dan panjang.</li><li>Memiliki sepasang kawat ekor hitam melengkung.</li><li>Wajah hijau zamrud gelap.</li><li>Melakukan tarian di dahan pohon.</li></ul>" },
-            { name: "Kakatua Raja", sc: "Probosciger aterrimus", type: "fauna", region: "Papua", desc: "Kakatua hitam terbesar dengan jambul megah.", lat: -6.0, lng: 138.0, traits: "<ul><li>Bulu hitam pekat di seluruh tubuh.</li><li>Pipi merah tanpa bulu yang bisa berubah warna.</li><li>Jambul besar seperti mahkota kipas.</li><li>Paruh sangat besar dan kuat untuk memecah biji kenari.</li></ul>" },
-            { name: "Kasuari Gelambir Ganda", sc: "Casuarius casuarius", type: "fauna", region: "Papua", desc: "Burung besar tak bisa terbang, berbahaya.", lat: -5.0, lng: 139.0, traits: "<ul><li>Burung setinggi manusia yang tidak bisa terbang.</li><li>Memiliki 'helm' (casque) keras di kepala.</li><li>Leher biru dengan dua gelambir merah.</li><li>Cakar kaki tajam seperti pisau belati.</li></ul>" },
-            { name: "Kanguru Pohon Mantel Emas", sc: "Dendrolagus pulcherrimus", type: "fauna", region: "Papua", desc: "Mamalia berkantung yang hidup di pohon.", lat: -2.8, lng: 136.5, traits: "<ul><li>Bulu cokelat dengan leher/bahu keemasan.</li><li>Ekor panjang untuk keseimbangan di pohon.</li><li>Lengan kuat untuk memanjat.</li><li>Wajah pucat merah muda.</li></ul>" },
-            { name: "Echidna Moncong Panjang", sc: "Zaglossus", type: "fauna", region: "Papua", desc: "Mamalia bertelur (monotremata) purba.", lat: -3.5, lng: 136.0, traits: "<ul><li>Tubuh berduri seperti landak.</li><li>Moncong panjang melengkung ke bawah.</li><li>Memiliki kantung untuk mengerami telur.</li><li>Pemakan cacing tanah.</li></ul>" },
-            { name: "Matoa", sc: "Pometia pinnata", type: "flora", region: "Papua", desc: "Buah manis khas Papua, mirip kelengkeng.", lat: -2.6, lng: 140.6, traits: "<ul><li>Kulit buah keras berwarna hijau/merah/hitam.</li><li>Daging buah bening, manis, beraroma durian.</li><li>Pohon besar berakar banir tinggi.</li><li>Daun majemuk menyirip ganjil.</li></ul>" }
-        ];
+/* ==================================================
+   DATABASE SPESIES INDONESIA (51–100)
+   ================================================== */
+
+/* ===================== JAWA ===================== */
+
+{
+  name: "Badak Jawa",
+  sc: "Rhinoceros sondaicus",
+  type: "fauna",
+  region: "Jawa",
+  desc: "Badak paling langka di dunia yang hanya tersisa di Taman Nasional Ujung Kulon.",
+  lat: -6.75,
+  lng: 105.37,
+  traits: "<ul><li>Bercula satu kecil.</li><li>Kulit berlipat seperti zirah.</li><li>Sangat soliter.</li><li>Populasi < 80 individu.</li></ul>"
+},
+{
+  name: "Elang Jawa",
+  sc: "Nisaetus bartelsi",
+  type: "fauna",
+  region: "Jawa",
+  desc: "Burung pemangsa endemik Jawa yang menjadi simbol Garuda.",
+  lat: -7.3,
+  lng: 107.6,
+  traits: "<ul><li>Jambul khas di kepala.</li><li>Terbang tinggi di hutan pegunungan.</li><li>Predator puncak udara.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Macan Tutul Jawa",
+  sc: "Panthera pardus melas",
+  type: "fauna",
+  region: "Jawa",
+  desc: "Karnivora besar terakhir di Pulau Jawa.",
+  lat: -7.8,
+  lng: 111.6,
+  traits: "<ul><li>Bulu totol hitam pekat.</li><li>Pemanjat ulung.</li><li>Aktif malam hari.</li><li>Soliter.</li></ul>"
+},
+{
+  name: "Owa Jawa",
+  sc: "Hylobates moloch",
+  type: "fauna",
+  region: "Jawa",
+  desc: "Primata endemik Jawa dengan suara duet khas di pagi hari.",
+  lat: -7.1,
+  lng: 106.5,
+  traits: "<ul><li>Bulu abu-abu perak.</li><li>Hidup berpasangan.</li><li>Arboreal.</li><li>Teritorial.</li></ul>"
+},
+{
+  name: "Pohon Jati",
+  sc: "Tectona grandis",
+  type: "flora",
+  region: "Jawa",
+  desc: "Pohon kayu keras bernilai ekonomi tinggi khas hutan Jawa.",
+  lat: -7.4,
+  lng: 111.0,
+  traits: "<ul><li>Daun besar.</li><li>Kayu tahan rayap.</li><li>Gugur daun saat kemarau.</li><li>Digunakan bangunan.</li></ul>"
+},
+{
+  name: "Bunga Edelweis Jawa",
+  sc: "Anaphalis javanica",
+  type: "flora",
+  region: "Jawa",
+  desc: "Bunga abadi yang tumbuh di pegunungan tinggi Jawa.",
+  lat: -7.95,
+  lng: 112.95,
+  traits: "<ul><li>Tahan lama.</li><li>Putih keperakan.</li><li>Tumbuh di ketinggian.</li><li>Dilindungi.</li></ul>"
+},
+
+/* ===================== BALI ===================== */
+
+{
+  name: "Jalak Bali",
+  sc: "Leucopsar rothschildi",
+  type: "fauna",
+  region: "Bali",
+  desc: "Burung endemik Bali dengan bulu putih dan jambul indah.",
+  lat: -8.13,
+  lng: 114.5,
+  traits: "<ul><li>Bulu putih bersih.</li><li>Lingkar mata biru.</li><li>Populasi terbatas.</li><li>Dilindungi ketat.</li></ul>"
+},
+{
+  name: "Rusa Timor Bali",
+  sc: "Rusa timorensis",
+  type: "fauna",
+  region: "Bali",
+  desc: "Rusa yang hidup di savana dan hutan terbuka Bali.",
+  lat: -8.45,
+  lng: 114.75,
+  traits: "<ul><li>Jantan bertanduk bercabang.</li><li>Herbivora.</li><li>Aktif pagi dan sore.</li><li>Hidup berkelompok.</li></ul>"
+},
+{
+  name: "Pohon Majegau",
+  sc: "Dysoxylum densiflorum",
+  type: "flora",
+  region: "Bali",
+  desc: "Pohon khas Bali yang digunakan dalam bangunan adat.",
+  lat: -8.3,
+  lng: 115.2,
+  traits: "<ul><li>Aroma khas.</li><li>Kayu kuat.</li><li>Tumbuh di hutan.</li><li>Sakral dalam budaya Bali.</li></ul>"
+},
+
+/* =================== KALIMANTAN =================== */
+
+{
+  name: "Orangutan Kalimantan",
+  sc: "Pongo pygmaeus",
+  type: "fauna",
+  region: "Kalimantan",
+  desc: "Primata besar cerdas yang hidup di hutan hujan Kalimantan.",
+  lat: -1.5,
+  lng: 113.5,
+  traits: "<ul><li>Bulu cokelat kemerahan.</li><li>Arboreal.</li><li>Kecerdasan tinggi.</li><li>Terancam punah.</li></ul>"
+},
+{
+  name: "Bekantan",
+  sc: "Nasalis larvatus",
+  type: "fauna",
+  region: "Kalimantan",
+  desc: "Monyet berhidung panjang khas hutan mangrove Kalimantan.",
+  lat: -2.5,
+  lng: 114.5,
+  traits: "<ul><li>Hidung besar pada jantan.</li><li>Perenang andal.</li><li>Hidup berkelompok.</li><li>Endemik Kalimantan.</li></ul>"
+},
+{
+  name: "Kucing Batu Borneo",
+  sc: "Pardofelis badia",
+  type: "fauna",
+  region: "Kalimantan",
+  desc: "Kucing liar langka dan misterius dari hutan Kalimantan.",
+  lat: 0.8,
+  lng: 113.0,
+  traits: "<ul><li>Ukuran kecil.</li><li>Sangat jarang terlihat.</li><li>Soliter.</li><li>Nokturnal.</li></ul>"
+},
+{
+  name: "Burung Enggang Gading",
+  sc: "Rhinoplax vigil",
+  type: "fauna",
+  region: "Kalimantan",
+  desc: "Burung besar dengan balung keras di paruhnya.",
+  lat: 1.0,
+  lng: 114.0,
+  traits: "<ul><li>Paruh besar berbalung.</li><li>Simbol budaya Dayak.</li><li>Terbang jauh.</li><li>Terancam perburuan.</li></ul>"
+},
+{
+  name: "Pohon Ulin",
+  sc: "Eusideroxylon zwageri",
+  type: "flora",
+  region: "Kalimantan",
+  desc: "Kayu besi terkuat yang sangat tahan air dan rayap.",
+  lat: -0.5,
+  lng: 115.0,
+  traits: "<ul><li>Sangat keras.</li><li>Tumbuh lambat.</li><li>Kayu bernilai tinggi.</li><li>Endemik Kalimantan.</li></ul>"
+},
+{
+  name: "Anggrek Hitam",
+  sc: "Coelogyne pandurata",
+  type: "flora",
+  region: "Kalimantan",
+  desc: "Anggrek khas Kalimantan dengan bibir bunga hitam.",
+  lat: 0.2,
+  lng: 116.0,
+  traits: "<ul><li>Bibir bunga hitam.</li><li>Aroma harum.</li><li>Epifit.</li><li>Dilindungi.</li></ul>"
+},
+
+/* =================== SULAWESI =================== */
+
+{
+  name: "Anoa Dataran Rendah",
+  sc: "Bubalus depressicornis",
+  type: "fauna",
+  region: "Sulawesi",
+  desc: "Kerbau kerdil endemik Sulawesi yang pemalu.",
+  lat: -1.5,
+  lng: 120.5,
+  traits: "<ul><li>Ukuran kecil.</li><li>Tanduk lurus.</li><li>Soliter.</li><li>Endemik Sulawesi.</li></ul>"
+},
+{
+  name: "Babirusa",
+  sc: "Babyrousa celebensis",
+  type: "fauna",
+  region: "Sulawesi",
+  desc: "Babi hutan unik dengan taring melengkung ke atas.",
+  lat: -1.0,
+  lng: 121.5,
+  traits: "<ul><li>Taring menembus moncong.</li><li>Perenang baik.</li><li>Hidup berkelompok kecil.</li><li>Endemik.</li></ul>"
+},
+{
+  name: "Tarsius",
+  sc: "Tarsius tarsier",
+  type: "fauna",
+  region: "Sulawesi",
+  desc: "Primata kecil nokturnal dengan mata sangat besar.",
+  lat: 0.9,
+  lng: 124.0,
+  traits: "<ul><li>Mata besar.</li><li>Aktif malam.</li><li>Melompat jauh.</li><li>Insektivora.</li></ul>"
+},
+{
+  name: "Maleo",
+  sc: "Macrocephalon maleo",
+  type: "fauna",
+  region: "Sulawesi",
+  desc: "Burung unik yang menetaskan telur menggunakan panas bumi.",
+  lat: -0.2,
+  lng: 120.0,
+  traits: "<ul><li>Telur sangat besar.</li><li>Bersarang di pasir panas.</li><li>Monogami.</li><li>Endemik Sulawesi.</li></ul>"
+},
+{
+  name: "Kayu Eboni",
+  sc: "Diospyros celebica",
+  type: "flora",
+  region: "Sulawesi",
+  desc: "Kayu hitam khas Sulawesi bernilai tinggi.",
+  lat: -1.0,
+  lng: 121.0,
+  traits: "<ul><li>Kayu hitam legam.</li><li>Keras dan berat.</li><li>Tumbuh lambat.</li><li>Endemik Sulawesi.</li></ul>"
+}
+
+/* ==================================================
+   DATABASE SPESIES INDONESIA (101–150)
+   ================================================== */
+
+/* ================= NUSA TENGGARA ================= */
+
+{
+  name: "Komodo",
+  sc: "Varanus komodoensis",
+  type: "fauna",
+  region: "Nusa Tenggara",
+  desc: "Kadal terbesar di dunia yang hanya hidup alami di Nusa Tenggara Timur.",
+  lat: -8.55,
+  lng: 119.48,
+  traits: "<ul><li>Panjang hingga 3 meter.</li><li>Gigitan berbisa ringan.</li><li>Pemangsa puncak.</li><li>Endemik Indonesia.</li></ul>"
+},
+{
+  name: "Kakatua Kecil Jambul Kuning",
+  sc: "Cacatua sulphurea",
+  type: "fauna",
+  region: "Nusa Tenggara",
+  desc: "Burung paruh bengkok dengan jambul kuning yang terancam punah.",
+  lat: -8.3,
+  lng: 123.5,
+  traits: "<ul><li>Jambul kuning cerah.</li><li>Suara keras.</li><li>Sosial.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Rusa Timor",
+  sc: "Rusa timorensis",
+  type: "fauna",
+  region: "Nusa Tenggara",
+  desc: "Rusa khas savana kering di wilayah timur Indonesia.",
+  lat: -9.2,
+  lng: 124.5,
+  traits: "<ul><li>Tubuh ramping.</li><li>Pelari cepat.</li><li>Herbivora.</li><li>Hidup berkelompok.</li></ul>"
+},
+{
+  name: "Burung Gosong Flores",
+  sc: "Megapodius reinnwardt",
+  type: "fauna",
+  region: "Nusa Tenggara",
+  desc: "Burung unik yang mengubur telur di pasir panas.",
+  lat: -8.7,
+  lng: 121.0,
+  traits: "<ul><li>Telur besar.</li><li>Tidak mengerami.</li><li>Memanfaatkan panas alam.</li><li>Endemik kawasan timur.</li></ul>"
+},
+{
+  name: "Pohon Kesambi",
+  sc: "Schleichera oleosa",
+  type: "flora",
+  region: "Nusa Tenggara",
+  desc: "Pohon savana yang tahan kekeringan.",
+  lat: -9.5,
+  lng: 119.8,
+  traits: "<ul><li>Tahan kemarau.</li><li>Kayu keras.</li><li>Daun rontok musiman.</li><li>Habitat savana.</li></ul>"
+},
+
+/* ==================== MALUKU ==================== */
+
+{
+  name: "Kakatua Putih",
+  sc: "Cacatua alba",
+  type: "fauna",
+  region: "Maluku",
+  desc: "Burung endemik Maluku Utara dengan bulu putih bersih.",
+  lat: 1.5,
+  lng: 127.8,
+  traits: "<ul><li>Bulu putih.</li><li>Jambul lebar.</li><li>Cerdas.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Nuri Bayan",
+  sc: "Eclectus roratus",
+  type: "fauna",
+  region: "Maluku",
+  desc: "Burung nuri dengan dimorfisme seksual mencolok.",
+  lat: -3.2,
+  lng: 128.2,
+  traits: "<ul><li>Jantan hijau.</li><li>Betina merah.</li><li>Paruh besar.</li><li>Sosial.</li></ul>"
+},
+{
+  name: "Bidadari Halmahera",
+  sc: "Semioptera wallacii",
+  type: "fauna",
+  region: "Maluku",
+  desc: "Burung cendrawasih kecil khas Halmahera.",
+  lat: 0.9,
+  lng: 127.6,
+  traits: "<ul><li>Bulu putih sayap.</li><li>Tarian kawin unik.</li><li>Endemik.</li><li>Hutan hujan.</li></ul>"
+},
+{
+  name: "Pohon Kenari",
+  sc: "Canarium indicum",
+  type: "flora",
+  region: "Maluku",
+  desc: "Pohon penghasil kacang kenari khas Maluku.",
+  lat: -3.0,
+  lng: 128.0,
+  traits: "<ul><li>Biji bernilai pangan.</li><li>Tinggi menjulang.</li><li>Hutan tropis.</li><li>Ekonomi lokal.</li></ul>"
+},
+
+/* ===================== PAPUA ===================== */
+
+{
+  name: "Cendrawasih Kuning Kecil",
+  sc: "Paradisaea minor",
+  type: "fauna",
+  region: "Papua",
+  desc: "Burung surga dengan tarian kawin spektakuler.",
+  lat: -1.5,
+  lng: 134.0,
+  traits: "<ul><li>Bulu kuning cerah.</li><li>Tarian kompleks.</li><li>Poligami.</li><li>Endemik Papua.</li></ul>"
+},
+{
+  name: "Mambruk Victoria",
+  sc: "Goura victoria",
+  type: "fauna",
+  region: "Papua",
+  desc: "Merpati terbesar di dunia dengan jambul kipas.",
+  lat: -2.5,
+  lng: 140.5,
+  traits: "<ul><li>Ukuran besar.</li><li>Jambul indah.</li><li>Hidup di lantai hutan.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Kasuari Gelambir Ganda",
+  sc: "Casuarius casuarius",
+  type: "fauna",
+  region: "Papua",
+  desc: "Burung besar tak terbang yang agresif dan kuat.",
+  lat: -4.0,
+  lng: 138.5,
+  traits: "<ul><li>Tubuh besar.</li><li>Helm keras di kepala.</li><li>Kaki sangat kuat.</li><li>Berbahaya.</li></ul>"
+},
+{
+  name: "Buaya Irian",
+  sc: "Crocodylus novaeguineae",
+  type: "fauna",
+  region: "Papua",
+  desc: "Buaya air tawar khas Papua dan Papua Nugini.",
+  lat: -3.8,
+  lng: 140.0,
+  traits: "<ul><li>Air tawar.</li><li>Pemangsa puncak.</li><li>Sisik kasar.</li><li>Teritorial.</li></ul>"
+},
+{
+  name: "Kuskus Totol Timur",
+  sc: "Spilocuscus papuensis",
+  type: "fauna",
+  region: "Papua",
+  desc: "Marsupial arboreal khas Papua.",
+  lat: -2.0,
+  lng: 136.5,
+  traits: "<ul><li>Bulu totol.</li><li>Nokturnal.</li><li>Pemanjat.</li><li>Endemik.</li></ul>"
+},
+{
+  name: "Pohon Sagu",
+  sc: "Metroxylon sagu",
+  type: "flora",
+  region: "Papua",
+  desc: "Sumber pangan utama masyarakat Papua.",
+  lat: -3.0,
+  lng: 135.5,
+  traits: "<ul><li>Pati tinggi.</li><li>Tumbuh di rawa.</li><li>Batang besar.</li><li>Pangan tradisional.</li></ul>"
+},
+
+/* ============== PERAIRAN INDONESIA ============== */
+
+{
+  name: "Hiu Paus",
+  sc: "Rhincodon typus",
+  type: "fauna",
+  region: "Perairan Indonesia",
+  desc: "Ikan terbesar di dunia yang jinak dan pemakan plankton.",
+  lat: -1.0,
+  lng: 119.0,
+  traits: "<ul><li>Ukuran raksasa.</li><li>Pola totol putih.</li><li>Filter feeder.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Dugong",
+  sc: "Dugong dugon",
+  type: "fauna",
+  region: "Perairan Indonesia",
+  desc: "Mamalia laut herbivora pemakan lamun.",
+  lat: -8.2,
+  lng: 122.5,
+  traits: "<ul><li>Bentuk mirip manatee.</li><li>Tenang.</li><li>Pemakan lamun.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Penyu Hijau",
+  sc: "Chelonia mydas",
+  type: "fauna",
+  region: "Perairan Indonesia",
+  desc: "Penyu laut besar yang sering bertelur di pantai Indonesia.",
+  lat: -7.5,
+  lng: 110.0,
+  traits: "<ul><li>Cangkang hijau.</li><li>Migrasi jauh.</li><li>Herbivora.</li><li>Dilindungi.</li></ul>"
+},
+{
+  name: "Terumbu Karang Acropora",
+  sc: "Acropora sp.",
+  type: "fauna",
+  region: "Perairan Indonesia",
+  desc: "Pembentuk utama terumbu karang tropis.",
+  lat: -5.0,
+  lng: 120.0,
+  traits: "<ul><li>Koloni karang.</li><li>Habitat ikan.</li><li>Sensitif suhu.</li><li>Penting ekosistem.</li></ul>"
+},
+{
+  name: "Bakau Merah",
+  sc: "Rhizophora mucronata",
+  type: "flora",
+  region: "Pesisir Indonesia",
+  desc: "Tumbuhan mangrove penahan abrasi pantai.",
+  lat: -2.0,
+  lng: 107.0,
+  traits: "<ul><li>Akar tunjang.</li><li>Tahan salinitas.</li><li>Pelindung pantai.</li><li>Ekosistem penting.</li></ul>"
+}
+
+];
+
+// ====== END DATABASE (150 SPESIES) ======
+
 
         // Generate markers for Level 1 (Flora/Fauna Mix) and Level 2 (Fauna Focus)
         function generateGameData() {
