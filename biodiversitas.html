@@ -592,7 +592,7 @@
                 
                 <div class="flex justify-between items-center">
                     <div id="mini-quiz-progress" class="text-sm text-gray-500 font-bold">
-                        Soal <span id="current-quiz">1</span>/3
+                        Soal <span id="current-quiz">1</span>/5
                     </div>
                     <div id="mini-quiz-feedback" class="hidden text-sm font-bold"></div>
                 </div>
@@ -723,10 +723,10 @@
          * GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA
          */
         const SPECIES_API_URL = "https://script.google.com/macros/s/AKfycbx7axI1BI7B79H6XEIWbUPJSa8TmLsivdx6feh5avUzxBVplrykEdNvo71YFVOe5Wkp/exec";
-        const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbyodd3NTLH2B0Qi43v5ffN9bcmLNjKreYbIQseDMP9JNTZOYey7hI9hKmJIyGcq4rCo/exec"; 
+        const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbyodd3NTLH2B0Qi43v5ffN9bcmLNjKreYbIQseDMP9JNTZOYey7hI9hKmJIyGcq4rCo/exec";
 
         // Mode debug - set true untuk melihat detail koneksi
-        const DEBUG_MODE = false; // Ubah menjadi false untuk menyembunyikan debug info
+        const DEBUG_MODE = false;
 
         // --- GAME STATE & VARIABLES ---
         let map;
@@ -753,7 +753,6 @@
             try {
                 updateLoadingStatus("Testing koneksi ke server...", 20);
                 
-                // Tampilkan animasi loading di debug info jika DEBUG_MODE aktif
                 const debugInfo = document.getElementById('api-debug-info');
                 const debugLoading = document.getElementById('debug-loading');
                 const debugDetails = document.getElementById('debug-details');
@@ -763,16 +762,12 @@
                     debugLoading.classList.remove('hidden');
                     debugDetails.classList.add('hidden');
                 } else {
-                    // Sembunyikan debug info jika tidak dalam DEBUG_MODE
                     debugInfo.classList.add('hidden');
                 }
                 
-                // Tambahkan timestamp untuk menghindari cache
                 const testUrl = `${SPECIES_API_URL}?action=test&timestamp=${Date.now()}`;
                 
-                // Sembunyikan URL dari tampilan kecuali benar-benar diperlukan
                 if (DEBUG_MODE && document.getElementById('api-url-display')) {
-                    // Hanya tampilkan domain saja, bukan full URL
                     const urlObj = new URL(testUrl);
                     document.getElementById('api-url-display').textContent = `URL: ${urlObj.origin}...`;
                 }
@@ -783,7 +778,6 @@
                     cache: 'no-cache'
                 });
                 
-                // Sembunyikan loading animasi
                 if (DEBUG_MODE && debugLoading) {
                     debugLoading.classList.add('hidden');
                     debugDetails.classList.remove('hidden');
@@ -801,7 +795,6 @@
                 } else {
                     console.warn("Server responded with error:", response.status);
                     
-                    // Sembunyikan debug info jika terjadi error dan tidak dalam DEBUG_MODE
                     if (!DEBUG_MODE) {
                         debugInfo.classList.add('hidden');
                     }
@@ -815,7 +808,6 @@
             } catch (error) {
                 console.error("Connection test failed:", error);
                 
-                // Sembunyikan debug info jika terjadi error dan tidak dalam DEBUG_MODE
                 if (!DEBUG_MODE) {
                     document.getElementById('api-debug-info').classList.add('hidden');
                 }
@@ -832,7 +824,6 @@
             try {
                 updateLoadingStatus("Menginisialisasi sistem...", 10);
                 
-                // Test koneksi dulu
                 const connectionTest = await testConnection();
                 
                 if (!connectionTest.success) {
@@ -847,11 +838,9 @@
                     return;
                 }
                 
-                // Jika koneksi berhasil, ambil data spesies
                 useOnlineDatabase = true;
                 updateLoadingStatus("Mengambil data spesies dari database...", 40);
                 
-                // Ambil data spesies
                 const speciesUrl = `${SPECIES_API_URL}?action=getSpecies&timestamp=${Date.now()}`;
                 const response = await fetch(speciesUrl, {
                     method: 'GET',
@@ -867,12 +856,10 @@
                 
                 updateLoadingStatus("Memproses data...", 70);
                 
-                // Check jika ada error dari server
                 if (result.error) {
                     throw new Error(result.error);
                 }
                 
-                // Pastikan ada data
                 let speciesArray = [];
                 if (result.data && Array.isArray(result.data)) {
                     speciesArray = result.data;
@@ -886,14 +873,11 @@
                     throw new Error("Data kosong dari server");
                 }
                 
-                // Format data dari spreadsheet
                 fullData = speciesArray.map((item, index) => {
-                    // Debug: log item untuk melihat struktur data
                     if (DEBUG_MODE && index < 3) {
                         console.log(`Sample data item ${index}:`, item);
                     }
                     
-                    // Access properties - handle both lowercase and original case
                     const name = item.nama || item.Nama || item.name || item.Name || `Spesies ${index + 1}`;
                     const scientific = item.nama_ilmiah || item.Nama_Ilmiah || item.scientific_name || item.Scientific_Name || item.sc ||"Nama Ilmiah";
                     const typeRaw = item.jenis || item.Jenis || item.type || item.Type || "fauna";
@@ -922,7 +906,6 @@
                 
                 updateLoadingStatus("Menyiapkan data quiz...", 85);
                 
-                // Setup Quiz Data (hanya fauna untuk level 3)
                 const faunaData = fullData.filter(s => s.type === 'fauna');
                 quizData = faunaData
                     .sort(() => 0.5 - Math.random()) 
@@ -941,7 +924,6 @@
                 
                 updateLoadingStatus("Data siap!", 100);
                 
-                // Tampilkan status database berhasil
                 setTimeout(() => {
                     hideLoadingShowLogin();
                     updateDatabaseStatus(`Terhubung ke ${fullData.length} spesies`);
@@ -953,7 +935,6 @@
                 showConnectionError(error.message);
                 updateLoadingStatus(`Gagal: ${error.message}. Menggunakan data lokal...`, 50);
                 
-                // Fallback ke data lokal jika fetch gagal
                 setTimeout(() => {
                     generateFallbackData();
                     hideLoadingShowLogin();
@@ -962,7 +943,6 @@
             }
         }
 
-        // Fungsi untuk menampilkan error koneksi
         function showConnectionError(errorMessage) {
             const debugDiv = document.getElementById('connection-test-result');
             if (debugDiv) {
@@ -975,13 +955,11 @@
                 `;
             }
             
-            // Sembunyikan debug info ketika terjadi error
             if (!DEBUG_MODE) {
                 document.getElementById('api-debug-info').classList.add('hidden');
             }
         }
 
-        // Fungsi untuk menampilkan pesan sukses
         function showSuccessMessage(message) {
             const debugDiv = document.getElementById('connection-test-result');
             if (debugDiv) {
@@ -992,19 +970,16 @@
                 `;
             }
             
-            // Sembunyikan debug info setelah sukses jika tidak dalam DEBUG_MODE
             if (!DEBUG_MODE) {
                 document.getElementById('api-debug-info').classList.add('hidden');
             }
         }
 
-        // Fungsi untuk update status database di login modal
         function updateDatabaseStatus(message) {
             const statusEl = document.getElementById('db-status-text');
             if (statusEl) {
                 statusEl.textContent = message;
                 
-                // Update warna berdasarkan status
                 const statusContainer = document.getElementById('database-status');
                 if (message.includes("Terhubung")) {
                     statusContainer.className = "mb-4 p-3 rounded-lg bg-green-50 border border-green-200";
@@ -1016,7 +991,6 @@
             }
         }
 
-        // Fungsi untuk update status loading
         function updateLoadingStatus(message, progress) {
             const statusEl = document.getElementById('loading-status');
             const messageEl = document.getElementById('loading-message');
@@ -1032,7 +1006,6 @@
             document.getElementById('login-modal').classList.remove('hidden');
         }
 
-        // Fungsi untuk data fallback lokal
         function generateFallbackData() {
             console.log("🔄 Menggunakan data fallback lokal...");
             
@@ -1097,7 +1070,6 @@
             
             fullData = fallbackData.map((d, index) => ({ ...d, id: `spec_${index}` }));
             
-            // Setup Quiz Data
             quizData = fullData
                 .filter(s => s.type === 'fauna')
                 .sort(() => 0.5 - Math.random()) 
@@ -1114,7 +1086,6 @@
             console.log("✅ Data fallback siap:", fullData.length, "spesies");
         }
 
-        // Helper function untuk random lat/lng jika tidak ada data
         function getRandomLat() {
             return -2 + (Math.random() * 10 - 5);
         }
@@ -1123,7 +1094,6 @@
             return 118 + (Math.random() * 20 - 10);
         }
 
-        // Helper function untuk gambar default berdasarkan jenis
         function getDefaultImage(type) {
             const isFlora = type.toString().toLowerCase() === 'flora';
             if (isFlora) {
@@ -1186,7 +1156,6 @@
             document.getElementById('result-points').innerText = `+${score}`;
             document.querySelector('#result-points').previousElementSibling.innerText = "SKOR SEMENTARA";
             
-            // Atur icon dan warna berdasarkan level
             if (level === 1) {
                 icon.innerHTML = '<i class="fa-solid fa-seedling text-emerald-500"></i>';
                 icon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto -mt-12 mb-4 border-4 border-white shadow-xl text-4xl bg-emerald-100";
@@ -1195,10 +1164,8 @@
                 icon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto -mt-12 mb-4 border-4 border-white shadow-xl text-4xl bg-purple-100";
             }
             
-            // Mainkan suara misi selesai
             playMissionCompleteSound();
             
-            // Ubah tombol
             const btn = document.getElementById('result-btn');
             btn.innerText = level === 1 ? "Lanjut Level 2" : "Lanjut Level 3";
             btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5";
@@ -1216,86 +1183,7 @@
             }
         }
 
-        // --- MINI QUIZ SYSTEM ---
-        const miniQuizQuestions = {
-            level1: [
-                {
-                    question: "Bunga Rafflesia Arnoldii terkenal karena...",
-                    options: [
-                        "Baunya yang harum",
-                        "Ukurannya yang besar",
-                        "Warnanya yang cerah",
-                        "Batangnya yang tinggi"
-                    ],
-                    correct: 1,
-                    points: 100,
-                    penalty: 50
-                },
-                {
-                    question: "Harimau Sumatera memiliki ciri khas...",
-                    options: [
-                        "Tubuh paling besar di antara harimau",
-                        "Loreng yang lebih rapat",
-                        "Warna bulu putih",
-                        "Tidak bisa berenang"
-                    ],
-                    correct: 1,
-                    points: 100,
-                    penalty: 50
-                },
-                {
-                    question: "Badak Sumatera adalah badak terkecil di dunia dan memiliki...",
-                    options: [
-                        "Satu cula",
-                        "Dua cula",
-                        "Tiga cula",
-                        "Tidak bercula"
-                    ],
-                    correct: 1,
-                    points: 100,
-                    penalty: 50
-                }
-            ],
-            level2: [
-                {
-                    question: "Orangutan Kalimantan memiliki ciri khas...",
-                    options: [
-                        "Wajah lebih lebar dan gelap",
-                        "Tubuh lebih kecil dari Orangutan Sumatera",
-                        "Warna bulu hitam pekat",
-                        "Hidup di tanah saja"
-                    ],
-                    correct: 0,
-                    points: 100,
-                    penalty: 50
-                },
-                {
-                    question: "Komodo memiliki lidah yang...",
-                    options: [
-                        "Pendek dan lebar",
-                        "Panjang bercabang seperti ular",
-                        "Berwarna biru cerah",
-                        "Tidak memiliki lidah"
-                    ],
-                    correct: 1,
-                    points: 100,
-                    penalty: 50
-                },
-                {
-                    question: "Cendrawasih Botak memiliki ciri khas...",
-                    options: [
-                        "Kepala botak dengan kulit biru cerah",
-                        "Bulu seluruh tubuh berwarna merah",
-                        "Tidak bisa terbang",
-                        "Hidup di air"
-                    ],
-                    correct: 0,
-                    points: 100,
-                    penalty: 50
-                }
-            ]
-        };
-
+        // --- SISTEM MINI QUIZ YANG MENGAMBIL DATA DARI DATABASE ---
         let currentMiniQuiz = {
             level: 1,
             questions: [],
@@ -1304,32 +1192,280 @@
             answered: false
         };
 
+        // Fungsi untuk mengambil soal Mini Quiz dari database (PERBAIKAN UNTUK LEVEL 2)
+        async function fetchMiniQuizQuestions(level) {
+            try {
+                console.log(`Mengambil soal Mini Quiz Level ${level} dari database...`);
+                
+                // Gunakan endpoint yang benar untuk mengambil soal quiz
+                let quizUrl;
+                let filterFaunaOnly = false;
+                
+                if (level === 1) {
+                    // Level 1: Campuran flora dan fauna
+                    quizUrl = `${SPECIES_API_URL}?action=getQuizByLevel&level=1&limit=15&randomize=true&timestamp=${Date.now()}`;
+                } else if (level === 2) {
+                    // Level 2: HANYA fauna - gunakan endpoint khusus yang sudah difilter
+                    quizUrl = `${SPECIES_API_URL}?action=getQuizByLevel&level=2&limit=15&randomize=true&timestamp=${Date.now()}`;
+                    filterFaunaOnly = true;
+                }
+                
+                const response = await fetch(quizUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log(`Response dari server untuk level ${level}:`, result);
+                
+                if (result.success && result.questions && result.questions.length > 0) {
+                    let questions = result.questions;
+                    
+                    // Filter tambahan di sisi client untuk level 2: HANYA soal fauna
+                    if (filterFaunaOnly) {
+                        console.log(`Sebelum filter: ${questions.length} soal`);
+                        questions = questions.filter(q => {
+                            const isFauna = q.species_type === 'fauna' || 
+                                          (q.species_type && q.species_type.toString().toLowerCase() === 'fauna') ||
+                                          (q.jenis_spesies && q.jenis_spesies.toString().toLowerCase() === 'fauna') ||
+                                          (q.jenis && q.jenis.toString().toLowerCase() === 'fauna');
+                            
+                            if (!isFauna) {
+                                console.warn(`⚠️ Filtering out non-fauna question for level 2:`, {
+                                    question: q.question,
+                                    species_type: q.species_type,
+                                    jenis_spesies: q.jenis_spesies,
+                                    jenis: q.jenis
+                                });
+                            }
+                            
+                            return isFauna;
+                        });
+                        console.log(`Setelah filter fauna: ${questions.length} soal`);
+                        
+                        if (questions.length < 3) {
+                            console.warn(`⚠️ Hanya ${questions.length} soal fauna ditemukan untuk Level 2, menggunakan default`);
+                            return getDefaultMiniQuizQuestions(level);
+                        }
+                    }
+                    
+                    // Acak soal dan ambil 5 soal pertama
+                    const shuffled = questions.sort(() => 0.5 - Math.random());
+                    const selectedQuestions = shuffled.slice(0, 5);
+                    
+                    console.log(`✅ Berhasil mengambil ${selectedQuestions.length} soal untuk Level ${level} (${level === 2 ? 'fauna only' : 'mixed'})`);
+                    
+                    // Format ulang soal untuk memastikan struktur yang konsisten
+                    const formattedQuestions = selectedQuestions.map((q, index) => ({
+                        id: q.id || `quiz_${level}_${index}`,
+                        question: q.question || q.pertanyaan || `Pertanyaan ${index + 1}`,
+                        options: q.options || [
+                            q.opsi_1 || q.opsi1 || q.option_1 || "Pilihan A",
+                            q.opsi_2 || q.opsi2 || q.option_2 || "Pilihan B",
+                            q.opsi_3 || q.opsi3 || q.option_3 || "Pilihan C",
+                            q.opsi_4 || q.opsi4 || q.option_4 || "Pilihan D"
+                        ],
+                        correct: typeof q.correct === 'number' ? q.correct : (parseInt(q.correct) || 0),
+                        points: q.points || (level === 1 ? 100 : 150),
+                        penalty: q.penalty || (level === 1 ? 50 : 75),
+                        species_type: q.species_type || 'fauna'
+                    }));
+                    
+                    // VERIFIKASI FINAL: Pastikan semua soal level 2 adalah fauna
+                    if (level === 2) {
+                        const nonFaunaQuestions = formattedQuestions.filter(q => 
+                            q.species_type !== 'fauna' && 
+                            q.species_type !== undefined
+                        );
+                        if (nonFaunaQuestions.length > 0) {
+                            console.error('❌ MASALAH: Masih ada soal non-fauna di level 2:', nonFaunaQuestions);
+                        }
+                    }
+                    
+                    return formattedQuestions;
+                    
+                } else {
+                    console.warn('Tidak ada soal yang diterima dari server, menggunakan default');
+                    return getDefaultMiniQuizQuestions(level);
+                }
+                
+            } catch (error) {
+                console.error(`❌ Gagal mengambil soal Mini Quiz Level ${level}:`, error);
+                // Kembalikan soal default jika gagal
+                return getDefaultMiniQuizQuestions(level);
+            }
+        }
+
+        // Fungsi untuk mendapatkan soal default jika database tidak tersedia
+        function getDefaultMiniQuizQuestions(level) {
+            if (level === 1) {
+                return [
+                    {
+                        id: "default_1_1",
+                        question: "Bunga Rafflesia Arnoldii terkenal karena...",
+                        options: ["Baunya yang harum", "Ukurannya yang besar", "Warnanya yang cerah", "Batangnya yang tinggi"],
+                        correct: 1,
+                        points: 100,
+                        penalty: 50,
+                        species_type: "flora"
+                    },
+                    {
+                        id: "default_1_2",
+                        question: "Harimau Sumatera memiliki ciri khas...",
+                        options: ["Tubuh paling besar di antara harimau", "Loreng yang lebih rapat", "Warna bulu putih", "Tidak bisa berenang"],
+                        correct: 1,
+                        points: 100,
+                        penalty: 50,
+                        species_type: "fauna"
+                    },
+                    {
+                        id: "default_1_3",
+                        question: "Badak Jawa merupakan spesies yang...",
+                        options: ["Paling banyak populasinya", "Paling langka di dunia", "Tidak dilindungi", "Hidup di seluruh Asia"],
+                        correct: 1,
+                        points: 100,
+                        penalty: 50,
+                        species_type: "fauna"
+                    },
+                    {
+                        id: "default_1_4",
+                        question: "Bunga Bangkai (Amorphophallus titanum) mengeluarkan bau busuk untuk...",
+                        options: ["Mengusir predator", "Menarik serangga penyerbuk", "Mengurangi penguapan", "Mempercepat pertumbuhan"],
+                        correct: 1,
+                        points: 100,
+                        penalty: 50,
+                        species_type: "flora"
+                    },
+                    {
+                        id: "default_1_5",
+                        question: "Orangutan Sumatera termasuk ke dalam famili...",
+                        options: ["Cercopithecidae", "Hominidae", "Lemuridae", "Cebidae"],
+                        correct: 1,
+                        points: 100,
+                        penalty: 50,
+                        species_type: "fauna"
+                    }
+                ];
+            } else if (level === 2) {
+                return [
+                    {
+                        id: "default_2_1",
+                        question: "Ciri khas Orangutan Sumatera yang membedakan dari Orangutan Kalimantan adalah...",
+                        options: ["Wajah lebih lebar dan gelap", "Rambut lebih panjang dan pirang", "Tubuh lebih besar", "Hidup berkelompok besar"],
+                        correct: 0,
+                        points: 150,
+                        penalty: 75,
+                        species_type: "fauna"
+                    },
+                    {
+                        id: "default_2_2",
+                        question: "Komodo memiliki lidah yang bercabang seperti ular untuk...",
+                        options: ["Mencium mangsa dari jarak jauh", "Menggali sarang", "Mempertahankan diri", "Menggigit mangsa"],
+                        correct: 0,
+                        points: 150,
+                        penalty: 75,
+                        species_type: "fauna"
+                    },
+                    {
+                        id: "default_2_3",
+                        question: "Cendrawasih Botak memiliki ciri khas kepala botak dengan kulit berwarna...",
+                        options: ["Merah terang", "Biru cerah", "Hijau tua", "Kuning keemasan"],
+                        correct: 1,
+                        points: 150,
+                        penalty: 75,
+                        species_type: "fauna"
+                    },
+                    {
+                        id: "default_2_4",
+                        question: "Bekantan memiliki hidung yang panjang dan besar pada individu...",
+                        options: ["Betina", "Jantan", "Anak-anak", "Tua"],
+                        correct: 1,
+                        points: 150,
+                        penalty: 75,
+                        species_type: "fauna"
+                    },
+                    {
+                        id: "default_2_5",
+                        question: "Burung maleo memiliki kebiasaan unik dalam bertelur, yaitu...",
+                        options: ["Menyimpan telur di sarang di pohon", "Mengubur telur di pasir panas", "Menitipkan telur pada sarang burung lain", "Tidak mengerami telur sama sekali"],
+                        correct: 1,
+                        points: 150,
+                        penalty: 75,
+                        species_type: "fauna"
+                    }
+                ];
+            }
+            return [];
+        }
+
         // Fungsi untuk memulai Mini Quiz
-        function startMiniQuiz(level) {
-            currentMiniQuiz = {
-                level: level,
-                questions: level === 1 ? [...miniQuizQuestions.level1] : [...miniQuizQuestions.level2],
-                currentQuestionIndex: 0,
-                score: 0,
-                answered: false
-            };
+        async function startMiniQuiz(level) {
+            console.log(`Memulai Mini Quiz Level ${level}...`);
             
+            // Tampilkan modal dengan loading
             document.getElementById('mini-quiz-modal').classList.remove('hidden');
             document.getElementById('mini-quiz-level').textContent = `Review Level ${level}`;
+            document.getElementById('mini-quiz-question').textContent = 'Memuat soal...';
+            document.getElementById('mini-quiz-options').innerHTML = '<div class="text-center py-4"><div class="loading-spinner mx-auto"></div><p class="mt-2 text-gray-500">Memuat soal dari database...</p></div>';
             
-            // Mainkan sound tring untuk mini quiz
+            // Mainkan sound
             playMiniQuizSound();
             
-            loadMiniQuizQuestion();
+            try {
+                // Ambil soal dari database
+                const questions = await fetchMiniQuizQuestions(level);
+                
+                // Inisialisasi state quiz
+                currentMiniQuiz = {
+                    level: level,
+                    questions: questions,
+                    currentQuestionIndex: 0,
+                    score: 0,
+                    answered: false
+                };
+                
+                console.log(`📊 Soal yang diterima untuk Level ${level}:`, questions.length, "soal");
+                console.log(`Detail soal Level ${level}:`, questions);
+                
+                // Muat soal pertama
+                loadMiniQuizQuestion();
+                
+            } catch (error) {
+                console.error('Gagal memuat soal Mini Quiz:', error);
+                
+                // Gunakan soal default jika gagal
+                currentMiniQuiz = {
+                    level: level,
+                    questions: getDefaultMiniQuizQuestions(level),
+                    currentQuestionIndex: 0,
+                    score: 0,
+                    answered: false
+                };
+                
+                loadMiniQuizQuestion();
+            }
         }
 
         // Fungsi untuk memuat pertanyaan
         function loadMiniQuizQuestion() {
             const quiz = currentMiniQuiz;
+            
+            if (quiz.currentQuestionIndex >= quiz.questions.length) {
+                finishMiniQuiz();
+                return;
+            }
+            
             const question = quiz.questions[quiz.currentQuestionIndex];
             
             document.getElementById('mini-quiz-question').textContent = question.question;
             document.getElementById('current-quiz').textContent = quiz.currentQuestionIndex + 1;
+            document.getElementById('mini-quiz-progress').innerHTML = 
+                `Soal <span id="current-quiz">${quiz.currentQuestionIndex + 1}</span>/${quiz.questions.length}`;
             
             const optionsContainer = document.getElementById('mini-quiz-options');
             optionsContainer.innerHTML = '';
@@ -1416,7 +1552,7 @@
             if (currentMiniQuiz.level === 1) {
                 showTemporaryScorePopup(
                     "Level 1 Selesai!",
-                    `Selamat! Anda menyelesaikan eksplorasi umum.`,
+                    `Selamat! Anda menyelesaikan eksplorasi umum dan Mini Quiz.`,
                     currentMiniQuiz.score,
                     1
                 );
@@ -1445,7 +1581,6 @@
                 await fetchSpeciesData();
             } catch (error) {
                 console.error("Error in initialization:", error);
-                // Fallback jika semua gagal
                 updateLoadingStatus("Error inisialisasi, menggunakan data lokal...", 30);
                 setTimeout(() => {
                     generateFallbackData();
@@ -1498,28 +1633,21 @@
             },
             {
                 title: "Navigasi Peta",
-                content: 				  
-						  `<p class="mb-2">Gunakan tombol <b>Filter</b> di level 1 untuk memilih Flora atau Fauna.</p>
+                content: `<p class="mb-2">Gunakan tombol <b>Filter</b> di level 1 untuk memilih Flora atau Fauna.</p>
                          <ul class="list-disc pl-5 text-sm space-y-2 mb-4 text-gray-600">
                             <li>Titik yang berdekatan akan mengelompok(Cluster).</li>
                             <li>Klik cluster untuk memperbesar.</li>
                             <li>Pilih marker spesies yang diinginkan</li>
                          </ul>`
-						  
             },
             {
                 title: "Mulai Level 1",
-                content: 
-											  
-						  `<p class="mb-2">Setiap temuan baru memberi poin. Berikut tips sukses di level berikutnya:</p>
+                content: `<p class="mb-2">Setiap temuan baru memberi poin. Berikut tips sukses di level berikutnya:</p>
                          <ul class="list-disc pl-5 text-sm space-y-2 mb-4 text-gray-600">
                             <li>Pelajari ciri-ciri hewan di Level 2</li>
                             <li>Mempelajari ciri-ciri akan berguna saat Kuis!</li>
                             <li>Kamu sudah Siap? Klik tombol Mulai!</li>
-							
                          </ul>`  
-						  
-						  
             }
         ];
 
@@ -1659,144 +1787,76 @@
 
         // Helper to create marker (Shared logic but content differs by Level) DENGAN GAMBAR
         function createMarker(item, isLevel2) {
-    const isFlora = item.type === 'flora';
-    const iconClass = isFlora ? 'fa-seedling' : 'fa-paw';
-    
-    const trackingId = item.id + (isLevel2 ? '_L2' : '_L1');
-    const isVisited = gameState.visitedExplorationIds.has(trackingId);
-    
-    // WARNA BERDASARKAN STATUS KUNJUNGAN
-    let markerColorClass = '';
-    if (isVisited) {
-        markerColorClass = 'marker-visited bg-gray-300';
-    } else {
-        markerColorClass = isFlora ? 'bg-white text-green-600' : 'bg-white text-orange-600';
-    }
-    
-    const customIcon = L.divIcon({
-        className: 'bg-transparent',
-        html: `
-            <div class="relative group">
-                <div class="w-8 h-8 rounded-full shadow-md border border-gray-200 flex items-center justify-center text-sm hover:scale-125 transition-transform duration-300 cursor-pointer ${markerColorClass}">
-                    <i class="fa-solid ${iconClass}"></i>
-                </div>
-            </div>
-        `,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-    });
-
-    const marker = L.marker([item.lat, item.lng], { icon: customIcon });
-
-    // GENERATE CONTENT DENGAN GAMBAR
-    let descriptionHTML = "";
-    const zone = getZoneFromLong(item.lng);
-    
-    // Gambar untuk semua level
-    const imageHTML = `
-        <div class="popup-image-container mb-3">
-            <img src="${item.image_url}" 
-                 alt="${item.name}" 
-                 class="w-full h-40 object-cover"
-                 onerror="this.onerror=null; this.src='${getDefaultImage(item.type)}';">
-            <div class="image-caption">${item.name}</div>
-        </div>
-    `;
-    
-    if (isLevel2) {
-        // LEVEL 2: Show SPECIFIC ANIMAL TRAITS dengan gambar
-        const animalTraits = item.traits || "<ul><li>Ciri khas tidak tersedia</li></ul>";
-        
-        descriptionHTML = `
-            ${imageHTML}
-            <div class="mb-3">
-               
-                <div class="bg-purple-50 p-3 rounded-lg border border-purple-200">
-                    <div class="flex items-center justify-between mb-1">
-                         <p class="text-xs font-bold text-purple-700 font-small uppercase">Ciri Khas Spesies</p><br/>
-                   
-                    <div class="text-sm text-purple-900 leading-snug font-small pl-4 list-disc space-y-1">
-                        ${animalTraits}
-                    
-                </div>
-            </div>
-        `;
-    } else {
-        // LEVEL 1: Show General Description dengan gambar
-        descriptionHTML = `
-            ${imageHTML}
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">${item.region || "Indonesia"}</span>
-                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${isFlora ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.type || "fauna"}</span>
-            </div>
-            <p class="text-sm text-gray-700 leading-snug mb-3">${item.desc || "Deskripsi tidak tersedia"}</p>
-        `;
-    }
-
-    const popupHTML = `
-        <div class="font-sans">
-            <div class="bg-gradient-to-r ${isVisited ? 'from-gray-500 to-gray-600' : (isFlora ? 'from-green-500 to-emerald-600' : 'from-orange-500 to-red-500')} p-3 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
-                        <p class="text-xs italic opacity-90">${item.sc || "Nama ilmiah tidak tersedia"}</p>
-                    </div>
-                    ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
-                </div>
-            </div>
-            <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
-                ${descriptionHTML}
-                
-                ${!isVisited ? 
-                    `<div class="mt-2 text-center text-xs font-bold text-emerald-600 animate-pulse bg-emerald-50 py-1 rounded">
-                        <i class="fa-solid fa-plus-circle"></i> +10 Poin Baru!
-                     </div>` : 
-                    `<div class="mt-2 text-center text-xs font-bold text-gray-400 bg-gray-50 py-1 rounded">
-                        <i class="fa-solid fa-check"></i> Sudah Dibaca
-                     </div>`
-                }
-            </div>
-        </div>
-    `;
-    
-    marker.bindPopup(popupHTML);
-    
-    marker.on('popupopen', () => {
-        if (!isVisited) {
-            // Marker BARU dikunjungi
-            gameState.visitedExplorationIds.add(trackingId);
-            gameState.explorationCount++;
-            gameState.score += 10;
+            const isFlora = item.type === 'flora';
+            const iconClass = isFlora ? 'fa-seedling' : 'fa-paw';
             
-            updateScoreDisplays();
-            updateExplorationUI();
+            const trackingId = item.id + (isLevel2 ? '_L2' : '_L1');
+            const isVisited = gameState.visitedExplorationIds.has(trackingId);
             
-            // Update marker appearance menjadi abu-abu
-            const markerElement = marker.getElement();
-            if (markerElement) {
-                const markerDiv = markerElement.querySelector('div > div');
-                if (markerDiv) {
-                    markerDiv.classList.add('marker-visited', 'bg-gray-300');
-                    markerDiv.classList.remove('bg-white', 'text-green-600', 'text-orange-600');
-                }
+            let markerColorClass = '';
+            if (isVisited) {
+                markerColorClass = 'marker-visited bg-gray-300';
+            } else {
+                markerColorClass = isFlora ? 'bg-white text-green-600' : 'bg-white text-orange-600';
             }
             
-            // Play coin sound for new marker
-            playCoinSound();
+            const customIcon = L.divIcon({
+                className: 'bg-transparent',
+                html: `
+                    <div class="relative group">
+                        <div class="w-8 h-8 rounded-full shadow-md border border-gray-200 flex items-center justify-center text-sm hover:scale-125 transition-transform duration-300 cursor-pointer ${markerColorClass}">
+                            <i class="fa-solid ${iconClass}"></i>
+                        </div>
+                    </div>
+                `,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+
+            const marker = L.marker([item.lat, item.lng], { icon: customIcon });
+
+            let descriptionHTML = "";
+            const zone = getZoneFromLong(item.lng);
             
-            setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
-        } else {
-            // PERUBAHAN PENTING: Marker SUDAH PERNAH dikunjungi - kurangi 5 poin (setiap kali diklik)
-            gameState.score -= 5;
-            updateScoreDisplays();
+            const imageHTML = `
+                <div class="popup-image-container mb-3">
+                    <img src="${item.image_url}" 
+                         alt="${item.name}" 
+                         class="w-full h-40 object-cover"
+                         onerror="this.onerror=null; this.src='${getDefaultImage(item.type)}';">
+                    <div class="image-caption">${item.name}</div>
+                </div>
+            `;
             
-            // Play wrong sound untuk penalti
-            playWrongSound();
-            
-            // Tampilkan pesan penalti di popup dengan warna merah
-            const penaltyPopupHTML = `
+            if (isLevel2) {
+                const animalTraits = item.traits || "<ul><li>Ciri khas tidak tersedia</li></ul>";
+                
+                descriptionHTML = `
+                    ${imageHTML}
+                    <div class="mb-3">
+                        <div class="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                            <div class="flex items-center justify-between mb-1">
+                                 <p class="text-xs font-bold text-purple-700 font-small uppercase">Ciri Khas Spesies</p><br/>
+                            <div class="text-sm text-purple-900 leading-snug font-small pl-4 list-disc space-y-1">
+                                ${animalTraits}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                descriptionHTML = `
+                    ${imageHTML}
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500">${item.region || "Indonesia"}</span>
+                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${isFlora ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.type || "fauna"}</span>
+                    </div>
+                    <p class="text-sm text-gray-700 leading-snug mb-3">${item.desc || "Deskripsi tidak tersedia"}</p>
+                `;
+            }
+
+            const popupHTML = `
                 <div class="font-sans">
-                    <div class="bg-gradient-to-r from-gray-500 to-gray-600 p-3 text-white">
+                    <div class="bg-gradient-to-r ${isVisited ? 'from-gray-500 to-gray-600' : (isFlora ? 'from-green-500 to-emerald-600' : 'from-orange-500 to-red-500')} p-3 text-white">
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
@@ -1808,23 +1868,77 @@
                     <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
                         ${descriptionHTML}
                         
-                        <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200">
-                            <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
-                        </div>
+                        ${!isVisited ? 
+                            `<div class="mt-2 text-center text-xs font-bold text-emerald-600 animate-pulse bg-emerald-50 py-1 rounded">
+                                <i class="fa-solid fa-plus-circle"></i> +10 Poin Baru!
+                             </div>` : 
+                            `<div class="mt-2 text-center text-xs font-bold text-gray-400 bg-gray-50 py-1 rounded">
+                                <i class="fa-solid fa-check"></i> Sudah Dibaca
+                             </div>`
+                        }
                     </div>
                 </div>
             `;
-            marker.setPopupContent(penaltyPopupHTML);
             
-            // Kembalikan ke popup normal setelah 2 detik
-            setTimeout(() => {
-                marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50'));
-            }, 2000);
-        }
-    });
+            marker.bindPopup(popupHTML);
+            
+            marker.on('popupopen', () => {
+                if (!isVisited) {
+                    gameState.visitedExplorationIds.add(trackingId);
+                    gameState.explorationCount++;
+                    gameState.score += 10;
+                    
+                    updateScoreDisplays();
+                    updateExplorationUI();
+                    
+                    const markerElement = marker.getElement();
+                    if (markerElement) {
+                        const markerDiv = markerElement.querySelector('div > div');
+                        if (markerDiv) {
+                            markerDiv.classList.add('marker-visited', 'bg-gray-300');
+                            markerDiv.classList.remove('bg-white', 'text-green-600', 'text-orange-600');
+                        }
+                    }
+                    
+                    playCoinSound();
+                    
+                    setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
+                } else {
+                    gameState.score -= 5;
+                    updateScoreDisplays();
+                    
+                    playWrongSound();
+                    
+                    const penaltyPopupHTML = `
+                        <div class="font-sans">
+                            <div class="bg-gradient-to-r from-gray-500 to-gray-600 p-3 text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
+                                        <p class="text-xs italic opacity-90">${item.sc || "Nama ilmiah tidak tersedia"}</p>
+                                    </div>
+                                    ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
+                                ${descriptionHTML}
+                                
+                                <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200">
+                                    <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    marker.setPopupContent(penaltyPopupHTML);
+                    
+                    setTimeout(() => {
+                        marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50'));
+                    }, 2000);
+                }
+            });
 
-    return marker;
-}
+            return marker;
+        }
 
         function updateExplorationUI() {
             document.getElementById('explore-count').innerText = `${gameState.explorationCount}/20`;
@@ -1857,10 +1971,8 @@
 
         window.finishExploration = function() {
             if (gameState.level === 1) {
-                // Tampilkan mini quiz level 1
                 startMiniQuiz(1);
             } else if (gameState.level === 2) {
-                // Tampilkan mini quiz level 2
                 startMiniQuiz(2);
             }
         }
@@ -1918,7 +2030,6 @@
             
             document.getElementById('level-display').innerText = "3: Kuis Lokasi";
             
-            // Tambahkan class quiz-mode untuk styling khusus
             const clueCard = document.getElementById('clue-card');
             clueCard.classList.remove('hidden');
             clueCard.classList.add('quiz-mode');
@@ -1940,7 +2051,6 @@
             document.getElementById('species-quiz-name').innerText = currentSpecies.name;
             document.getElementById('species-quiz-scientific').innerText = currentSpecies.sc;
             
-            // Tambahkan gambar di deskripsi kuis (Level 3)
             const descWithImage = `
                 <div class="popup-image-container mb-3">
                     <img src="${currentSpecies.image_url}" 
@@ -1965,7 +2075,6 @@
             gameState.score -= 5;
             updateScoreDisplays();
             
-            // Play wrong sound for using hint (minus points)
             playWrongSound();
         }
 
@@ -1994,7 +2103,6 @@
             gameState.score += points;
             updateScoreDisplays();
 
-            // Play success sound for correct answer (points > 0)
             if (points > 0) {
                 playSuccessSound();
             } else {
@@ -2031,7 +2139,6 @@
                 icon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto -mt-12 mb-4 border-4 border-white shadow-xl text-4xl bg-orange-100";
             }
 
-            // Ubah tombol untuk lanjut ke soal berikutnya
             const btn = document.getElementById('result-btn');
             btn.innerText = "Soal Berikutnya";
             btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5";
@@ -2045,15 +2152,12 @@
         }
 
         function endGame() {
-            // Mainkan sound misi selesai untuk Level 3
             playMissionCompleteSound();
             
-            // 1. Hide Game UI
             document.getElementById('clue-card').classList.add('hidden');
             document.getElementById('quiz-hud-info').classList.add('hidden');
             document.getElementById('result-modal').classList.add('hidden');
 
-            // 2. Show Final Score in Result Modal (Temporary view before Leaderboard)
             const modal = document.getElementById('result-modal');
             modal.classList.remove('hidden');
             
@@ -2066,20 +2170,19 @@
             document.getElementById('result-points').innerText = gameState.score;
             document.querySelector('#result-points').previousElementSibling.innerText = "SKOR AKHIR";
 
-            // 3. Change Button to "Submit & View Leaderboard"
             const btn = document.getElementById('result-btn');
             btn.innerText = "Kirim Skor & Lihat Peringkat";
             btn.className = "w-full bg-purple-600 hover:bg-purple-700 text-white py-3.5 rounded-xl font-bold shadow-lg mt-4";
             btn.onclick = submitAndShowLeaderboard;
         }
 
+        // ==================== PERBAIKAN LEADERBOARD ====================
         async function submitAndShowLeaderboard() {
-            // Close result modal, open leaderboard modal
             document.getElementById('result-modal').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.remove('hidden');
             document.getElementById('leaderboard-my-score').innerText = gameState.score;
 
-            // Prepare Data
+            // Prepare Data - format sesuai dengan file biodiversitas.html
             const payload = {
                 nama: window.playerProfile.name,
                 sekolah: window.playerProfile.school,
@@ -2090,29 +2193,33 @@
             };
 
             const statusEl = document.getElementById('submission-status');
+            statusEl.innerText = "Mengirim data skor...";
+            statusEl.className = "text-center text-sm font-semibold text-blue-600 animate-pulse";
 
-            // SUBMIT DATA
+            // SUBMIT DATA ke Leaderboard API
             try {
                 if (useOnlineDatabase && LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
-                    // Gunakan CORS proxy untuk leaderboard
                     const formData = new URLSearchParams();
                     for (const key in payload) {
                         formData.append(key, payload[key]);
                     }
 
-                    // Coba submit tanpa proxy dulu
                     const response = await fetch(LEADERBOARD_API_URL, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/x-www-form-urlencoded',
                             'Accept': 'application/json'
                         },
-                        body: formData.toString()
+                        body: formData.toString(),
+                        mode: 'cors'
                     });
                     
-                    statusEl.innerText = "Skor terkirim! Memuat peringkat...";
-                    statusEl.className = "text-center text-sm font-semibold text-green-600";
-                    
+                    if (response.ok) {
+                        statusEl.innerText = "Skor terkirim! Memuat peringkat...";
+                        statusEl.className = "text-center text-sm font-semibold text-green-600";
+                    } else {
+                        throw new Error('Gagal mengirim skor');
+                    }
                 } else {
                     statusEl.innerText = "Mode offline - skor disimpan lokal";
                     statusEl.className = "text-center text-sm font-semibold text-yellow-600";
@@ -2123,7 +2230,7 @@
                 statusEl.className = "text-center text-sm font-semibold text-red-600";
             }
 
-            // FETCH LEADERBOARD (Delay slightly to allow sheet update)
+            // FETCH LEADERBOARD
             setTimeout(fetchLeaderboard, 1500);
         }
 
@@ -2133,24 +2240,29 @@
 
             try {
                 if (useOnlineDatabase && LEADERBOARD_API_URL && LEADERBOARD_API_URL.startsWith('http')) {
-                    // Ambil data leaderboard
+                    // Ambil data leaderboard dari API khusus leaderboard
                     const response = await fetch(`${LEADERBOARD_API_URL}?action=get&sort=desc&limit=10&timestamp=${new Date().getTime()}`, {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
-                        }
+                        },
+                        mode: 'cors'
                     });
                     
-                    const data = await response.json();
-                    
-                    // Pastikan data diurutkan dari skor tertinggi ke terendah
-                    const sortedData = Array.isArray(data) ? 
-                        data.sort((a, b) => b.skor - a.skor).slice(0, 10) : [];
-                    
-                    renderLeaderboardTable(sortedData);
-                    document.getElementById('submission-status').classList.add('hidden');
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Pastikan data diurutkan dari skor tertinggi ke terendah
+                        const sortedData = Array.isArray(data) ? 
+                            data.sort((a, b) => b.skor - a.skor).slice(0, 10) : [];
+                        
+                        renderLeaderboardTable(sortedData);
+                        document.getElementById('submission-status').classList.add('hidden');
+                    } else {
+                        throw new Error('Gagal mengambil data leaderboard');
+                    }
                 } else {
-                    // Dummy data for demo - 10 data dengan skor tertinggi
+                    // Fallback ke data dummy
                     const dummyData = [
                         {nama: "Budi Santoso", sekolah: "SMAN 1 Jakarta", provinsi: "DKI JAKARTA", skor: 2850},
                         {nama: window.playerProfile?.name || "Anda", sekolah: window.playerProfile?.school || "-", provinsi: window.playerProfile?.province || "-", skor: gameState.score},
@@ -2192,6 +2304,21 @@
             // Ambil hanya 10 data teratas
             const top10 = data.slice(0, 10);
 
+            if (top10.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center p-8">
+                            <div class="text-gray-400">
+                                <i class="fa-solid fa-trophy text-4xl mb-4"></i>
+                                <p class="font-bold text-lg mt-2">Belum ada data</p>
+                                <p class="text-sm">Jadilah yang pertama masuk leaderboard!</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
             top10.forEach((row, index) => {
                 const rank = index + 1;
                 let rankClass = "text-gray-600";
@@ -2215,10 +2342,12 @@
                     medalBg = "bg-gradient-to-r from-orange-100 to-orange-50";
                 }
 
-                const tr = document.createElement('tr');
-                
                 // Highlight player's own score
-                const isCurrentPlayer = (row.nama === window.playerProfile?.name && row.skor == gameState.score);
+                const isCurrentPlayer = (row.nama === window.playerProfile?.name && 
+                                        row.sekolah === window.playerProfile?.school &&
+                                        row.skor == gameState.score);
+                
+                const tr = document.createElement('tr');
                 
                 if (isCurrentPlayer) {
                     tr.className = "bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-500";
@@ -2238,6 +2367,12 @@
                     rankBadge = '<span class="ml-2 px-2 py-0.5 text-xs bg-orange-500 text-white rounded-full font-bold">#3</span>';
                 }
                 
+                // Pastikan properti yang diakses ada
+                const nama = row.nama || row.Nama || "Anonymous";
+                const sekolah = row.sekolah || row.Sekolah || "-";
+                const provinsi = row.provinsi || row.Provinsi || "-";
+                const skor = row.skor || row.Skor || 0;
+                
                 tr.innerHTML = `
                     <td class="text-center ${rankClass} font-bold">
                         <div class="flex items-center justify-center">
@@ -2248,14 +2383,14 @@
                     </td>
                     <td class="font-bold ${rank === 1 ? 'text-yellow-700' : rank === 2 ? 'text-gray-700' : rank === 3 ? 'text-orange-700' : 'text-gray-700'}">
                         <div class="flex items-center">
-                            ${row.nama || "Anonymous"}
+                            ${nama}
                             ${isCurrentPlayer ? '<span class="ml-2 px-2 py-0.5 text-xs bg-blue-500 text-white rounded-full">Anda</span>' : ''}
                         </div>
                     </td>
-                    <td class="text-gray-600">${row.sekolah || "-"}</td>
-                    <td class="hidden sm:table-cell text-gray-500 text-xs uppercase tracking-wide">${row.provinsi || "-"}</td>
+                    <td class="text-gray-600">${sekolah}</td>
+                    <td class="hidden sm:table-cell text-gray-500 text-xs uppercase tracking-wide">${provinsi}</td>
                     <td class="text-right">
-                        <div class="font-mono font-bold text-purple-700 text-lg">${row.skor || 0}</div>
+                        <div class="font-mono font-bold text-purple-700 text-lg">${skor}</div>
                         ${rank <= 3 ? 
                             `<div class="text-xs text-gray-500 mt-1">
                                 ${rank === 1 ? '🏆 Juara 1' : rank === 2 ? '🥈 Juara 2' : '🥉 Juara 3'}
@@ -2266,21 +2401,6 @@
                 `;
                 tbody.appendChild(tr);
             });
-
-            // Jika data kurang dari 10, tampilkan pesan
-            if (top10.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center p-8">
-                            <div class="text-gray-400">
-                                <i class="fa-solid fa-trophy text-4xl mb-4"></i>
-                                <p class="font-bold text-lg mt-2">Belum ada data</p>
-                                <p class="text-sm">Jadilah yang pertama masuk leaderboard!</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }
         }
     </script>
 </body>
