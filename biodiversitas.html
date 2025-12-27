@@ -1254,14 +1254,23 @@
                         }
                     }
                     
-                    // Acak soal dan ambil 5 soal pertama
-                    const shuffled = questions.sort(() => 0.5 - Math.random());
-                    const selectedQuestions = shuffled.slice(0, 5);
+                    // Pastikan minimal ada 5 soal
+                    if (questions.length < 5) {
+                        console.warn(`Hanya ${questions.length} soal yang tersedia untuk level ${level}, menambahkan dari soal default...`);
+                        const defaultQuestions = getDefaultMiniQuizQuestions(level);
+                        // Gabungkan, lalu acak, lalu ambil 5
+                        questions = [...questions, ...defaultQuestions]
+                            .sort(() => 0.5 - Math.random())
+                            .slice(0, 5);
+                    } else {
+                        // Acak soal dan ambil 5 soal pertama
+                        questions = questions.sort(() => 0.5 - Math.random()).slice(0, 5);
+                    }
                     
-                    console.log(`✅ Berhasil mengambil ${selectedQuestions.length} soal untuk Level ${level} (${level === 2 ? 'fauna only' : 'mixed'})`);
+                    console.log(`✅ Berhasil menyiapkan ${questions.length} soal untuk Level ${level} (${level === 2 ? 'fauna only' : 'mixed'})`);
                     
                     // Format ulang soal untuk memastikan struktur yang konsisten
-                    const formattedQuestions = selectedQuestions.map((q, index) => ({
+                    const formattedQuestions = questions.map((q, index) => ({
                         id: q.id || `quiz_${level}_${index}`,
                         question: q.question || q.pertanyaan || `Pertanyaan ${index + 1}`,
                         options: q.options || [
@@ -1403,7 +1412,7 @@
             return [];
         }
 
-        // Fungsi untuk memulai Mini Quiz
+        // Fungsi untuk memulai Mini Quiz (DIPERBAIKI)
         async function startMiniQuiz(level) {
             console.log(`Memulai Mini Quiz Level ${level}...`);
             
@@ -1413,6 +1422,11 @@
             document.getElementById('mini-quiz-question').textContent = 'Memuat soal...';
             document.getElementById('mini-quiz-options').innerHTML = '<div class="text-center py-4"><div class="loading-spinner mx-auto"></div><p class="mt-2 text-gray-500">Memuat soal dari database...</p></div>';
             
+            // RESET STATE TOMBOL: Sembunyikan semua tombol kontrol di awal
+            document.getElementById('mini-quiz-next').classList.add('hidden');
+            document.getElementById('mini-quiz-finish').classList.add('hidden');
+            document.getElementById('mini-quiz-feedback').classList.add('hidden');
+            
             // Mainkan sound
             playMiniQuizSound();
             
@@ -1420,7 +1434,7 @@
                 // Ambil soal dari database
                 const questions = await fetchMiniQuizQuestions(level);
                 
-                // Inisialisasi state quiz
+                // Inisialisasi state quiz (RESET SELURUHNYA)
                 currentMiniQuiz = {
                     level: level,
                     questions: questions,
@@ -1430,7 +1444,6 @@
                 };
                 
                 console.log(`📊 Soal yang diterima untuk Level ${level}:`, questions.length, "soal");
-                console.log(`Detail soal Level ${level}:`, questions);
                 
                 // Muat soal pertama
                 loadMiniQuizQuestion();
@@ -1451,7 +1464,7 @@
             }
         }
 
-        // Fungsi untuk memuat pertanyaan
+        // Fungsi untuk memuat pertanyaan (DIPERBAIKI)
         function loadMiniQuizQuestion() {
             const quiz = currentMiniQuiz;
             
@@ -1485,14 +1498,17 @@
                 optionsContainer.appendChild(button);
             });
             
-            // Reset UI
+            // RESET UI: Sembunyikan SEMUA tombol kontrol di awal setiap soal
             document.getElementById('mini-quiz-feedback').classList.add('hidden');
             document.getElementById('mini-quiz-next').classList.add('hidden');
             document.getElementById('mini-quiz-finish').classList.add('hidden');
             currentMiniQuiz.answered = false;
+            
+            // JANGAN tampilkan tombol apa pun di sini
+            // Tombol hanya muncul setelah jawaban dipilih (di selectMiniQuizAnswer)
         }
 
-        // Fungsi untuk memilih jawaban
+        // Fungsi untuk memilih jawaban (DIPERBAIKI)
         function selectMiniQuizAnswer(selectedIndex) {
             if (currentMiniQuiz.answered) return;
             
@@ -1530,23 +1546,42 @@
             feedback.classList.remove('hidden');
             updateScoreDisplays();
             
-            // Tampilkan tombol selanjutnya
-            if (currentMiniQuiz.currentQuestionIndex < currentMiniQuiz.questions.length - 1) {
+            // Tampilkan tombol sesuai posisi soal - LOGIKA YANG LEBIH KETAT
+            const isLastQuestion = (currentMiniQuiz.currentQuestionIndex >= currentMiniQuiz.questions.length - 1);
+            
+            // SELALU sembunyikan dulu
+            document.getElementById('mini-quiz-next').classList.add('hidden');
+            document.getElementById('mini-quiz-finish').classList.add('hidden');
+            
+            // Kemudian tampilkan yang sesuai
+            if (!isLastQuestion) {
+                // Bukan soal terakhir: tampilkan "Soal Selanjutnya"
                 document.getElementById('mini-quiz-next').classList.remove('hidden');
             } else {
+                // Soal terakhir: tampilkan "Selesaikan Quiz"
                 document.getElementById('mini-quiz-finish').classList.remove('hidden');
             }
         }
 
-        // Fungsi untuk ke soal berikutnya
+        // Fungsi untuk ke soal berikutnya (DIPERBAIKI)
         function nextMiniQuizQuestion() {
+            // Sembunyikan tombol sebelum pindah soal
+            document.getElementById('mini-quiz-next').classList.add('hidden');
+            document.getElementById('mini-quiz-finish').classList.add('hidden');
+            
             currentMiniQuiz.currentQuestionIndex++;
             loadMiniQuizQuestion();
         }
 
-        // Fungsi untuk menyelesaikan quiz
+        // Fungsi untuk menyelesaikan quiz (DIPERBAIKI)
         function finishMiniQuiz() {
+            // Sembunyikan modal
             document.getElementById('mini-quiz-modal').classList.add('hidden');
+            
+            // RESET TOMBOL untuk persiapan level berikutnya
+            document.getElementById('mini-quiz-next').classList.add('hidden');
+            document.getElementById('mini-quiz-finish').classList.add('hidden');
+            document.getElementById('mini-quiz-feedback').classList.add('hidden');
             
             // Tampilkan popup skor sementara
             if (currentMiniQuiz.level === 1) {
