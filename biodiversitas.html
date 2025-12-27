@@ -281,6 +281,17 @@
             margin-bottom: 0.25rem;
             word-break: break-all;
         }
+        
+        /* Animasi untuk feedback penalti */
+        .penalty-animation {
+            animation: penaltyFlash 1s ease-in-out;
+        }
+        
+        @keyframes penaltyFlash {
+            0% { background-color: #fee2e2; transform: scale(1); }
+            50% { background-color: #fecaca; transform: scale(1.02); }
+            100% { background-color: #fee2e2; transform: scale(1); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -1820,7 +1831,7 @@
             });
         }
 
-        // Helper to create marker (Shared logic but content differs by Level) DENGAN GAMBAR
+        // Helper to create marker (PERBAIKAN BESAR: Sistem penalti untuk klik berulang)
         function createMarker(item, isLevel2) {
             const isFlora = item.type === 'flora';
             const iconClass = isFlora ? 'fa-seedling' : 'fa-paw';
@@ -1915,18 +1926,33 @@
                 </div>
             `;
             
+            // Simpan referensi ke marker untuk digunakan nanti
+            marker.trackingId = trackingId;
+            marker.isVisited = isVisited;
+            marker.itemData = item;
+            marker.isLevel2 = isLevel2;
+            marker.descriptionHTML = descriptionHTML;
+            marker.zone = zone;
+            marker.isFlora = isFlora;
+            
             marker.bindPopup(popupHTML);
             
-            marker.on('popupopen', () => {
-                if (!isVisited) {
-                    gameState.visitedExplorationIds.add(trackingId);
+            // Event handler untuk popupopen dengan sistem penalti yang diperbaiki
+            marker.on('popupopen', function() {
+                const currentMarker = this;
+                const isVisitedNow = gameState.visitedExplorationIds.has(currentMarker.trackingId);
+                
+                if (!isVisitedNow) {
+                    // Kunjungan pertama: tambah poin
+                    gameState.visitedExplorationIds.add(currentMarker.trackingId);
                     gameState.explorationCount++;
                     gameState.score += 10;
                     
                     updateScoreDisplays();
                     updateExplorationUI();
                     
-                    const markerElement = marker.getElement();
+                    // Ubah tampilan marker menjadi visited
+                    const markerElement = currentMarker.getElement();
                     if (markerElement) {
                         const markerDiv = markerElement.querySelector('div > div');
                         if (markerDiv) {
@@ -1935,44 +1961,97 @@
                         }
                     }
                     
+                    // Mainkan suara coin
                     playCoinSound();
                     
-                    setTimeout(() => marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50')), 500);
+                    // Update status marker
+                    currentMarker.isVisited = true;
+                    
+                    // Update popup setelah 500ms
+                    setTimeout(() => {
+                        const updatedPopup = createUpdatedPopupContent(currentMarker, false);
+                        currentMarker.setPopupContent(updatedPopup);
+                    }, 500);
                 } else {
+                    // Kunjungan ulang: kurangi poin dan mainkan suara salah
                     gameState.score -= 5;
                     updateScoreDisplays();
                     
+                    // Mainkan suara salah
                     playWrongSound();
                     
-                    const penaltyPopupHTML = `
-                        <div class="font-sans">
-                            <div class="bg-gradient-to-r from-gray-500 to-gray-600 p-3 text-white">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
-                                        <p class="text-xs italic opacity-90">${item.sc || "Nama ilmiah tidak tersedia"}</p>
-                                    </div>
-                                    ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
-                                ${descriptionHTML}
-                                
-                                <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200">
-                                    <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    marker.setPopupContent(penaltyPopupHTML);
-                    
+                    // Tampilkan feedback visual di HUD
+                    const scoreDisplay = document.getElementById('score-display');
+                    scoreDisplay.classList.add('penalty-animation');
                     setTimeout(() => {
-                        marker.setPopupContent(popupHTML.replace('+10 Poin Baru!', 'Sudah Dibaca').replace('text-emerald-600', 'text-gray-400').replace('bg-emerald-50', 'bg-gray-50'));
+                        scoreDisplay.classList.remove('penalty-animation');
+                    }, 1000);
+                    
+                    // Buat popup dengan pesan penalti
+                    const penaltyPopup = createUpdatedPopupContent(currentMarker, true);
+                    currentMarker.setPopupContent(penaltyPopup);
+                    
+                    // Kembalikan ke popup normal setelah 2 detik
+                    setTimeout(() => {
+                        const normalPopup = createUpdatedPopupContent(currentMarker, false);
+                        currentMarker.setPopupContent(normalPopup);
                     }, 2000);
                 }
             });
 
             return marker;
+        }
+
+        // Fungsi untuk membuat konten popup yang diperbarui
+        function createUpdatedPopupContent(marker, showPenalty) {
+            const item = marker.itemData;
+            const isVisited = marker.isVisited;
+            const isLevel2 = marker.isLevel2;
+            const isFlora = marker.isFlora;
+            const descriptionHTML = marker.descriptionHTML;
+            const zone = marker.zone;
+            
+            let footerHTML = '';
+            
+            if (showPenalty) {
+                footerHTML = `
+                    <div class="mt-2 text-center text-xs font-bold text-red-600 animate-pulse bg-red-50 py-1 rounded border border-red-200 penalty-animation">
+                        <i class="fa-solid fa-exclamation-circle mr-1"></i> -5 Poin! (Sudah Dibaca)
+                    </div>
+                `;
+            } else {
+                if (!isVisited) {
+                    footerHTML = `
+                        <div class="mt-2 text-center text-xs font-bold text-emerald-600 animate-pulse bg-emerald-50 py-1 rounded">
+                            <i class="fa-solid fa-plus-circle"></i> +10 Poin Baru!
+                        </div>
+                    `;
+                } else {
+                    footerHTML = `
+                        <div class="mt-2 text-center text-xs font-bold text-gray-400 bg-gray-50 py-1 rounded">
+                            <i class="fa-solid fa-check"></i> Sudah Dibaca
+                        </div>
+                    `;
+                }
+            }
+            
+            return `
+                <div class="font-sans">
+                    <div class="bg-gradient-to-r ${isVisited ? 'from-gray-500 to-gray-600' : (isFlora ? 'from-green-500 to-emerald-600' : 'from-orange-500 to-red-500')} p-3 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-bold text-lg leading-tight mb-1">${item.name || "Nama tidak tersedia"}</h3>
+                                <p class="text-xs italic opacity-90">${item.sc || "Nama ilmiah tidak tersedia"}</p>
+                            </div>
+                            ${isLevel2 ? `<span class="ml-2 text-[10px] bg-white/20 px-1 rounded text-white border border-white/30">${zone}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white max-h-80 overflow-y-auto custom-scroll">
+                        ${descriptionHTML}
+                        ${footerHTML}
+                    </div>
+                </div>
+            `;
         }
 
         function updateExplorationUI() {
