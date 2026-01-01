@@ -163,9 +163,28 @@
             background-color: rgba(255, 255, 255, 0.9); /* Background putih transparan */
         }
         
-        /* Media queries untuk form input */
+        /* PERUBAHAN: Dropdown styling */
+        .form-select {
+            padding: 7px;
+            border-radius: 8px;
+            border: 2.5px solid #ffb700;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 9px;
+            color: #333333; /* Abu-abu gelap */
+            background-color: rgba(255, 255, 255, 0.9); /* Background putih transparan */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffb700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 7px center;
+            background-size: 12px;
+            padding-right: 25px;
+        }
+        
+        /* Media queries untuk form input dan select */
         @media (max-width: 768px) {
-            .form-input {
+            .form-input, .form-select {
                 padding: 6px;
                 font-size: 8px;
             }
@@ -173,16 +192,26 @@
             .form-label {
                 font-size: 8px;
             }
+            
+            .form-select {
+                background-size: 10px;
+                padding-right: 22px;
+            }
         }
         
         @media (max-width: 480px) {
-            .form-input {
+            .form-input, .form-select {
                 padding: 5px;
                 font-size: 7px;
             }
             
             .form-label {
                 font-size: 7px;
+            }
+            
+            .form-select {
+                background-size: 9px;
+                padding-right: 20px;
             }
         }
         
@@ -1168,7 +1197,7 @@
                 font-size: 9px;
             }
             
-            .form-input {
+            .form-input, .form-select {
                 padding: 6px;
                 font-size: 8px;
             }
@@ -1272,7 +1301,7 @@
                 font-size: 8px;
             }
             
-            .form-input {
+            .form-input, .form-select {
                 padding: 5px;
                 font-size: 8px;
             }
@@ -1453,9 +1482,55 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" style="margin-top: 5px;"> <!-- DIUBAH: turunkan 5px -->
-                        <label class="form-label">NPSN SEKOLAH:</label>
-                        <input type="text" id="school-npsn" class="form-input" placeholder="Masukkan NPSN sekolah">
+                    <!-- PERUBAHAN: NAMA SEKOLAH menggantikan NPSN SEKOLAH -->
+                    <div class="form-group" style="margin-top: 5px;">
+                        <label class="form-label">NAMA SEKOLAH:</label>
+                        <input type="text" id="school-name" class="form-input" placeholder="Masukkan nama sekolah">
+                    </div>
+                    
+                    <!-- PERUBAHAN: Menambahkan dropdown PROVINSI -->
+                    <div class="form-group" style="margin-top: 5px;">
+                        <label class="form-label">PROVINSI:</label>
+                        <select id="province" class="form-select">
+                            <option value="">-- Pilih Provinsi --</option>
+                            <option value="Aceh">Aceh</option>
+                            <option value="Sumatera Utara">Sumatera Utara</option>
+                            <option value="Sumatera Barat">Sumatera Barat</option>
+                            <option value="Riau">Riau</option>
+                            <option value="Jambi">Jambi</option>
+                            <option value="Sumatera Selatan">Sumatera Selatan</option>
+                            <option value="Bengkulu">Bengkulu</option>
+                            <option value="Lampung">Lampung</option>
+                            <option value="Kepulauan Bangka Belitung">Kepulauan Bangka Belitung</option>
+                            <option value="Kepulauan Riau">Kepulauan Riau</option>
+                            <option value="DKI Jakarta">DKI Jakarta</option>
+                            <option value="Jawa Barat">Jawa Barat</option>
+                            <option value="Jawa Tengah">Jawa Tengah</option>
+                            <option value="DI Yogyakarta">DI Yogyakarta</option>
+                            <option value="Jawa Timur">Jawa Timur</option>
+                            <option value="Banten">Banten</option>
+                            <option value="Bali">Bali</option>
+                            <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                            <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                            <option value="Kalimantan Barat">Kalimantan Barat</option>
+                            <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                            <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                            <option value="Kalimantan Timur">Kalimantan Timur</option>
+                            <option value="Kalimantan Utara">Kalimantan Utara</option>
+                            <option value="Sulawesi Utara">Sulawesi Utara</option>
+                            <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                            <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                            <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                            <option value="Gorontalo">Gorontalo</option>
+                            <option value="Sulawesi Barat">Sulawesi Barat</option>
+                            <option value="Maluku">Maluku</option>
+                            <option value="Maluku Utara">Maluku Utara</option>
+                            <option value="Papua Barat">Papua Barat</option>
+                            <option value="Papua">Papua</option>
+                            <option value="Papua Tengah">Papua Tengah</option>
+                            <option value="Papua Pegunungan">Papua Pegunungan</option>
+                            <option value="Papua Selatan">Papua Selatan</option>
+                        </select>
                     </div>
                     
                     <!-- Hapus bagian pilihan level -->
@@ -1707,7 +1782,8 @@
         const loginScreen = document.getElementById('login-screen');
         const gameContainer = document.getElementById('game-container');
         const userNameInput = document.getElementById('user-name');
-        const schoolNpsnInput = document.getElementById('school-npsn');
+        const schoolNameInput = document.getElementById('school-name'); // DIUBAH: dari schoolNpsnInput
+        const provinceSelect = document.getElementById('province'); // BARU: dropdown provinsi
         const startGameBtn = document.getElementById('start-game-btn');
         const playerNameDisplay = document.getElementById('player-name-display');
         
@@ -1754,7 +1830,8 @@
         let selectedLevel = 1;
         let playerName = '';
         let playerGender = 'Laki-laki';
-        let schoolNpsn = '';
+        let schoolName = ''; // DIUBAH: dari schoolNpsn
+        let playerProvince = ''; // BARU: variabel untuk provinsi
         let booksCollected = [];
         let snakeQuestionsAnswered = 0;
         let snakeQuestions = [];
@@ -2340,17 +2417,30 @@
         
         function startGame() {
             playerName = userNameInput.value.trim();
-            schoolNpsn = schoolNpsnInput.value.trim();
+            schoolName = schoolNameInput.value.trim(); // DIUBAH: dari schoolNpsnInput
+            playerProvince = provinceSelect.value; // BARU: ambil nilai dari dropdown
             
             if (!playerName) {
                 alert('Silakan masukkan nama Anda!');
                 return;
             }
             
-            if (!schoolNpsn) {
-                alert('Silakan masukkan NPSN sekolah Anda!');
+            if (!schoolName) {
+                alert('Silakan masukkan nama sekolah Anda!'); // DIUBAH: pesan error
                 return;
             }
+            
+            if (!playerProvince) {
+                alert('Silakan pilih provinsi Anda!'); // BARU: validasi provinsi
+                return;
+            }
+            
+            // Log informasi pengguna (untuk debugging)
+            console.log('Informasi Pengguna:');
+            console.log('Nama:', playerName);
+            console.log('Jenis Kelamin:', playerGender);
+            console.log('Nama Sekolah:', schoolName); // DIUBAH: dari NPSN ke Nama Sekolah
+            console.log('Provinsi:', playerProvince); // BARU: log provinsi
             
             // Set current level (selalu level 1 karena tidak ada pilihan)
             currentLevel = 1;
