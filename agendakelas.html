@@ -244,7 +244,11 @@
    <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 lg:gap-8"><!-- Calendar Section -->
     <div class="xl:col-span-2 space-y-6 lg:space-y-8"><!-- Interactive Calendar -->
      <div class="bg-white rounded-xl shadow-lg p-4 lg:p-8 card-hover">
-      <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center"><span class="flex items-center mb-2 sm:mb-0"> <span class="text-2xl lg:text-3xl mr-2 lg:mr-3">📅</span> Kalender Pembelajaran </span> <span class="text-base lg:text-lg font-normal text-gray-600 sm:ml-auto" id="currentMonth"></span></h3>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 lg:mb-6">
+       <h3 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center mb-4 sm:mb-0"><span class="text-2xl lg:text-3xl mr-2 lg:mr-3">📅</span> Kalender Pembelajaran</h3>
+       <div class="flex items-center gap-3"><button onclick="previousMonth()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg font-semibold transition-colors text-sm"> ← Sebelumnya </button> <span class="text-base lg:text-lg font-normal text-gray-600 bg-gray-50 px-4 py-2 rounded-lg min-w-max" id="currentMonth"></span> <button onclick="nextMonth()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg font-semibold transition-colors text-sm"> Selanjutnya → </button>
+       </div>
+      </div>
       <div class="grid grid-cols-7 gap-1 lg:gap-2 text-center">
        <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
         Min
@@ -382,6 +386,10 @@
         let activities = [];
         let rawData = [];
         let charts = {};
+        
+        // Calendar state
+        let displayedMonth = new Date().getMonth();
+        let displayedYear = new Date().getFullYear();
 
         // Load data from Google Sheets with better error handling
         async function loadData() {
@@ -673,11 +681,9 @@
 
         // Render calendar
         function renderCalendar() {
-            const now = getCurrentDate();
-            
-            // Get current month and year
-            const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth();
+            // Use displayedMonth and displayedYear for calendar view
+            const currentYear = displayedYear;
+            const currentMonth = displayedMonth;
             
             const monthName = new Date(currentYear, currentMonth, 1).toLocaleDateString('id-ID', { 
                 month: 'long', 
@@ -685,7 +691,7 @@
             });
             document.getElementById('currentMonth').textContent = monthName;
             
-            // Create first day of current month
+            // Create first day of displayed month
             const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
             const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
             
@@ -706,15 +712,15 @@
                 const dateString = getDateString(currentDate);
                 const hasActivity = activities.some(a => a.date === dateString);
                 
-                // Check if this date is in the current month
-                const isCurrentMonth = currentDate.getMonth() === currentMonth;
+                // Check if this date is in the displayed month
+                const isDisplayedMonth = currentDate.getMonth() === currentMonth;
                 
                 // Check if this is today
                 const todayString = getTodayDateString();
                 const isToday = dateString === todayString;
                 
                 const dayElement = document.createElement('div');
-                dayElement.className = `calendar-day ${hasActivity ? 'has-activity' : ''} ${!isCurrentMonth ? 'text-gray-400' : ''} ${isToday ? 'ring-2 ring-blue-500' : ''}`;
+                dayElement.className = `calendar-day ${hasActivity ? 'has-activity' : ''} ${!isDisplayedMonth ? 'text-gray-400' : ''} ${isToday ? 'ring-2 ring-blue-500' : ''}`;
                 dayElement.textContent = currentDate.getDate();
                 dayElement.onclick = () => showDayActivities(dateString);
                 
@@ -729,6 +735,25 @@
                 
                 calendarDays.appendChild(dayElement);
             }
+        }
+        
+        // Month navigation functions
+        function previousMonth() {
+            displayedMonth--;
+            if (displayedMonth < 0) {
+                displayedMonth = 11;
+                displayedYear--;
+            }
+            renderCalendar();
+        }
+        
+        function nextMonth() {
+            displayedMonth++;
+            if (displayedMonth > 11) {
+                displayedMonth = 0;
+                displayedYear++;
+            }
+            renderCalendar();
         }
 
         function showDayActivities(dateString) {
@@ -2138,5 +2163,5 @@
             }, 5 * 60 * 1000);
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c97603130a2008f',t:'MTc3MDM0NjYwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c976cba916e5d0f',t:'MTc3MDM0NzExNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
