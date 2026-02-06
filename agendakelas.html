@@ -126,14 +126,15 @@
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
  <body class="bg-gray-50"><!-- Header -->
-  <header class="gradient-bg text-white py-8 lg:py-12">
+  <header class="gradient-bg text-white py-6 lg:py-8">
    <div class="container mx-auto px-4 lg:px-6">
-    <div class="text-center">
-     <h1 class="text-3xl lg:text-5xl font-bold mb-3 lg:mb-4">Dashboard Kegiatan Guru</h1>
-     <h2 class="text-xl lg:text-3xl font-medium mb-3 lg:mb-4">SMA Negeri 1 Batujajar</h2>
-     <p class="text-base lg:text-xl opacity-90 mb-6">Analisis dan Visualisasi Data Pembelajaran</p>
-     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 lg:gap-4"><button onclick="loadData()" class="px-6 lg:px-8 py-2 lg:py-3 bg-white text-blue-600 rounded-full font-semibold hover:bg-gray-100 transition-colors shadow-lg text-sm lg:text-base"> 🔄 Refresh Data Terbaru </button>
-      <div class="text-white text-sm lg:text-lg font-medium bg-white bg-opacity-20 px-4 lg:px-6 py-2 rounded-full backdrop-blur-sm">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+     <div>
+      <h1 class="text-2xl lg:text-3xl font-bold">Dashboard Kegiatan Guru</h1>
+      <p class="text-sm lg:text-base opacity-90 mt-1">SMA Negeri 1 Batujajar</p>
+     </div>
+     <div class="flex items-center gap-3"><button onclick="loadData()" class="px-4 lg:px-6 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm lg:text-base"> 🔄 Refresh </button>
+      <div class="text-white text-sm lg:text-base font-medium bg-white bg-opacity-20 px-3 lg:px-4 py-2 rounded-lg">
        📅 <span id="currentDate"></span>
       </div>
      </div>
@@ -296,7 +297,7 @@
     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-8 card-hover">
      <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl lg:text-3xl mr-2 lg:mr-3">👨‍🏫</span> Rekap Aktivitas Per Guru</h3><!-- Filters -->
      <div class="bg-gray-50 p-4 rounded-lg mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
        <div><label class="block text-sm font-medium text-gray-700 mb-2">Filter Guru</label> <select id="teacherFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"> <option value="">Semua Guru</option> </select>
        </div>
        <div><label class="block text-sm font-medium text-gray-700 mb-2">Filter Kelas</label> <select id="classFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"> <option value="">Semua Kelas</option> </select>
@@ -304,6 +305,8 @@
        <div><label class="block text-sm font-medium text-gray-700 mb-2">Filter Tanggal</label> <input type="date" id="dateFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
        </div>
        <div class="flex items-end"><button onclick="resetFilters()" class="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium"> 🔄 Reset Filter </button>
+       </div>
+       <div class="flex items-end"><button onclick="printRecap()" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"> 🖨️ Cetak Rekap </button>
        </div>
       </div>
      </div><!-- Table Container -->
@@ -1101,7 +1104,7 @@
                 const today = getCurrentDate();
                 container.innerHTML = `
                     <div class="text-center py-6 text-gray-500">
-                        <div class="text-4xl mb-3">📅</div>
+                        <div class="text-4xl mb-3">📚</div>
                         <h4 class="font-semibold text-gray-700 mb-2">Tidak Ada Pembelajaran Hari Ini</h4>
                         <p class="text-sm">Tanggal: ${today.toLocaleDateString('id-ID', {
                             weekday: 'long',
@@ -1267,8 +1270,6 @@
             `).join('');
         }
 
-
-
         // Create charts
         function createCharts() {
             createSubjectChart();
@@ -1290,26 +1291,43 @@
                 subjectData[activity.subject] = (subjectData[activity.subject] || 0) + 1;
             });
             
+            // Sort alphabetically by subject name
+            const sortedSubjects = Object.entries(subjectData)
+                .sort(([nameA], [nameB]) => nameA.localeCompare(nameB, 'id-ID'));
+            
             charts.subjectChart = new Chart(ctx, {
-                type: 'doughnut',
+                type: 'bar',
                 data: {
-                    labels: Object.keys(subjectData),
+                    labels: sortedSubjects.map(([name]) => name),
                     datasets: [{
-                        data: Object.values(subjectData),
-                        backgroundColor: [
-                            '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
-                            '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6B7280'
-                        ]
+                        label: 'Jumlah Sesi',
+                        data: sortedSubjects.map(([, count]) => count),
+                        backgroundColor: '#3B82F6',
+                        borderRadius: 6,
+                        borderSkipped: false
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 12,
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
                                 font: {
                                     size: window.innerWidth < 768 ? 10 : 12
                                 }
@@ -1319,8 +1337,6 @@
                 }
             });
         }
-
-
 
         function createTeacherChart() {
             const ctx = document.getElementById('teacherChart').getContext('2d');
@@ -1334,9 +1350,9 @@
                 teacherData[activity.teacher] = (teacherData[activity.teacher] || 0) + 1;
             });
             
+            // Sort alphabetically by teacher name and include all teachers
             const sortedTeachers = Object.entries(teacherData)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 10);
+                .sort(([nameA], [nameB]) => nameA.localeCompare(nameB, 'id-ID'));
             
             charts.teacherChart = new Chart(ctx, {
                 type: 'bar',
@@ -1345,10 +1361,13 @@
                     datasets: [{
                         label: 'Jumlah Sesi',
                         data: sortedTeachers.map(([,count]) => count),
-                        backgroundColor: '#3B82F6'
+                        backgroundColor: '#8B5CF6',
+                        borderRadius: 6,
+                        borderSkipped: false
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
@@ -1358,14 +1377,15 @@
                     },
                     scales: {
                         x: {
+                            beginAtZero: true,
                             ticks: {
+                                stepSize: 1,
                                 font: {
                                     size: window.innerWidth < 768 ? 10 : 12
                                 }
                             }
                         },
                         y: {
-                            beginAtZero: true,
                             ticks: {
                                 font: {
                                     size: window.innerWidth < 768 ? 10 : 12
@@ -1880,6 +1900,218 @@
             applyTeacherFilters();
         }
 
+        function printRecap() {
+            if (filteredTeacherActivities.length === 0) {
+                alert('❌ Tidak ada data untuk dicetak. Silakan periksa filter Anda.');
+                return;
+            }
+
+            // Get filter values for display
+            const teacherFilter = document.getElementById('teacherFilter').value || 'Semua Guru';
+            const classFilter = document.getElementById('classFilter').value || 'Semua Kelas';
+            const dateFilter = document.getElementById('dateFilter').value || 'Semua Tanggal';
+
+            // Create print document
+            let printContent = `
+                <!DOCTYPE html>
+                <html lang="id">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Rekap Aktivitas Per Guru - SMA Negeri 1 Batujajar</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            color: #333;
+                            line-height: 1.6;
+                        }
+                        .container {
+                            max-width: A4;
+                            margin: 0 auto;
+                            padding: 20px;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                            border-bottom: 3px solid #667eea;
+                            padding-bottom: 15px;
+                        }
+                        .header h1 {
+                            font-size: 24px;
+                            color: #667eea;
+                            margin-bottom: 5px;
+                        }
+                        .header p {
+                            font-size: 14px;
+                            color: #666;
+                        }
+                        .filter-info {
+                            background-color: #f0f4ff;
+                            padding: 12px;
+                            margin-bottom: 20px;
+                            border-left: 4px solid #3B82F6;
+                            font-size: 13px;
+                        }
+                        .filter-info div {
+                            margin: 4px 0;
+                        }
+                        .filter-info strong {
+                            color: #667eea;
+                        }
+                        .date-info {
+                            text-align: right;
+                            margin-bottom: 15px;
+                            font-size: 12px;
+                            color: #666;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        thead tr {
+                            background-color: #667eea;
+                            color: white;
+                        }
+                        th {
+                            padding: 10px;
+                            text-align: left;
+                            font-weight: bold;
+                            font-size: 12px;
+                            border: 1px solid #ddd;
+                        }
+                        td {
+                            padding: 8px 10px;
+                            font-size: 12px;
+                            border: 1px solid #ddd;
+                        }
+                        tbody tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        tbody tr:hover {
+                            background-color: #f0f4ff;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            text-align: center;
+                            font-size: 11px;
+                            color: #999;
+                            border-top: 1px solid #ddd;
+                            padding-top: 10px;
+                        }
+                        .summary {
+                            background-color: #f0f4ff;
+                            padding: 12px;
+                            margin-bottom: 20px;
+                            border-radius: 6px;
+                            font-size: 13px;
+                        }
+                        .summary strong {
+                            color: #667eea;
+                        }
+                        @media print {
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
+                            .container {
+                                max-width: 100%;
+                                padding: 0;
+                            }
+                            table {
+                                page-break-inside: avoid;
+                            }
+                            tbody tr {
+                                page-break-inside: avoid;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>📋 REKAP AKTIVITAS PEMBELAJARAN</h1>
+                            <p>SMA Negeri 1 Batujajar</p>
+                        </div>
+
+                        <div class="date-info">
+                            Dicetak pada: ${new Date().toLocaleDateString('id-ID', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })} pukul ${new Date().toLocaleTimeString('id-ID', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                            })}
+                        </div>
+
+                        <div class="filter-info">
+                            <div><strong>Filter yang Digunakan:</strong></div>
+                            <div>• Guru: ${teacherFilter}</div>
+                            <div>• Kelas: ${classFilter}</div>
+                            <div>• Tanggal: ${dateFilter}</div>
+                        </div>
+
+                        <div class="summary">
+                            <strong>Ringkasan:</strong> Total ${filteredTeacherActivities.length} kegiatan pembelajaran
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">No</th>
+                                    <th style="width: 12%;">Tanggal</th>
+                                    <th style="width: 10%;">Hari</th>
+                                    <th style="width: 18%;">Nama Guru</th>
+                                    <th style="width: 15%;">Mata Pelajaran</th>
+                                    <th style="width: 10%;">Kelas</th>
+                                    <th style="width: 8%;">Jam</th>
+                                    <th style="width: 22%;">Materi Pembelajaran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filteredTeacherActivities.map((activity, index) => `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${activity.formattedDate}</td>
+                                        <td>${activity.dayName}</td>
+                                        <td><strong>${activity.teacher}</strong></td>
+                                        <td>${activity.subject}</td>
+                                        <td>${activity.class}</td>
+                                        <td>${activity.lesson}</td>
+                                        <td>${activity.material}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        <div class="footer">
+                            <p>© SMA Negeri 1 Batujajar - Dashboard Kegiatan Guru</p>
+                            <p>Dokumen ini dicetak secara otomatis dari sistem</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            // Open print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            
+            // Trigger print dialog after a short delay
+            setTimeout(() => {
+                printWindow.print();
+            }, 250);
+        }
+
         function formatDateForTable(dateString) {
             if (!dateString) return '-';
             try {
@@ -1906,5 +2138,5 @@
             }, 5 * 60 * 1000);
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c969cb4e21e9b07',t:'MTc3MDMzODU5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c97603130a2008f',t:'MTc3MDM0NjYwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
