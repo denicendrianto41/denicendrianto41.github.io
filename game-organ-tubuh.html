@@ -21,13 +21,23 @@
     .card-inner {
       transition: transform 0.5s;
       transform-style: preserve-3d;
+      position: relative;
+      width: 100%;
+      height: 100%;
     }
     .card-inner.flipped {
       transform: rotateY(180deg);
     }
     .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
     }
     .card-back {
       transform: rotateY(180deg);
@@ -37,13 +47,13 @@
     }
     @keyframes matchPulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
     }
     .confetti {
       position: absolute;
-      width: 10px;
-      height: 10px;
-      animation: confettiFall 3s ease-out forwards;
+      width: 8px;
+      height: 8px;
+      animation: confettiFall 2s ease-out forwards;
     }
     @keyframes confettiFall {
       0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
@@ -57,17 +67,17 @@
     }
     /* Animasi ucapan selamat level */
     .level-congrats {
-      animation: levelCongrats 3s ease forwards;
+      animation: levelCongrats 2.5s ease forwards;
       z-index: 100;
       pointer-events: none;
     }
     @keyframes levelCongrats {
       0% {
-        transform: scale(0) translateY(100px);
+        transform: scale(0) translateY(50px);
         opacity: 0;
       }
       15% {
-        transform: scale(1.1) translateY(0);
+        transform: scale(1.05) translateY(0);
         opacity: 1;
       }
       85% {
@@ -75,7 +85,7 @@
         opacity: 1;
       }
       100% {
-        transform: scale(0) translateY(-100px);
+        transform: scale(0) translateY(-50px);
         opacity: 0;
       }
     }
@@ -86,12 +96,12 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 999;
-      animation: fadeIn 0.5s ease;
+      animation: fadeIn 0.3s ease;
     }
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -99,23 +109,89 @@
     }
     .applause-container {
       text-align: center;
-      animation: applauseScale 0.8s ease-out;
+      animation: applauseScale 0.6s ease-out;
     }
     @keyframes applauseScale {
-      0% { transform: scale(0.5); }
-      70% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      0% { transform: scale(0.3); opacity: 0; }
+      70% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
     .applause-text {
-      font-size: 2.5rem;
-      font-weight: bold;
+      font-size: 2rem;
+      font-weight: 800;
       color: #FFD700;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-      animation: textGlow 2s ease-in-out infinite alternate;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+      animation: textGlow 1.5s ease-in-out infinite alternate;
+      margin-bottom: 10px;
     }
     @keyframes textGlow {
-      from { text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); }
-      to { text-shadow: 0 0 30px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.6); }
+      from { 
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.7), 
+                     0 0 20px rgba(255, 215, 0, 0.5); 
+      }
+      to { 
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 
+                     0 0 30px rgba(255, 215, 0, 0.7),
+                     0 0 40px rgba(255, 215, 0, 0.5); 
+      }
+    }
+    
+    /* Custom card styles */
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 4px;
+      text-align: center;
+    }
+    
+    .card-icon {
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .card-text {
+      line-height: 1;
+      font-weight: 600;
+      word-break: break-word;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
+    
+    /* Grid responsive untuk kartu */
+    .game-board {
+      display: grid;
+      gap: 4px;
+      padding: 2px;
+      overflow: auto;
+    }
+    
+    /* Custom scrollbar untuk game board */
+    .game-board::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    
+    .game-board::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+    
+    .game-board::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
+    
+    .game-board::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -127,16 +203,16 @@
   <!-- Level Congratulation Modal -->
   <div id="levelCongratsModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="level-congrats relative bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 p-6 rounded-2xl shadow-2xl border-4 border-yellow-500 max-w-sm mx-4">
+    <div class="level-congrats relative bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 p-4 rounded-xl shadow-2xl border-3 border-yellow-500 max-w-xs mx-3">
       <div class="text-center">
-        <div class="text-5xl mb-3 animate-bounce">🎉</div>
-        <h3 class="text-2xl font-bold text-gray-800 mb-1">SELAMAT!</h3>
-        <p id="levelWinnerName" class="text-xl font-bold text-purple-700 mb-1"></p>
-        <p class="text-base text-gray-700 mb-2">Pertama menyelesaikan level!</p>
-        <div class="flex items-center justify-center gap-2 text-lg text-gray-800">
-          <span>🏆</span>
+        <div class="text-4xl mb-2 animate-bounce">🏆</div>
+        <h3 class="text-xl font-bold text-gray-800 mb-1">HEBAT!</h3>
+        <p id="levelWinnerName" class="text-lg font-bold text-purple-700 mb-1"></p>
+        <p class="text-sm text-gray-700 mb-2">Pertama selesai!</p>
+        <div class="flex items-center justify-center gap-1 text-base text-gray-800">
+          <span>⭐</span>
           <span id="levelDifficultyText" class="font-bold"></span>
-          <span>🏆</span>
+          <span>⭐</span>
         </div>
       </div>
     </div>
@@ -145,109 +221,107 @@
   <!-- Applause Animation Overlay -->
   <div id="applauseOverlay" class="applause-overlay hidden">
     <div class="applause-container">
-      <div class="text-7xl mb-4">👏👏👏</div>
+      <div class="text-6xl mb-3">👏🎉✨</div>
       <div id="applauseText" class="applause-text"></div>
-      <div class="text-3xl text-white mt-4" id="applauseSubtext"></div>
+      <div class="text-xl text-white font-semibold mt-2" id="applauseSubtext">Juara Level!</div>
     </div>
   </div>
   
   <!-- Sound Toggle Button -->
-  <button onclick="toggleSound()" id="soundToggle" class="sound-toggle bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-3 py-2 rounded-full shadow-lg transition-all transform hover:scale-110 flex items-center gap-2 text-sm">
+  <button onclick="toggleSound()" id="soundToggle" class="sound-toggle bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-3 py-2 rounded-full shadow-lg transition-all transform hover:scale-110 flex items-center gap-1 text-sm">
     <span id="soundIcon">🔊</span>
-    <span id="soundLabel" class="hidden md:inline">Suara</span>
   </button>
   
   <!-- Start Screen -->
-  <div id="startScreen" class="h-full flex flex-col items-center justify-center p-4 overflow-auto">
-    <div class="text-center mb-6">
-      <h1 id="gameTitle" class="text-3xl md:text-4xl font-bold text-white mb-3 drop-shadow-lg">🧬 Make A Match</h1>
-      <p class="text-lg text-cyan-300">Sistem Organ Manusia</p>
-      <p class="text-gray-400 text-sm mt-1">Cocokkan organ dengan sistem organnya!</p>
+  <div id="startScreen" class="h-full flex flex-col items-center justify-center p-3 overflow-auto">
+    <div class="text-center mb-4">
+      <h1 id="gameTitle" class="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">🧬 Make A Match</h1>
+      <p class="text-base text-cyan-300">Sistem Organ Manusia</p>
+      <p class="text-gray-300 text-xs mt-1">Cocokkan organ dengan sistemnya!</p>
     </div>
     
     <!-- Player Names -->
-    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-4 w-full max-w-sm">
-      <h3 class="text-white font-semibold mb-3 text-center">👥 Nama Pemain</h3>
+    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
+      <h3 class="text-white font-semibold mb-2 text-center text-sm">👥 Nama Pemain</h3>
       <div class="space-y-2">
         <div class="flex items-center gap-2">
-          <span class="text-xl">🔵</span>
-          <input type="text" id="player1Name" placeholder="Pemain 1" maxlength="12" class="flex-1 px-3 py-2 rounded-lg bg-white/20 text-white placeholder-gray-400 border-2 border-cyan-500/50 focus:border-cyan-400 focus:outline-none text-sm">
+          <span class="text-lg">🔵</span>
+          <input type="text" id="player1Name" placeholder="Pemain 1" maxlength="10" class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border border-cyan-500/50 focus:border-cyan-400 focus:outline-none text-sm">
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-xl">🟠</span>
-          <input type="text" id="player2Name" placeholder="Pemain 2" maxlength="12" class="flex-1 px-3 py-2 rounded-lg bg-white/20 text-white placeholder-gray-400 border-2 border-pink-500/50 focus:border-pink-400 focus:outline-none text-sm">
+          <span class="text-lg">🟠</span>
+          <input type="text" id="player2Name" placeholder="Pemain 2" maxlength="10" class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border border-pink-500/50 focus:border-pink-400 focus:outline-none text-sm">
         </div>
       </div>
     </div>
     
     <!-- Difficulty Selection -->
-    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-4 w-full max-w-sm">
-      <h3 class="text-white font-semibold mb-3 text-center">🎮 Pilih Tingkat Kesulitan</h3>
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="selectDifficulty('easy')" id="btnEasy" class="difficulty-btn bg-green-500 hover:bg-green-400 text-white py-2 px-2 rounded-lg font-semibold transition-all transform hover:scale-105 border-b-4 border-green-700">
-          <span class="text-xl block mb-1">🌱</span>
+    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
+      <h3 class="text-white font-semibold mb-2 text-center text-sm">🎮 Tingkat Kesulitan</h3>
+      <div class="grid grid-cols-3 gap-1">
+        <button onclick="selectDifficulty('easy')" id="btnEasy" class="difficulty-btn bg-green-500 hover:bg-green-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-green-700">
+          <span class="text-lg block mb-0.5">🌱</span>
           <span class="text-xs">Mudah</span>
-          <span class="text-xs block opacity-80">10 Kartu</span>
+          <span class="text-[10px] block opacity-80">5 pasang</span>
         </button>
-        <button onclick="selectDifficulty('medium')" id="btnMedium" class="difficulty-btn bg-yellow-500 hover:bg-yellow-400 text-white py-2 px-2 rounded-lg font-semibold transition-all transform hover:scale-105 border-b-4 border-yellow-700">
-          <span class="text-xl block mb-1">🌿</span>
+        <button onclick="selectDifficulty('medium')" id="btnMedium" class="difficulty-btn bg-yellow-500 hover:bg-yellow-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-yellow-700">
+          <span class="text-lg block mb-0.5">🌿</span>
           <span class="text-xs">Sedang</span>
-          <span class="text-xs block opacity-80">16 Kartu</span>
+          <span class="text-[10px] block opacity-80">8 pasang</span>
         </button>
-        <button onclick="selectDifficulty('hard')" id="btnHard" class="difficulty-btn bg-red-500 hover:bg-red-400 text-white py-2 px-2 rounded-lg font-semibold transition-all transform hover:scale-105 border-b-4 border-red-700">
-          <span class="text-xl block mb-1">🌳</span>
+        <button onclick="selectDifficulty('hard')" id="btnHard" class="difficulty-btn bg-red-500 hover:bg-red-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-red-700">
+          <span class="text-lg block mb-0.5">🌳</span>
           <span class="text-xs">Sulit</span>
-          <span class="text-xs block opacity-80">20 Kartu</span>
+          <span class="text-[10px] block opacity-80">10 pasang</span>
         </button>
       </div>
     </div>
     
-    <button onclick="startGame()" id="startBtn" class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 shadow-lg text-base">
-      🚀 Mulai Bermain
+    <button onclick="startGame()" id="startBtn" class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg text-sm mb-3">
+      🚀 Mulai Game
     </button>
     
     <!-- Instructions -->
-    <div class="mt-6 text-center text-gray-400 text-xs max-w-sm">
-      <p class="mb-1">📋 <strong class="text-white">Cara Bermain:</strong></p>
-      <p>Cocokkan kartu organ dengan kartu sistem organnya. Pemain pertama yang mencocokkan semua pasangan menang!</p>
+    <div class="text-center text-gray-300 text-[10px] max-w-xs">
+      <p class="mb-1">📋 <strong class="text-white">Cara Main:</strong> Temukan pasangan kartu yang cocok!</p>
     </div>
   </div>
   
   <!-- Game Screen -->
-  <div id="gameScreen" class="h-full flex flex-col p-2 hidden">
+  <div id="gameScreen" class="h-full flex flex-col p-1.5 hidden">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-2 gap-2">
-      <button onclick="backToMenu()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 text-sm">
+    <div class="flex justify-between items-center mb-1.5 gap-1">
+      <button onclick="backToMenu()" class="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded transition-all flex items-center gap-0.5 text-xs">
         ← Menu
       </button>
-      <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg">
-        <span class="text-yellow-400 text-sm">⏱️</span>
-        <span id="timer" class="text-white font-mono text-base">00:00</span>
+      <div class="flex items-center gap-1 bg-white/10 px-2 py-1 rounded">
+        <span class="text-yellow-300 text-xs">⏱️</span>
+        <span id="timer" class="text-white font-mono text-sm">00:00</span>
       </div>
     </div>
     
     <!-- Score Board Compact -->
-    <div class="grid grid-cols-2 gap-2 mb-2">
-      <div id="player1Card" class="bg-gradient-to-r from-cyan-600 to-cyan-500 p-2 rounded-lg text-white transition-all">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">🔵</span>
+    <div class="grid grid-cols-2 gap-1.5 mb-1.5">
+      <div id="player1Card" class="bg-gradient-to-r from-cyan-600 to-cyan-500 p-1.5 rounded text-white transition-all">
+        <div class="flex items-center gap-1.5">
+          <span class="text-lg">🔵</span>
           <div class="flex-1 min-w-0">
-            <p id="p1NameDisplay" class="font-bold text-sm truncate">Pemain 1</p>
-            <div class="flex items-center gap-1">
-              <span class="text-cyan-200 text-xs">Skor:</span>
-              <span id="p1Score" class="text-lg font-bold">0</span>
+            <p id="p1NameDisplay" class="font-bold text-xs truncate">Pemain 1</p>
+            <div class="flex items-center gap-0.5">
+              <span class="text-cyan-200 text-[10px]">Skor:</span>
+              <span id="p1Score" class="text-base font-bold">0</span>
             </div>
           </div>
         </div>
       </div>
-      <div id="player2Card" class="bg-gradient-to-r from-pink-600 to-pink-500 p-2 rounded-lg text-white transition-all opacity-60">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">🟠</span>
+      <div id="player2Card" class="bg-gradient-to-r from-pink-600 to-pink-500 p-1.5 rounded text-white transition-all opacity-60">
+        <div class="flex items-center gap-1.5">
+          <span class="text-lg">🟠</span>
           <div class="flex-1 min-w-0">
-            <p id="p2NameDisplay" class="font-bold text-sm truncate">Pemain 2</p>
-            <div class="flex items-center gap-1">
-              <span class="text-pink-200 text-xs">Skor:</span>
-              <span id="p2Score" class="text-lg font-bold">0</span>
+            <p id="p2NameDisplay" class="font-bold text-xs truncate">Pemain 2</p>
+            <div class="flex items-center gap-0.5">
+              <span class="text-pink-200 text-[10px]">Skor:</span>
+              <span id="p2Score" class="text-base font-bold">0</span>
             </div>
           </div>
         </div>
@@ -255,124 +329,117 @@
     </div>
     
     <!-- Competitive Status Bar Compact -->
-    <div class="grid grid-cols-2 gap-2 mb-2">
-      <div class="bg-gradient-to-r from-cyan-500/30 to-cyan-600/20 rounded p-2 border border-cyan-400/50">
+    <div class="grid grid-cols-2 gap-1.5 mb-1.5">
+      <div class="bg-gradient-to-r from-cyan-500/30 to-cyan-600/20 rounded p-1.5 border border-cyan-400/50">
         <div class="flex items-center justify-between mb-1">
-          <span class="text-white font-semibold text-xs">Kecocokan:</span>
-          <span id="p1Matches" class="text-cyan-300 font-bold text-sm">0/<span id="totalMatches">5</span></span>
+          <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
+          <span id="p1Matches" class="text-cyan-300 font-bold text-xs">0/<span id="totalMatches">5</span></span>
         </div>
-        <div class="bg-cyan-900/30 rounded-full h-1.5 overflow-hidden">
+        <div class="bg-cyan-900/30 rounded-full h-1 overflow-hidden">
           <div id="p1MatchBar" class="h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transition-all duration-300" style="width: 0%"></div>
         </div>
       </div>
-      <div class="bg-gradient-to-r from-pink-500/30 to-pink-600/20 rounded p-2 border border-pink-400/50">
+      <div class="bg-gradient-to-r from-pink-500/30 to-pink-600/20 rounded p-1.5 border border-pink-400/50">
         <div class="flex items-center justify-between mb-1">
-          <span class="text-white font-semibold text-xs">Kecocokan:</span>
-          <span id="p2Matches" class="text-pink-300 font-bold text-sm">0/<span id="totalMatches2">5</span></span>
+          <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
+          <span id="p2Matches" class="text-pink-300 font-bold text-xs">0/<span id="totalMatches2">5</span></span>
         </div>
-        <div class="bg-pink-900/30 rounded-full h-1.5 overflow-hidden">
+        <div class="bg-pink-900/30 rounded-full h-1 overflow-hidden">
           <div id="p2MatchBar" class="h-full bg-gradient-to-r from-pink-400 to-pink-300 transition-all duration-300" style="width: 0%"></div>
         </div>
       </div>
     </div>
     
     <!-- Split Screen Game Board Compact -->
-    <div class="flex-1 grid grid-cols-2 gap-2 min-h-0 overflow-hidden">
+    <div class="flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden">
       <!-- Player 1 Board -->
-      <div class="flex flex-col bg-gradient-to-b from-cyan-600/20 to-cyan-400/10 rounded-lg p-2 border border-cyan-500/30 overflow-hidden">
-        <h3 class="text-cyan-300 font-bold text-center mb-1 text-sm">🔵 <span id="p1BoardName" class="truncate">Pemain 1</span></h3>
-        <div id="gameBoard1" class="flex-1 grid gap-1 place-content-start auto-rows-max overflow-auto">
+      <div class="flex flex-col bg-gradient-to-b from-cyan-600/20 to-cyan-400/10 rounded p-1 border border-cyan-500/30 overflow-hidden">
+        <h3 class="text-cyan-300 font-bold text-center mb-0.5 text-xs truncate">🔵 <span id="p1BoardName">P1</span></h3>
+        <div id="gameBoard1" class="game-board flex-1">
           <!-- Cards will be generated here -->
         </div>
       </div>
       
       <!-- Player 2 Board -->
-      <div class="flex flex-col bg-gradient-to-b from-pink-600/20 to-pink-400/10 rounded-lg p-2 border border-pink-500/30 overflow-hidden">
-        <h3 class="text-pink-300 font-bold text-center mb-1 text-sm">🟠 <span id="p2BoardName" class="truncate">Pemain 2</span></h3>
-        <div id="gameBoard2" class="flex-1 grid gap-1 place-content-start auto-rows-max overflow-auto">
+      <div class="flex flex-col bg-gradient-to-b from-pink-600/20 to-pink-400/10 rounded p-1 border border-pink-500/30 overflow-hidden">
+        <h3 class="text-pink-300 font-bold text-center mb-0.5 text-xs truncate">🟠 <span id="p2BoardName">P2</span></h3>
+        <div id="gameBoard2" class="game-board flex-1">
           <!-- Cards will be generated here -->
         </div>
       </div>
     </div>
     
     <!-- Info Panel Compact -->
-    <div id="infoPanel" class="mt-2 bg-white/10 backdrop-blur-sm rounded-lg p-2 text-center hidden">
-      <p id="infoText" class="text-white text-sm"></p>
+    <div id="infoPanel" class="mt-1 bg-white/10 backdrop-blur-sm rounded p-1.5 text-center hidden">
+      <p id="infoText" class="text-white text-xs"></p>
     </div>
   </div>
   
   <!-- Result Screen Compact -->
   <div id="resultScreen" class="h-full w-full flex flex-col items-center justify-center p-2 fixed inset-0 hidden z-50 overflow-auto" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
     <div id="confettiContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
-    <div class="text-center z-30 w-full flex flex-col items-center justify-center max-w-md px-2 py-4">
+    <div class="text-center z-30 w-full flex flex-col items-center justify-center max-w-sm px-2 py-3">
       
       <!-- Winner Announcement -->
-      <div class="winner-animation mb-3 flex justify-center">
-        <span class="text-6xl block drop-shadow-2xl animate-bounce" style="animation: winnerBounce 1s ease-in-out infinite;">🏆</span>
+      <div class="mb-3 flex justify-center">
+        <span class="text-5xl block animate-bounce">🎊</span>
       </div>
       
-      <div id="winnerAnnouncement" class="mb-4 bg-gradient-to-r from-yellow-400/20 to-yellow-500/20 border-2 border-yellow-400/50 rounded-xl p-3 w-full">
-        <p id="winnerMessageLevel" class="text-lg text-yellow-300 font-bold mb-1"></p>
-        <p class="text-base text-white font-semibold">Pemenang Level! 🎖️</p>
+      <div id="winnerAnnouncement" class="mb-3 bg-gradient-to-r from-yellow-400/20 to-yellow-500/20 border border-yellow-400/50 rounded-lg p-2.5 w-full">
+        <p id="winnerMessageLevel" class="text-base text-yellow-300 font-bold mb-0.5"></p>
+        <p class="text-sm text-white font-semibold">Pemenang! 🏅</p>
       </div>
       
-      <h2 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">Selamat!</h2>
-      <p id="winnerName" class="text-3xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent mb-3 px-2 drop-shadow-lg"></p>
+      <h2 class="text-xl font-bold text-white mb-1 drop-shadow-lg">SELAMAT!</h2>
+      <p id="winnerName" class="text-2xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent mb-2 px-2 drop-shadow-lg truncate w-full"></p>
       
       <!-- Results Card Compact -->
-      <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 mb-4 w-full border-2 border-white/20 shadow-xl">
-        <h3 class="text-lg text-white font-bold mb-3 pb-2 border-b border-white/20">📊 Hasil Pertandingan</h3>
-        <div class="space-y-2 mb-3">
+      <div class="bg-white/15 backdrop-blur-sm rounded-xl p-3 mb-3 w-full border border-white/20 shadow-lg">
+        <h3 class="text-base text-white font-bold mb-2 pb-1.5 border-b border-white/20">📊 Hasil Game</h3>
+        <div class="space-y-1.5 mb-2.5">
           <!-- Player 1 Result -->
-          <div class="flex justify-between items-center bg-gradient-to-r from-cyan-500/50 to-cyan-600/30 p-2 rounded-xl border border-cyan-400/70">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">🔵</span>
-              <span id="result1Name" class="text-white font-bold text-sm"></span>
+          <div class="flex justify-between items-center bg-gradient-to-r from-cyan-500/50 to-cyan-600/30 p-1.5 rounded-lg border border-cyan-400/70">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl">🔵</span>
+              <span id="result1Name" class="text-white font-bold text-sm truncate max-w-[100px]"></span>
             </div>
-            <span id="result1Score" class="text-xl font-bold text-cyan-200 bg-cyan-900/40 px-2 py-1 rounded-lg"></span>
+            <span id="result1Score" class="text-lg font-bold text-cyan-200 bg-cyan-900/40 px-1.5 py-0.5 rounded"></span>
           </div>
           
           <!-- Player 2 Result -->
-          <div class="flex justify-between items-center bg-gradient-to-r from-pink-500/50 to-pink-600/30 p-2 rounded-xl border border-pink-400/70">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">🟠</span>
-              <span id="result2Name" class="text-white font-bold text-sm"></span>
+          <div class="flex justify-between items-center bg-gradient-to-r from-pink-500/50 to-pink-600/30 p-1.5 rounded-lg border border-pink-400/70">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl">🟠</span>
+              <span id="result2Name" class="text-white font-bold text-sm truncate max-w-[100px]"></span>
             </div>
-            <span id="result2Score" class="text-xl font-bold text-pink-200 bg-pink-900/40 px-2 py-1 rounded-lg"></span>
+            <span id="result2Score" class="text-lg font-bold text-pink-200 bg-pink-900/40 px-1.5 py-0.5 rounded"></span>
           </div>
         </div>
         
         <!-- Stats Grid Compact -->
-        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-white/20">
-          <div class="flex flex-col items-center bg-white/10 rounded-lg p-2">
-            <span class="text-xl mb-1">⏱️</span>
-            <span class="text-gray-300 text-xs font-medium">Waktu</span>
-            <span id="resultTime" class="font-mono text-base font-bold text-yellow-300 mt-0.5"></span>
+        <div class="grid grid-cols-2 gap-1.5 pt-2 border-t border-white/20">
+          <div class="flex flex-col items-center bg-white/10 rounded p-1.5">
+            <span class="text-lg mb-0.5">⏱️</span>
+            <span class="text-gray-300 text-[10px] font-medium">Waktu</span>
+            <span id="resultTime" class="font-mono text-sm font-bold text-yellow-300 mt-0.5"></span>
           </div>
-          <div class="flex flex-col items-center bg-white/10 rounded-lg p-2">
-            <span class="text-xl mb-1">🎯</span>
-            <span class="text-gray-300 text-xs font-medium">Tingkat</span>
-            <span id="resultDifficulty" class="text-base font-bold text-yellow-300 mt-0.5"></span>
+          <div class="flex flex-col items-center bg-white/10 rounded p-1.5">
+            <span class="text-lg mb-0.5">🎯</span>
+            <span class="text-gray-300 text-[10px] font-medium">Level</span>
+            <span id="resultDifficulty" class="text-sm font-bold text-yellow-300 mt-0.5"></span>
           </div>
         </div>
       </div>
       
       <!-- Action Buttons Compact -->
-      <div class="flex flex-col gap-2 justify-center w-full">
-        <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-green-600/50 border border-green-300/50 text-sm flex items-center justify-center gap-1">
-          <span class="text-xl">🔄</span>
+      <div class="flex flex-col gap-1.5 justify-center w-full">
+        <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-3 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-green-600/50 border border-green-300/50 text-xs flex items-center justify-center gap-1">
+          <span class="text-lg">🔄</span>
           Main Lagi
         </button>
-        <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2.5 px-4 rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-blue-600/50 border border-blue-300/50 text-sm flex items-center justify-center gap-1">
-          <span class="text-xl">📋</span>
+        <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2 px-3 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-blue-600/50 border border-blue-300/50 text-xs flex items-center justify-center gap-1">
+          <span class="text-lg">📋</span>
           Menu Utama
-        </button>
-      </div>
-      
-      <!-- Refresh Link -->
-      <div class="mt-4 text-center">
-        <button onclick="location.reload()" class="text-cyan-300 hover:text-cyan-100 underline text-xs transition-colors">
-          🔗 Refresh Halaman
         </button>
       </div>
     </div>
@@ -399,13 +466,13 @@
       osc.connect(gain);
       gain.connect(ctx.destination);
       
-      osc.frequency.setValueAtTime(400, ctx.currentTime);
-      osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.setValueAtTime(0, ctx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(450, ctx.currentTime);
+      osc.frequency.setValueAtTime(550, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime + 0.08);
       
       osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.1);
+      osc.stop(ctx.currentTime + 0.08);
     },
     
     playMatchSound() {
@@ -422,11 +489,11 @@
         gain.connect(ctx.destination);
         
         osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.1);
-        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1 + 0.15);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.08);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.08 + 0.12);
         
-        osc.start(ctx.currentTime + i * 0.1);
-        osc.stop(ctx.currentTime + i * 0.1 + 0.15);
+        osc.start(ctx.currentTime + i * 0.08);
+        osc.stop(ctx.currentTime + i * 0.08 + 0.12);
       });
     },
     
@@ -440,13 +507,13 @@
       osc.connect(gain);
       gain.connect(ctx.destination);
       
-      osc.frequency.setValueAtTime(300, ctx.currentTime);
-      osc.frequency.setValueAtTime(200, ctx.currentTime + 0.2);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.setValueAtTime(0, ctx.currentTime + 0.2);
+      osc.frequency.setValueAtTime(280, ctx.currentTime);
+      osc.frequency.setValueAtTime(180, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime + 0.15);
       
       osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.2);
+      osc.stop(ctx.currentTime + 0.15);
     },
     
     playWinSound() {
@@ -463,11 +530,11 @@
         gain.connect(ctx.destination);
         
         osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.15);
-        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.15 + 0.2);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.12);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.12 + 0.15);
         
-        osc.start(ctx.currentTime + i * 0.15);
-        osc.stop(ctx.currentTime + i * 0.15 + 0.2);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.15);
       });
     },
     
@@ -482,19 +549,19 @@
       gain.connect(ctx.destination);
       
       osc.frequency.setValueAtTime(800, ctx.currentTime);
-      osc.frequency.setValueAtTime(900, ctx.currentTime + 0.05);
-      gain.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain.gain.setValueAtTime(0, ctx.currentTime + 0.05);
+      osc.frequency.setValueAtTime(850, ctx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime + 0.04);
       
       osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.05);
+      osc.stop(ctx.currentTime + 0.04);
     },
     
     playLevelCompleteSound() {
       if (!this.soundEnabled) return;
       if (!this.audioContext) this.init();
       const ctx = this.audioContext;
-      const notes = [659.25, 830.61, 987.77, 1174.66, 1318.51];
+      const notes = [659.25, 830.61, 987.77, 1174.66];
       
       notes.forEach((freq, i) => {
         const osc = ctx.createOscillator();
@@ -504,11 +571,11 @@
         gain.connect(ctx.destination);
         
         osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.1);
-        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1 + 0.3);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.1);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1 + 0.25);
         
         osc.start(ctx.currentTime + i * 0.1);
-        osc.stop(ctx.currentTime + i * 0.1 + 0.3);
+        osc.stop(ctx.currentTime + i * 0.1 + 0.25);
       });
     },
     
@@ -517,10 +584,10 @@
       if (!this.audioContext) this.init();
       const ctx = this.audioContext;
       
-      // Create applause effect with multiple oscillators
-      for (let i = 0; i < 5; i++) {
+      // Create applause effect
+      for (let i = 0; i < 3; i++) {
         setTimeout(() => {
-          const notes = [392, 440, 494, 523, 587];
+          const notes = [392, 440, 494, 523];
           notes.forEach((freq, j) => {
             setTimeout(() => {
               const osc = ctx.createOscillator();
@@ -530,14 +597,14 @@
               gain.connect(ctx.destination);
               
               osc.frequency.setValueAtTime(freq, ctx.currentTime);
-              gain.gain.setValueAtTime(0.15, ctx.currentTime);
-              gain.gain.setValueAtTime(0, ctx.currentTime + 0.3);
+              gain.gain.setValueAtTime(0.12, ctx.currentTime);
+              gain.gain.setValueAtTime(0, ctx.currentTime + 0.25);
               
               osc.start(ctx.currentTime);
-              osc.stop(ctx.currentTime + 0.3);
-            }, j * 50);
+              osc.stop(ctx.currentTime + 0.25);
+            }, j * 40);
           });
-        }, i * 200);
+        }, i * 150);
       }
     }
   };
@@ -546,75 +613,72 @@
     soundManager.soundEnabled = !soundManager.soundEnabled;
     const toggle = document.getElementById('soundToggle');
     const icon = document.getElementById('soundIcon');
-    const label = document.getElementById('soundLabel');
     
     if (soundManager.soundEnabled) {
       icon.textContent = '🔊';
-      label.textContent = 'Suara';
       toggle.classList.remove('from-gray-500', 'to-gray-600');
       toggle.classList.add('from-green-500', 'to-emerald-600');
     } else {
       icon.textContent = '🔇';
-      label.textContent = 'Suara';
       toggle.classList.remove('from-green-500', 'to-emerald-600');
       toggle.classList.add('from-gray-500', 'to-gray-600');
     }
   }
 
-  // Game Data dengan ikon yang diperbaiki
+  // Game Data dengan nama yang lebih pendek
   const organData = {
     circulatory: {
-      name: "Sistem Peredaran Darah",
+      name: "Sirkulasi Darah",
       icon: "❤️",
       color: "from-red-500 to-rose-600",
       cardFrontIcon: "💓",
       organs: [
         { name: "Jantung", icon: "❤️", function: "Memompa darah" },
-        { name: "Arteri", icon: "🩸", function: "Mengalirkan darah" },
-        { name: "Vena", icon: "🔄", function: "Membawa darah" },
-        { name: "Kapiler", icon: "🩸", function: "Pertukaran zat" },
-        { name: "Sel Darah Merah", icon: "🔴", function: "Mengangkut O2" },
-        { name: "Sel Darah Putih", icon: "⚪", function: "Melawan infeksi" },
-        { name: "Trombosit", icon: "🩹", function: "Pembekuan darah" },
-        { name: "Plasma", icon: "💧", function: "Transportasi" },
-        { name: "Atrium", icon: "🏠", function: "Menerima darah" },
-        { name: "Ventrikel", icon: "🚀", function: "Memompa darah" }
+        { name: "Arteri", icon: "🩸", function: "Alirkan darah" },
+        { name: "Vena", icon: "🔄", function: "Bawa darah" },
+        { name: "Kapiler", icon: "🩸", function: "Tukar zat" },
+        { name: "Sel Darah", icon: "🔴", function: "Angkut O2" },
+        { name: "Trombosit", icon: "🩹", function: "Bekuan" },
+        { name: "Plasma", icon: "💧", function: "Transport" },
+        { name: "Atrium", icon: "🏠", function: "Terima darah" },
+        { name: "Ventrikel", icon: "🚀", function: "Pompa darah" },
+        { name: "Vena Kava", icon: "🔄", function: "Darah balik" }
       ]
     },
     excretory: {
-      name: "Sistem Ekskresi",
+      name: "Ekskresi",
       icon: "💧",
       color: "from-yellow-500 to-amber-600",
       cardFrontIcon: "🚽",
       organs: [
-        { name: "Ginjal", icon: "🫘", function: "Menyaring darah" },
-        { name: "Ureter", icon: "📍", function: "Saluran urine" },
-        { name: "Kandung Kemih", icon: "💦", function: "Menyimpan urine" },
-        { name: "Uretra", icon: "🚿", function: "Pengeluaran" },
+        { name: "Ginjal", icon: "🫘", function: "Saring darah" },
+        { name: "Ureter", icon: "📍", function: "Salur urine" },
+        { name: "Kandung Kemih", icon: "💦", function: "Tampung urine" },
+        { name: "Uretra", icon: "🚿", function: "Keluar urine" },
         { name: "Kulit", icon: "🤚", function: "Keringat" },
-        { name: "Paru-paru", icon: "🫁", function: "CO2 & uap air" },
-        { name: "Hati", icon: "🍃", function: "Detoksifikasi" },
-        { name: "Nefron", icon: "🔬", function: "Unit penyaring" },
-        { name: "Kelenjar Keringat", icon: "💨", function: "Produksi keringat" },
-        { name: "Uretra", icon: "🚿", function: "Saluran urine" }
+        { name: "Paru-paru", icon: "🫁", function: "CO2" },
+        { name: "Hati", icon: "🍃", function: "Detoks" },
+        { name: "Nefron", icon: "🔬", function: "Penyaring" },
+        { name: "Kelenjar", icon: "💨", function: "Keringat" },
+        { name: "Empedu", icon: "🟢", function: "Pencernaan" }
       ]
     },
     coordination: {
-      name: "Sistem Koordinasi",
+      name: "Koordinasi",
       icon: "🧠",
       color: "from-purple-500 to-violet-600",
       cardFrontIcon: "⚡",
       organs: [
-        { name: "Otak", icon: "🧠", function: "Pusat koordinasi" },
-        { name: "Serebrum", icon: "🎯", function: "Pikiran & kesadaran" },
-        { name: "Serebelum", icon: "⚖️", function: "Keseimbangan" },
-        { name: "Batang Otak", icon: "🌳", function: "Nafas & jantung" },
-        { name: "Sumsum Tulang", icon: "🦴", function: "Hantarkan impuls" },
-        { name: "Saraf Tepi", icon: "⚡", function: "Hubungkan organ" },
-        { name: "Mata", icon: "👁️", function: "Penglihatan" },
-        { name: "Telinga", icon: "👂", function: "Pendengaran" },
-        { name: "Lidah", icon: "👅", function: "Pengecapan" },
-        { name: "Kelenjar", icon: "🎛️", function: "Hormon pengatur" }
+        { name: "Otak", icon: "🧠", function: "Kendali" },
+        { name: "Serebrum", icon: "🎯", function: "Pikiran" },
+        { name: "Serebelum", icon: "⚖️", function: "Seimbang" },
+        { name: "Batang Otak", icon: "🌳", function: "Nafas" },
+        { name: "Sumsum", icon: "🦴", function: "Impuls" },
+        { name: "Saraf", icon: "⚡", function: "Hubung" },
+        { name: "Mata", icon: "👁️", function: "Lihat" },
+        { name: "Telinga", icon: "👂", function: "Dengar" },
+        { name: "Lidah", icon: "👅", function: "Rasa" },
+        { name: "Hipofisis", icon: "🎛️", function: "Hormon" }
       ]
     }
   };
@@ -678,10 +742,10 @@
     // Set teks tingkat kesulitan
     let diffText = '';
     switch(gameState.difficulty) {
-      case 'easy': diffText = 'Level Mudah'; break;
-      case 'medium': diffText = 'Level Sedang'; break;
-      case 'hard': diffText = 'Level Sulit'; break;
-      default: diffText = 'Level Game';
+      case 'easy': diffText = 'Mudah'; break;
+      case 'medium': diffText = 'Sedang'; break;
+      case 'hard': diffText = 'Sulit'; break;
+      default: diffText = 'Game';
     }
     levelDifficultyText.textContent = diffText;
     
@@ -689,10 +753,10 @@
     modal.classList.remove('hidden');
     soundManager.playLevelCompleteSound();
     
-    // Otomatis sembunyikan setelah 3 detik
+    // Otomatis sembunyikan setelah 2.5 detik
     setTimeout(() => {
       modal.classList.add('hidden');
-    }, 3000);
+    }, 2500);
   }
 
   // Fungsi untuk menampilkan animasi applause
@@ -702,11 +766,10 @@
     gameState.isShowingApplause = true;
     const overlay = document.getElementById('applauseOverlay');
     const applauseText = document.getElementById('applauseText');
-    const applauseSubtext = document.getElementById('applauseSubtext');
     
-    // Set teks applause
-    applauseText.textContent = `${playerName.toUpperCase()}!`;
-    applauseSubtext.textContent = "Pertama Menyelesaikan Game!";
+    // Potong nama jika terlalu panjang
+    const shortName = playerName.length > 10 ? playerName.substring(0, 8) + "..." : playerName;
+    applauseText.textContent = `${shortName.toUpperCase()}!`;
     
     // Tampilkan overlay
     overlay.classList.remove('hidden');
@@ -714,11 +777,11 @@
     // Mainkan suara applause
     soundManager.playApplauseSound();
     
-    // Sembunyikan setelah 4 detik
+    // Sembunyikan setelah 3 detik
     setTimeout(() => {
       overlay.classList.add('hidden');
       gameState.isShowingApplause = false;
-    }, 4000);
+    }, 3000);
   }
 
   function selectDifficulty(level) {
@@ -726,11 +789,11 @@
     gameState.difficulty = level;
     
     document.querySelectorAll('.difficulty-btn').forEach(btn => {
-      btn.classList.remove('ring-4', 'ring-white');
+      btn.classList.remove('ring-1', 'ring-white');
     });
     
     const btnId = level === 'easy' ? 'btnEasy' : level === 'medium' ? 'btnMedium' : 'btnHard';
-    document.getElementById(btnId).classList.add('ring-2', 'ring-white');
+    document.getElementById(btnId).classList.add('ring-1', 'ring-white');
   }
 
   function generateCards() {
@@ -785,8 +848,12 @@
     const p1Name = document.getElementById('player1Name').value.trim() || 'Pemain 1';
     const p2Name = document.getElementById('player2Name').value.trim() || 'Pemain 2';
     
-    gameState.players[0].name = p1Name;
-    gameState.players[1].name = p2Name;
+    // Potong nama jika terlalu panjang
+    const shortP1Name = p1Name.length > 8 ? p1Name.substring(0, 6) + ".." : p1Name;
+    const shortP2Name = p2Name.length > 8 ? p2Name.substring(0, 6) + ".." : p2Name;
+    
+    gameState.players[0].name = shortP1Name;
+    gameState.players[1].name = shortP2Name;
     gameState.players[0].score = 0;
     gameState.players[1].score = 0;
     gameState.timer = 0;
@@ -805,8 +872,8 @@
       isLocked: false
     };
     
-    document.getElementById('p1NameDisplay').textContent = p1Name;
-    document.getElementById('p2NameDisplay').textContent = p2Name;
+    document.getElementById('p1NameDisplay').textContent = shortP1Name;
+    document.getElementById('p2NameDisplay').textContent = shortP2Name;
     
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('gameScreen').classList.remove('hidden');
@@ -838,32 +905,66 @@
 
   function renderPlayerBoard(playerNum, cards) {
     const board = document.getElementById(`gameBoard${playerNum}`);
-    const cols = gameState.difficulty === 'easy' ? 3 : gameState.difficulty === 'medium' ? 4 : 5;
-    const cardSize = 'w-12 h-16 md:w-14 md:h-18';
+    let cols, cardWidth, cardHeight;
+    
+    // Tentukan ukuran kartu berdasarkan difficulty
+    switch(gameState.difficulty) {
+      case 'easy':
+        cols = 4;
+        cardWidth = 'w-16';
+        cardHeight = 'h-20';
+        break;
+      case 'medium':
+        cols = 4;
+        cardWidth = 'w-14';
+        cardHeight = 'h-18';
+        break;
+      case 'hard':
+        cols = 5;
+        cardWidth = 'w-12';
+        cardHeight = 'h-16';
+        break;
+      default:
+        cols = 4;
+        cardWidth = 'w-14';
+        cardHeight = 'h-18';
+    }
     
     board.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
     board.innerHTML = '';
     
     cards.forEach((card, index) => {
       const cardElement = document.createElement('div');
-      cardElement.className = `card-flip ${cardSize} cursor-pointer`;
+      cardElement.className = `card-flip ${cardWidth} ${cardHeight} cursor-pointer`;
       cardElement.id = `${playerNum}-${card.id}`;
       cardElement.onclick = () => flipCard(playerNum, index);
       
       const isOrgan = card.type === 'organ';
       const bgColor = isOrgan ? 'bg-gradient-to-br from-slate-700 to-slate-800' : `bg-gradient-to-br ${card.system.color}`;
-      
-      // Gunakan ikon khusus untuk card front berdasarkan sistem
       const cardFrontIcon = isOrgan ? '❓' : card.system.cardFrontIcon || card.system.icon;
       
+      // Potong teks jika terlalu panjang
+      const displayText = isOrgan ? card.content.name : card.system.name;
+      const shortText = displayText.length > 12 ? displayText.substring(0, 10) + ".." : displayText;
+      
       cardElement.innerHTML = `
-        <div class="card-inner w-full h-full relative">
-          <div class="card-front absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 rounded flex items-center justify-center shadow border border-white/20">
-            <span class="text-xl md:text-2xl">${cardFrontIcon}</span>
+        <div class="card-inner">
+          <div class="card-front bg-gradient-to-br from-indigo-600 to-purple-700 border border-white/20">
+            <div class="card-content">
+              <div class="card-icon">
+                <span class="text-2xl">${cardFrontIcon}</span>
+              </div>
+            </div>
           </div>
-          <div class="card-back absolute inset-0 ${bgColor} rounded flex flex-col items-center justify-center p-0.5 shadow border border-white/30">
-            <span class="text-lg md:text-xl mb-0.5">${isOrgan ? card.content.icon : card.system.icon}</span>
-            <span class="text-white text-[10px] md:text-xs font-medium text-center leading-tight">${isOrgan ? card.content.name : card.system.name}</span>
+          <div class="card-back ${bgColor} border border-white/30">
+            <div class="card-content">
+              <div class="card-icon mb-0.5">
+                <span class="text-xl">${isOrgan ? card.content.icon : card.system.icon}</span>
+              </div>
+              <div class="card-text">
+                <span class="text-[10px] leading-tight">${shortText}</span>
+              </div>
+            </div>
           </div>
         </div>
       `;
@@ -890,7 +991,7 @@
     
     if (playerState.flippedCards.length === 2) {
       playerState.isLocked = true;
-      setTimeout(() => checkMatch(playerNum), 600);
+      setTimeout(() => checkMatch(playerNum), 500);
     }
   }
 
@@ -929,10 +1030,10 @@
         hideInfo();
         
         checkWinner();
-      }, 1000);
+      }, 800);
     } else {
       soundManager.playMissSound();
-      showInfo(`❌ Coba lagi`);
+      showInfo(`❌ Salah`);
       
       setTimeout(() => {
         const el1 = document.getElementById(`${playerNum}-${card1.id}`);
@@ -945,7 +1046,7 @@
         playerState.flippedCards = [];
         playerState.isLocked = false;
         hideInfo();
-      }, 1000);
+      }, 800);
     }
   }
 
@@ -954,6 +1055,7 @@
     const infoText = document.getElementById('infoText');
     infoText.textContent = text;
     panel.classList.remove('hidden');
+    setTimeout(hideInfo, 1000);
   }
 
   function hideInfo() {
@@ -1034,7 +1136,7 @@
         // Tampilkan animasi level congratulation setelah applause
         setTimeout(() => {
           showLevelCongrats(gameState.players[firstCompleterIndex].name);
-        }, 4500);
+        }, 3200);
       }
       
       // Setelah semua animasi selesai, tampilkan hasil
@@ -1066,7 +1168,7 @@
         
         // Show results after a short delay
         setTimeout(() => showResults(winnerIndex), 500);
-      }, 8000); // Tunggu semua animasi selesai
+      }, 6000); // Tunggu semua animasi selesai
     }
   }
 
@@ -1079,8 +1181,8 @@
     document.getElementById('resultScreen').classList.remove('hidden');
     
     // Set winner announcement
-    document.getElementById('winnerMessageLevel').textContent = `${winner.name} menyelesaikan level ${diffText}!`;
-    document.getElementById('winnerName').textContent = `${winner.name} Menang! 🎉`;
+    document.getElementById('winnerMessageLevel').textContent = `${winner.name} menang di level ${diffText}!`;
+    document.getElementById('winnerName').textContent = `${winner.name} Juara!`;
     document.getElementById('result1Name').textContent = gameState.players[0].name;
     document.getElementById('result1Score').textContent = `${gameState.players[0].score} pasang`;
     document.getElementById('result2Name').textContent = gameState.players[1].name;
@@ -1098,14 +1200,14 @@
     const container = document.getElementById('confettiContainer');
     container.innerHTML = '';
     
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe', '#fd79a8'];
+    const colors = ['#ff6b6b', '#4ecdc4', '#f9ca24', '#6c5ce7', '#fd79a8'];
     
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 25; i++) {
       const confetti = document.createElement('div');
       confetti.className = 'confetti';
       confetti.style.left = `${Math.random() * 100}%`;
       confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      confetti.style.animationDelay = `${Math.random() * 2}s`;
+      confetti.style.animationDelay = `${Math.random() * 1.5}s`;
       confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
       container.appendChild(confetti);
     }
@@ -1126,7 +1228,7 @@
     
     gameState.difficulty = null;
     document.querySelectorAll('.difficulty-btn').forEach(btn => {
-      btn.classList.remove('ring-2', 'ring-white');
+      btn.classList.remove('ring-1', 'ring-white');
     });
   }
 </script>
