@@ -193,6 +193,16 @@
     .game-board::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.5);
     }
+    
+    /* Responsive untuk 4 pemain */
+    @media (max-width: 640px) {
+      .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .applause-text {
+        font-size: 1.5rem;
+      }
+    }
   </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -240,18 +250,33 @@
       <p class="text-gray-300 text-xs mt-1">Cocokkan organ dengan sistemnya!</p>
     </div>
     
-    <!-- Player Names -->
+    <!-- Player Count Selection -->
     <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
+      <h3 class="text-white font-semibold mb-2 text-center text-sm">👥 Jumlah Pemain</h3>
+      <div class="grid grid-cols-3 gap-1">
+        <button onclick="selectPlayerCount(1)" id="btn1Player" class="player-count-btn bg-blue-500 hover:bg-blue-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-blue-700">
+          <span class="text-lg block mb-0.5">👤</span>
+          <span class="text-xs">1 Orang</span>
+          <span class="text-[10px] block opacity-80">Solo</span>
+        </button>
+        <button onclick="selectPlayerCount(2)" id="btn2Players" class="player-count-btn bg-purple-500 hover:bg-purple-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-purple-700 ring-1 ring-white">
+          <span class="text-lg block mb-0.5">👥</span>
+          <span class="text-xs">2 Orang</span>
+          <span class="text-[10px] block opacity-80">Kompetisi</span>
+        </button>
+        <button onclick="selectPlayerCount(4)" id="btn4Players" class="player-count-btn bg-pink-500 hover:bg-pink-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-pink-700">
+          <span class="text-lg block mb-0.5">👨‍👩‍👧‍👦</span>
+          <span class="text-xs">4 Orang</span>
+          <span class="text-[10px] block opacity-80">Tim</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Player Names -->
+    <div id="playerNamesContainer" class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
       <h3 class="text-white font-semibold mb-2 text-center text-sm">👥 Nama Pemain</h3>
-      <div class="space-y-2">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">🔵</span>
-          <input type="text" id="player1Name" placeholder="Pemain 1" maxlength="10" class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border border-cyan-500/50 focus:border-cyan-400 focus:outline-none text-sm">
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-lg">🟠</span>
-          <input type="text" id="player2Name" placeholder="Pemain 2" maxlength="10" class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border border-pink-500/50 focus:border-pink-400 focus:outline-none text-sm">
-        </div>
+      <div id="playerInputs" class="space-y-2">
+        <!-- Player inputs akan di-generate oleh JavaScript -->
       </div>
     </div>
     
@@ -301,72 +326,18 @@
     </div>
     
     <!-- Score Board Compact -->
-    <div class="grid grid-cols-2 gap-1.5 mb-1.5">
-      <div id="player1Card" class="bg-gradient-to-r from-cyan-600 to-cyan-500 p-1.5 rounded text-white transition-all">
-        <div class="flex items-center gap-1.5">
-          <span class="text-lg">🔵</span>
-          <div class="flex-1 min-w-0">
-            <p id="p1NameDisplay" class="font-bold text-xs truncate">Pemain 1</p>
-            <div class="flex items-center gap-0.5">
-              <span class="text-cyan-200 text-[10px]">Skor:</span>
-              <span id="p1Score" class="text-base font-bold">0</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="player2Card" class="bg-gradient-to-r from-pink-600 to-pink-500 p-1.5 rounded text-white transition-all opacity-60">
-        <div class="flex items-center gap-1.5">
-          <span class="text-lg">🟠</span>
-          <div class="flex-1 min-w-0">
-            <p id="p2NameDisplay" class="font-bold text-xs truncate">Pemain 2</p>
-            <div class="flex items-center gap-0.5">
-              <span class="text-pink-200 text-[10px]">Skor:</span>
-              <span id="p2Score" class="text-base font-bold">0</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div id="scoreBoard" class="grid grid-cols-2 gap-1.5 mb-1.5">
+      <!-- Score cards akan di-generate oleh JavaScript -->
     </div>
     
     <!-- Competitive Status Bar Compact -->
-    <div class="grid grid-cols-2 gap-1.5 mb-1.5">
-      <div class="bg-gradient-to-r from-cyan-500/30 to-cyan-600/20 rounded p-1.5 border border-cyan-400/50">
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
-          <span id="p1Matches" class="text-cyan-300 font-bold text-xs">0/<span id="totalMatches">5</span></span>
-        </div>
-        <div class="bg-cyan-900/30 rounded-full h-1 overflow-hidden">
-          <div id="p1MatchBar" class="h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transition-all duration-300" style="width: 0%"></div>
-        </div>
-      </div>
-      <div class="bg-gradient-to-r from-pink-500/30 to-pink-600/20 rounded p-1.5 border border-pink-400/50">
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
-          <span id="p2Matches" class="text-pink-300 font-bold text-xs">0/<span id="totalMatches2">5</span></span>
-        </div>
-        <div class="bg-pink-900/30 rounded-full h-1 overflow-hidden">
-          <div id="p2MatchBar" class="h-full bg-gradient-to-r from-pink-400 to-pink-300 transition-all duration-300" style="width: 0%"></div>
-        </div>
-      </div>
+    <div id="statusBoard" class="grid grid-cols-2 gap-1.5 mb-1.5">
+      <!-- Status bars akan di-generate oleh JavaScript -->
     </div>
     
     <!-- Split Screen Game Board Compact -->
-    <div class="flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden">
-      <!-- Player 1 Board -->
-      <div class="flex flex-col bg-gradient-to-b from-cyan-600/20 to-cyan-400/10 rounded p-1 border border-cyan-500/30 overflow-hidden">
-        <h3 class="text-cyan-300 font-bold text-center mb-0.5 text-xs truncate">🔵 <span id="p1BoardName">P1</span></h3>
-        <div id="gameBoard1" class="game-board flex-1">
-          <!-- Cards will be generated here -->
-        </div>
-      </div>
-      
-      <!-- Player 2 Board -->
-      <div class="flex flex-col bg-gradient-to-b from-pink-600/20 to-pink-400/10 rounded p-1 border border-pink-500/30 overflow-hidden">
-        <h3 class="text-pink-300 font-bold text-center mb-0.5 text-xs truncate">🟠 <span id="p2BoardName">P2</span></h3>
-        <div id="gameBoard2" class="game-board flex-1">
-          <!-- Cards will be generated here -->
-        </div>
-      </div>
+    <div id="gameBoardsContainer" class="flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden">
+      <!-- Game boards akan di-generate oleh JavaScript -->
     </div>
     
     <!-- Info Panel Compact -->
@@ -396,24 +367,8 @@
       <!-- Results Card Compact -->
       <div class="bg-white/15 backdrop-blur-sm rounded-xl p-3 mb-3 w-full border border-white/20 shadow-lg">
         <h3 class="text-base text-white font-bold mb-2 pb-1.5 border-b border-white/20">📊 Hasil Game</h3>
-        <div class="space-y-1.5 mb-2.5">
-          <!-- Player 1 Result -->
-          <div class="flex justify-between items-center bg-gradient-to-r from-cyan-500/50 to-cyan-600/30 p-1.5 rounded-lg border border-cyan-400/70">
-            <div class="flex items-center gap-1.5">
-              <span class="text-xl">🔵</span>
-              <span id="result1Name" class="text-white font-bold text-sm truncate max-w-[100px]"></span>
-            </div>
-            <span id="result1Score" class="text-lg font-bold text-cyan-200 bg-cyan-900/40 px-1.5 py-0.5 rounded"></span>
-          </div>
-          
-          <!-- Player 2 Result -->
-          <div class="flex justify-between items-center bg-gradient-to-r from-pink-500/50 to-pink-600/30 p-1.5 rounded-lg border border-pink-400/70">
-            <div class="flex items-center gap-1.5">
-              <span class="text-xl">🟠</span>
-              <span id="result2Name" class="text-white font-bold text-sm truncate max-w-[100px]"></span>
-            </div>
-            <span id="result2Score" class="text-lg font-bold text-pink-200 bg-pink-900/40 px-1.5 py-0.5 rounded"></span>
-          </div>
+        <div id="resultsContainer" class="space-y-1.5 mb-2.5">
+          <!-- Results akan di-generate oleh JavaScript -->
         </div>
         
         <!-- Stats Grid Compact -->
@@ -684,25 +639,22 @@
   };
 
   // Game State
+  let playerCount = 2; // Default 2 pemain
+  const playerColors = [
+    { icon: "🔵", bg: "from-cyan-600 to-cyan-500", text: "text-cyan-300", board: "from-cyan-600/20 to-cyan-400/10", border: "border-cyan-500/30" },
+    { icon: "🟠", bg: "from-pink-600 to-pink-500", text: "text-pink-300", board: "from-pink-600/20 to-pink-400/10", border: "border-pink-500/30" },
+    { icon: "🟢", bg: "from-emerald-600 to-emerald-500", text: "text-emerald-300", board: "from-emerald-600/20 to-emerald-400/10", border: "border-emerald-500/30" },
+    { icon: "🟣", bg: "from-purple-600 to-purple-500", text: "text-purple-300", board: "from-purple-600/20 to-purple-400/10", border: "border-purple-500/30" }
+  ];
+
   let gameState = {
     difficulty: null,
-    players: [
-      { name: "Pemain 1", score: 0 },
-      { name: "Pemain 2", score: 0 }
-    ],
+    playerCount: 2,
+    players: [],
     timer: 0,
     timerInterval: null,
     targetPairs: 0,
-    player1State: {
-      matchedPairs: 0,
-      flippedCards: [],
-      isLocked: false
-    },
-    player2State: {
-      matchedPairs: 0,
-      flippedCards: [],
-      isLocked: false
-    },
+    playerStates: [],
     firstLevelCompletion: false,
     isShowingApplause: false
   };
@@ -784,6 +736,41 @@
     }, 3000);
   }
 
+  function selectPlayerCount(count) {
+    soundManager.playButtonClick();
+    playerCount = count;
+    gameState.playerCount = count;
+    
+    document.querySelectorAll('.player-count-btn').forEach(btn => {
+      btn.classList.remove('ring-1', 'ring-white');
+    });
+    
+    const btnId = `btn${count}Player${count > 1 ? 's' : ''}`;
+    document.getElementById(btnId).classList.add('ring-1', 'ring-white');
+    
+    updatePlayerInputs();
+  }
+
+  function updatePlayerInputs() {
+    const container = document.getElementById('playerInputs');
+    container.innerHTML = '';
+    
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const inputId = `player${i+1}Name`;
+      const placeholder = i === 0 ? "Pemain 1" : i === 1 ? "Pemain 2" : i === 2 ? "Pemain 3" : "Pemain 4";
+      
+      const inputHTML = `
+        <div class="flex items-center gap-2">
+          <span class="text-lg">${color.icon}</span>
+          <input type="text" id="${inputId}" placeholder="${placeholder}" maxlength="10" 
+                 class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border ${i === 0 ? 'border-cyan-500/50' : i === 1 ? 'border-pink-500/50' : i === 2 ? 'border-emerald-500/50' : 'border-purple-500/50'} focus:outline-none text-sm">
+        </div>
+      `;
+      container.innerHTML += inputHTML;
+    }
+  }
+
   function selectDifficulty(level) {
     soundManager.playButtonClick();
     gameState.difficulty = level;
@@ -845,66 +832,181 @@
 
   function startGame() {
     soundManager.playButtonClick();
-    const p1Name = document.getElementById('player1Name').value.trim() || 'Pemain 1';
-    const p2Name = document.getElementById('player2Name').value.trim() || 'Pemain 2';
     
-    // Potong nama jika terlalu panjang
-    const shortP1Name = p1Name.length > 8 ? p1Name.substring(0, 6) + ".." : p1Name;
-    const shortP2Name = p2Name.length > 8 ? p2Name.substring(0, 6) + ".." : p2Name;
+    // Validasi input
+    if (!gameState.difficulty) {
+      alert('Pilih tingkat kesulitan terlebih dahulu!');
+      return;
+    }
     
-    gameState.players[0].name = shortP1Name;
-    gameState.players[1].name = shortP2Name;
-    gameState.players[0].score = 0;
-    gameState.players[1].score = 0;
+    // Inisialisasi pemain
+    gameState.playerCount = playerCount;
+    gameState.players = [];
+    gameState.playerStates = [];
+    
+    for (let i = 0; i < playerCount; i++) {
+      const input = document.getElementById(`player${i+1}Name`);
+      const name = input ? input.value.trim() || `Pemain ${i+1}` : `Pemain ${i+1}`;
+      const shortName = name.length > 8 ? name.substring(0, 6) + ".." : name;
+      
+      gameState.players.push({
+        name: shortName,
+        score: 0
+      });
+      
+      gameState.playerStates.push({
+        matchedPairs: 0,
+        flippedCards: [],
+        isLocked: false,
+        cards: []
+      });
+    }
+    
+    // Reset state
     gameState.timer = 0;
     gameState.firstLevelCompletion = false;
     gameState.isShowingApplause = false;
     
-    gameState.player1State = {
-      matchedPairs: 0,
-      flippedCards: [],
-      isLocked: false
-    };
-    
-    gameState.player2State = {
-      matchedPairs: 0,
-      flippedCards: [],
-      isLocked: false
-    };
-    
-    document.getElementById('p1NameDisplay').textContent = shortP1Name;
-    document.getElementById('p2NameDisplay').textContent = shortP2Name;
-    
+    // Update UI
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('gameScreen').classList.remove('hidden');
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('levelCongratsModal').classList.add('hidden');
     document.getElementById('applauseOverlay').classList.add('hidden');
     
+    // Setup game boards
+    setupGameUI();
     renderBoard();
     startTimer();
+  }
+
+  function setupGameUI() {
+    // Setup score board
+    setupScoreBoard();
     
-    document.getElementById('totalMatches').textContent = gameState.targetPairs;
-    document.getElementById('totalMatches2').textContent = gameState.targetPairs;
-    updateCompetitiveStatus();
+    // Setup status board
+    setupStatusBoard();
+    
+    // Setup game boards container
+    setupGameBoardsContainer();
+  }
+
+  function setupScoreBoard() {
+    const scoreBoard = document.getElementById('scoreBoard');
+    scoreBoard.innerHTML = '';
+    
+    // Set grid columns berdasarkan jumlah pemain
+    if (playerCount === 1) {
+      scoreBoard.className = 'grid grid-cols-1 gap-1.5 mb-1.5';
+    } else if (playerCount === 2) {
+      scoreBoard.className = 'grid grid-cols-2 gap-1.5 mb-1.5';
+    } else if (playerCount === 4) {
+      scoreBoard.className = 'grid grid-cols-4 gap-1 mb-1.5';
+    }
+    
+    // Buat score card untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const scoreCardHTML = `
+        <div id="player${playerNum}Card" class="${color.bg} p-1.5 rounded text-white transition-all">
+          <div class="flex items-center gap-1.5">
+            <span class="text-lg">${color.icon}</span>
+            <div class="flex-1 min-w-0">
+              <p id="p${playerNum}NameDisplay" class="font-bold text-xs truncate">${gameState.players[i].name}</p>
+              <div class="flex items-center gap-0.5">
+                <span class="${color.text} text-[10px]">Skor:</span>
+                <span id="p${playerNum}Score" class="text-base font-bold">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      scoreBoard.innerHTML += scoreCardHTML;
+    }
+  }
+
+  function setupStatusBoard() {
+    const statusBoard = document.getElementById('statusBoard');
+    statusBoard.innerHTML = '';
+    
+    // Set grid columns berdasarkan jumlah pemain
+    if (playerCount === 1) {
+      statusBoard.className = 'grid grid-cols-1 gap-1.5 mb-1.5';
+    } else if (playerCount === 2) {
+      statusBoard.className = 'grid grid-cols-2 gap-1.5 mb-1.5';
+    } else if (playerCount === 4) {
+      statusBoard.className = 'grid grid-cols-4 gap-1 mb-1.5';
+    }
+    
+    // Buat status bar untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const statusHTML = `
+        <div class="bg-gradient-to-r ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/30 rounded p-1.5 border ${color.border}">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
+            <span id="p${playerNum}Matches" class="${color.text} font-bold text-xs">0/<span id="totalMatches${playerNum}">${gameState.targetPairs}</span></span>
+          </div>
+          <div class="bg-gray-800/30 rounded-full h-1 overflow-hidden">
+            <div id="p${playerNum}MatchBar" class="h-full bg-gradient-to-r ${color.bg} transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      `;
+      statusBoard.innerHTML += statusHTML;
+    }
+  }
+
+  function setupGameBoardsContainer() {
+    const boardsContainer = document.getElementById('gameBoardsContainer');
+    boardsContainer.innerHTML = '';
+    
+    // Set grid columns berdasarkan jumlah pemain
+    if (playerCount === 1) {
+      boardsContainer.className = 'flex-1 grid grid-cols-1 gap-1.5 min-h-0 overflow-hidden';
+    } else if (playerCount === 2) {
+      boardsContainer.className = 'flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden';
+    } else if (playerCount === 4) {
+      boardsContainer.className = 'flex-1 grid grid-cols-2 md:grid-cols-4 gap-1.5 min-h-0 overflow-hidden';
+    }
+    
+    // Buat game board untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const boardHTML = `
+        <div class="flex flex-col ${color.board} rounded p-1 border ${color.border} overflow-hidden">
+          <h3 class="${color.text} font-bold text-center mb-0.5 text-xs truncate">
+            ${color.icon} <span id="p${playerNum}BoardName">${gameState.players[i].name}</span>
+          </h3>
+          <div id="gameBoard${playerNum}" class="game-board flex-1">
+            <!-- Cards will be generated here -->
+          </div>
+        </div>
+      `;
+      boardsContainer.innerHTML += boardHTML;
+    }
   }
 
   function renderBoard() {
-    const cards1 = generateCards();
-    const cards2 = generateCards();
-    
-    gameState.player1Cards = cards1;
-    gameState.player2Cards = cards2;
-    
-    document.getElementById('p1BoardName').textContent = gameState.players[0].name;
-    document.getElementById('p2BoardName').textContent = gameState.players[1].name;
-    
-    renderPlayerBoard(1, cards1);
-    renderPlayerBoard(2, cards2);
+    // Generate cards untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const cards = generateCards();
+      gameState.playerStates[i].cards = cards;
+      
+      // Render board untuk pemain ini
+      renderPlayerBoard(i + 1, cards);
+    }
   }
 
   function renderPlayerBoard(playerNum, cards) {
     const board = document.getElementById(`gameBoard${playerNum}`);
+    if (!board) return;
+    
     let cols, cardWidth, cardHeight;
     
     // Tentukan ukuran kartu berdasarkan difficulty
@@ -928,6 +1030,13 @@
         cols = 4;
         cardWidth = 'w-14';
         cardHeight = 'h-18';
+    }
+    
+    // Adjust untuk 4 pemain di layar kecil
+    if (playerCount === 4 && window.innerWidth < 768) {
+      cols = 3;
+      cardWidth = 'w-10';
+      cardHeight = 'h-14';
     }
     
     board.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
@@ -974,13 +1083,17 @@
   }
 
   function flipCard(playerNum, index) {
-    const playerState = gameState[`player${playerNum}State`];
+    const playerIndex = playerNum - 1;
+    const playerState = gameState.playerStates[playerIndex];
     
-    if (playerState.isLocked) return;
+    if (!playerState || playerState.isLocked) return;
     
-    const cards = playerNum === 1 ? gameState.player1Cards : gameState.player2Cards;
+    const cards = playerState.cards;
     const card = cards[index];
     const cardElement = document.getElementById(`${playerNum}-${card.id}`);
+    
+    if (!cardElement) return;
+    
     const cardInner = cardElement.querySelector('.card-inner');
     
     if (cardInner.classList.contains('flipped') || playerState.flippedCards.includes(index)) return;
@@ -996,9 +1109,17 @@
   }
 
   function checkMatch(playerNum) {
-    const playerState = gameState[`player${playerNum}State`];
+    const playerIndex = playerNum - 1;
+    const playerState = gameState.playerStates[playerIndex];
     const [first, second] = playerState.flippedCards;
-    const cards = playerNum === 1 ? gameState.player1Cards : gameState.player2Cards;
+    const cards = playerState.cards;
+    
+    if (!cards[first] || !cards[second]) {
+      playerState.flippedCards = [];
+      playerState.isLocked = false;
+      return;
+    }
+    
     const card1 = cards[first];
     const card2 = cards[second];
     
@@ -1007,9 +1128,9 @@
     if (isMatch) {
       soundManager.playMatchSound();
       const organCard = card1.type === 'organ' ? card1 : card2;
-      showInfo(`✅ ${organCard.content.name}`);
+      showInfo(`✅ ${organCard.content.name} (${gameState.players[playerIndex].name})`);
       
-      gameState.players[playerNum - 1].score++;
+      gameState.players[playerIndex].score++;
       playerState.matchedPairs++;
       
       const el1 = document.getElementById(`${playerNum}-${card1.id}`);
@@ -1033,7 +1154,7 @@
       }, 800);
     } else {
       soundManager.playMissSound();
-      showInfo(`❌ Salah`);
+      showInfo(`❌ Salah (${gameState.players[playerIndex].name})`);
       
       setTimeout(() => {
         const el1 = document.getElementById(`${playerNum}-${card1.id}`);
@@ -1063,8 +1184,12 @@
   }
 
   function updateScores() {
-    document.getElementById('p1Score').textContent = gameState.players[0].score;
-    document.getElementById('p2Score').textContent = gameState.players[1].score;
+    for (let i = 0; i < playerCount; i++) {
+      const scoreElement = document.getElementById(`p${i+1}Score`);
+      if (scoreElement) {
+        scoreElement.textContent = gameState.players[i].score;
+      }
+    }
   }
 
   function startTimer() {
@@ -1087,106 +1212,137 @@
 
   function updateCompetitiveStatus() {
     const total = gameState.targetPairs;
-    const p1Percent = Math.round((gameState.player1State.matchedPairs / total) * 100);
-    const p2Percent = Math.round((gameState.player2State.matchedPairs / total) * 100);
     
-    document.getElementById('p1Matches').textContent = `${gameState.player1State.matchedPairs}/${total}`;
-    document.getElementById('p2Matches').textContent = `${gameState.player2State.matchedPairs}/${total}`;
+    // Update untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const matchesElement = document.getElementById(`p${i+1}Matches`);
+      const barElement = document.getElementById(`p${i+1}MatchBar`);
+      
+      if (matchesElement) {
+        matchesElement.innerHTML = `${gameState.playerStates[i].matchedPairs}/<span id="totalMatches${i+1}">${total}</span>`;
+      }
+      
+      if (barElement) {
+        const percent = Math.round((gameState.playerStates[i].matchedPairs / total) * 100);
+        barElement.style.width = `${percent}%`;
+      }
+    }
     
-    document.getElementById('p1MatchBar').style.width = `${p1Percent}%`;
-    document.getElementById('p2MatchBar').style.width = `${p2Percent}%`;
+    // Update opacity berdasarkan peringkat
+    let maxScore = -1;
+    for (let i = 0; i < playerCount; i++) {
+      if (gameState.playerStates[i].matchedPairs > maxScore) {
+        maxScore = gameState.playerStates[i].matchedPairs;
+      }
+    }
     
-    const p1Card = document.getElementById('player1Card');
-    const p2Card = document.getElementById('player2Card');
-    
-    if (gameState.player1State.matchedPairs > gameState.player2State.matchedPairs) {
-      p1Card.classList.remove('opacity-60');
-      p2Card.classList.add('opacity-60');
-    } else if (gameState.player2State.matchedPairs > gameState.player1State.matchedPairs) {
-      p2Card.classList.remove('opacity-60');
-      p1Card.classList.add('opacity-60');
-    } else {
-      p1Card.classList.remove('opacity-60');
-      p2Card.classList.remove('opacity-60');
+    for (let i = 0; i < playerCount; i++) {
+      const cardElement = document.getElementById(`player${i+1}Card`);
+      if (cardElement) {
+        if (gameState.playerStates[i].matchedPairs < maxScore) {
+          cardElement.classList.add('opacity-60');
+        } else {
+          cardElement.classList.remove('opacity-60');
+        }
+      }
     }
   }
 
   function checkWinner() {
-    const p1Complete = gameState.player1State.matchedPairs >= gameState.targetPairs;
-    const p2Complete = gameState.player2State.matchedPairs >= gameState.targetPairs;
+    let anyComplete = false;
+    let firstCompleterIndex = -1;
     
-    // Jika salah satu pemain menyelesaikan game
-    if (p1Complete || p2Complete) {
-      // Tentukan siapa yang pertama selesai
-      let firstCompleterIndex;
-      if (p1Complete && !p2Complete) {
-        firstCompleterIndex = 0;
-      } else if (p2Complete && !p1Complete) {
-        firstCompleterIndex = 1;
-      } else {
-        // Jika keduanya selesai bersamaan, ambil yang memiliki skor lebih tinggi
-        firstCompleterIndex = gameState.player1State.matchedPairs > gameState.player2State.matchedPairs ? 0 : 1;
-      }
+    // Cek apakah ada yang sudah selesai
+    for (let i = 0; i < playerCount; i++) {
+      const isComplete = gameState.playerStates[i].matchedPairs >= gameState.targetPairs;
       
-      // Tampilkan animasi applause untuk yang pertama selesai
-      if (!gameState.firstLevelCompletion) {
-        gameState.firstLevelCompletion = true;
+      if (isComplete) {
+        anyComplete = true;
+        if (firstCompleterIndex === -1) {
+          firstCompleterIndex = i;
+        }
+      }
+    }
+    
+    if (anyComplete && !gameState.firstLevelCompletion) {
+      gameState.firstLevelCompletion = true;
+      
+      // Tampilkan applause untuk pemenang pertama
+      if (firstCompleterIndex !== -1) {
         showApplause(gameState.players[firstCompleterIndex].name);
         
-        // Tampilkan animasi level congratulation setelah applause
         setTimeout(() => {
           showLevelCongrats(gameState.players[firstCompleterIndex].name);
         }, 3200);
       }
       
-      // Setelah semua animasi selesai, tampilkan hasil
+      // Setelah delay, tampilkan hasil akhir
       setTimeout(() => {
         stopTimer();
         
-        // Determine final winner
-        let winnerIndex;
-        if (p1Complete && !p2Complete) {
-          winnerIndex = 0;
-        } else if (p2Complete && !p1Complete) {
-          winnerIndex = 1;
-        } else {
-          // Both complete, check scores
-          winnerIndex = gameState.player1State.matchedPairs > gameState.player2State.matchedPairs ? 0 : 1;
+        // Tentukan pemenang akhir (yang memiliki matchedPairs terbanyak)
+        let winnerIndex = 0;
+        let maxPairs = gameState.playerStates[0].matchedPairs;
+        
+        for (let i = 1; i < playerCount; i++) {
+          if (gameState.playerStates[i].matchedPairs > maxPairs) {
+            maxPairs = gameState.playerStates[i].matchedPairs;
+            winnerIndex = i;
+          } else if (gameState.playerStates[i].matchedPairs === maxPairs) {
+            // Jika seri, cek skor total
+            if (gameState.players[i].score > gameState.players[winnerIndex].score) {
+              winnerIndex = i;
+            }
+          }
         }
         
-        // Disable all card clicks
-        const board1 = document.getElementById('gameBoard1');
-        const board2 = document.getElementById('gameBoard2');
-        if (board1) {
-          board1.style.pointerEvents = 'none';
-          board1.style.opacity = '0.5';
-        }
-        if (board2) {
-          board2.style.pointerEvents = 'none';
-          board2.style.opacity = '0.5';
+        // Nonaktifkan semua klik kartu
+        for (let i = 1; i <= playerCount; i++) {
+          const board = document.getElementById(`gameBoard${i}`);
+          if (board) {
+            board.style.pointerEvents = 'none';
+            board.style.opacity = '0.5';
+          }
         }
         
-        // Show results after a short delay
+        // Tampilkan hasil
         setTimeout(() => showResults(winnerIndex), 500);
-      }, 6000); // Tunggu semua animasi selesai
+      }, 6000);
     }
   }
 
   function showResults(winnerIndex) {
     soundManager.playWinSound();
     const winner = gameState.players[winnerIndex];
-    const diffText = gameState.difficulty === 'easy' ? 'Mudah' : gameState.difficulty === 'medium' ? 'Sedang' : 'Sulit';
+    const diffText = gameState.difficulty === 'easy' ? 'Mudah' : 
+                     gameState.difficulty === 'medium' ? 'Sedang' : 'Sulit';
     
     document.getElementById('gameScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.remove('hidden');
     
-    // Set winner announcement
+    // Update winner announcement
     document.getElementById('winnerMessageLevel').textContent = `${winner.name} menang di level ${diffText}!`;
     document.getElementById('winnerName').textContent = `${winner.name} Juara!`;
-    document.getElementById('result1Name').textContent = gameState.players[0].name;
-    document.getElementById('result1Score').textContent = `${gameState.players[0].score} pasang`;
-    document.getElementById('result2Name').textContent = gameState.players[1].name;
-    document.getElementById('result2Score').textContent = `${gameState.players[1].score} pasang`;
+    
+    // Setup results container
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.innerHTML = '';
+    
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const resultHTML = `
+        <div class="flex justify-between items-center ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/50 p-1.5 rounded-lg border ${color.border.replace('border-', 'border-')}/70">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xl">${color.icon}</span>
+            <span id="result${playerNum}Name" class="text-white font-bold text-sm truncate max-w-[100px]">${gameState.players[i].name}</span>
+          </div>
+          <span id="result${playerNum}Score" class="text-lg font-bold ${color.text} ${color.bg.replace('from-', 'bg-').split(' ')[0]}/40 px-1.5 py-0.5 rounded">${gameState.players[i].score} pasang</span>
+        </div>
+      `;
+      resultsContainer.innerHTML += resultHTML;
+    }
     
     const mins = Math.floor(gameState.timer / 60).toString().padStart(2, '0');
     const secs = (gameState.timer % 60).toString().padStart(2, '0');
@@ -1231,6 +1387,15 @@
       btn.classList.remove('ring-1', 'ring-white');
     });
   }
+
+  // Inisialisasi saat halaman dimuat
+  document.addEventListener('DOMContentLoaded', function() {
+    updatePlayerInputs();
+    
+    // Set default untuk 2 pemain
+    selectPlayerCount(2);
+    selectDifficulty('easy');
+  });
 </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb0d1cb220e14a6',t:'MTc3MDYxMzM5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
