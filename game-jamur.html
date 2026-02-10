@@ -37,7 +37,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 8px;
+      border-radius: 6px;
     }
     .card-back {
       transform: rotateY(180deg);
@@ -144,13 +144,13 @@
       justify-content: center;
       width: 100%;
       height: 100%;
-      padding: 8px;
+      padding: 4px;
       text-align: center;
       overflow: hidden;
     }
     
     .card-text {
-      line-height: 1.2;
+      line-height: 1.1;
       font-weight: 600;
       word-break: break-word;
       display: flex;
@@ -161,28 +161,30 @@
       text-align: center;
     }
     
-    /* Grid responsive untuk kartu */
+    /* Grid responsive untuk kartu - SANGAT KOMPAK */
     .game-board {
       display: grid;
-      gap: 4px;
-      padding: 2px;
+      gap: 2px;
+      padding: 1px;
       overflow: auto;
+      width: 100%;
+      height: 100%;
     }
     
     /* Custom scrollbar untuk game board */
     .game-board::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
+      width: 2px;
+      height: 2px;
     }
     
     .game-board::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
+      border-radius: 1px;
     }
     
     .game-board::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.3);
-      border-radius: 2px;
+      border-radius: 1px;
     }
     
     .game-board::-webkit-scrollbar-thumb:hover {
@@ -200,21 +202,23 @@
       background-size: 1em;
     }
     
-    /* Compact layout untuk fullscreen */
+    /* Compact layout untuk fullscreen - LEBIH KOMPAK */
     .compact-container {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding: 0.5rem;
-      gap: 0.5rem;
+      padding: 0.25rem;
+      gap: 0.25rem;
+      overflow: hidden;
     }
     
     .compact-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.25rem;
+      gap: 0.25rem;
+      margin-bottom: 0.125rem;
+      flex-shrink: 0;
     }
     
     .compact-game-area {
@@ -234,8 +238,21 @@
         font-size: 1.5rem;
       }
       .card-text {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
+      .compact-container {
+        padding: 0.125rem;
+        gap: 0.125rem;
+      }
+    }
+    
+    /* Untuk memastikan semua kartu terlihat */
+    .board-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 0;
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -279,9 +296,9 @@
   <!-- Start Screen -->
   <div id="startScreen" class="h-full flex flex-col items-center justify-center p-3 overflow-auto">
     <!-- Judul Utama -->
-    <div class="text-center mb-6">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">Make A MatchJamur</h1>
-
+    <div class="text-center mb-4">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">Make A Match</h1>
+      <h2 class="text-2xl md:text-3xl font-bold text-green-300 mb-1 drop-shadow-lg">Game Jamur</h2>
     </div>
     
     <!-- Container Compact -->
@@ -293,15 +310,15 @@
         <div class="grid grid-cols-3 gap-1">
           <button onclick="selectPlayerCount(1)" id="btn1Player" class="player-count-btn bg-blue-500 hover:bg-blue-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-blue-700">
             <span class="text-xs">1 Orang</span>
-            <span class="text-[10px] block opacity-80 mt-1">Solo</span>
+            <span class="text-[10px] block opacity-80 mt-0.5">Solo</span>
           </button>
           <button onclick="selectPlayerCount(2)" id="btn2Players" class="player-count-btn bg-purple-500 hover:bg-purple-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-purple-700 ring-1 ring-white">
             <span class="text-xs">2 Orang</span>
-            <span class="text-[10px] block opacity-80 mt-1">Kompetisi</span>
+            <span class="text-[10px] block opacity-80 mt-0.5">Kompetisi</span>
           </button>
           <button onclick="selectPlayerCount(4)" id="btn4Players" class="player-count-btn bg-pink-500 hover:bg-pink-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-pink-700">
             <span class="text-xs">4 Orang</span>
-            <span class="text-[10px] block opacity-80 mt-1">Tim</span>
+            <span class="text-[10px] block opacity-80 mt-0.5">Tim</span>
           </button>
         </div>
       </div>
@@ -309,7 +326,7 @@
       <!-- Player Names -->
       <div id="playerNamesContainer" class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
         <h3 class="text-white font-semibold mb-2 text-center text-sm">👥 Nama Pemain</h3>
-        <div id="playerInputs" class="space-y-2">
+        <div id="playerInputs" class="space-y-1.5">
           <!-- Player inputs akan di-generate oleh JavaScript -->
         </div>
       </div>
@@ -318,15 +335,15 @@
       <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
         <h3 class="text-white font-semibold mb-2 text-center text-sm">🎮 Pilih Level Jamur</h3>
         <div class="relative">
-          <select id="levelDropdown" onchange="selectLevelFromDropdown()" class="custom-select w-full bg-white/20 text-white py-2.5 px-3 rounded-lg border border-green-400/50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm appearance-none">
+          <select id="levelDropdown" onchange="selectLevelFromDropdown()" class="custom-select w-full bg-white/20 text-white py-2 px-3 rounded-lg border border-green-400/50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm appearance-none">
             <option value="ascomycota" class="bg-green-700 text-white">Level 1: Ascomycota</option>
             <option value="zygomycota" class="bg-yellow-700 text-white">Level 2: Zygomycota</option>
             <option value="basidiomycota" class="bg-red-700 text-white">Level 3: Basidiomycota</option>
             <option value="deuteromycota" class="bg-blue-700 text-white">Level 4: Deuteromycota</option>
             <option value="chytridiomycota" class="bg-purple-700 text-white">Level 5: Chytridiomycota</option>
           </select>
-          <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <div class="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
           </div>
@@ -334,12 +351,12 @@
       </div>
       
       <!-- Start Button -->
-      <button onclick="startGame()" id="startBtn" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg text-base">
+      <button onclick="startGame()" id="startBtn" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg text-sm">
         🚀 Mulai Game
       </button>
       
       <!-- Instructions -->
-      <div class="text-center text-gray-300 text-[10px]">
+      <div class="text-center text-gray-300 text-[9px]">
         <p class="mb-0.5">📋 <strong class="text-white">Cara Main:</strong> Temukan pasangan kartu ciri-ciri dan contoh jamur!</p>
       </div>
     </div>
@@ -349,91 +366,91 @@
   <div id="gameScreen" class="h-full hidden compact-container">
     <!-- Header -->
     <div class="compact-header">
-      <button onclick="backToMenu()" class="bg-white/20 hover:bg-white/30 text-white px-2 py-1.5 rounded transition-all flex items-center gap-1 text-xs">
+      <button onclick="backToMenu()" class="bg-white/20 hover:bg-white/30 text-white px-1.5 py-1 rounded transition-all flex items-center gap-0.5 text-[10px]">
         ← Menu
       </button>
-      <div class="flex items-center gap-1 bg-white/10 px-2 py-1.5 rounded">
+      <div class="flex items-center gap-0.5 bg-white/10 px-1.5 py-1 rounded">
         <span id="currentLevelIcon" class="text-green-300 text-xs">🍄</span>
-        <span id="currentLevel" class="text-white font-bold text-xs">Ascomycota</span>
+        <span id="currentLevel" class="text-white font-bold text-[10px] truncate max-w-[60px]">Ascomycota</span>
       </div>
-      <div class="flex items-center gap-1 bg-white/10 px-2 py-1.5 rounded">
+      <div class="flex items-center gap-0.5 bg-white/10 px-1.5 py-1 rounded">
         <span class="text-yellow-300 text-xs">⏱️</span>
-        <span id="timer" class="text-white font-mono text-sm">00:00</span>
+        <span id="timer" class="text-white font-mono text-xs">00:00</span>
       </div>
     </div>
     
     <!-- Score Board Compact -->
-    <div id="scoreBoard" class="grid grid-cols-2 gap-1.5">
+    <div id="scoreBoard" class="grid grid-cols-2 gap-1 flex-shrink:0">
       <!-- Score cards akan di-generate oleh JavaScript -->
     </div>
     
     <!-- Game Boards Area -->
     <div class="compact-game-area">
       <!-- Game Boards -->
-      <div id="gameBoardsContainer" class="flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden">
+      <div id="gameBoardsContainer" class="flex-1 grid grid-cols-2 gap-1 min-h-0 overflow-hidden">
         <!-- Game boards akan di-generate oleh JavaScript -->
       </div>
     </div>
     
     <!-- Status Board -->
-    <div id="statusBoard" class="grid grid-cols-2 gap-1.5">
+    <div id="statusBoard" class="grid grid-cols-2 gap-1 flex-shrink:0">
       <!-- Status bars akan di-generate oleh JavaScript -->
     </div>
     
     <!-- Info Panel -->
-    <div id="infoPanel" class="bg-white/10 backdrop-blur-sm rounded p-1.5 text-center hidden">
-      <p id="infoText" class="text-white text-xs"></p>
+    <div id="infoPanel" class="bg-white/10 backdrop-blur-sm rounded p-1 text-center hidden flex-shrink:0">
+      <p id="infoText" class="text-white text-[10px]"></p>
     </div>
   </div>
   
   <!-- Result Screen Compact -->
-  <div id="resultScreen" class="h-full w-full flex flex-col items-center justify-center p-2 fixed inset-0 hidden z-50 overflow-auto" style="background: linear-gradient(135deg, #1a2e1a 0%, #163e16 50%, #0f600f 100%);">
+  <div id="resultScreen" class="h-full w-full flex flex-col items-center justify-center p-1 fixed inset-0 hidden z-50 overflow-auto" style="background: linear-gradient(135deg, #1a2e1a 0%, #163e16 50%, #0f600f 100%);">
     <div id="confettiContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
-    <div class="text-center z-30 w-full flex flex-col items-center justify-center max-w-sm px-2 py-3">
+    <div class="text-center z-30 w-full flex flex-col items-center justify-center max-w-sm px-1 py-2">
       
       <!-- Winner Announcement -->
-      <div class="mb-3 flex justify-center">
-        <span class="text-5xl block animate-bounce">🎊</span>
+      <div class="mb-2 flex justify-center">
+        <span class="text-4xl block animate-bounce">🎊</span>
       </div>
       
-      <div id="winnerAnnouncement" class="mb-3 bg-gradient-to-r from-green-400/20 to-green-500/20 border border-green-400/50 rounded-lg p-2.5 w-full">
-        <p id="winnerMessageLevel" class="text-base text-yellow-300 font-bold mb-0.5"></p>
-        <p class="text-sm text-white font-semibold">Pemenang! 🏅</p>
+      <div id="winnerAnnouncement" class="mb-2 bg-gradient-to-r from-green-400/20 to-green-500/20 border border-green-400/50 rounded-lg p-2 w-full">
+        <p id="winnerMessageLevel" class="text-sm text-yellow-300 font-bold mb-0.5"></p>
+        <p class="text-xs text-white font-semibold">Pemenang! 🏅</p>
       </div>
       
-      <h2 class="text-xl font-bold text-white mb-1 drop-shadow-lg">SELAMAT!</h2>
-      <p id="winnerName" class="text-2xl font-bold bg-gradient-to-r from-green-300 to-green-500 bg-clip-text text-transparent mb-2 px-2 drop-shadow-lg truncate w-full"></p>
+      <h2 class="text-lg font-bold text-white mb-0.5 drop-shadow-lg">SELAMAT!</h2>
+      <p id="winnerName" class="text-xl font-bold bg-gradient-to-r from-green-300 to-green-500 bg-clip-text text-transparent mb-1 px-1 drop-shadow-lg truncate w-full"></p>
       
       <!-- Results Card Compact -->
-      <div class="bg-white/15 backdrop-blur-sm rounded-xl p-3 mb-3 w-full border border-white/20 shadow-lg">
-        <h3 class="text-base text-white font-bold mb-2 pb-1.5 border-b border-white/20">📊 Hasil Game</h3>
-        <div id="resultsContainer" class="space-y-1.5 mb-2.5">
+      <div class="bg-white/15 backdrop-blur-sm rounded-xl p-2 mb-2 w-full border border-white/20 shadow-lg">
+        <h3 class="text-sm text-white font-bold mb-1.5 pb-1 border-b border-white/20">📊 Hasil Game</h3>
+        <div id="resultsContainer" class="space-y-1 mb-2">
           <!-- Results akan di-generate oleh JavaScript -->
         </div>
         
         <!-- Stats Grid Compact -->
-        <div class="grid grid-cols-2 gap-1.5 pt-2 border-t border-white/20">
-          <div class="flex flex-col items-center bg-white/10 rounded p-1.5">
-            <span class="text-lg mb-0.5">⏱️</span>
-            <span class="text-gray-300 text-[10px] font-medium">Waktu</span>
-            <span id="resultTime" class="font-mono text-sm font-bold text-yellow-300 mt-0.5"></span>
+        <div class="grid grid-cols-2 gap-1 pt-1.5 border-t border-white/20">
+          <div class="flex flex-col items-center bg-white/10 rounded p-1">
+            <span class="text-sm mb-0.5">⏱️</span>
+            <span class="text-gray-300 text-[9px] font-medium">Waktu</span>
+            <span id="resultTime" class="font-mono text-xs font-bold text-yellow-300 mt-0.5"></span>
           </div>
-          <div class="flex flex-col items-center bg-white/10 rounded p-1.5">
-            <span class="text-lg mb-0.5">🎯</span>
-            <span class="text-gray-300 text-[10px] font-medium">Level</span>
-            <span id="resultLevel" class="text-sm font-bold text-yellow-300 mt-0.5"></span>
+          <div class="flex flex-col items-center bg-white/10 rounded p-1">
+            <span class="text-sm mb-0.5">🎯</span>
+            <span class="text-gray-300 text-[9px] font-medium">Level</span>
+            <span id="resultLevel" class="text-xs font-bold text-yellow-300 mt-0.5"></span>
           </div>
         </div>
       </div>
       
       <!-- Action Buttons Compact -->
-      <div class="flex flex-col gap-1.5 justify-center w-full">
-        <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-3 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-green-600/50 border border-green-300/50 text-xs flex items-center justify-center gap-1">
-          <span class="text-lg">🔄</span>
+      <div class="flex flex-col gap-1 justify-center w-full">
+        <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-1.5 px-2 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-green-600/50 border border-green-300/50 text-[10px] flex items-center justify-center gap-0.5">
+          <span class="text-sm">🔄</span>
           Main Lagi
         </button>
-        <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2 px-3 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-blue-600/50 border border-blue-300/50 text-xs flex items-center justify-center gap-1">
-          <span class="text-lg">📋</span>
+        <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-1.5 px-2 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-blue-600/50 border border-blue-300/50 text-[10px] flex items-center justify-center gap-0.5">
+          <span class="text-sm">📋</span>
           Menu Utama
         </button>
       </div>
@@ -833,10 +850,10 @@
       const placeholder = i === 0 ? "Pemain 1" : i === 1 ? "Pemain 2" : i === 2 ? "Pemain 3" : "Pemain 4";
       
       const inputHTML = `
-        <div class="flex items-center gap-2">
-          <span class="text-lg">${color.icon}</span>
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm">${color.icon}</span>
           <input type="text" id="${inputId}" placeholder="${placeholder}" maxlength="10" 
-                 class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border ${i === 0 ? 'border-cyan-500/50' : i === 1 ? 'border-pink-500/50' : i === 2 ? 'border-emerald-500/50' : 'border-purple-500/50'} focus:outline-none text-sm">
+                 class="flex-1 px-2 py-1 rounded bg-white/20 text-white placeholder-gray-300 border ${i === 0 ? 'border-cyan-500/50' : i === 1 ? 'border-pink-500/50' : i === 2 ? 'border-emerald-500/50' : 'border-purple-500/50'} focus:outline-none text-xs">
         </div>
       `;
       container.innerHTML += inputHTML;
@@ -946,11 +963,11 @@
     scoreBoard.innerHTML = '';
     
     if (playerCount === 1) {
-      scoreBoard.className = 'grid grid-cols-1 gap-1.5';
+      scoreBoard.className = 'grid grid-cols-1 gap-1';
     } else if (playerCount === 2) {
-      scoreBoard.className = 'grid grid-cols-2 gap-1.5';
+      scoreBoard.className = 'grid grid-cols-2 gap-1';
     } else if (playerCount === 4) {
-      scoreBoard.className = 'grid grid-cols-4 gap-1';
+      scoreBoard.className = 'grid grid-cols-4 gap-0.5';
     }
     
     for (let i = 0; i < playerCount; i++) {
@@ -958,14 +975,14 @@
       const playerNum = i + 1;
       
       const scoreCardHTML = `
-        <div id="player${playerNum}Card" class="${color.bg} p-1.5 rounded text-white transition-all">
-          <div class="flex items-center gap-1.5">
-            <span class="text-lg">${color.icon}</span>
+        <div id="player${playerNum}Card" class="${color.bg} p-1 rounded text-white transition-all">
+          <div class="flex items-center gap-1">
+            <span class="text-sm">${color.icon}</span>
             <div class="flex-1 min-w-0">
-              <p id="p${playerNum}NameDisplay" class="font-bold text-xs truncate">${gameState.players[i].name}</p>
+              <p id="p${playerNum}NameDisplay" class="font-bold text-[10px] truncate">${gameState.players[i].name}</p>
               <div class="flex items-center gap-0.5">
-                <span class="${color.text} text-[10px]">Skor:</span>
-                <span id="p${playerNum}Score" class="text-base font-bold">0</span>
+                <span class="${color.text} text-[9px]">Skor:</span>
+                <span id="p${playerNum}Score" class="text-sm font-bold">0</span>
               </div>
             </div>
           </div>
@@ -980,11 +997,11 @@
     statusBoard.innerHTML = '';
     
     if (playerCount === 1) {
-      statusBoard.className = 'grid grid-cols-1 gap-1.5';
+      statusBoard.className = 'grid grid-cols-1 gap-1';
     } else if (playerCount === 2) {
-      statusBoard.className = 'grid grid-cols-2 gap-1.5';
+      statusBoard.className = 'grid grid-cols-2 gap-1';
     } else if (playerCount === 4) {
-      statusBoard.className = 'grid grid-cols-4 gap-1';
+      statusBoard.className = 'grid grid-cols-4 gap-0.5';
     }
     
     for (let i = 0; i < playerCount; i++) {
@@ -992,12 +1009,12 @@
       const playerNum = i + 1;
       
       const statusHTML = `
-        <div class="bg-gradient-to-r ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/30 rounded p-1.5 border ${color.border}">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
-            <span id="p${playerNum}Matches" class="${color.text} font-bold text-xs">0/<span id="totalMatches${playerNum}">${gameState.targetPairs}</span></span>
+        <div class="bg-gradient-to-r ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/30 rounded p-1 border ${color.border}">
+          <div class="flex items-center justify-between mb-0.5">
+            <span class="text-white font-semibold text-[9px]">Kecocokan:</span>
+            <span id="p${playerNum}Matches" class="${color.text} font-bold text-[10px]">0/<span id="totalMatches${playerNum}">${gameState.targetPairs}</span></span>
           </div>
-          <div class="bg-gray-800/30 rounded-full h-1 overflow-hidden">
+          <div class="bg-gray-800/30 rounded-full h-0.5 overflow-hidden">
             <div id="p${playerNum}MatchBar" class="h-full bg-gradient-to-r ${color.bg} transition-all duration-300" style="width: 0%"></div>
           </div>
         </div>
@@ -1011,11 +1028,11 @@
     boardsContainer.innerHTML = '';
     
     if (playerCount === 1) {
-      boardsContainer.className = 'flex-1 grid grid-cols-1 gap-1.5 min-h-0 overflow-hidden';
+      boardsContainer.className = 'flex-1 grid grid-cols-1 gap-1 min-h-0 overflow-hidden';
     } else if (playerCount === 2) {
-      boardsContainer.className = 'flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden';
+      boardsContainer.className = 'flex-1 grid grid-cols-2 gap-1 min-h-0 overflow-hidden';
     } else if (playerCount === 4) {
-      boardsContainer.className = 'flex-1 grid grid-cols-2 md:grid-cols-4 gap-1.5 min-h-0 overflow-hidden';
+      boardsContainer.className = 'flex-1 grid grid-cols-2 md:grid-cols-4 gap-1 min-h-0 overflow-hidden';
     }
     
     for (let i = 0; i < playerCount; i++) {
@@ -1023,8 +1040,8 @@
       const playerNum = i + 1;
       
       const boardHTML = `
-        <div class="flex flex-col ${color.board} rounded p-1 border ${color.border} overflow-hidden">
-          <h3 class="${color.text} font-bold text-center mb-0.5 text-xs truncate">
+        <div class="flex flex-col ${color.board} rounded p-0.5 border ${color.border} overflow-hidden">
+          <h3 class="${color.text} font-bold text-center mb-0.5 text-[10px] truncate">
             ${color.icon} <span id="p${playerNum}BoardName">${gameState.players[i].name}</span>
           </h3>
           <div id="gameBoard${playerNum}" class="game-board flex-1">
@@ -1048,32 +1065,38 @@
     const board = document.getElementById(`gameBoard${playerNum}`);
     if (!board) return;
     
-    let cols, cardWidth, cardHeight, fontSize;
+    let cols, cardWidth, cardHeight, fontSize, iconSize;
     
-    // Ukuran kartu lebih besar untuk menampung teks lengkap
+    // UKURAN LEBIH KOMPAK agar semua kartu terlihat
     if (playerCount === 1) {
-      cols = 4;
-      cardWidth = 'w-24';
-      cardHeight = 'h-28';
-      fontSize = 'text-xs';
-    } else if (playerCount === 2) {
-      cols = 4;
-      cardWidth = 'w-20';
-      cardHeight = 'h-24';
-      fontSize = 'text-xs';
-    } else if (playerCount === 4) {
-      cols = 3;
-      cardWidth = 'w-18';
-      cardHeight = 'h-22';
+      cols = 4; // Untuk 16 kartu (8 pasang)
+      cardWidth = 'w-16';
+      cardHeight = 'h-20';
       fontSize = 'text-[10px]';
+      iconSize = 'text-xl';
+    } else if (playerCount === 2) {
+      cols = 4; // Untuk 16 kartu (8 pasang)
+      cardWidth = 'w-14';
+      cardHeight = 'h-18';
+      fontSize = 'text-[9px]';
+      iconSize = 'text-lg';
+    } else if (playerCount === 4) {
+      cols = 3; // Untuk 18 kartu (9 pasang) tapi ditampilkan lebih compact
+      cardWidth = 'w-12';
+      cardHeight = 'h-16';
+      fontSize = 'text-[8px]';
+      iconSize = 'text-base';
     } else {
       cols = 4;
-      cardWidth = 'w-20';
-      cardHeight = 'h-24';
-      fontSize = 'text-xs';
+      cardWidth = 'w-14';
+      cardHeight = 'h-18';
+      fontSize = 'text-[10px]';
+      iconSize = 'text-lg';
     }
     
     board.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    board.style.gap = '2px';
+    board.style.padding = '1px';
     board.innerHTML = '';
     
     cards.forEach((card, index) => {
@@ -1093,13 +1116,13 @@
           <div class="card-front bg-gradient-to-br from-green-600 to-emerald-700 border border-white/20">
             <div class="card-content">
               <div class="card-text">
-                <span class="text-3xl">🍄</span>
+                <span class="${iconSize}">🍄</span>
               </div>
             </div>
           </div>
           <div class="card-back ${bgColor} border border-white/30">
             <div class="card-content">
-              <div class="card-text ${fontSize} font-bold leading-tight px-1">
+              <div class="card-text ${fontSize} font-bold leading-tight px-0.5">
                 ${displayText}
               </div>
             </div>
@@ -1351,12 +1374,12 @@
       const playerNum = i + 1;
       
       const resultHTML = `
-        <div class="flex justify-between items-center ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/50 p-1.5 rounded-lg border ${color.border.replace('border-', 'border-')}/70">
-          <div class="flex items-center gap-1.5">
-            <span class="text-xl">${color.icon}</span>
-            <span id="result${playerNum}Name" class="text-white font-bold text-sm truncate max-w-[100px]">${gameState.players[i].name}</span>
+        <div class="flex justify-between items-center ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/50 p-1 rounded-lg border ${color.border.replace('border-', 'border-')}/70">
+          <div class="flex items-center gap-1">
+            <span class="text-sm">${color.icon}</span>
+            <span id="result${playerNum}Name" class="text-white font-bold text-xs truncate max-w-[80px]">${gameState.players[i].name}</span>
           </div>
-          <span id="result${playerNum}Score" class="text-lg font-bold ${color.text} ${color.bg.replace('from-', 'bg-').split(' ')[0]}/40 px-1.5 py-0.5 rounded">${gameState.players[i].score} pasang</span>
+          <span id="result${playerNum}Score" class="text-sm font-bold ${color.text} ${color.bg.replace('from-', 'bg-').split(' ')[0]}/40 px-1 py-0.5 rounded">${gameState.players[i].score} pasang</span>
         </div>
       `;
       resultsContainer.innerHTML += resultHTML;
