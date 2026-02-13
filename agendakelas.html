@@ -1,2167 +1,1402 @@
 <!doctype html>
-<html lang="id">
- <head>
+<html lang="id" class="h-full">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Kegiatan Guru - SMA Negeri 1 Batujajar</title>
+  <title>Make A Match - Organ Systems</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .stats-counter {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #667eea;
-            transition: all 0.3s ease;
-        }
-        
-        .calendar-day {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            font-size: 0.875rem;
-        }
-        
-        @media (min-width: 1024px) {
-            .calendar-day {
-                width: 40px;
-                height: 40px;
-                border-radius: 8px;
-                font-size: 1rem;
-            }
-        }
-        
-        .calendar-day:hover {
-            background-color: #e0e7ff;
-            transform: scale(1.1);
-        }
-        
-        .calendar-day.has-activity {
-            background-color: #3b82f6;
-            color: white;
-            font-weight: 600;
-        }
-        
-        .calendar-day.has-activity::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 6px;
-            height: 6px;
-            background-color: #fbbf24;
-            border-radius: 50%;
-        }
-        
-        .subject-card {
-            border-left: 4px solid #3b82f6;
-            transition: all 0.3s ease;
-        }
-        
-        .subject-card:hover {
-            border-left-width: 6px;
-            transform: translateX(2px);
-        }
-        
-        .chart-container {
-            position: relative;
-        }
-        
-        .loading-spinner {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: scale(0.9) translateY(-20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-    </style>
+    body {
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    * {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .card-flip {
+      perspective: 1000px;
+    }
+    .card-inner {
+      transition: transform 0.5s;
+      transform-style: preserve-3d;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+    .matched {
+      animation: matchPulse 0.5s ease;
+    }
+    @keyframes matchPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      animation: confettiFall 2s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    .sound-toggle {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 50;
+    }
+    /* Animasi ucapan selamat level */
+    .level-congrats {
+      animation: levelCongrats 2.5s ease forwards;
+      z-index: 100;
+      pointer-events: none;
+    }
+    @keyframes levelCongrats {
+      0% {
+        transform: scale(0) translateY(50px);
+        opacity: 0;
+      }
+      15% {
+        transform: scale(1.05) translateY(0);
+        opacity: 1;
+      }
+      85% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0) translateY(-50px);
+        opacity: 0;
+      }
+    }
+    /* Animasi applause */
+    .applause-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .applause-container {
+      text-align: center;
+      animation: applauseScale 0.6s ease-out;
+    }
+    @keyframes applauseScale {
+      0% { transform: scale(0.3); opacity: 0; }
+      70% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .applause-text {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #FFD700;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+      animation: textGlow 1.5s ease-in-out infinite alternate;
+      margin-bottom: 10px;
+    }
+    @keyframes textGlow {
+      from { 
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.7), 
+                     0 0 20px rgba(255, 215, 0, 0.5); 
+      }
+      to { 
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 
+                     0 0 30px rgba(255, 215, 0, 0.7),
+                     0 0 40px rgba(255, 215, 0, 0.5); 
+      }
+    }
+    
+    /* Custom card styles */
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 4px;
+      text-align: center;
+    }
+    
+    .card-icon {
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .card-text {
+      line-height: 1;
+      font-weight: 600;
+      word-break: break-word;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
+    
+    /* Grid responsive untuk kartu */
+    .game-board {
+      display: grid;
+      gap: 4px;
+      padding: 2px;
+      overflow: auto;
+    }
+    
+    /* Custom scrollbar untuk game board */
+    .game-board::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    
+    .game-board::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+    
+    .game-board::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
+    
+    .game-board::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Responsive untuk 4 pemain */
+    @media (max-width: 640px) {
+      .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .applause-text {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
- </head>
- <body class="bg-gray-50"><!-- Header -->
-  <header class="gradient-bg text-white py-6 lg:py-8">
-   <div class="container mx-auto px-4 lg:px-6">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-     <div>
-      <h1 class="text-2xl lg:text-3xl font-bold">Dashboard Kegiatan Guru</h1>
-      <p class="text-sm lg:text-base opacity-90 mt-1">SMA Negeri 1 Batujajar</p>
-     </div>
-     <div class="flex items-center gap-3"><button onclick="loadData()" class="px-4 lg:px-6 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm lg:text-base"> 🔄 Refresh </button>
-      <div class="text-white text-sm lg:text-base font-medium bg-white bg-opacity-20 px-3 lg:px-4 py-2 rounded-lg">
-       📅 <span id="currentDate"></span>
+</head>
+<body class="h-full">
+<div id="app" class="h-full w-full overflow-hidden" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+  
+  <!-- Level Congratulation Modal -->
+  <div id="levelCongratsModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <div class="level-congrats relative bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 p-4 rounded-xl shadow-2xl border-3 border-yellow-500 max-w-xs mx-3">
+      <div class="text-center">
+        <div class="text-4xl mb-2 animate-bounce">🏆</div>
+        <h3 class="text-xl font-bold text-gray-800 mb-1">HEBAT!</h3>
+        <p id="levelWinnerName" class="text-lg font-bold text-purple-700 mb-1"></p>
+        <p class="text-sm text-gray-700 mb-2">Pertama selesai!</p>
+        <div class="flex items-center justify-center gap-1 text-base text-gray-800">
+          <span>⭐</span>
+          <span id="levelDifficultyText" class="font-bold"></span>
+          <span>⭐</span>
+        </div>
       </div>
-     </div>
     </div>
-   </div>
-  </header><!-- Loading Indicator -->
-  <div id="loadingIndicator" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-   <div class="bg-white p-8 rounded-lg shadow-xl text-center">
-    <div class="loading-spinner mx-auto mb-4"></div>
-    <p class="text-gray-600 font-medium">Memuat data dari Google Sheets...</p>
-   </div>
-  </div><!-- Stats Section -->
-  <section class="py-8 lg:py-12 bg-white">
-   <div class="container mx-auto px-4 lg:px-6">
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
-     <div class="text-center bg-gradient-to-br from-blue-50 to-blue-100 p-4 lg:p-6 rounded-xl card-hover">
-      <div class="text-2xl lg:text-4xl mb-2">
-       📚
-      </div>
-      <div class="stats-counter text-xl lg:text-3xl" id="totalActivities">
-       0
-      </div>
-      <p class="text-gray-600 font-medium text-xs lg:text-sm">Total Pembelajaran</p>
-     </div>
-     <div class="text-center bg-gradient-to-br from-green-50 to-green-100 p-4 lg:p-6 rounded-xl card-hover">
-      <div class="text-2xl lg:text-4xl mb-2">
-       👨‍🏫
-      </div>
-      <div class="stats-counter text-xl lg:text-3xl" id="totalTeachers">
-       0
-      </div>
-      <p class="text-gray-600 font-medium text-xs lg:text-sm">Guru Aktif</p>
-     </div>
-     <div class="text-center bg-gradient-to-br from-purple-50 to-purple-100 p-4 lg:p-6 rounded-xl card-hover">
-      <div class="text-2xl lg:text-4xl mb-2">
-       📖
-      </div>
-      <div class="stats-counter text-xl lg:text-3xl" id="totalSubjects">
-       0
-      </div>
-      <p class="text-gray-600 font-medium text-xs lg:text-sm">Mata Pelajaran</p>
-     </div>
-     <div class="text-center bg-gradient-to-br from-orange-50 to-orange-100 p-4 lg:p-6 rounded-xl card-hover">
-      <div class="text-2xl lg:text-4xl mb-2">
-       🏫
-      </div>
-      <div class="stats-counter text-xl lg:text-3xl" id="totalClasses">
-       0
-      </div>
-      <p class="text-gray-600 font-medium text-xs lg:text-sm">Kelas Aktif</p>
-     </div>
-     <div class="col-span-2 lg:col-span-1 text-center bg-gradient-to-br from-red-50 to-red-100 p-4 lg:p-6 rounded-xl card-hover">
-      <div class="text-2xl lg:text-4xl mb-2">
-       📅
-      </div>
-      <div class="stats-counter text-xl lg:text-3xl" id="todayActivities">
-       0
-      </div>
-      <p class="text-gray-600 font-medium text-xs lg:text-sm">Pembelajaran Hari Ini</p>
-     </div>
+  </div>
+  
+  <!-- Applause Animation Overlay -->
+  <div id="applauseOverlay" class="applause-overlay hidden">
+    <div class="applause-container">
+      <div class="text-6xl mb-3">👏🎉✨</div>
+      <div id="applauseText" class="applause-text"></div>
+      <div class="text-xl text-white font-semibold mt-2" id="applauseSubtext">Juara Level!</div>
     </div>
-   </div>
-  </section><!-- Charts Section -->
-  <section class="py-8 lg:py-12 bg-gray-100">
-   <div class="container mx-auto px-4 lg:px-6">
-    <h2 class="text-2xl lg:text-3xl font-bold text-center text-gray-800 mb-8 lg:mb-12">📈 Analisis Data Pembelajaran</h2>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8"><!-- Subject Distribution Chart -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">📊</span> Distribusi Mata Pelajaran</h3>
-      <div class="chart-container h-64 lg:h-80">
-       <canvas id="subjectChart"></canvas>
-      </div>
-     </div><!-- Class Distribution Chart -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">🏫</span> Distribusi Kelas</h3>
-      <div class="chart-container h-64 lg:h-80">
-       <canvas id="classChart"></canvas>
-      </div>
-     </div><!-- Teacher Activity Chart -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">👨‍🏫</span> Aktivitas Guru</h3>
-      <div class="chart-container h-64 lg:h-80">
-       <canvas id="teacherChart"></canvas>
-      </div>
-     </div><!-- Top Teachers -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">🏆</span> Guru Teraktif</h3>
-      <div id="topTeachers" class="space-y-3"><!-- Top teachers will be populated by JavaScript -->
-      </div>
-     </div><!-- Daily Activity Chart -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">📅</span> Aktivitas Harian</h3>
-      <div class="chart-container h-64 lg:h-80">
-       <canvas id="dailyChart"></canvas>
-      </div>
-     </div><!-- Monthly Activity Chart -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">📈</span> Aktivitas Bulanan</h3>
-      <div class="chart-container h-64 lg:h-80">
-       <canvas id="monthlyChart"></canvas>
-      </div>
-     </div>
+  </div>
+  
+  <!-- Sound Toggle Button -->
+  <button onclick="toggleSound()" id="soundToggle" class="sound-toggle bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-3 py-2 rounded-full shadow-lg transition-all transform hover:scale-110 flex items-center gap-1 text-sm">
+    <span id="soundIcon">🔊</span>
+  </button>
+  
+  <!-- Start Screen -->
+  <div id="startScreen" class="h-full flex flex-col items-center justify-center p-3 overflow-auto">
+    <div class="text-center mb-4">
+      <h1 id="gameTitle" class="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg"><br/>Make A Match</h1>
+      <p class="text-base text-cyan-300">Sistem Organ Manusia</p>
+      
     </div>
-   </div>
-  </section><!-- Main Content -->
-  <main class="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
-   <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 lg:gap-8"><!-- Calendar Section -->
-    <div class="xl:col-span-2 space-y-6 lg:space-y-8"><!-- Interactive Calendar -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-8 card-hover">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 lg:mb-6">
-       <h3 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center mb-4 sm:mb-0"><span class="text-2xl lg:text-3xl mr-2 lg:mr-3">📅</span> Kalender Pembelajaran</h3>
-       <div class="flex items-center gap-3"><button onclick="previousMonth()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg font-semibold transition-colors text-sm"> ← Sebelumnya </button> <span class="text-base lg:text-lg font-normal text-gray-600 bg-gray-50 px-4 py-2 rounded-lg min-w-max" id="currentMonth"></span> <button onclick="nextMonth()" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg font-semibold transition-colors text-sm"> Selanjutnya → </button>
-       </div>
+    
+    <!-- Player Count Selection -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
+      <h3 class="text-white font-semibold mb-2 text-center text-sm">👥 Jumlah Pemain</h3>
+      <div class="grid grid-cols-3 gap-1">
+        <button onclick="selectPlayerCount(1)" id="btn1Player" class="player-count-btn bg-blue-500 hover:bg-blue-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-blue-700">
+          <span class="text-lg block mb-0.5">👤</span>
+          <span class="text-xs">1 Orang</span>
+          <span class="text-[10px] block opacity-80">Solo</span>
+        </button>
+        <button onclick="selectPlayerCount(2)" id="btn2Players" class="player-count-btn bg-purple-500 hover:bg-purple-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-purple-700 ring-1 ring-white">
+          <span class="text-lg block mb-0.5">👥</span>
+          <span class="text-xs">2 Orang</span>
+          <span class="text-[10px] block opacity-80">Kompetisi</span>
+        </button>
+        <button onclick="selectPlayerCount(4)" id="btn4Players" class="player-count-btn bg-pink-500 hover:bg-pink-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-pink-700">
+          <span class="text-lg block mb-0.5">👨‍👩‍👧‍👦</span>
+          <span class="text-xs">4 Orang</span>
+          <span class="text-[10px] block opacity-80">Tim</span>
+        </button>
       </div>
-      <div class="grid grid-cols-7 gap-1 lg:gap-2 text-center">
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Min
-       </div>
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Sen
-       </div>
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Sel
-       </div>
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Rab
-       </div>
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Kam
-       </div>
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Jum
-       </div>
-       <div class="font-semibold text-gray-700 p-2 lg:p-3 text-xs lg:text-sm">
-        Sab
-       </div>
-       <div id="calendarDays" class="col-span-7 grid grid-cols-7 gap-1 lg:gap-2"><!-- Calendar days will be populated by JavaScript -->
-       </div>
-      </div>
-      <div class="mt-4 lg:mt-6 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-xs lg:text-sm">
-       <div class="flex items-center">
-        <div class="w-3 h-3 lg:w-4 lg:h-4 bg-blue-500 rounded mr-2"></div><span class="text-gray-600">Ada Pembelajaran</span>
-       </div>
-       <div class="flex items-center">
-        <div class="w-3 h-3 lg:w-4 lg:h-4 bg-gray-200 rounded mr-2"></div><span class="text-gray-600">Tidak Ada Kegiatan</span>
-       </div>
-      </div>
-     </div><!-- Subject Recap -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-8 card-hover">
-      <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-4 lg:mb-6 flex items-center"><span class="text-2xl lg:text-3xl mr-2 lg:mr-3">📚</span> Rekapitulasi Per Mata Pelajaran</h3>
-      <div id="subjectRecap" class="space-y-3 lg:space-y-4"><!-- Subject recap will be populated by JavaScript -->
-      </div>
-     </div>
-    </div><!-- Sidebar -->
-    <div class="xl:col-span-2 space-y-6"><!-- Today's Activities -->
-     <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-      <h4 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">🎯</span> Kegiatan Hari Ini</h4>
-      <div id="todayActivitiesList" class="space-y-3"><!-- Today's activities will be populated by JavaScript -->
-      </div>
-     </div>
     </div>
-   </div><!-- Teacher Activity Recap Section -->
-   <div class="mt-8">
-    <div class="bg-white rounded-xl shadow-lg p-4 lg:p-8 card-hover">
-     <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl lg:text-3xl mr-2 lg:mr-3">👨‍🏫</span> Rekap Aktivitas Per Guru</h3><!-- Filters -->
-     <div class="bg-gray-50 p-4 rounded-lg mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">Filter Guru</label> <select id="teacherFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"> <option value="">Semua Guru</option> </select>
-       </div>
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">Filter Kelas</label> <select id="classFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"> <option value="">Semua Kelas</option> </select>
-       </div>
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">Filter Tanggal</label> <input type="date" id="dateFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-       </div>
-       <div class="flex items-end"><button onclick="resetFilters()" class="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium"> 🔄 Reset Filter </button>
-       </div>
-       <div class="flex items-end"><button onclick="printRecap()" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"> 🖨️ Cetak Rekap </button>
-       </div>
+    
+    <!-- Player Names -->
+    <div id="playerNamesContainer" class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
+      <h3 class="text-white font-semibold mb-2 text-center text-sm">👥 Nama Pemain</h3>
+      <div id="playerInputs" class="space-y-2">
+        <!-- Player inputs akan di-generate oleh JavaScript -->
       </div>
-     </div><!-- Table Container -->
-     <div class="overflow-x-auto">
-      <table class="w-full border-collapse bg-white">
-       <thead>
-        <tr class="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">No</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">Tanggal</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">Hari</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">Nama Guru</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">Mata Pelajaran</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">Kelas</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider border-r border-blue-500">Jam Ke</th>
-         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Materi Pembelajaran</th>
-        </tr>
-       </thead>
-       <tbody id="teacherActivityTable" class="divide-y divide-gray-200"><!-- Table content will be populated by JavaScript -->
-       </tbody>
-      </table>
-     </div><!-- Pagination for Teacher Activity Table -->
-     <div id="teacherTablePagination" class="mt-6"><!-- Pagination will be populated by JavaScript -->
-     </div><!-- No Data Message -->
-     <div id="noDataMessage" class="hidden text-center py-8">
-      <div class="text-4xl mb-4">
-       📋
-      </div>
-      <h4 class="text-lg font-semibold text-gray-700 mb-2">Tidak Ada Data</h4>
-      <p class="text-gray-500">Tidak ada aktivitas yang sesuai dengan filter yang dipilih</p>
-     </div>
     </div>
-   </div><!-- Data Status Section -->
-   <div class="mt-8">
-    <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
-     <h4 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">📊</span> Status Data</h4>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-blue-50 p-4 rounded-lg text-center">
-       <div class="text-sm text-gray-600 mb-2">
-        Terakhir Update
-       </div>
-       <div class="font-semibold text-blue-600 text-sm lg:text-base" id="lastUpdate">
-        -
-       </div>
+    
+    <!-- Difficulty Selection -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3 w-full max-w-xs">
+      <h3 class="text-white font-semibold mb-2 text-center text-sm">🎮 Tingkat Kesulitan</h3>
+      <div class="grid grid-cols-3 gap-1">
+        <button onclick="selectDifficulty('easy')" id="btnEasy" class="difficulty-btn bg-green-500 hover:bg-green-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-green-700">
+          <span class="text-lg block mb-0.5">🌱</span>
+          <span class="text-xs">Mudah</span>
+          <span class="text-[10px] block opacity-80">5 pasang</span>
+        </button>
+        <button onclick="selectDifficulty('medium')" id="btnMedium" class="difficulty-btn bg-yellow-500 hover:bg-yellow-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-yellow-700">
+          <span class="text-lg block mb-0.5">🌿</span>
+          <span class="text-xs">Sedang</span>
+          <span class="text-[10px] block opacity-80">8 pasang</span>
+        </button>
+        <button onclick="selectDifficulty('hard')" id="btnHard" class="difficulty-btn bg-red-500 hover:bg-red-400 text-white py-1.5 px-1 rounded font-semibold transition-all transform hover:scale-105 border-b-3 border-red-700">
+          <span class="text-lg block mb-0.5">🌳</span>
+          <span class="text-xs">Sulit</span>
+          <span class="text-[10px] block opacity-80">10 pasang</span>
+        </button>
       </div>
-      <div class="bg-green-50 p-4 rounded-lg text-center">
-       <div class="text-sm text-gray-600 mb-2">
-        Total Record
-       </div>
-       <div class="font-semibold text-green-600 text-sm lg:text-base" id="totalRecords">
-        -
-       </div>
-      </div>
-      <div class="bg-purple-50 p-4 rounded-lg text-center">
-       <div class="text-sm text-gray-600 mb-2">
-        Status Koneksi
-       </div>
-       <div class="font-semibold text-green-600 text-sm lg:text-base" id="connectionStatus">
-        🟢 Terhubung
-       </div>
-      </div>
-     </div>
     </div>
-   </div>
-  </main><!-- Footer -->
-  <footer class="bg-gray-800 text-white py-8 mt-12">
-   <div class="container mx-auto px-6 text-center">
-    <p>© 2025 SMA Negeri 1 Batujajar.</p>
-   </div>
-  </footer>
-  <script>
-        // Database connection with CORS handling
-        const SPREADSHEET_URL = 'https://script.google.com/macros/s/AKfycbw4bLppRg2DilFigiVf-qnt9Kphaai7xEqFpxOfXHZxeoaDW1HktWaB0CTYWEqo16Ea/exec';
-        let activities = [];
-        let rawData = [];
-        let charts = {};
+    
+    <button onclick="startGame()" id="startBtn" class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg text-sm mb-3">
+      🚀 Mulai Game
+    </button>
+    
+    <!-- Instructions -->
+    <div class="text-center text-gray-300 text-[10px] max-w-xs">
+      <p class="mb-1">📋 <strong class="text-white">Cara Main:</strong> Temukan pasangan kartu yang cocok!</p>
+    </div>
+  </div>
+  
+  <!-- Game Screen -->
+  <div id="gameScreen" class="h-full flex flex-col p-1.5 hidden">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-1.5 gap-1">
+      <button onclick="backToMenu()" class="bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded transition-all flex items-center gap-0.5 text-xs">
+        ← Menu
+      </button>
+      <div class="flex items-center gap-1 bg-white/10 px-2 py-1 rounded">
+        <span class="text-yellow-300 text-xs">⏱️</span>
+        <span id="timer" class="text-white font-mono text-sm">00:00</span>
+      </div>
+    </div>
+    
+    <!-- Score Board Compact -->
+    <div id="scoreBoard" class="grid grid-cols-2 gap-1.5 mb-1.5">
+      <!-- Score cards akan di-generate oleh JavaScript -->
+    </div>
+    
+    <!-- Competitive Status Bar Compact -->
+    <div id="statusBoard" class="grid grid-cols-2 gap-1.5 mb-1.5">
+      <!-- Status bars akan di-generate oleh JavaScript -->
+    </div>
+    
+    <!-- Split Screen Game Board Compact -->
+    <div id="gameBoardsContainer" class="flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden">
+      <!-- Game boards akan di-generate oleh JavaScript -->
+    </div>
+    
+    <!-- Info Panel Compact -->
+    <div id="infoPanel" class="mt-1 bg-white/10 backdrop-blur-sm rounded p-1.5 text-center hidden">
+      <p id="infoText" class="text-white text-xs"></p>
+    </div>
+  </div>
+  
+  <!-- Result Screen Compact -->
+  <div id="resultScreen" class="h-full w-full flex flex-col items-center justify-center p-2 fixed inset-0 hidden z-50 overflow-auto" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+    <div id="confettiContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+    <div class="text-center z-30 w-full flex flex-col items-center justify-center max-w-sm px-2 py-3">
+      
+      <!-- Winner Announcement -->
+      <div class="mb-3 flex justify-center">
+        <span class="text-5xl block animate-bounce">🎊</span>
+      </div>
+      
+      <div id="winnerAnnouncement" class="mb-3 bg-gradient-to-r from-yellow-400/20 to-yellow-500/20 border border-yellow-400/50 rounded-lg p-2.5 w-full">
+        <p id="winnerMessageLevel" class="text-base text-yellow-300 font-bold mb-0.5"></p>
+        <p class="text-sm text-white font-semibold">Pemenang! 🏅</p>
+      </div>
+      
+      <h2 class="text-xl font-bold text-white mb-1 drop-shadow-lg">SELAMAT!</h2>
+      <p id="winnerName" class="text-2xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent mb-2 px-2 drop-shadow-lg truncate w-full"></p>
+      
+      <!-- Results Card Compact -->
+      <div class="bg-white/15 backdrop-blur-sm rounded-xl p-3 mb-3 w-full border border-white/20 shadow-lg">
+        <h3 class="text-base text-white font-bold mb-2 pb-1.5 border-b border-white/20">📊 Hasil Game</h3>
+        <div id="resultsContainer" class="space-y-1.5 mb-2.5">
+          <!-- Results akan di-generate oleh JavaScript -->
+        </div>
         
-        // Calendar state
-        let displayedMonth = new Date().getMonth();
-        let displayedYear = new Date().getFullYear();
+        <!-- Stats Grid Compact -->
+        <div class="grid grid-cols-2 gap-1.5 pt-2 border-t border-white/20">
+          <div class="flex flex-col items-center bg-white/10 rounded p-1.5">
+            <span class="text-lg mb-0.5">⏱️</span>
+            <span class="text-gray-300 text-[10px] font-medium">Waktu</span>
+            <span id="resultTime" class="font-mono text-sm font-bold text-yellow-300 mt-0.5"></span>
+          </div>
+          <div class="flex flex-col items-center bg-white/10 rounded p-1.5">
+            <span class="text-lg mb-0.5">🎯</span>
+            <span class="text-gray-300 text-[10px] font-medium">Level</span>
+            <span id="resultDifficulty" class="text-sm font-bold text-yellow-300 mt-0.5"></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Action Buttons Compact -->
+      <div class="flex flex-col gap-1.5 justify-center w-full">
+        <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-3 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-green-600/50 border border-green-300/50 text-xs flex items-center justify-center gap-1">
+          <span class="text-lg">🔄</span>
+          Main Lagi
+        </button>
+        <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2 px-3 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow hover:shadow-blue-600/50 border border-blue-300/50 text-xs flex items-center justify-center gap-1">
+          <span class="text-lg">📋</span>
+          Menu Utama
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Load data from Google Sheets with better error handling
-        async function loadData() {
-            try {
-                showLoading(true);
-                console.log('Fetching data from:', SPREADSHEET_URL);
-                
-                // Use fetch with no-cors mode to handle CORS issues
-                const response = await fetch(SPREADSHEET_URL + '?timestamp=' + Date.now(), {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json',
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Raw data received:', data);
-                
-                if (!Array.isArray(data)) {
-                    throw new Error('Data format is not an array');
-                }
-                
-                rawData = data;
-                
-                // Transform spreadsheet data to activities format
-                activities = data.map((row, index) => {
-                    const date = parseDate(row['Tanggal']);
-                    const jamKe = row['Jam Ke'] || '1';
-                    const timeSlot = getTimeSlot(jamKe);
-                    
-                    return {
-                        id: index + 1,
-                        title: `${row['Mata Pelajaran']} - ${row['Kelas']}`,
-                        teacher: row['Nama Guru'] || 'Tidak Diketahui',
-                        subject: row['Mata Pelajaran'] || 'Tidak Diketahui',
-                        class: row['Kelas'] || 'Tidak Diketahui',
-                        lesson: jamKe,
-                        date: date,
-                        time: timeSlot,
-                        day: row['Hari'] || getDayFromDate(date),
-                        material: row['Materi Pembelajaran'] || 'Tidak ada materi',
-                        notes: row['Catatan Selama Pembelajaran'] || 'Tidak ada catatan',
-                        timestamp: row['Timestamp']
-                    };
-                });
-                
-                console.log('Processed activities:', activities.length);
-                
-                // Update all components
-                updateStats();
-                renderCalendar();
-                renderSubjectRecap();
-                renderTodayActivities();
-                renderTopTeachers();
-                renderTeacherActivityTable();
-                createCharts();
-                updateDataStatus();
-                showLoading(false);
-                
-                // Show success message
-                document.getElementById('connectionStatus').innerHTML = '🟢 Terhubung';
-                
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showError(`Gagal memuat data: ${error.message}`);
-                loadSampleData();
-                showLoading(false);
-                document.getElementById('connectionStatus').innerHTML = '🔴 Terputus';
-            }
-        }
-
-        // Helper functions
-        function parseDate(dateString) {
-            if (!dateString) return getTodayDateString();
-            
-            let date;
-            if (dateString instanceof Date) {
-                date = dateString;
-            } else if (typeof dateString === 'string') {
-                // Handle Google Sheets date format
-                if (dateString.includes('/')) {
-                    const parts = dateString.split('/');
-                    if (parts.length === 3) {
-                        // Handle both MM/DD/YYYY and DD/MM/YYYY formats
-                        if (parseInt(parts[0]) > 12) {
-                            // DD/MM/YYYY format
-                            date = new Date(parts[2], parts[1] - 1, parts[0]);
-                        } else {
-                            // MM/DD/YYYY format
-                            date = new Date(parts[2], parts[0] - 1, parts[1]);
-                        }
-                    }
-                } else if (dateString.includes('-')) {
-                    // Handle YYYY-MM-DD format
-                    date = new Date(dateString);
-                } else {
-                    date = new Date(dateString);
-                }
-            }
-            
-            if (!date || isNaN(date.getTime())) {
-                date = new Date();
-            }
-            
-            return getDateString(date);
-        }
-
-        // Get standardized date string (YYYY-MM-DD format)
-        function getDateString(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // Get today's date string
-        function getTodayDateString() {
-            return getDateString(new Date());
-        }
-
-        // Get current date
-        function getCurrentDate() {
-            return new Date();
-        }
-
-        function getTimeSlot(jamKe) {
-            const timeSlots = {
-                '1': '07:30 - 08:15', '2': '08:15 - 09:00', '3': '09:15 - 10:00',
-                '4': '10:00 - 10:45', '5': '11:00 - 11:45', '6': '11:45 - 12:30',
-                '7': '13:00 - 13:45', '8': '13:45 - 14:30', '9': '14:45 - 15:30',
-                '10': '15:30 - 16:15'
-            };
-            return timeSlots[jamKe] || '07:30 - 08:15';
-        }
-
-        function getDayFromDate(dateString) {
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const date = new Date(dateString);
-            return days[date.getDay()];
-        }
-
-        function formatTimestamp(timestamp) {
-            if (!timestamp) return null;
-            
-            try {
-                const date = new Date(timestamp);
-                if (isNaN(date.getTime())) return null;
-                
-                return date.toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                });
-            } catch (error) {
-                console.error('Error formatting timestamp:', error);
-                return null;
-            }
-        }
-
-        function showLoading(show) {
-            const indicator = document.getElementById('loadingIndicator');
-            if (show) {
-                indicator.classList.remove('hidden');
-            } else {
-                indicator.classList.add('hidden');
-            }
-        }
-
-        function showError(message) {
-            alert(`⚠️ ${message}\n\nMenggunakan data contoh untuk demonstrasi.`);
-        }
-
-        function loadSampleData() {
-            // Use standard date handling for sample data
-            const today = getCurrentDate();
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            
-            const todayString = getDateString(today);
-            const yesterdayString = getDateString(yesterday);
-            const tomorrowString = getDateString(tomorrow);
-            
-            const todayDay = today.toLocaleDateString('id-ID', { weekday: 'long' });
-            const yesterdayDay = yesterday.toLocaleDateString('id-ID', { weekday: 'long' });
-            const tomorrowDay = tomorrow.toLocaleDateString('id-ID', { weekday: 'long' });
-            
-            activities = [
-                // Today's activities
-                {
-                    id: 1, title: "Matematika - XI IPA 1", teacher: "Budi Santoso, S.Pd",
-                    subject: "Matematika", class: "XI IPA 1", lesson: "1",
-                    date: todayString, time: "07:30 - 08:15",
-                    day: todayDay, material: "Integral Tak Tentu",
-                    notes: "Siswa memahami konsep dasar integral", timestamp: today.toISOString()
-                },
-                {
-                    id: 2, title: "Fisika - XII IPA 2", teacher: "Siti Aminah, M.Pd",
-                    subject: "Fisika", class: "XII IPA 2", lesson: "3",
-                    date: todayString, time: "09:15 - 10:00",
-                    day: todayDay, material: "Gelombang Elektromagnetik",
-                    notes: "Praktikum gelombang radio", timestamp: today.toISOString()
-                },
-                {
-                    id: 3, title: "Kimia - X IPA 1", teacher: "Ahmad Fauzi, S.Pd",
-                    subject: "Kimia", class: "X IPA 1", lesson: "5",
-                    date: todayString, time: "11:00 - 11:45",
-                    day: todayDay, material: "Ikatan Kimia",
-                    notes: "Penjelasan ikatan ion dan kovalen", timestamp: today.toISOString()
-                },
-                // Yesterday's activities
-                {
-                    id: 4, title: "Biologi - XI IPA 3", teacher: "Dewi Sartika, M.Pd",
-                    subject: "Biologi", class: "XI IPA 3", lesson: "2",
-                    date: yesterdayString, time: "08:15 - 09:00",
-                    day: yesterdayDay, material: "Sistem Peredaran Darah",
-                    notes: "Praktikum mikroskop", timestamp: yesterday.toISOString()
-                },
-                {
-                    id: 5, title: "Bahasa Indonesia - X A", teacher: "Rina Melati, S.Pd",
-                    subject: "Bahasa Indonesia", class: "X A", lesson: "4",
-                    date: yesterdayString, time: "10:00 - 10:45",
-                    day: yesterdayDay, material: "Teks Eksposisi",
-                    notes: "Analisis struktur teks", timestamp: yesterday.toISOString()
-                },
-                // Tomorrow's activities
-                {
-                    id: 6, title: "Sejarah - XII IPS 1", teacher: "Hendra Wijaya, S.Pd",
-                    subject: "Sejarah", class: "XII IPS 1", lesson: "1",
-                    date: tomorrowString, time: "07:30 - 08:15",
-                    day: tomorrowDay, material: "Perang Dunia II",
-                    notes: "Diskusi dampak perang terhadap Indonesia", timestamp: tomorrow.toISOString()
-                }
-            ];
-            
-            updateStats();
-            renderCalendar();
-            renderSubjectRecap();
-            renderTodayActivities();
-            renderTopTeachers();
-            renderTeacherActivityTable();
-            createCharts();
-            updateDataStatus();
-        }
-
-        // Update statistics
-        function updateStats() {
-            const todayString = getTodayDateString();
-            const todayActivities = activities.filter(a => a.date === todayString);
-            
-            const uniqueTeachers = [...new Set(activities.map(a => a.teacher))].filter(t => t && t !== 'Tidak Diketahui');
-            const uniqueSubjects = [...new Set(activities.map(a => a.subject))].filter(s => s && s !== 'Tidak Diketahui');
-            const uniqueClasses = [...new Set(activities.map(a => a.class))].filter(c => c && c !== 'Tidak Diketahui');
-            
-            // Animate counters
-            animateCounter('totalActivities', activities.length);
-            animateCounter('totalTeachers', uniqueTeachers.length);
-            animateCounter('totalSubjects', uniqueSubjects.length);
-            animateCounter('totalClasses', uniqueClasses.length);
-            animateCounter('todayActivities', todayActivities.length);
-        }
-
-        function animateCounter(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            const startValue = 0;
-            const duration = 1000;
-            const startTime = performance.now();
-            
-            function updateCounter(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
-                
-                element.textContent = currentValue;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
-                }
-            }
-            
-            requestAnimationFrame(updateCounter);
-        }
-
-        // Render calendar
-        function renderCalendar() {
-            // Use displayedMonth and displayedYear for calendar view
-            const currentYear = displayedYear;
-            const currentMonth = displayedMonth;
-            
-            const monthName = new Date(currentYear, currentMonth, 1).toLocaleDateString('id-ID', { 
-                month: 'long', 
-                year: 'numeric'
-            });
-            document.getElementById('currentMonth').textContent = monthName;
-            
-            // Create first day of displayed month
-            const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-            const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-            
-            // Calculate the starting date for calendar (including previous month's days)
-            const startCalendarDate = new Date(firstDayOfMonth);
-            const firstDayWeekday = firstDayOfMonth.getDay(); // 0 = Sunday, 1 = Monday, etc.
-            startCalendarDate.setDate(startCalendarDate.getDate() - firstDayWeekday);
-            
-            const calendarDays = document.getElementById('calendarDays');
-            calendarDays.innerHTML = '';
-            
-            // Generate 42 days (6 weeks) for the calendar
-            for (let i = 0; i < 42; i++) {
-                const currentDate = new Date(startCalendarDate);
-                currentDate.setDate(startCalendarDate.getDate() + i);
-                
-                // Get date string for comparison
-                const dateString = getDateString(currentDate);
-                const hasActivity = activities.some(a => a.date === dateString);
-                
-                // Check if this date is in the displayed month
-                const isDisplayedMonth = currentDate.getMonth() === currentMonth;
-                
-                // Check if this is today
-                const todayString = getTodayDateString();
-                const isToday = dateString === todayString;
-                
-                const dayElement = document.createElement('div');
-                dayElement.className = `calendar-day ${hasActivity ? 'has-activity' : ''} ${!isDisplayedMonth ? 'text-gray-400' : ''} ${isToday ? 'ring-2 ring-blue-500' : ''}`;
-                dayElement.textContent = currentDate.getDate();
-                dayElement.onclick = () => showDayActivities(dateString);
-                
-                // Add tooltip for better UX
-                const dateFormatted = currentDate.toLocaleDateString('id-ID', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-                dayElement.title = dateFormatted;
-                
-                calendarDays.appendChild(dayElement);
-            }
-        }
+<script>
+  // Sound Effects using Web Audio API
+  const soundManager = {
+    audioContext: null,
+    soundEnabled: true,
+    
+    init() {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    },
+    
+    playFlipSound() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.setValueAtTime(450, ctx.currentTime);
+      osc.frequency.setValueAtTime(550, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime + 0.08);
+      
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    },
+    
+    playMatchSound() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      const notes = [523.25, 659.25, 783.99];
+      
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
         
-        // Month navigation functions
-        function previousMonth() {
-            displayedMonth--;
-            if (displayedMonth < 0) {
-                displayedMonth = 11;
-                displayedYear--;
-            }
-            renderCalendar();
-        }
+        osc.connect(gain);
+        gain.connect(ctx.destination);
         
-        function nextMonth() {
-            displayedMonth++;
-            if (displayedMonth > 11) {
-                displayedMonth = 0;
-                displayedYear++;
-            }
-            renderCalendar();
-        }
-
-        function showDayActivities(dateString) {
-            const dayActivities = activities.filter(a => a.date === dateString);
-            // Create date object and format it properly
-            const date = new Date(dateString + 'T00:00:00');
-            const formattedDate = date.toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric'
-            });
-            
-            if (dayActivities.length === 0) {
-                showPopup(`
-                    <div class="text-center py-8">
-                        <div class="text-6xl mb-4">📅</div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">${formattedDate}</h3>
-                        <p class="text-gray-600">Tidak ada kegiatan pembelajaran pada tanggal ini</p>
-                    </div>
-                `);
-                return;
-            }
-            
-            // Create detailed recap with statistics
-            const subjectStats = {};
-            const teacherStats = {};
-            const classStats = {};
-            
-            dayActivities.forEach(activity => {
-                // Count subjects
-                subjectStats[activity.subject] = (subjectStats[activity.subject] || 0) + 1;
-                // Count teachers
-                teacherStats[activity.teacher] = (teacherStats[activity.teacher] || 0) + 1;
-                // Count classes
-                classStats[activity.class] = (classStats[activity.class] || 0) + 1;
-            });
-            
-            // Sort activities by lesson time
-            const sortedActivities = dayActivities.sort((a, b) => parseInt(a.lesson) - parseInt(b.lesson));
-            
-            const popupContent = `
-                <div class="max-w-4xl mx-auto">
-                    <!-- Header -->
-                    <div class="text-center mb-6 pb-4 border-b border-gray-200">
-                        <div class="text-4xl mb-2">📅</div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-1">Rekapitulasi Pembelajaran</h3>
-                        <p class="text-lg text-blue-600 font-semibold">${formattedDate}</p>
-                    </div>
-                    
-                    <!-- Statistics Summary -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-blue-50 p-4 rounded-lg text-center">
-                            <div class="text-2xl font-bold text-blue-600">${dayActivities.length}</div>
-                            <div class="text-sm text-gray-600">Total Sesi</div>
-                        </div>
-                        <div class="bg-green-50 p-4 rounded-lg text-center">
-                            <div class="text-2xl font-bold text-green-600">${Object.keys(subjectStats).length}</div>
-                            <div class="text-sm text-gray-600">Mata Pelajaran</div>
-                        </div>
-                        <div class="bg-purple-50 p-4 rounded-lg text-center">
-                            <div class="text-2xl font-bold text-purple-600">${Object.keys(teacherStats).length}</div>
-                            <div class="text-sm text-gray-600">Guru Aktif</div>
-                        </div>
-                        <div class="bg-orange-50 p-4 rounded-lg text-center">
-                            <div class="text-2xl font-bold text-orange-600">${Object.keys(classStats).length}</div>
-                            <div class="text-sm text-gray-600">Kelas Terlibat</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Detailed Breakdown -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <!-- Subjects -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
-                                <span class="text-lg mr-2">📚</span>
-                                Per Mata Pelajaran
-                            </h4>
-                            <div class="space-y-2">
-                                ${Object.entries(subjectStats)
-                                    .sort(([,a], [,b]) => b - a)
-                                    .map(([subject, count]) => `
-                                        <div class="flex justify-between items-center text-sm">
-                                            <span class="text-gray-700">${subject}</span>
-                                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">${count} sesi</span>
-                                        </div>
-                                    `).join('')}
-                            </div>
-                        </div>
-                        
-                        <!-- Teachers -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
-                                <span class="text-lg mr-2">👨‍🏫</span>
-                                Per Guru
-                            </h4>
-                            <div class="space-y-2">
-                                ${Object.entries(teacherStats)
-                                    .sort(([,a], [,b]) => b - a)
-                                    .map(([teacher, count]) => `
-                                        <div class="flex justify-between items-center text-sm">
-                                            <span class="text-gray-700">${teacher.length > 20 ? teacher.substring(0, 20) + '...' : teacher}</span>
-                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">${count} sesi</span>
-                                        </div>
-                                    `).join('')}
-                            </div>
-                        </div>
-                        
-                        <!-- Classes -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
-                                <span class="text-lg mr-2">🏫</span>
-                                Per Kelas
-                            </h4>
-                            <div class="space-y-2">
-                                ${Object.entries(classStats)
-                                    .sort(([,a], [,b]) => b - a)
-                                    .map(([kelas, count]) => `
-                                        <div class="flex justify-between items-center text-sm">
-                                            <span class="text-gray-700">${kelas}</span>
-                                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">${count} sesi</span>
-                                        </div>
-                                    `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Detailed Schedule -->
-                    <div class="bg-white border border-gray-200 rounded-lg">
-                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                            <h4 class="font-semibold text-gray-800 flex items-center">
-                                <span class="text-lg mr-2">📋</span>
-                                Jadwal Detail Pembelajaran
-                            </h4>
-                        </div>
-                        <div class="p-4">
-                            <div class="space-y-4 max-h-96 overflow-y-auto">
-                                ${sortedActivities.map((activity, index) => `
-                                    <div class="border-l-4 border-blue-500 pl-4 py-2 bg-blue-50 rounded-r-lg">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h5 class="font-semibold text-gray-800">${index + 1}. ${activity.subject} - ${activity.class}</h5>
-                                                <p class="text-sm text-gray-600">👨‍🏫 ${activity.teacher}</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">Jam ${activity.lesson}</span>
-                                                <p class="text-xs text-gray-500 mt-1">${activity.time}</p>
-                                            </div>
-                                        </div>
-                                        <div class="bg-white p-3 rounded border-l-2 border-green-400">
-                                            <p class="text-xs text-gray-500 mb-1">📝 Materi Pembelajaran:</p>
-                                            <p class="text-sm text-gray-800 font-medium">${activity.material}</p>
-                                        </div>
-                                        ${activity.notes && activity.notes !== 'Tidak ada catatan' ? `
-                                            <div class="mt-2 bg-yellow-50 p-2 rounded border-l-2 border-yellow-400">
-                                                <p class="text-xs text-gray-500 mb-1">💭 Catatan:</p>
-                                                <p class="text-sm text-gray-700">${activity.notes}</p>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            showPopup(popupContent);
-        }
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.08);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.08 + 0.12);
         
-        function showPopup(content) {
-            // Create popup overlay
-            const overlay = document.createElement('div');
-            overlay.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-            overlay.style.animation = 'fadeIn 0.3s ease-out';
-            
-            // Create popup container
-            const popup = document.createElement('div');
-            popup.className = 'bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden';
-            popup.style.animation = 'slideIn 0.3s ease-out';
-            
-            // Create popup header with close button
-            const header = document.createElement('div');
-            header.className = 'flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50';
-            header.innerHTML = `
-                <h3 class="text-lg font-semibold text-gray-800">Detail Pembelajaran</h3>
-                <button onclick="closePopup()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold leading-none">×</button>
-            `;
-            
-            // Create popup body
-            const body = document.createElement('div');
-            body.className = 'p-6 overflow-y-auto max-h-[calc(90vh-120px)]';
-            body.innerHTML = content;
-            
-            // Assemble popup
-            popup.appendChild(header);
-            popup.appendChild(body);
-            overlay.appendChild(popup);
-            
-            // Add to document
-            document.body.appendChild(overlay);
-            
-            // Store reference for closing
-            window.currentPopup = overlay;
-            
-            // Close on overlay click
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    closePopup();
-                }
-            });
-            
-            // Close on escape key
-            document.addEventListener('keydown', handleEscapeKey);
-        }
+        osc.start(ctx.currentTime + i * 0.08);
+        osc.stop(ctx.currentTime + i * 0.08 + 0.12);
+      });
+    },
+    
+    playMissSound() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.setValueAtTime(280, ctx.currentTime);
+      osc.frequency.setValueAtTime(180, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime + 0.15);
+      
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.15);
+    },
+    
+    playWinSound() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
         
-        function closePopup() {
-            if (window.currentPopup) {
-                window.currentPopup.style.animation = 'fadeOut 0.3s ease-out';
-                setTimeout(() => {
-                    if (window.currentPopup && window.currentPopup.parentNode) {
-                        window.currentPopup.parentNode.removeChild(window.currentPopup);
-                    }
-                    window.currentPopup = null;
-                }, 300);
-                document.removeEventListener('keydown', handleEscapeKey);
-            }
-        }
+        osc.connect(gain);
+        gain.connect(ctx.destination);
         
-        function handleEscapeKey(e) {
-            if (e.key === 'Escape') {
-                closePopup();
-            }
-        }
-
-        // Render subject recap with pagination
-        function renderSubjectRecap() {
-            const subjectStats = {};
-            activities.forEach(activity => {
-                if (!subjectStats[activity.subject]) {
-                    subjectStats[activity.subject] = {
-                        count: 0,
-                        teachers: new Set(),
-                        classes: new Set()
-                    };
-                }
-                subjectStats[activity.subject].count++;
-                subjectStats[activity.subject].teachers.add(activity.teacher);
-                subjectStats[activity.subject].classes.add(activity.class);
-            });
-            
-            // Sort subjects by count and store globally
-            allSubjects = Object.entries(subjectStats)
-                .sort(([,a], [,b]) => b.count - a.count);
-            
-            renderSubjectPage();
-        }
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.12);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.12 + 0.15);
         
-        function renderSubjectPage() {
-            const container = document.getElementById('subjectRecap');
-            const totalPages = Math.ceil(allSubjects.length / subjectItemsPerPage);
-            const startIndex = (subjectCurrentPage - 1) * subjectItemsPerPage;
-            const endIndex = startIndex + subjectItemsPerPage;
-            const currentSubjects = allSubjects.slice(startIndex, endIndex);
-            
-            const subjectsHtml = currentSubjects.map(([subject, stats], index) => {
-                const globalIndex = startIndex + index + 1;
-                return `
-                    <div class="subject-card bg-white p-4 rounded-lg shadow-sm">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center">
-                                <span class="text-blue-600 font-bold mr-2">${globalIndex}.</span>
-                                <h4 class="font-semibold text-gray-800">${subject}</h4>
-                            </div>
-                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
-                                ${stats.count} sesi
-                            </span>
-                        </div>
-                        <div class="text-sm text-gray-600 space-y-1">
-                            <div>👨‍🏫 ${stats.teachers.size} guru</div>
-                            <div>🏫 ${stats.classes.size} kelas</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Pagination controls for subjects
-            const paginationHtml = totalPages > 1 ? `
-                <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
-                    <div class="text-sm text-gray-600">
-                        Halaman ${subjectCurrentPage} dari ${totalPages} (${allSubjects.length} mata pelajaran)
-                    </div>
-                    <div class="flex space-x-2">
-                        <button 
-                            onclick="changeSubjectPage(${subjectCurrentPage - 1})" 
-                            ${subjectCurrentPage === 1 ? 'disabled' : ''}
-                            class="px-4 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-                        >
-                            ← Sebelumnya
-                        </button>
-                        <span class="px-3 py-2 text-sm text-gray-600 bg-blue-50 rounded-lg font-medium">
-                            ${subjectCurrentPage} / ${totalPages}
-                        </span>
-                        <button 
-                            onclick="changeSubjectPage(${subjectCurrentPage + 1})" 
-                            ${subjectCurrentPage === totalPages ? 'disabled' : ''}
-                            class="px-4 py-2 text-sm bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-                        >
-                            Selanjutnya →
-                        </button>
-                    </div>
-                </div>
-            ` : '';
-            
-            container.innerHTML = subjectsHtml + paginationHtml;
-        }
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.15);
+      });
+    },
+    
+    playButtonClick() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.setValueAtTime(850, ctx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime + 0.04);
+      
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.04);
+    },
+    
+    playLevelCompleteSound() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      const notes = [659.25, 830.61, 987.77, 1174.66];
+      
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
         
-        function changeSubjectPage(newPage) {
-            const totalPages = Math.ceil(allSubjects.length / subjectItemsPerPage);
-            if (newPage >= 1 && newPage <= totalPages) {
-                subjectCurrentPage = newPage;
-                renderSubjectPage();
-            }
-        }
-
-        // Pagination variables for today's activities
-        let currentPage = 1;
-        const itemsPerPage = 5;
-        let allTodayActivities = [];
+        osc.connect(gain);
+        gain.connect(ctx.destination);
         
-        // Pagination variables for subject recap
-        let subjectCurrentPage = 1;
-        const subjectItemsPerPage = 5;
-        let allSubjects = [];
-
-        // Pagination variables for teacher activity table
-        let teacherTableCurrentPage = 1;
-        const teacherTableItemsPerPage = 10;
-        let filteredTeacherActivities = [];
-        let allTeacherActivities = [];
-
-        // Render today's activities with pagination
-        function renderTodayActivities() {
-            const todayString = getTodayDateString();
-            
-            console.log('Today date:', todayString);
-            console.log('All activities:', activities.map(a => ({ subject: a.subject, date: a.date })));
-            
-            // Filter and sort activities by date and most recent time
-            const todayActivities = activities.filter(a => {
-                const matchesDate = a.date === todayString;
-                console.log('Activity:', a.subject, 'Date:', a.date, 'Matches today:', matchesDate);
-                return matchesDate;
-            }).sort((a, b) => {
-                // First sort by date (most recent first)
-                const dateCompare = new Date(b.date) - new Date(a.date);
-                if (dateCompare !== 0) return dateCompare;
-                
-                // Then sort by timestamp (most recent first)
-                if (a.timestamp && b.timestamp) {
-                    return new Date(b.timestamp) - new Date(a.timestamp);
-                }
-                
-                // Fallback to lesson number (earliest first)
-                return parseInt(a.lesson) - parseInt(b.lesson);
-            });
-            
-            console.log('Today activities found:', todayActivities.length);
-            
-            const container = document.getElementById('todayActivitiesList');
-            
-            if (todayActivities.length === 0) {
-                const today = getCurrentDate();
-                container.innerHTML = `
-                    <div class="text-center py-6 text-gray-500">
-                        <div class="text-4xl mb-3">📚</div>
-                        <h4 class="font-semibold text-gray-700 mb-2">Tidak Ada Pembelajaran Hari Ini</h4>
-                        <p class="text-sm">Tanggal: ${today.toLocaleDateString('id-ID', {
-                            weekday: 'long',
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                        })}</p>
-                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-                            <p class="text-xs text-blue-600">💡 Tip: Periksa kalender untuk melihat jadwal pembelajaran lainnya</p>
-                        </div>
-                    </div>
-                `;
-                allTodayActivities = [];
-                return;
-            }
-            
-            allTodayActivities = todayActivities;
-            renderActivitiesPage(allTodayActivities, true);
-        }
-
-        function renderActivitiesPage(activitiesList, isToday) {
-            const container = document.getElementById('todayActivitiesList');
-            const totalPages = Math.ceil(activitiesList.length / itemsPerPage);
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const currentActivities = activitiesList.slice(startIndex, endIndex);
-            
-            let headerMessage = '';
-            
-            const activitiesHtml = currentActivities.map((activity, index) => {
-                const globalIndex = startIndex + index + 1;
-                const cardClass = isToday ? 
-                    'bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-l-4 border-blue-500 hover:shadow-md transition-shadow mb-3' :
-                    'bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-lg border-l-4 border-gray-400 hover:shadow-md transition-shadow mb-3';
-                
-                const numberColor = isToday ? 'text-blue-600' : 'text-gray-600';
-                const subjectColor = isToday ? 'text-gray-800' : 'text-gray-700';
-                const badgeClass = isToday ? 
-                    'text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium' :
-                    'text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-medium block mb-1';
-                
-                return `
-                    <div class="${cardClass}">
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="flex items-center">
-                                <span class="text-lg mr-2 ${numberColor}">${globalIndex}.</span>
-                                <h5 class="font-bold text-base ${subjectColor}">${activity.subject || 'Mata Pelajaran'}</h5>
-                            </div>
-                            <div class="text-right">
-                                <span class="${badgeClass}">Jam ${activity.lesson || '1'}</span>
-                                ${!isToday ? `<span class="text-xs text-gray-500">${new Date(activity.date).toLocaleDateString('id-ID')}</span>` : ''}
-                            </div>
-                        </div>
-                        
-                        <div class="bg-white p-3 rounded-lg mb-3 border-l-2 border-green-400">
-                            <div class="flex items-start">
-                                <span class="mr-2 text-green-600 text-sm">📚</span>
-                                <div>
-                                    <p class="text-xs text-gray-500 mb-1">Materi Pembelajaran:</p>
-                                    <p class="text-sm font-semibold text-gray-800">${activity.material || 'Tidak ada materi'}</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 gap-2 text-xs text-gray-600 mb-3">
-                            <div class="flex items-center">
-                                <span class="mr-1">👨‍🏫</span>
-                                <span class="font-medium">${activity.teacher || 'Tidak diketahui'}</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <span class="mr-1">🏫</span>
-                                    <span class="font-medium">${activity.class || 'Tidak diketahui'}</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="mr-1">⏰</span>
-                                    <span class="font-medium text-blue-600">${formatTimestamp(activity.timestamp) || activity.time || '07:30 - 08:15'}</span>
-                                    ${globalIndex === 1 && isToday ? '<span class="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-bold">TERBARU</span>' : ''}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        ${activity.notes && activity.notes !== 'Tidak ada catatan' ? `
-                            <div class="bg-yellow-50 p-3 rounded-lg border-l-2 border-yellow-400">
-                                <div class="flex items-start">
-                                    <span class="mr-2 text-yellow-600 text-sm">💭</span>
-                                    <div>
-                                        <p class="text-xs text-gray-500 mb-1">Catatan Guru:</p>
-                                        <p class="text-sm text-gray-800">${activity.notes}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-            
-            // Pagination controls
-            const paginationHtml = totalPages > 1 ? `
-                <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-                    <div class="text-sm text-gray-600">
-                        Halaman ${currentPage} dari ${totalPages} (${activitiesList.length} total kegiatan)
-                    </div>
-                    <div class="flex space-x-2">
-                        <button 
-                            onclick="changePage(${currentPage - 1})" 
-                            ${currentPage === 1 ? 'disabled' : ''}
-                            class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            ← Sebelumnya
-                        </button>
-                        <button 
-                            onclick="changePage(${currentPage + 1})" 
-                            ${currentPage === totalPages ? 'disabled' : ''}
-                            class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            Selanjutnya →
-                        </button>
-                    </div>
-                </div>
-            ` : '';
-            
-            container.innerHTML = headerMessage + activitiesHtml + paginationHtml;
-        }
-
-        function changePage(newPage) {
-            const totalPages = Math.ceil(allTodayActivities.length / itemsPerPage);
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                const today = new Date();
-                const todayString = today.toISOString().split('T')[0];
-                const todayDay = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][today.getDay()];
-                const isToday = allTodayActivities.some(a => a.date === todayString || a.day === todayDay);
-                renderActivitiesPage(allTodayActivities, isToday);
-            }
-        }
-
-        // Render top teachers
-        function renderTopTeachers() {
-            const teacherStats = {};
-            activities.forEach(activity => {
-                if (!teacherStats[activity.teacher]) {
-                    teacherStats[activity.teacher] = 0;
-                }
-                teacherStats[activity.teacher]++;
-            });
-            
-            const topTeachers = Object.entries(teacherStats)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 5);
-            
-            const container = document.getElementById('topTeachers');
-            container.innerHTML = topTeachers.map(([teacher, count], index) => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div class="flex items-center">
-                        <span class="text-lg mr-3">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👨‍🏫'}</span>
-                        <span class="font-medium text-sm">${teacher}</span>
-                    </div>
-                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                        ${count} sesi
-                    </span>
-                </div>
-            `).join('');
-        }
-
-        // Create charts
-        function createCharts() {
-            createSubjectChart();
-            createTeacherChart();
-            createDailyChart();
-            createClassChart();
-            createMonthlyChart();
-        }
-
-        function createSubjectChart() {
-            const ctx = document.getElementById('subjectChart').getContext('2d');
-            
-            if (charts.subjectChart) {
-                charts.subjectChart.destroy();
-            }
-            
-            const subjectData = {};
-            activities.forEach(activity => {
-                subjectData[activity.subject] = (subjectData[activity.subject] || 0) + 1;
-            });
-            
-            // Sort alphabetically by subject name
-            const sortedSubjects = Object.entries(subjectData)
-                .sort(([nameA], [nameB]) => nameA.localeCompare(nameB, 'id-ID'));
-            
-            charts.subjectChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: sortedSubjects.map(([name]) => name),
-                    datasets: [{
-                        label: 'Jumlah Sesi',
-                        data: sortedSubjects.map(([, count]) => count),
-                        backgroundColor: '#3B82F6',
-                        borderRadius: 6,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createTeacherChart() {
-            const ctx = document.getElementById('teacherChart').getContext('2d');
-            
-            if (charts.teacherChart) {
-                charts.teacherChart.destroy();
-            }
-            
-            const teacherData = {};
-            activities.forEach(activity => {
-                teacherData[activity.teacher] = (teacherData[activity.teacher] || 0) + 1;
-            });
-            
-            // Sort alphabetically by teacher name and include all teachers
-            const sortedTeachers = Object.entries(teacherData)
-                .sort(([nameA], [nameB]) => nameA.localeCompare(nameB, 'id-ID'));
-            
-            charts.teacherChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: sortedTeachers.map(([name]) => name.split(' ')[0]),
-                    datasets: [{
-                        label: 'Jumlah Sesi',
-                        data: sortedTeachers.map(([,count]) => count),
-                        backgroundColor: '#8B5CF6',
-                        borderRadius: 6,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createDailyChart() {
-            const ctx = document.getElementById('dailyChart').getContext('2d');
-            
-            if (charts.dailyChart) {
-                charts.dailyChart.destroy();
-            }
-            
-            // Get last 5 days from current date
-            const now = getCurrentDate();
-            const lastFiveDays = [];
-            const dayData = {};
-            
-            // Generate last 5 days
-            for (let i = 4; i >= 0; i--) {
-                const date = new Date(now);
-                date.setDate(date.getDate() - i);
-                
-                const dateString = getDateString(date);
-                const dayName = date.toLocaleDateString('id-ID', { 
-                    weekday: 'short'
-                });
-                const fullDate = date.toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short'
-                });
-                
-                const label = `${dayName}\n${fullDate}`;
-                lastFiveDays.push(label);
-                dayData[dateString] = 0;
-            }
-            
-            // Count activities for each of the last 5 days
-            activities.forEach(activity => {
-                if (dayData.hasOwnProperty(activity.date)) {
-                    dayData[activity.date]++;
-                }
-            });
-            
-            const chartData = Object.values(dayData);
-            
-            charts.dailyChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: lastFiveDays,
-                    datasets: [{
-                        label: 'Jumlah Kegiatan',
-                        data: chartData,
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#10B981',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    return context[0].label.replace('\n', ' ');
-                                },
-                                label: function(context) {
-                                    return `${context.parsed.y} kegiatan pembelajaran`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: window.innerWidth < 768 ? 9 : 11
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            hoverBackgroundColor: '#059669'
-                        }
-                    }
-                }
-            });
-        }
-
-        function createClassChart() {
-            const ctx = document.getElementById('classChart').getContext('2d');
-            
-            if (charts.classChart) {
-                charts.classChart.destroy();
-            }
-            
-            const classData = {};
-            activities.forEach(activity => {
-                classData[activity.class] = (classData[activity.class] || 0) + 1;
-            });
-            
-            charts.classChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(classData),
-                    datasets: [{
-                        data: Object.values(classData),
-                        backgroundColor: [
-                            '#F59E0B', '#EF4444', '#3B82F6', '#10B981', '#8B5CF6',
-                            '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6B7280'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 12,
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createMonthlyChart() {
-            const ctx = document.getElementById('monthlyChart').getContext('2d');
-            
-            if (charts.monthlyChart) {
-                charts.monthlyChart.destroy();
-            }
-            
-            // Get last 6 months from current date
-            const now = getCurrentDate();
-            const lastSixMonths = [];
-            const monthData = {};
-            
-            // Generate last 6 months
-            for (let i = 5; i >= 0; i--) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                const monthName = date.toLocaleDateString('id-ID', { 
-                    month: 'short',
-                    year: '2-digit'
-                });
-                
-                lastSixMonths.push(monthName);
-                monthData[monthKey] = 0;
-            }
-            
-            // Count activities for each month
-            activities.forEach(activity => {
-                if (activity.date) {
-                    const activityDate = new Date(activity.date);
-                    const monthKey = `${activityDate.getFullYear()}-${String(activityDate.getMonth() + 1).padStart(2, '0')}`;
-                    
-                    if (monthData.hasOwnProperty(monthKey)) {
-                        monthData[monthKey]++;
-                    }
-                }
-            });
-            
-            const chartData = Object.values(monthData);
-            
-            charts.monthlyChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: lastSixMonths,
-                    datasets: [{
-                        label: 'Jumlah Kegiatan',
-                        data: chartData,
-                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
-                        borderColor: '#8B5CF6',
-                        borderWidth: 2,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.parsed.y} kegiatan pembelajaran`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                font: {
-                                    size: window.innerWidth < 768 ? 10 : 12
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update data status
-        function updateDataStatus() {
-            const now = getCurrentDate();
-            const formattedDateTime = now.toLocaleDateString('id-ID', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            }) + ', ' + now.toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            });
-            document.getElementById('lastUpdate').textContent = formattedDateTime;
-            document.getElementById('totalRecords').textContent = activities.length;
-        }
-
-        // Display current date in header
-        function displayCurrentDate() {
-            const now = getCurrentDate();
-            const formattedDate = now.toLocaleDateString('id-ID', {
-                weekday: 'long',
-                day: 'numeric', 
-                month: 'long',
-                year: 'numeric'
-            });
-            document.getElementById('currentDate').textContent = formattedDate;
-        }
-
-        // Teacher Activity Table Functions
-        function renderTeacherActivityTable() {
-            // Prepare data for table
-            allTeacherActivities = activities.map(activity => ({
-                ...activity,
-                formattedDate: formatDateForTable(activity.date),
-                dayName: getDayFromDate(activity.date)
-            })).sort((a, b) => {
-                // Sort by date (newest first), then by lesson number
-                const dateCompare = new Date(b.date) - new Date(a.date);
-                if (dateCompare !== 0) return dateCompare;
-                return parseInt(a.lesson) - parseInt(b.lesson);
-            });
-
-            // Initialize filters
-            populateTeacherFilter();
-            populateClassFilter();
-            
-            // Set up event listeners for filters
-            document.getElementById('teacherFilter').addEventListener('change', applyTeacherFilters);
-            document.getElementById('classFilter').addEventListener('change', applyTeacherFilters);
-            document.getElementById('dateFilter').addEventListener('change', applyTeacherFilters);
-            
-            // Apply initial filters (show all data)
-            applyTeacherFilters();
-        }
-
-        function populateTeacherFilter() {
-            const teacherSelect = document.getElementById('teacherFilter');
-            const uniqueTeachers = [...new Set(activities.map(a => a.teacher))].filter(t => t && t !== 'Tidak Diketahui').sort();
-            
-            // Clear existing options except "Semua Guru"
-            teacherSelect.innerHTML = '<option value="">Semua Guru</option>';
-            
-            uniqueTeachers.forEach(teacher => {
-                const option = document.createElement('option');
-                option.value = teacher;
-                option.textContent = teacher;
-                teacherSelect.appendChild(option);
-            });
-        }
-
-        function populateClassFilter() {
-            const classSelect = document.getElementById('classFilter');
-            const uniqueClasses = [...new Set(activities.map(a => a.class))].filter(c => c && c !== 'Tidak Diketahui').sort();
-            
-            // Clear existing options except "Semua Kelas"
-            classSelect.innerHTML = '<option value="">Semua Kelas</option>';
-            
-            uniqueClasses.forEach(kelas => {
-                const option = document.createElement('option');
-                option.value = kelas;
-                option.textContent = kelas;
-                classSelect.appendChild(option);
-            });
-        }
-
-        function applyTeacherFilters() {
-            const teacherFilter = document.getElementById('teacherFilter').value;
-            const classFilter = document.getElementById('classFilter').value;
-            const dateFilter = document.getElementById('dateFilter').value;
-            
-            filteredTeacherActivities = allTeacherActivities.filter(activity => {
-                const matchesTeacher = !teacherFilter || activity.teacher === teacherFilter;
-                const matchesClass = !classFilter || activity.class === classFilter;
-                const matchesDate = !dateFilter || activity.date === dateFilter;
-                return matchesTeacher && matchesClass && matchesDate;
-            });
-            
-            // Reset to first page when filters change
-            teacherTableCurrentPage = 1;
-            renderTeacherTablePage();
-        }
-
-        function renderTeacherTablePage() {
-            const tableBody = document.getElementById('teacherActivityTable');
-            const noDataMessage = document.getElementById('noDataMessage');
-            const paginationContainer = document.getElementById('teacherTablePagination');
-            
-            if (filteredTeacherActivities.length === 0) {
-                tableBody.innerHTML = '';
-                noDataMessage.classList.remove('hidden');
-                paginationContainer.innerHTML = '';
-                return;
-            }
-            
-            noDataMessage.classList.add('hidden');
-            
-            const totalPages = Math.ceil(filteredTeacherActivities.length / teacherTableItemsPerPage);
-            const startIndex = (teacherTableCurrentPage - 1) * teacherTableItemsPerPage;
-            const endIndex = startIndex + teacherTableItemsPerPage;
-            const currentData = filteredTeacherActivities.slice(startIndex, endIndex);
-            
-            // Render table rows
-            const tableRows = currentData.map((activity, index) => {
-                const globalIndex = startIndex + index + 1;
-                return `
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 font-medium">${globalIndex}</td>
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">${activity.formattedDate}</td>
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">${activity.dayName}</td>
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 font-medium">${activity.teacher}</td>
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                                ${activity.subject}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                                ${activity.class}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 text-center">
-                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-bold">
-                                ${activity.lesson}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-900">
-                            <div class="max-w-xs">
-                                <p class="text-gray-800 font-medium truncate" title="${activity.material}">
-                                    ${activity.material || 'Tidak ada materi'}
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
-            tableBody.innerHTML = tableRows;
-            
-            // Render pagination
-            renderTeacherTablePagination(totalPages);
-        }
-
-        function renderTeacherTablePagination(totalPages) {
-            const paginationContainer = document.getElementById('teacherTablePagination');
-            
-            if (totalPages <= 1) {
-                paginationContainer.innerHTML = '';
-                return;
-            }
-            
-            const paginationHtml = `
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
-                        Menampilkan ${((teacherTableCurrentPage - 1) * teacherTableItemsPerPage) + 1} - 
-                        ${Math.min(teacherTableCurrentPage * teacherTableItemsPerPage, filteredTeacherActivities.length)} 
-                        dari ${filteredTeacherActivities.length} data
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button 
-                            onclick="changeTeacherTablePage(${teacherTableCurrentPage - 1})" 
-                            ${teacherTableCurrentPage === 1 ? 'disabled' : ''}
-                            class="px-4 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-                        >
-                            ← Sebelumnya
-                        </button>
-                        
-                        <div class="flex items-center space-x-1">
-                            ${generatePageNumbers(teacherTableCurrentPage, totalPages)}
-                        </div>
-                        
-                        <button 
-                            onclick="changeTeacherTablePage(${teacherTableCurrentPage + 1})" 
-                            ${teacherTableCurrentPage === totalPages ? 'disabled' : ''}
-                            class="px-4 py-2 text-sm bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-                        >
-                            Selanjutnya →
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            paginationContainer.innerHTML = paginationHtml;
-        }
-
-        function generatePageNumbers(currentPage, totalPages) {
-            let pages = [];
-            const maxVisiblePages = 5;
-            
-            if (totalPages <= maxVisiblePages) {
-                for (let i = 1; i <= totalPages; i++) {
-                    pages.push(i);
-                }
-            } else {
-                if (currentPage <= 3) {
-                    pages = [1, 2, 3, 4, 5];
-                } else if (currentPage >= totalPages - 2) {
-                    pages = [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
-                } else {
-                    pages = [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
-                }
-            }
-            
-            return pages.map(page => {
-                const isActive = page === currentPage;
-                return `
-                    <button 
-                        onclick="changeTeacherTablePage(${page})" 
-                        class="px-3 py-2 text-sm rounded-lg transition-colors ${
-                            isActive 
-                                ? 'bg-blue-600 text-white font-medium' 
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }"
-                    >
-                        ${page}
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function changeTeacherTablePage(newPage) {
-            const totalPages = Math.ceil(filteredTeacherActivities.length / teacherTableItemsPerPage);
-            if (newPage >= 1 && newPage <= totalPages) {
-                teacherTableCurrentPage = newPage;
-                renderTeacherTablePage();
-            }
-        }
-
-        function resetFilters() {
-            document.getElementById('teacherFilter').value = '';
-            document.getElementById('classFilter').value = '';
-            document.getElementById('dateFilter').value = '';
-            applyTeacherFilters();
-        }
-
-        function printRecap() {
-            if (filteredTeacherActivities.length === 0) {
-                alert('❌ Tidak ada data untuk dicetak. Silakan periksa filter Anda.');
-                return;
-            }
-
-            // Get filter values for display
-            const teacherFilter = document.getElementById('teacherFilter').value || 'Semua Guru';
-            const classFilter = document.getElementById('classFilter').value || 'Semua Kelas';
-            const dateFilter = document.getElementById('dateFilter').value || 'Semua Tanggal';
-
-            // Create print document
-            let printContent = `
-                <!DOCTYPE html>
-                <html lang="id">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Rekap Aktivitas Per Guru - SMA Negeri 1 Batujajar</title>
-                    <style>
-                        * {
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                        }
-                        body {
-                            font-family: 'Arial', sans-serif;
-                            color: #333;
-                            line-height: 1.6;
-                        }
-                        .container {
-                            max-width: A4;
-                            margin: 0 auto;
-                            padding: 20px;
-                        }
-                        .header {
-                            text-align: center;
-                            margin-bottom: 30px;
-                            border-bottom: 3px solid #667eea;
-                            padding-bottom: 15px;
-                        }
-                        .header h1 {
-                            font-size: 24px;
-                            color: #667eea;
-                            margin-bottom: 5px;
-                        }
-                        .header p {
-                            font-size: 14px;
-                            color: #666;
-                        }
-                        .filter-info {
-                            background-color: #f0f4ff;
-                            padding: 12px;
-                            margin-bottom: 20px;
-                            border-left: 4px solid #3B82F6;
-                            font-size: 13px;
-                        }
-                        .filter-info div {
-                            margin: 4px 0;
-                        }
-                        .filter-info strong {
-                            color: #667eea;
-                        }
-                        .date-info {
-                            text-align: right;
-                            margin-bottom: 15px;
-                            font-size: 12px;
-                            color: #666;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 20px;
-                        }
-                        thead tr {
-                            background-color: #667eea;
-                            color: white;
-                        }
-                        th {
-                            padding: 10px;
-                            text-align: left;
-                            font-weight: bold;
-                            font-size: 12px;
-                            border: 1px solid #ddd;
-                        }
-                        td {
-                            padding: 8px 10px;
-                            font-size: 12px;
-                            border: 1px solid #ddd;
-                        }
-                        tbody tr:nth-child(even) {
-                            background-color: #f9f9f9;
-                        }
-                        tbody tr:hover {
-                            background-color: #f0f4ff;
-                        }
-                        .footer {
-                            margin-top: 30px;
-                            text-align: center;
-                            font-size: 11px;
-                            color: #999;
-                            border-top: 1px solid #ddd;
-                            padding-top: 10px;
-                        }
-                        .summary {
-                            background-color: #f0f4ff;
-                            padding: 12px;
-                            margin-bottom: 20px;
-                            border-radius: 6px;
-                            font-size: 13px;
-                        }
-                        .summary strong {
-                            color: #667eea;
-                        }
-                        @media print {
-                            body {
-                                margin: 0;
-                                padding: 0;
-                            }
-                            .container {
-                                max-width: 100%;
-                                padding: 0;
-                            }
-                            table {
-                                page-break-inside: avoid;
-                            }
-                            tbody tr {
-                                page-break-inside: avoid;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>📋 REKAP AKTIVITAS PEMBELAJARAN</h1>
-                            <p>SMA Negeri 1 Batujajar</p>
-                        </div>
-
-                        <div class="date-info">
-                            Dicetak pada: ${new Date().toLocaleDateString('id-ID', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })} pukul ${new Date().toLocaleTimeString('id-ID', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false
-                            })}
-                        </div>
-
-                        <div class="filter-info">
-                            <div><strong>Filter yang Digunakan:</strong></div>
-                            <div>• Guru: ${teacherFilter}</div>
-                            <div>• Kelas: ${classFilter}</div>
-                            <div>• Tanggal: ${dateFilter}</div>
-                        </div>
-
-                        <div class="summary">
-                            <strong>Ringkasan:</strong> Total ${filteredTeacherActivities.length} kegiatan pembelajaran
-                        </div>
-
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 5%;">No</th>
-                                    <th style="width: 12%;">Tanggal</th>
-                                    <th style="width: 10%;">Hari</th>
-                                    <th style="width: 18%;">Nama Guru</th>
-                                    <th style="width: 15%;">Mata Pelajaran</th>
-                                    <th style="width: 10%;">Kelas</th>
-                                    <th style="width: 8%;">Jam</th>
-                                    <th style="width: 22%;">Materi Pembelajaran</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${filteredTeacherActivities.map((activity, index) => `
-                                    <tr>
-                                        <td>${index + 1}</td>
-                                        <td>${activity.formattedDate}</td>
-                                        <td>${activity.dayName}</td>
-                                        <td><strong>${activity.teacher}</strong></td>
-                                        <td>${activity.subject}</td>
-                                        <td>${activity.class}</td>
-                                        <td>${activity.lesson}</td>
-                                        <td>${activity.material}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-
-                        <div class="footer">
-                            <p>© SMA Negeri 1 Batujajar - Dashboard Kegiatan Guru</p>
-                            <p>Dokumen ini dicetak secara otomatis dari sistem</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
-
-            // Open print window
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(printContent);
-            printWindow.document.close();
-            
-            // Trigger print dialog after a short delay
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.1);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1 + 0.25);
+        
+        osc.start(ctx.currentTime + i * 0.1);
+        osc.stop(ctx.currentTime + i * 0.1 + 0.25);
+      });
+    },
+    
+    playApplauseSound() {
+      if (!this.soundEnabled) return;
+      if (!this.audioContext) this.init();
+      const ctx = this.audioContext;
+      
+      // Create applause effect
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          const notes = [392, 440, 494, 523];
+          notes.forEach((freq, j) => {
             setTimeout(() => {
-                printWindow.print();
-            }, 250);
-        }
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              
+              osc.frequency.setValueAtTime(freq, ctx.currentTime);
+              gain.gain.setValueAtTime(0.12, ctx.currentTime);
+              gain.gain.setValueAtTime(0, ctx.currentTime + 0.25);
+              
+              osc.start(ctx.currentTime);
+              osc.stop(ctx.currentTime + 0.25);
+            }, j * 40);
+          });
+        }, i * 150);
+      }
+    }
+  };
 
-        function formatDateForTable(dateString) {
-            if (!dateString) return '-';
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('id-ID', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-            } catch (error) {
-                return dateString;
+  function toggleSound() {
+    soundManager.soundEnabled = !soundManager.soundEnabled;
+    const toggle = document.getElementById('soundToggle');
+    const icon = document.getElementById('soundIcon');
+    
+    if (soundManager.soundEnabled) {
+      icon.textContent = '🔊';
+      toggle.classList.remove('from-gray-500', 'to-gray-600');
+      toggle.classList.add('from-green-500', 'to-emerald-600');
+    } else {
+      icon.textContent = '🔇';
+      toggle.classList.remove('from-green-500', 'to-emerald-600');
+      toggle.classList.add('from-gray-500', 'to-gray-600');
+    }
+  }
+
+  // Game Data dengan nama yang lebih pendek
+  const organData = {
+    circulatory: {
+      name: "Sirkulasi Darah",
+      icon: "❤️",
+      color: "from-red-500 to-rose-600",
+      cardFrontIcon: "💓",
+      organs: [
+        { name: "Jantung", icon: "❤️", function: "Memompa darah" },
+        { name: "Arteri", icon: "🩸", function: "Alirkan darah" },
+        { name: "Vena", icon: "🔄", function: "Bawa darah" },
+        { name: "Kapiler", icon: "🩸", function: "Tukar zat" },
+        { name: "Sel Darah", icon: "🔴", function: "Angkut O2" },
+        { name: "Trombosit", icon: "🩹", function: "Bekuan" },
+        { name: "Plasma", icon: "💧", function: "Transport" },
+        { name: "Atrium", icon: "🏠", function: "Terima darah" },
+        { name: "Ventrikel", icon: "🚀", function: "Pompa darah" },
+        { name: "Vena Kava", icon: "🔄", function: "Darah balik" }
+      ]
+    },
+    excretory: {
+      name: "Ekskresi",
+      icon: "💧",
+      color: "from-yellow-500 to-amber-600",
+      cardFrontIcon: "🚽",
+      organs: [
+        { name: "Ginjal", icon: "🫘", function: "Saring darah" },
+        { name: "Ureter", icon: "📍", function: "Salur urine" },
+        { name: "Kandung Kemih", icon: "💦", function: "Tampung urine" },
+        { name: "Uretra", icon: "🚿", function: "Keluar urine" },
+        { name: "Kulit", icon: "🤚", function: "Keringat" },
+        { name: "Paru-paru", icon: "🫁", function: "CO2" },
+        { name: "Hati", icon: "🍃", function: "Detoks" },
+        { name: "Nefron", icon: "🔬", function: "Penyaring" },
+        { name: "Kelenjar", icon: "💨", function: "Keringat" },
+        { name: "Empedu", icon: "🟢", function: "Pencernaan" }
+      ]
+    },
+    coordination: {
+      name: "Koordinasi",
+      icon: "🧠",
+      color: "from-purple-500 to-violet-600",
+      cardFrontIcon: "⚡",
+      organs: [
+        { name: "Otak", icon: "🧠", function: "Kendali" },
+        { name: "Serebrum", icon: "🎯", function: "Pikiran" },
+        { name: "Serebelum", icon: "⚖️", function: "Seimbang" },
+        { name: "Batang Otak", icon: "🌳", function: "Nafas" },
+        { name: "Sumsum", icon: "🦴", function: "Impuls" },
+        { name: "Saraf", icon: "⚡", function: "Hubung" },
+        { name: "Mata", icon: "👁️", function: "Lihat" },
+        { name: "Telinga", icon: "👂", function: "Dengar" },
+        { name: "Lidah", icon: "👅", function: "Rasa" },
+        { name: "Hipofisis", icon: "🎛️", function: "Hormon" }
+      ]
+    }
+  };
+
+  // Game State
+  let playerCount = 2; // Default 2 pemain
+  const playerColors = [
+    { icon: "🔵", bg: "from-cyan-600 to-cyan-500", text: "text-cyan-300", board: "from-cyan-600/20 to-cyan-400/10", border: "border-cyan-500/30" },
+    { icon: "🟠", bg: "from-pink-600 to-pink-500", text: "text-pink-300", board: "from-pink-600/20 to-pink-400/10", border: "border-pink-500/30" },
+    { icon: "🟢", bg: "from-emerald-600 to-emerald-500", text: "text-emerald-300", board: "from-emerald-600/20 to-emerald-400/10", border: "border-emerald-500/30" },
+    { icon: "🟣", bg: "from-purple-600 to-purple-500", text: "text-purple-300", board: "from-purple-600/20 to-purple-400/10", border: "border-purple-500/30" }
+  ];
+
+  let gameState = {
+    difficulty: null,
+    playerCount: 2,
+    players: [],
+    timer: 0,
+    timerInterval: null,
+    targetPairs: 0,
+    playerStates: [],
+    firstLevelCompletion: false,
+    isShowingApplause: false
+  };
+
+  const defaultConfig = {
+    game_title: "Make A Match"
+  };
+  let config = { ...defaultConfig };
+
+  if (window.elementSdk) {
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (newConfig) => {
+        config = { ...defaultConfig, ...newConfig };
+        document.getElementById('gameTitle').textContent = `🧬 ${config.game_title}`;
+      },
+      mapToCapabilities: (config) => ({
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ["game_title", config.game_title || defaultConfig.game_title]
+      ])
+    });
+  }
+
+  // Fungsi untuk menampilkan animasi ucapan selamat level
+  function showLevelCongrats(playerName) {
+    const modal = document.getElementById('levelCongratsModal');
+    const levelWinnerName = document.getElementById('levelWinnerName');
+    const levelDifficultyText = document.getElementById('levelDifficultyText');
+    
+    levelWinnerName.textContent = playerName;
+    
+    // Set teks tingkat kesulitan
+    let diffText = '';
+    switch(gameState.difficulty) {
+      case 'easy': diffText = 'Mudah'; break;
+      case 'medium': diffText = 'Sedang'; break;
+      case 'hard': diffText = 'Sulit'; break;
+      default: diffText = 'Game';
+    }
+    levelDifficultyText.textContent = diffText;
+    
+    // Tampilkan modal dan mainkan suara
+    modal.classList.remove('hidden');
+    soundManager.playLevelCompleteSound();
+    
+    // Otomatis sembunyikan setelah 2.5 detik
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 2500);
+  }
+
+  // Fungsi untuk menampilkan animasi applause
+  function showApplause(playerName) {
+    if (gameState.isShowingApplause) return;
+    
+    gameState.isShowingApplause = true;
+    const overlay = document.getElementById('applauseOverlay');
+    const applauseText = document.getElementById('applauseText');
+    
+    // Potong nama jika terlalu panjang
+    const shortName = playerName.length > 10 ? playerName.substring(0, 8) + "..." : playerName;
+    applauseText.textContent = `${shortName.toUpperCase()}!`;
+    
+    // Tampilkan overlay
+    overlay.classList.remove('hidden');
+    
+    // Mainkan suara applause
+    soundManager.playApplauseSound();
+    
+    // Sembunyikan setelah 3 detik
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+      gameState.isShowingApplause = false;
+    }, 3000);
+  }
+
+  function selectPlayerCount(count) {
+    soundManager.playButtonClick();
+    playerCount = count;
+    gameState.playerCount = count;
+    
+    document.querySelectorAll('.player-count-btn').forEach(btn => {
+      btn.classList.remove('ring-1', 'ring-white');
+    });
+    
+    const btnId = `btn${count}Player${count > 1 ? 's' : ''}`;
+    document.getElementById(btnId).classList.add('ring-1', 'ring-white');
+    
+    updatePlayerInputs();
+  }
+
+  function updatePlayerInputs() {
+    const container = document.getElementById('playerInputs');
+    container.innerHTML = '';
+    
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const inputId = `player${i+1}Name`;
+      const placeholder = i === 0 ? "Pemain 1" : i === 1 ? "Pemain 2" : i === 2 ? "Pemain 3" : "Pemain 4";
+      
+      const inputHTML = `
+        <div class="flex items-center gap-2">
+          <span class="text-lg">${color.icon}</span>
+          <input type="text" id="${inputId}" placeholder="${placeholder}" maxlength="10" 
+                 class="flex-1 px-3 py-1.5 rounded bg-white/20 text-white placeholder-gray-300 border ${i === 0 ? 'border-cyan-500/50' : i === 1 ? 'border-pink-500/50' : i === 2 ? 'border-emerald-500/50' : 'border-purple-500/50'} focus:outline-none text-sm">
+        </div>
+      `;
+      container.innerHTML += inputHTML;
+    }
+  }
+
+  function selectDifficulty(level) {
+    soundManager.playButtonClick();
+    gameState.difficulty = level;
+    
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.classList.remove('ring-1', 'ring-white');
+    });
+    
+    const btnId = level === 'easy' ? 'btnEasy' : level === 'medium' ? 'btnMedium' : 'btnHard';
+    document.getElementById(btnId).classList.add('ring-1', 'ring-white');
+  }
+
+  function generateCards() {
+    const cards = [];
+    let pairsNeeded;
+    
+    switch(gameState.difficulty) {
+      case 'easy': pairsNeeded = 5; break;
+      case 'medium': pairsNeeded = 8; break;
+      case 'hard': pairsNeeded = 10; break;
+      default: pairsNeeded = 5;
+    }
+    
+    gameState.targetPairs = pairsNeeded;
+    
+    const allOrgans = [];
+    Object.keys(organData).forEach(systemKey => {
+      const system = organData[systemKey];
+      system.organs.forEach(organ => {
+        allOrgans.push({ organ, system, systemKey });
+      });
+    });
+    
+    const shuffled = allOrgans.sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, pairsNeeded);
+    
+    selected.forEach((item, index) => {
+      cards.push({
+        id: `organ-${index}`,
+        type: 'organ',
+        pairId: index,
+        content: item.organ,
+        system: item.system,
+        systemKey: item.systemKey
+      });
+      
+      cards.push({
+        id: `system-${index}`,
+        type: 'system',
+        pairId: index,
+        content: item.organ,
+        system: item.system,
+        systemKey: item.systemKey
+      });
+    });
+    
+    return cards.sort(() => Math.random() - 0.5);
+  }
+
+  function startGame() {
+    soundManager.playButtonClick();
+    
+    // Validasi input
+    if (!gameState.difficulty) {
+      alert('Pilih tingkat kesulitan terlebih dahulu!');
+      return;
+    }
+    
+    // Inisialisasi pemain
+    gameState.playerCount = playerCount;
+    gameState.players = [];
+    gameState.playerStates = [];
+    
+    for (let i = 0; i < playerCount; i++) {
+      const input = document.getElementById(`player${i+1}Name`);
+      const name = input ? input.value.trim() || `Pemain ${i+1}` : `Pemain ${i+1}`;
+      const shortName = name.length > 8 ? name.substring(0, 6) + ".." : name;
+      
+      gameState.players.push({
+        name: shortName,
+        score: 0
+      });
+      
+      gameState.playerStates.push({
+        matchedPairs: 0,
+        flippedCards: [],
+        isLocked: false,
+        cards: []
+      });
+    }
+    
+    // Reset state
+    gameState.timer = 0;
+    gameState.firstLevelCompletion = false;
+    gameState.isShowingApplause = false;
+    
+    // Update UI
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('levelCongratsModal').classList.add('hidden');
+    document.getElementById('applauseOverlay').classList.add('hidden');
+    
+    // Setup game boards
+    setupGameUI();
+    renderBoard();
+    startTimer();
+  }
+
+  function setupGameUI() {
+    // Setup score board
+    setupScoreBoard();
+    
+    // Setup status board
+    setupStatusBoard();
+    
+    // Setup game boards container
+    setupGameBoardsContainer();
+  }
+
+  function setupScoreBoard() {
+    const scoreBoard = document.getElementById('scoreBoard');
+    scoreBoard.innerHTML = '';
+    
+    // Set grid columns berdasarkan jumlah pemain
+    if (playerCount === 1) {
+      scoreBoard.className = 'grid grid-cols-1 gap-1.5 mb-1.5';
+    } else if (playerCount === 2) {
+      scoreBoard.className = 'grid grid-cols-2 gap-1.5 mb-1.5';
+    } else if (playerCount === 4) {
+      scoreBoard.className = 'grid grid-cols-4 gap-1 mb-1.5';
+    }
+    
+    // Buat score card untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const scoreCardHTML = `
+        <div id="player${playerNum}Card" class="${color.bg} p-1.5 rounded text-white transition-all">
+          <div class="flex items-center gap-1.5">
+            <span class="text-lg">${color.icon}</span>
+            <div class="flex-1 min-w-0">
+              <p id="p${playerNum}NameDisplay" class="font-bold text-xs truncate">${gameState.players[i].name}</p>
+              <div class="flex items-center gap-0.5">
+                <span class="${color.text} text-[10px]">Skor:</span>
+                <span id="p${playerNum}Score" class="text-base font-bold">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      scoreBoard.innerHTML += scoreCardHTML;
+    }
+  }
+
+  function setupStatusBoard() {
+    const statusBoard = document.getElementById('statusBoard');
+    statusBoard.innerHTML = '';
+    
+    // Set grid columns berdasarkan jumlah pemain
+    if (playerCount === 1) {
+      statusBoard.className = 'grid grid-cols-1 gap-1.5 mb-1.5';
+    } else if (playerCount === 2) {
+      statusBoard.className = 'grid grid-cols-2 gap-1.5 mb-1.5';
+    } else if (playerCount === 4) {
+      statusBoard.className = 'grid grid-cols-4 gap-1 mb-1.5';
+    }
+    
+    // Buat status bar untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const statusHTML = `
+        <div class="bg-gradient-to-r ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/30 rounded p-1.5 border ${color.border}">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-white font-semibold text-[10px]">Kecocokan:</span>
+            <span id="p${playerNum}Matches" class="${color.text} font-bold text-xs">0/<span id="totalMatches${playerNum}">${gameState.targetPairs}</span></span>
+          </div>
+          <div class="bg-gray-800/30 rounded-full h-1 overflow-hidden">
+            <div id="p${playerNum}MatchBar" class="h-full bg-gradient-to-r ${color.bg} transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      `;
+      statusBoard.innerHTML += statusHTML;
+    }
+  }
+
+  function setupGameBoardsContainer() {
+    const boardsContainer = document.getElementById('gameBoardsContainer');
+    boardsContainer.innerHTML = '';
+    
+    // Set grid columns berdasarkan jumlah pemain
+    if (playerCount === 1) {
+      boardsContainer.className = 'flex-1 grid grid-cols-1 gap-1.5 min-h-0 overflow-hidden';
+    } else if (playerCount === 2) {
+      boardsContainer.className = 'flex-1 grid grid-cols-2 gap-1.5 min-h-0 overflow-hidden';
+    } else if (playerCount === 4) {
+      boardsContainer.className = 'flex-1 grid grid-cols-2 md:grid-cols-4 gap-1.5 min-h-0 overflow-hidden';
+    }
+    
+    // Buat game board untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const boardHTML = `
+        <div class="flex flex-col ${color.board} rounded p-1 border ${color.border} overflow-hidden">
+          <h3 class="${color.text} font-bold text-center mb-0.5 text-xs truncate">
+            ${color.icon} <span id="p${playerNum}BoardName">${gameState.players[i].name}</span>
+          </h3>
+          <div id="gameBoard${playerNum}" class="game-board flex-1">
+            <!-- Cards will be generated here -->
+          </div>
+        </div>
+      `;
+      boardsContainer.innerHTML += boardHTML;
+    }
+  }
+
+  function renderBoard() {
+    // Generate cards untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const cards = generateCards();
+      gameState.playerStates[i].cards = cards;
+      
+      // Render board untuk pemain ini
+      renderPlayerBoard(i + 1, cards);
+    }
+  }
+
+  function renderPlayerBoard(playerNum, cards) {
+    const board = document.getElementById(`gameBoard${playerNum}`);
+    if (!board) return;
+    
+    let cols, cardWidth, cardHeight;
+    
+    // Tentukan ukuran kartu berdasarkan difficulty
+    switch(gameState.difficulty) {
+      case 'easy':
+        cols = 4;
+        cardWidth = 'w-16';
+        cardHeight = 'h-20';
+        break;
+      case 'medium':
+        cols = 4;
+        cardWidth = 'w-14';
+        cardHeight = 'h-18';
+        break;
+      case 'hard':
+        cols = 5;
+        cardWidth = 'w-12';
+        cardHeight = 'h-16';
+        break;
+      default:
+        cols = 4;
+        cardWidth = 'w-14';
+        cardHeight = 'h-18';
+    }
+    
+    // Adjust untuk 4 pemain di layar kecil
+    if (playerCount === 4 && window.innerWidth < 768) {
+      cols = 3;
+      cardWidth = 'w-10';
+      cardHeight = 'h-14';
+    }
+    
+    board.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    board.innerHTML = '';
+    
+    cards.forEach((card, index) => {
+      const cardElement = document.createElement('div');
+      cardElement.className = `card-flip ${cardWidth} ${cardHeight} cursor-pointer`;
+      cardElement.id = `${playerNum}-${card.id}`;
+      cardElement.onclick = () => flipCard(playerNum, index);
+      
+      const isOrgan = card.type === 'organ';
+      const bgColor = isOrgan ? 'bg-gradient-to-br from-slate-700 to-slate-800' : `bg-gradient-to-br ${card.system.color}`;
+      const cardFrontIcon = isOrgan ? '❓' : card.system.cardFrontIcon || card.system.icon;
+      
+      // Potong teks jika terlalu panjang
+      const displayText = isOrgan ? card.content.name : card.system.name;
+      const shortText = displayText.length > 12 ? displayText.substring(0, 10) + ".." : displayText;
+      
+      cardElement.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front bg-gradient-to-br from-indigo-600 to-purple-700 border border-white/20">
+            <div class="card-content">
+              <div class="card-icon">
+                <span class="text-2xl">${cardFrontIcon}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-back ${bgColor} border border-white/30">
+            <div class="card-content">
+              <div class="card-icon mb-0.5">
+                <span class="text-xl">${isOrgan ? card.content.icon : card.system.icon}</span>
+              </div>
+              <div class="card-text">
+                <span class="text-[10px] leading-tight">${shortText}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      board.appendChild(cardElement);
+    });
+  }
+
+  function flipCard(playerNum, index) {
+    const playerIndex = playerNum - 1;
+    const playerState = gameState.playerStates[playerIndex];
+    
+    if (!playerState || playerState.isLocked) return;
+    
+    const cards = playerState.cards;
+    const card = cards[index];
+    const cardElement = document.getElementById(`${playerNum}-${card.id}`);
+    
+    if (!cardElement) return;
+    
+    const cardInner = cardElement.querySelector('.card-inner');
+    
+    if (cardInner.classList.contains('flipped') || playerState.flippedCards.includes(index)) return;
+    
+    soundManager.playFlipSound();
+    cardInner.classList.add('flipped');
+    playerState.flippedCards.push(index);
+    
+    if (playerState.flippedCards.length === 2) {
+      playerState.isLocked = true;
+      setTimeout(() => checkMatch(playerNum), 500);
+    }
+  }
+
+  function checkMatch(playerNum) {
+    const playerIndex = playerNum - 1;
+    const playerState = gameState.playerStates[playerIndex];
+    const [first, second] = playerState.flippedCards;
+    const cards = playerState.cards;
+    
+    if (!cards[first] || !cards[second]) {
+      playerState.flippedCards = [];
+      playerState.isLocked = false;
+      return;
+    }
+    
+    const card1 = cards[first];
+    const card2 = cards[second];
+    
+    const isMatch = card1.pairId === card2.pairId && card1.type !== card2.type;
+    
+    if (isMatch) {
+      soundManager.playMatchSound();
+      const organCard = card1.type === 'organ' ? card1 : card2;
+      showInfo(`✅ ${organCard.content.name} (${gameState.players[playerIndex].name})`);
+      
+      gameState.players[playerIndex].score++;
+      playerState.matchedPairs++;
+      
+      const el1 = document.getElementById(`${playerNum}-${card1.id}`);
+      const el2 = document.getElementById(`${playerNum}-${card2.id}`);
+      
+      if (el1) el1.classList.add('matched');
+      if (el2) el2.classList.add('matched');
+      
+      setTimeout(() => {
+        if (el1) el1.style.visibility = 'hidden';
+        if (el2) el2.style.visibility = 'hidden';
+        
+        playerState.flippedCards = [];
+        playerState.isLocked = false;
+        
+        updateScores();
+        updateCompetitiveStatus();
+        hideInfo();
+        
+        checkWinner();
+      }, 800);
+    } else {
+      soundManager.playMissSound();
+      showInfo(`❌ Salah (${gameState.players[playerIndex].name})`);
+      
+      setTimeout(() => {
+        const el1 = document.getElementById(`${playerNum}-${card1.id}`);
+        const el2 = document.getElementById(`${playerNum}-${card2.id}`);
+        if (el1 && el2) {
+          el1.querySelector('.card-inner').classList.remove('flipped');
+          el2.querySelector('.card-inner').classList.remove('flipped');
+        }
+        
+        playerState.flippedCards = [];
+        playerState.isLocked = false;
+        hideInfo();
+      }, 800);
+    }
+  }
+
+  function showInfo(text) {
+    const panel = document.getElementById('infoPanel');
+    const infoText = document.getElementById('infoText');
+    infoText.textContent = text;
+    panel.classList.remove('hidden');
+    setTimeout(hideInfo, 1000);
+  }
+
+  function hideInfo() {
+    document.getElementById('infoPanel').classList.add('hidden');
+  }
+
+  function updateScores() {
+    for (let i = 0; i < playerCount; i++) {
+      const scoreElement = document.getElementById(`p${i+1}Score`);
+      if (scoreElement) {
+        scoreElement.textContent = gameState.players[i].score;
+      }
+    }
+  }
+
+  function startTimer() {
+    if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+    
+    gameState.timerInterval = setInterval(() => {
+      gameState.timer++;
+      const mins = Math.floor(gameState.timer / 60).toString().padStart(2, '0');
+      const secs = (gameState.timer % 60).toString().padStart(2, '0');
+      document.getElementById('timer').textContent = `${mins}:${secs}`;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (gameState.timerInterval) {
+      clearInterval(gameState.timerInterval);
+      gameState.timerInterval = null;
+    }
+  }
+
+  function updateCompetitiveStatus() {
+    const total = gameState.targetPairs;
+    
+    // Update untuk setiap pemain
+    for (let i = 0; i < playerCount; i++) {
+      const matchesElement = document.getElementById(`p${i+1}Matches`);
+      const barElement = document.getElementById(`p${i+1}MatchBar`);
+      
+      if (matchesElement) {
+        matchesElement.innerHTML = `${gameState.playerStates[i].matchedPairs}/<span id="totalMatches${i+1}">${total}</span>`;
+      }
+      
+      if (barElement) {
+        const percent = Math.round((gameState.playerStates[i].matchedPairs / total) * 100);
+        barElement.style.width = `${percent}%`;
+      }
+    }
+    
+    // Update opacity berdasarkan peringkat
+    let maxScore = -1;
+    for (let i = 0; i < playerCount; i++) {
+      if (gameState.playerStates[i].matchedPairs > maxScore) {
+        maxScore = gameState.playerStates[i].matchedPairs;
+      }
+    }
+    
+    for (let i = 0; i < playerCount; i++) {
+      const cardElement = document.getElementById(`player${i+1}Card`);
+      if (cardElement) {
+        if (gameState.playerStates[i].matchedPairs < maxScore) {
+          cardElement.classList.add('opacity-60');
+        } else {
+          cardElement.classList.remove('opacity-60');
+        }
+      }
+    }
+  }
+
+  function checkWinner() {
+    let anyComplete = false;
+    let firstCompleterIndex = -1;
+    
+    // Cek apakah ada yang sudah selesai
+    for (let i = 0; i < playerCount; i++) {
+      const isComplete = gameState.playerStates[i].matchedPairs >= gameState.targetPairs;
+      
+      if (isComplete) {
+        anyComplete = true;
+        if (firstCompleterIndex === -1) {
+          firstCompleterIndex = i;
+        }
+      }
+    }
+    
+    if (anyComplete && !gameState.firstLevelCompletion) {
+      gameState.firstLevelCompletion = true;
+      
+      // Tampilkan applause untuk pemenang pertama
+      if (firstCompleterIndex !== -1) {
+        showApplause(gameState.players[firstCompleterIndex].name);
+        
+        setTimeout(() => {
+          showLevelCongrats(gameState.players[firstCompleterIndex].name);
+        }, 3200);
+      }
+      
+      // Setelah delay, tampilkan hasil akhir
+      setTimeout(() => {
+        stopTimer();
+        
+        // Tentukan pemenang akhir (yang memiliki matchedPairs terbanyak)
+        let winnerIndex = 0;
+        let maxPairs = gameState.playerStates[0].matchedPairs;
+        
+        for (let i = 1; i < playerCount; i++) {
+          if (gameState.playerStates[i].matchedPairs > maxPairs) {
+            maxPairs = gameState.playerStates[i].matchedPairs;
+            winnerIndex = i;
+          } else if (gameState.playerStates[i].matchedPairs === maxPairs) {
+            // Jika seri, cek skor total
+            if (gameState.players[i].score > gameState.players[winnerIndex].score) {
+              winnerIndex = i;
             }
+          }
         }
+        
+        // Nonaktifkan semua klik kartu
+        for (let i = 1; i <= playerCount; i++) {
+          const board = document.getElementById(`gameBoard${i}`);
+          if (board) {
+            board.style.pointerEvents = 'none';
+            board.style.opacity = '0.5';
+          }
+        }
+        
+        // Tampilkan hasil
+        setTimeout(() => showResults(winnerIndex), 500);
+      }, 6000);
+    }
+  }
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            displayCurrentDate();
-            loadData();
-            
-            // Auto refresh every 5 minutes
-            setInterval(() => {
-                displayCurrentDate();
-                loadData();
-            }, 5 * 60 * 1000);
-        });
-    </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c976cba916e5d0f',t:'MTc3MDM0NzExNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  function showResults(winnerIndex) {
+    soundManager.playWinSound();
+    const winner = gameState.players[winnerIndex];
+    const diffText = gameState.difficulty === 'easy' ? 'Mudah' : 
+                     gameState.difficulty === 'medium' ? 'Sedang' : 'Sulit';
+    
+    document.getElementById('gameScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.remove('hidden');
+    
+    // Update winner announcement
+    document.getElementById('winnerMessageLevel').textContent = `${winner.name} menang di level ${diffText}!`;
+    document.getElementById('winnerName').textContent = `${winner.name} Juara!`;
+    
+    // Setup results container
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.innerHTML = '';
+    
+    for (let i = 0; i < playerCount; i++) {
+      const color = playerColors[i];
+      const playerNum = i + 1;
+      
+      const resultHTML = `
+        <div class="flex justify-between items-center ${color.bg.replace('from-', 'from-').replace('to-', 'to-')}/50 p-1.5 rounded-lg border ${color.border.replace('border-', 'border-')}/70">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xl">${color.icon}</span>
+            <span id="result${playerNum}Name" class="text-white font-bold text-sm truncate max-w-[100px]">${gameState.players[i].name}</span>
+          </div>
+          <span id="result${playerNum}Score" class="text-lg font-bold ${color.text} ${color.bg.replace('from-', 'bg-').split(' ')[0]}/40 px-1.5 py-0.5 rounded">${gameState.players[i].score} pasang</span>
+        </div>
+      `;
+      resultsContainer.innerHTML += resultHTML;
+    }
+    
+    const mins = Math.floor(gameState.timer / 60).toString().padStart(2, '0');
+    const secs = (gameState.timer % 60).toString().padStart(2, '0');
+    document.getElementById('resultTime').textContent = `${mins}:${secs}`;
+    document.getElementById('resultDifficulty').textContent = diffText;
+    
+    createConfetti();
+  }
+
+  function createConfetti() {
+    const container = document.getElementById('confettiContainer');
+    container.innerHTML = '';
+    
+    const colors = ['#ff6b6b', '#4ecdc4', '#f9ca24', '#6c5ce7', '#fd79a8'];
+    
+    for (let i = 0; i < 25; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = `${Math.random() * 100}%`;
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = `${Math.random() * 1.5}s`;
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      container.appendChild(confetti);
+    }
+  }
+
+  function restartGame() {
+    startGame();
+  }
+
+  function backToMenu() {
+    soundManager.playButtonClick();
+    stopTimer();
+    document.getElementById('startScreen').classList.remove('hidden');
+    document.getElementById('gameScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('levelCongratsModal').classList.add('hidden');
+    document.getElementById('applauseOverlay').classList.add('hidden');
+    
+    gameState.difficulty = null;
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.classList.remove('ring-1', 'ring-white');
+    });
+  }
+
+  // Inisialisasi saat halaman dimuat
+  document.addEventListener('DOMContentLoaded', function() {
+    updatePlayerInputs();
+    
+    // Set default untuk 2 pemain
+    selectPlayerCount(2);
+    selectDifficulty('easy');
+  });
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb0d1cb220e14a6',t:'MTc3MDYxMzM5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
 </html>
