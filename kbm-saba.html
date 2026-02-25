@@ -224,6 +224,12 @@
       <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">🏆</span> Guru Teraktif</h3>
       <div id="topTeachers" class="space-y-3"><!-- Top teachers will be populated by JavaScript -->
       </div>
+      <!-- Navigasi untuk Guru Teraktif -->
+      <div class="flex items-center justify-between mt-4">
+          <button onclick="prevTopTeachers()" class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50" id="prevTopBtn">← Sebelumnya</button>
+          <span id="topTeacherPageInfo" class="text-sm text-gray-600">Halaman 1</span>
+          <button onclick="nextTopTeachers()" class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50" id="nextTopBtn">Selanjutnya →</button>
+      </div>
      </div><!-- Daily Activity Chart -->
      <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 card-hover">
       <h3 class="text-lg lg:text-xl font-semibold text-gray-800 mb-4 flex items-center"><span class="text-xl lg:text-2xl mr-2">📅</span> Aktivitas Harian</h3>
@@ -390,6 +396,11 @@
         // Calendar state
         let displayedMonth = new Date().getMonth();
         let displayedYear = new Date().getFullYear();
+
+        // Pagination variables for top teachers
+        let topTeacherPage = 1;
+        const topTeacherPerPage = 5;
+        let topTeacherList = [];
 
         // Load data from Google Sheets with better error handling
         async function loadData() {
@@ -628,6 +639,28 @@
                     date: tomorrowString, time: "07:30 - 08:15",
                     day: tomorrowDay, material: "Perang Dunia II",
                     notes: "Diskusi dampak perang terhadap Indonesia", timestamp: tomorrow.toISOString()
+                },
+                // Additional teachers for pagination demo
+                {
+                    id: 7, title: "Bahasa Inggris - XI IPA 2", teacher: "John Doe, M.Pd",
+                    subject: "Bahasa Inggris", class: "XI IPA 2", lesson: "2",
+                    date: yesterdayString, time: "08:15 - 09:00",
+                    day: yesterdayDay, material: "Passive Voice",
+                    notes: "Latihan soal", timestamp: yesterday.toISOString()
+                },
+                {
+                    id: 8, title: "Ekonomi - XII IPS 2", teacher: "Sarah Wijaya, S.E",
+                    subject: "Ekonomi", class: "XII IPS 2", lesson: "4",
+                    date: yesterdayString, time: "10:00 - 10:45",
+                    day: yesterdayDay, material: "Pasar Modal",
+                    notes: "Diskusi", timestamp: yesterday.toISOString()
+                },
+                {
+                    id: 9, title: "Geografi - XII IPS 1", teacher: "Budi Santoso, S.Pd",
+                    subject: "Geografi", class: "XII IPS 1", lesson: "3",
+                    date: todayString, time: "09:15 - 10:00",
+                    day: todayDay, material: "Sistem Informasi Geografis",
+                    notes: "Praktikum GIS", timestamp: today.toISOString()
                 }
             ];
             
@@ -1277,22 +1310,56 @@
                 teacherStats[activity.teacher]++;
             });
             
-            const topTeachers = Object.entries(teacherStats)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 5);
+            topTeacherList = Object.entries(teacherStats)
+                .sort(([, a], [, b]) => b - a);
+            
+            // Reset to first page when data changes
+            topTeacherPage = 1;
+            displayTopTeachersPage();
+        }
+
+        // Display top teachers with pagination
+        function displayTopTeachersPage() {
+            const start = (topTeacherPage - 1) * topTeacherPerPage;
+            const end = start + topTeacherPerPage;
+            const pageData = topTeacherList.slice(start, end);
+            const totalPages = Math.ceil(topTeacherList.length / topTeacherPerPage);
             
             const container = document.getElementById('topTeachers');
-            container.innerHTML = topTeachers.map(([teacher, count], index) => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div class="flex items-center">
-                        <span class="text-lg mr-3">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👨‍🏫'}</span>
-                        <span class="font-medium text-sm">${teacher}</span>
+            container.innerHTML = pageData.map(([teacher, count], index) => {
+                const rank = start + index;
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-3">${rank === 0 ? '🥇' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : '👨‍🏫'}</span>
+                            <span class="font-medium text-sm">${teacher}</span>
+                        </div>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                            ${count} sesi
+                        </span>
                     </div>
-                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                        ${count} sesi
-                    </span>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            
+            document.getElementById('topTeacherPageInfo').innerText = `Halaman ${topTeacherPage} dari ${totalPages || 1}`;
+            document.getElementById('prevTopBtn').disabled = topTeacherPage === 1;
+            document.getElementById('nextTopBtn').disabled = topTeacherPage === totalPages || totalPages === 0;
+        }
+
+        // Navigation functions for top teachers
+        function prevTopTeachers() {
+            if (topTeacherPage > 1) {
+                topTeacherPage--;
+                displayTopTeachersPage();
+            }
+        }
+
+        function nextTopTeachers() {
+            const totalPages = Math.ceil(topTeacherList.length / topTeacherPerPage);
+            if (topTeacherPage < totalPages) {
+                topTeacherPage++;
+                displayTopTeachersPage();
+            }
         }
 
         // Create charts
