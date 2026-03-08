@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Virtual – Fotosintesis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;
+  --h:46px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{
+  position:relative;z-index:10;height:var(--h);flex-shrink:0;
+  background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 14px;gap:12px;
+  box-shadow:0 1px 4px rgba(30,41,59,0.07);
+}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);line-height:1.1;}
+.logo-sub{font-size:9.5px;color:var(--text3);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:var(--text3);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:var(--acc);transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:var(--acc2);}
+.nb.active{color:var(--acc);}
+.nb.active::after{transform:scaleX(1);}
+/* APP */
+#app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* HERO */
+.hero{background:linear-gradient(135deg,#1e3a8a,#2563eb);border:none;border-radius:9px;padding:10px 16px;margin-bottom:8px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 4px 18px rgba(37,99,235,.2);}
+.hero::after{content:'☀';position:absolute;right:12px;top:-8px;font-size:60px;opacity:.08;pointer-events:none;}
+.h-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:#93c5fd;text-transform:uppercase;margin-bottom:2px;}
+.h-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,2vw,18px);font-weight:700;color:#fff;line-height:1.2;}
+.h-title span{color:#bfdbfe;}
+.h-desc{font-size:11px;color:#bfdbfe;line-height:1.5;max-width:480px;}
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(37,99,235,.1);}
+.ci.y{background:rgba(217,119,6,.1);}
+.ci.g{background:rgba(5,150,105,.1);}
+.ci.r{background:rgba(220,38,38,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--acc3);}
+.card p{font-size:11.5px;line-height:1.65;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:9.5px;font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.fi strong{display:block;font-size:10.5px;color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:10.5px;color:var(--text2);line-height:1.5;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:11.5px;color:var(--text2);line-height:1.55;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:13px;margin-top:-1px;}
+.chips{display:flex;gap:5px;margin:6px 0;flex-wrap:wrap;}
+.chip{border-radius:5px;padding:3px 8px;font-size:10.5px;font-weight:500;}
+.chip-b{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:#1d4ed8;}
+.chip-r{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#b91c1c;}
+.chip-g{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#047857;}
+/* PROSEDUR */
+.steps{display:flex;flex-direction:column;gap:5px;}
+.step{display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;}
+.step:hover{border-color:var(--acc2);background:#eff6ff;}
+.snum{min-width:20px;height:20px;border-radius:50%;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);flex-shrink:0;}
+.step p{font-size:11px;color:var(--text2);line-height:1.55;margin:0;}
+.notebox{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:7px;}
+.notebox .nt{font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.notebox p{font-size:11px;color:#92400e;line-height:1.6;margin:0;}
+.sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
+.sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
+/* SIMULASI */
+.sim-wrap{display:grid;grid-template-columns:200px 1fr;gap:8px;flex:1;min-height:0;}
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+select option{background:#fff;color:var(--text);}
+.btn{width:100%;border:none;border-radius:6px;padding:8px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-start{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-stop{background:#fff1f2;border:1px solid #fecdd3;color:var(--red);}
+.btn-stop:hover{background:#ffe4e6;}
+.btn-stop:disabled{opacity:.35;cursor:not-allowed;}
+.btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.sim-right{display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.aquarium{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;}
+.aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;}
+#simCanvas{width:100%;border-radius:6px;display:block;background:#0f172a;border:1px solid var(--border);}
+.statsrow{display:flex;gap:6px;margin-top:6px;}
+.sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;color:var(--acc);display:block;}
+.sl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.tipinfo{background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:7px 10px;margin-top:6px;font-size:11px;color:#1e40af;display:none;line-height:1.6;}
+.tipinfo.on{display:block;}
+.wstable{width:100%;border-collapse:collapse;font-size:11px;}
+.wstable th{background:#eff6ff;color:var(--acc3);padding:6px 9px;text-align:left;border:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.wstable td{padding:5px 9px;border:1px solid var(--border);color:var(--text2);}
+.wstable tr:nth-child(even) td{background:#f8fafc;}
+.wstable tr:hover td{background:#eff6ff;}
+/* EVALUASI */
+.quiz-nav-header{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--surf);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.05);}
+.qprog{display:flex;gap:3px;flex-wrap:wrap;}
+.qprog-dot{width:24px;height:24px;border-radius:5px;border:1px solid var(--border);background:var(--surf2);font-size:9.5px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .17s;}
+.qprog-dot.answered{border-color:var(--acc2);color:var(--acc);background:#eff6ff;}
+.qprog-dot.current{background:var(--acc);color:#fff;border-color:var(--acc);}
+.q-card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:14px;flex:1;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.qnum{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--acc);letter-spacing:.1em;margin-bottom:5px;}
+.qtype-badge{display:inline-block;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;margin-bottom:7px;letter-spacing:.04em;}
+.badge-mc{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;}
+.badge-tf{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;}
+.badge-ms{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
+.qtext{font-size:13px;color:var(--text);line-height:1.55;font-weight:500;margin-bottom:10px;}
+.opts{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.opt{display:flex;align-items:flex-start;gap:8px;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 11px;cursor:pointer;transition:all .16s;font-size:12px;color:var(--text2);}
+.opt:hover{border-color:var(--acc2);background:#eff6ff;color:var(--text);}
+.opt input{margin-top:1px;accent-color:var(--acc);cursor:pointer;}
+.opt.sel{border-color:var(--acc);background:#eff6ff;color:var(--acc3);}
+.opt.correct{background:#ecfdf5;border-color:#10b981;color:#065f46;}
+.opt.wrong{background:#fff1f2;border-color:#f87171;color:#b91c1c;}
+.qfb{margin-top:8px;padding:7px 10px;border-radius:6px;font-size:11.5px;display:none;}
+.qfb.on{display:block;}
+.qfb.ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
+.qfb.bad{background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3;}
+.quiz-foot{display:flex;align-items:center;gap:7px;padding-top:7px;flex-shrink:0;}
+.btn-qnav{padding:6px 14px;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;border:none;}
+.btn-prev{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-prev:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-next{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+.btn-next:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-submit-q{background:linear-gradient(135deg,#065f46,#10b981);color:#fff;}
+.btn-submit-q:hover{box-shadow:0 3px 12px rgba(16,185,129,.3);}
+.btn-reset-q{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset-q:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.qcounter{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3);}
+
+/* TOOLTIP INDICATORS */
+.sim-tooltip{position:absolute;top:10px;pointer-events:none;z-index:10;display:flex;flex-direction:column;gap:4px;}
+.sim-tip-item{background:rgba(15,23,42,0.78);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:4px 8px;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.sim-tip-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#fff;}
+.sim-tip-lbl{font-size:9px;color:rgba(255,255,255,0.55);letter-spacing:.06em;text-transform:uppercase;}
+
+.disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+
+/* SCORE OVERLAY */
+.score-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(8px);}
+.score-overlay.on{display:flex;}
+.score-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:32px 44px;text-align:center;box-shadow:0 20px 60px rgba(30,41,59,.18);animation:fu .28s ease;min-width:280px;}
+.score-big{font-family:'Space Grotesk',sans-serif;font-size:68px;font-weight:700;color:var(--acc);line-height:1;}
+.score-pct{font-size:20px;color:var(--text3);margin-top:2px;}
+.score-sub{font-size:12.5px;color:var(--text2);margin:8px 0 4px;}
+.score-grade{font-size:15px;font-weight:600;margin-top:8px;}
+.score-actions{display:flex;gap:8px;justify-content:center;margin-top:18px;}
+.btn-score{padding:8px 20px;border-radius:7px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;border:none;transition:all .17s;}
+.btn-review{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-review:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-ulangi{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;}
+.btn-ulangi:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌱</div>
+    <div>
+      <div class="logo-text">Lab Virtual Biologi</div>
+      <div class="logo-sub">Fotosintesis &amp; Cahaya</div>
+    </div>
+  </div>
+  <nav>
+    <button class="nb active" onclick="show('teori',this)">📖 Teori</button>
+    <button class="nb" onclick="show('prosedur',this)">🔬 Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this)">⚗️ Simulasi</button>
+    <button class="nb" onclick="show('evaluasi',this)">💬 Diskusi</button>
+  </nav>
+</header>
+
+<div id="app">
+
+<!-- TEORI -->
+<div id="page-teori" class="page active">
+  <div class="scroll">
+    <div class="hero">
+      <div><div class="h-label">Lab Virtual Biologi</div><div class="h-title">Pentingnya <span>Cahaya</span> dalam Fotosintesis</div></div>
+      <div class="h-desc">Membuktikan secara eksperimental bahwa cahaya diperlukan untuk proses fotosintesis pada tumbuhan hijau.</div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Percobaan</div></div>
+        <p>Mengamati dan mengukur <strong style="color:var(--acc2)">laju fotosintesis</strong> melalui jumlah gelembung oksigen (O₂) yang dihasilkan tanaman, dengan memvariasikan <strong style="color:var(--acc2)">intensitas cahaya</strong> (daya lampu dan jarak sumber cahaya) serta <strong style="color:var(--acc2)">warna filter cahaya</strong> pada simulasi laboratorium virtual.</p>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
+        <ul class="olist">
+          <li>Memahami konsep cahaya dalam fotosintesis</li>
+          <li>Memahami prinsip dan faktor fotosintesis</li>
+          <li>Mampu melakukan percobaan di lab nyata</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
+      <div class="two-col" style="gap:8px;">
+        <div>
+          <p>Fotosintesis adalah proses biokimia pada tumbuhan yang mengubah energi cahaya menjadi energi kimia berupa glukosa, menggunakan CO₂ dan H₂O. Reaksi ini menghasilkan O₂ sebagai produk sampingan.</p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:10.5px;background:#eff6ff;padding:6px 10px;border-radius:6px;color:var(--acc3);">6CO₂ + 6H₂O + cahaya → C₆H₁₂O₆ + 6O₂</p>
+          <h4>Peran Suhu</h4>
+          <p>Suhu optimal fotosintesis berkisar <strong style="color:var(--acc2)">25–35°C</strong>. Suhu di bawah optimal memperlambat aktivitas enzim, sehingga laju fotosintesis menurun dan produksi O₂ berkurang.</p>
+          <h4>Peran Karbon Dioksida</h4>
+          <p>CO₂ merupakan bahan baku utama reaksi gelap (siklus Calvin). Semakin tinggi konsentrasi CO₂ terlarut dalam air, semakin cepat laju fotosintesis dan semakin banyak O₂ yang dihasilkan.</p>
+        </div>
+        <div>
+          <h4>Peran Warna Cahaya</h4>
+          <p>Klorofil menyerap cahaya <strong style="color:#1d4ed8">biru</strong> dan <strong style="color:#dc2626">merah</strong> secara maksimal, namun <strong style="color:#059669">memantulkan</strong> cahaya hijau.</p>
+          <div class="chips">
+            <span class="chip chip-b">🔵 Biru — Paling efektif</span>
+            <span class="chip chip-r">🔴 Merah — Efektif</span>
+            <span class="chip chip-g">🟢 Hijau — Dipantulkan</span>
+          </div>
+          <h4>Faktor-Faktor Fotosintesis</h4>
+          <div class="fgrid">
+            <div class="fi"><strong>☀️ Cahaya</strong><span>Intensitas & panjang gelombang</span></div>
+            <div class="fi"><strong>💨 Konsentrasi CO₂</strong><span>Makin tinggi → laju makin cepat</span></div>
+            <div class="fi"><strong>🌡️ Suhu</strong><span>Optimal 25–35°C</span></div>
+            <div class="fi"><strong>💧 Air</strong><span>Media pelarut & bahan baku</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROSEDUR -->
+<div id="page-prosedur" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex-shrink:0;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci b">🔧</div><div class="ct">Alat</div></div>
+        <ul class="olist" style="font-size:11px;">
+          <li>Beaker glass 500 mL</li>
+          <li>Lampu LED (40W dan 100W)</li>
+          <li>Filter warna (biru, merah, hijau, putih)</li>
+          <li>Penggaris / meteran &amp; Stopwatch</li>
+          <li>Termometer</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci g">🧪</div><div class="ct">Bahan</div></div>
+        <ul class="olist" style="font-size:11px;">
+          <li>Tanaman air (<em>Hydrilla verticillata</em>)</li>
+          <li>Air bersih / air akuarium</li>
+          <li>NaHCO₃ (soda kue)</li>
+          <li>Es batu</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
+      <div class="card" style="margin-bottom:0;overflow:auto;">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Simulasi</div></div>
+        <div class="steps" id="simSteps" style="gap:4px;"></div>
+
+      </div>
+      <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
+        <ul class="olist" style="font-size:11px;">
+          <li>Klik <strong>Stop</strong> sebelum mengubah kondisi</li>
+          <li>Klik <strong>Reset</strong> sebelum percobaan baru</li>
+          <li><strong>Ubah satu variabel saja</strong> tiap percobaan agar perbandingan valid</li>
+          <li>Catat setiap hasil di lembar kerja</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SIMULASI -->
+<div id="page-simulasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
+    <div class="ctrl-panel" style="width:190px;flex-shrink:0;">
+      <h3>⚙️ Panel Kontrol</h3>
+      <div class="cg"><label>Sumber Daya</label>
+        <select id="selWatt"><option value="40">40 Watt</option><option value="100" selected>100 Watt</option></select>
+      </div>
+      <div class="cg"><label>Jarak Cahaya</label>
+        <select id="selDist"><option value="50" selected>50 cm (dekat)</option><option value="100">100 cm (jauh)</option></select>
+      </div>
+      <div class="cg"><label>Warna Filter</label>
+        <select id="selColor"><option value="blue" selected>🔵 Biru</option><option value="green">🟢 Hijau</option><option value="red">🔴 Merah</option><option value="white">⚪ Putih</option></select>
+      </div>
+      <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai</button>
+      <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Stop</button>
+      <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
+      <div class="cg" style="margin-top:6px;"><label>Perlakuan</label>
+        <select id="selTreatment" onchange="drawScene()">
+          <option value="none">— Tanpa Perlakuan —</option>
+          <option value="ice">🧊 Es Batu</option>
+          <option value="nahco3">🧪 Soda Kue (NaHCO₃)</option>
+        </select>
+      </div>
+      <div class="tipinfo" id="tipInfo"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;">
+      <div class="aquarium" style="flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;overflow:visible;">
+        <h3>🧫 Wadah Percobaan</h3>
+        <div style="position:relative;flex:1;min-height:0;overflow:visible;">
+          <canvas id="simCanvas" style="width:100%;height:100%;display:block;border-radius:6px;background:#0f172a;border:1px solid var(--border);"></canvas>
+          <div class="sim-tooltip" id="simTooltip" style="left:auto;right:12px;top:8px;">
+            <div class="sim-tip-item"><span class="sim-tip-val" id="statB">0</span><span class="sim-tip-lbl">🫧 Gelembung</span></div>
+            <div class="sim-tip-item"><span class="sim-tip-val" id="statT">0s</span><span class="sim-tip-lbl">⏱ Waktu</span></div>
+            <div class="sim-tip-item"><span class="sim-tip-val" id="statR">–</span><span class="sim-tip-lbl">📈 Laju/min</span></div>
+          </div>
+          <img id="beakerOverlay" src="https://denicendrianto41.github.io/beakerglass.png"
+            style="position:absolute;top:-9999px;left:-9999px;pointer-events:none;"
+            alt="beaker">
+        </div>
+      </div>
+      <div class="card" style="flex-shrink:0;overflow:auto;margin-bottom:0;max-height:130px;">
+        <div class="ch"><div class="ci y">📊</div><div class="ct">Lembar Kerja</div></div>
+        <table class="wstable"><thead><tr><th>#</th><th>Watt</th><th>Jarak</th><th>Warna</th><th>Perlakuan</th><th>Gelembung</th><th>Waktu</th></tr></thead>
+        <tbody id="wsBody"><tr><td colspan="6" style="text-align:center;color:var(--text3);padding:12px;">Belum ada data.</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DISKUSI -->
+<div id="page-evaluasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
+      </div>
+      <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:11.5px;">Apa yang dihasilkan oleh fotosintesis?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:11.5px;">Faktor apa yang mempengaruhi proses fotosintesis?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:11.5px;">Pada perlakuan manakah gelembung paling banyak?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:11.5px;">Apa peranan dari NaHCO₃?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;grid-column:span 2;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:11.5px;">Apakah suhu mempengaruhi fotosintesis? Mengapa demikian?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+
+
+<script>
+// NAV
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='simulasi')setTimeout(()=>{resizeCanvas();initLampX();drawScene();},40);
+}
+// PROSEDUR
+const labSteps=["Ambil tanaman pot yang sehat dan simpan di tempat gelap selama 2–3 hari untuk menghilangkan pati pada daunnya.","Potong dua lembar kertas hitam yang seragam.","Pilih daun yang sehat, tutupi sebagian daun pada kedua sisinya menggunakan dua lembar kertas hitam.","Tempelkan kedua ujung kertas hitam pada daun menggunakan klip kertas.","Letakkan tanaman pot di bawah sinar matahari sepanjang hari.","Petik daun yang tertutup pada sore hari dan lepaskan kertas hitam.","Ambil gelas kimia berisi air suling, didihkan di atas pelat panas.","Masukkan daun ke dalam air mendidih selama 5–10 menit hingga lunak.","Angkat gelas kimia dan biarkan dingin beberapa saat.","Ambil gelas kimia lain berisi air suling, didihkan pada ±60°C.","Tuangkan sedikit alkohol ke dalam tabung reaksi bersih.","Letakkan tabung reaksi ke dalam gelas kimia berisi air yang sedang direbus.","Keluarkan daun dari gelas kimia pertama menggunakan forsep.","Masukkan daun ke dalam tabung reaksi berisi alkohol.","Biarkan mendidih hingga daun menjadi tidak berwarna.","Keluarkan daun dari tabung rebusan dengan forsep.","Celupkan daun ke dalam air suling lalu cuci.","Taruh daun dalam cawan Petri.","Teteskan larutan iodium setetes demi setetes di atas daun menggunakan pipet."];
+const simSteps=["Atur <strong>daya lampu</strong> (40W atau 100W).","Atur <strong>jarak cahaya</strong> (50 cm atau 100 cm).","Pilih <strong>warna filter</strong> cahaya.","Pilih <strong>perlakuan</strong>: tanpa perlakuan, es batu, atau NaHCO₃.","Klik <strong>▶ Mulai</strong> dan amati gelembung O₂ yang muncul.","Klik <strong>⏹ Stop</strong>, lalu catat hasil di lembar kerja.","Klik <strong>↺ Reset</strong> dan ulangi dengan kondisi berbeda."];
+function buildSteps(data,id){document.getElementById(id).innerHTML=data.map((t,i)=>`<div class="step"><div class="snum">${String(i+1).padStart(2,'0')}</div><p>${t}</p></div>`).join('');}
+buildSteps(simSteps,'simSteps');
+
+// SIMULASI
+const canvas=document.getElementById('simCanvas');
+const ctx=canvas.getContext('2d');
+let bubbles=[],animId=null,isRunning=false,elapsed=0,bubCnt=0,timerInt=null,wsRows=[];
+// Preload beaker image
+window._beakerLoaded = false;
+window._beakerImg = null;
+(function(){
+  const img = document.getElementById('beakerOverlay');
+  img.onload = () => { window._beakerLoaded = true; if(!isRunning) drawScene(); };
+  img.onerror = () => { window._beakerLoaded = false; img.style.display='none'; if(!isRunning) drawScene(); };
+  if(img.complete && img.naturalWidth > 0){ window._beakerLoaded = true; }
+  window._beakerImg = img;
+})();
+const LC={
+  blue: {c:'#3b82f6',beam:'rgba(59,130,246,',rate:1.0,lamp:'#93c5fd'},
+  red:  {c:'#ef4444',beam:'rgba(239,68,68,', rate:0.85,lamp:'#fca5a5'},
+  green:{c:'#22c55e',beam:'rgba(34,197,94,', rate:0.12,lamp:'#86efac'},
+  white:{c:'#fffde7',beam:'rgba(255,248,200,',rate:0.75,lamp:'#fef9c3'}
+};
+function getRate(){
+  const w=parseInt(document.getElementById('selWatt').value);
+  const d=parseInt(document.getElementById('selDist').value);
+  const c=document.getElementById('selColor').value;
+  return LC[c].rate*(w===100?1.4:0.6)*(d===50?1.3:0.7);
+}
+function resizeCanvas(){canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight||canvas.offsetWidth*0.55;}
+
+// animated lamp position
+let lampXCurrent=0, lampXTarget=0, lampAnimating=false;
+function getLampXTarget(){
+  resizeCanvas();
+  const W=canvas.width;
+  const dist=parseInt(document.getElementById('selDist').value);
+  // bkX = W*0.20 = origin 0cm, ruler spans from bkX to W (right edge)
+  const bkX=W*0.20;
+  const rulerSpan=W-bkX;
+  const cm=rulerSpan/100;
+  return Math.min(bkX + dist*cm, W-12);
+}
+function initLampX(){
+  lampXCurrent=getLampXTarget();
+  lampXTarget=lampXCurrent;
+}
+function updateLampX(){
+  lampXTarget=getLampXTarget();
+  if(!isRunning && !lampAnimating){
+    lampAnimating=true;
+    animateLamp();
+  }
+}
+function animateLamp(){
+  const diff=lampXTarget-lampXCurrent;
+  if(Math.abs(diff)<0.5){
+    lampXCurrent=lampXTarget;
+    lampAnimating=false;
+    drawScene();
+    return;
+  }
+  lampXCurrent+=diff*0.12;
+  drawScene();
+  requestAnimationFrame(animateLamp);
+}
+
+// listen for dist change to trigger lamp animation
+document.getElementById('selDist').addEventListener('change',()=>{
+  lampXTarget=getLampXTarget();
+  if(!isRunning){
+    lampAnimating=true;
+    animateLamp();
+  }
+});
+document.getElementById('selWatt').addEventListener('change',()=>{ if(!isRunning) drawScene(); });
+document.getElementById('selColor').addEventListener('change',()=>{ if(!isRunning) drawScene(); });
+
+function drawScene(){
+  resizeCanvas();
+  const W=canvas.width, H=canvas.height;
+  const col=document.getElementById('selColor').value;
+  const lc=LC[col];
+  const watt=parseInt(document.getElementById('selWatt').value);
+  const lampX=lampXCurrent||getLampXTarget();
+  const bkX = W*0.20; // beaker center = posisi 0 cm pada penggaris
+
+  ctx.clearRect(0,0,W,H);
+
+  // ── WALL background ──
+  const wallG=ctx.createLinearGradient(0,0,0,H*0.72);
+  wallG.addColorStop(0,'#36665a'); wallG.addColorStop(1,'#36665a');
+  ctx.fillStyle=wallG; ctx.fillRect(0,0,W,H*0.72);
+
+  // ── DESK / TABLE ──
+  const deskY=H*0.72;
+  const deskG=ctx.createLinearGradient(0,deskY,0,H);
+  deskG.addColorStop(0,'#6b3a1a'); deskG.addColorStop(0.15,'#7a4520'); deskG.addColorStop(1,'#3b1f0a');
+  ctx.fillStyle=deskG; ctx.fillRect(0,deskY,W,H-deskY);
+  ctx.fillStyle='rgba(255,200,120,0.15)'; ctx.fillRect(0,deskY,W,3);
+
+  // ── LAMP ──
+  const lampBaseY=deskY+2;
+  const poleH=H*0.30;
+  // pole
+  ctx.strokeStyle='#999'; ctx.lineWidth=3; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(lampX,lampBaseY); ctx.lineTo(lampX,lampBaseY-poleH*0.6); ctx.stroke();
+  // arm
+  ctx.beginPath(); ctx.moveTo(lampX,lampBaseY-poleH*0.6); ctx.lineTo(lampX-20,lampBaseY-poleH*0.78); ctx.stroke();
+  // head
+  const hx=lampX-20, hy=lampBaseY-poleH*0.78;
+  ctx.save();
+  ctx.shadowColor=lc.c; ctx.shadowBlur=watt===100?22:12;
+  ctx.beginPath();
+  ctx.moveTo(hx,hy); ctx.lineTo(hx-24,hy+16); ctx.lineTo(hx-12,hy+25); ctx.lineTo(hx+11,hy+11);
+  ctx.closePath();
+  const lampFill=ctx.createLinearGradient(hx-24,hy,hx+11,hy+25);
+  lampFill.addColorStop(0,'#b45309'); lampFill.addColorStop(1,'#78350f');
+  ctx.fillStyle=lampFill; ctx.fill();
+  ctx.beginPath(); ctx.arc(hx-9,hy+18,8,0,Math.PI*2);
+  ctx.fillStyle=lc.lamp; ctx.fill();
+  ctx.restore();
+  // base
+  ctx.fillStyle='#666';
+  ctx.beginPath(); ctx.ellipse(lampX,lampBaseY,11,4,0,0,Math.PI*2); ctx.fill();
+
+  // ── LIGHT BEAM ──
+  const beamOx=hx-9, beamOy=hy+18;
+  const beamAngle=Math.atan2(deskY*0.55-beamOy, bkX-beamOx);
+  const beamLen=Math.hypot(bkX-beamOx, deskY*0.55-beamOy)*1.1;
+  const spread=0.22;
+  const beamAlpha=watt===100?0.30:0.17;
+  ctx.save();
+  const beamG=ctx.createRadialGradient(beamOx,beamOy,0,beamOx,beamOy,beamLen);
+  beamG.addColorStop(0,lc.beam+(beamAlpha+0.1)+')');
+  beamG.addColorStop(0.6,lc.beam+beamAlpha+')');
+  beamG.addColorStop(1,lc.beam+'0)');
+  ctx.beginPath();
+  ctx.moveTo(beamOx,beamOy);
+  ctx.lineTo(beamOx+Math.cos(beamAngle-spread)*beamLen, beamOy+Math.sin(beamAngle-spread)*beamLen);
+  ctx.lineTo(beamOx+Math.cos(beamAngle+spread)*beamLen, beamOy+Math.sin(beamAngle+spread)*beamLen);
+  ctx.closePath();
+  ctx.fillStyle=beamG; ctx.fill();
+  ctx.restore();
+
+  // ── RULER ── (0 cm mulai dari tengah beaker, meluas ke kanan)
+  const rulerY=deskY+6, rulerH=18;
+  // ruler starts at bkX, spans to right edge
+  const rulerStartX=bkX;
+  const rulerEndX=W;
+  const rulerSpan=rulerEndX-rulerStartX; // pixel width for 100cm scale
+  const cm=rulerSpan/100; // pixels per cm
+
+  // ruler background (full canvas width for desk look, but cm marks from bkX)
+  ctx.fillStyle='#f5f0dc'; ctx.fillRect(0,rulerY,W,rulerH);
+  ctx.strokeStyle='#c8b96a'; ctx.lineWidth=0.7; ctx.strokeRect(0,rulerY,W,rulerH);
+
+  ctx.font=`${Math.max(7,W/90)}px sans-serif`; ctx.textAlign='center';
+  for(let i=0;i<=100;i++){
+    const tx=rulerStartX+i*cm;
+    if(tx>W+2) break;
+    const isMajor=i%10===0, isMid=i%5===0;
+    const tH=isMajor?rulerH*0.72:isMid?rulerH*0.52:rulerH*0.32;
+    ctx.strokeStyle='#888'; ctx.lineWidth=isMajor?1.2:0.7;
+    ctx.beginPath(); ctx.moveTo(tx,rulerY); ctx.lineTo(tx,rulerY+tH); ctx.stroke();
+    if(isMajor && tx<=W-4){
+      ctx.fillStyle='#444';
+      ctx.fillText(i, tx, rulerY+rulerH-2);
+    }
+  }
+  ctx.fillStyle='#555'; ctx.textAlign='left';
+  ctx.fillText('cm', rulerStartX+rulerSpan*0.5, rulerY+rulerH-2);
+  ctx.fillStyle='#e8e3c8'; ctx.fillRect(0,rulerY+rulerH,W,7);
+  ctx.strokeStyle='#c8b96a'; ctx.lineWidth=0.5; ctx.strokeRect(0,rulerY+rulerH,W,7);
+
+  // ── RULER DISTANCE MARKERS ──
+  const dist=parseInt(document.getElementById('selDist').value);
+  // 0 cm = beakerX, lamp is at dist cm
+  const beakerRX=rulerStartX; // 0 cm
+  const lampRX=Math.min(rulerStartX+dist*cm, W-8);
+  const midX=(beakerRX+lampRX)/2;
+
+  ctx.save();
+  // beaker marker at 0cm
+  ctx.strokeStyle='#2563eb'; ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
+  ctx.beginPath(); ctx.moveTo(beakerRX,rulerY-2); ctx.lineTo(beakerRX,rulerY+rulerH+7); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font='9px sans-serif'; ctx.textAlign='center';
+  ctx.fillText('🧪',beakerRX,rulerY-5);
+  // lamp marker
+  ctx.strokeStyle='#ea580c'; ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
+  ctx.beginPath(); ctx.moveTo(lampRX,rulerY-2); ctx.lineTo(lampRX,rulerY+rulerH+7); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillText('💡',lampRX,rulerY-5);
+  // distance arrow + label
+  ctx.strokeStyle='#64748b'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(beakerRX,rulerY+rulerH+3); ctx.lineTo(lampRX,rulerY+rulerH+3); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(beakerRX,rulerY+rulerH+3); ctx.lineTo(beakerRX+5,rulerY+rulerH); ctx.moveTo(beakerRX,rulerY+rulerH+3); ctx.lineTo(beakerRX+5,rulerY+rulerH+6); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(lampRX,rulerY+rulerH+3); ctx.lineTo(lampRX-5,rulerY+rulerH); ctx.moveTo(lampRX,rulerY+rulerH+3); ctx.lineTo(lampRX-5,rulerY+rulerH+6); ctx.stroke();
+  ctx.fillStyle='white'; ctx.fillRect(midX-18,rulerY+rulerH,36,10);
+  ctx.fillStyle='#1e293b'; ctx.font=`bold ${Math.max(8,W/75)}px sans-serif`; ctx.textAlign='center';
+  ctx.fillText(dist+' cm', midX, rulerY+rulerH+9);
+  ctx.restore();
+
+  // ── BEAKER ──
+  // Posisi: duduk tepat di atas meja (bkBot = deskY)
+  // Ukuran: tinggi 44%*1.20 canvas (diperbesar 20%), lebar mengikuti rasio asli gambar
+  const _bkOverlay = document.getElementById('beakerOverlay');
+  const naturalRatio = (_bkOverlay && _bkOverlay.naturalWidth && _bkOverlay.naturalHeight)
+    ? _bkOverlay.naturalWidth / _bkOverlay.naturalHeight
+    : 0.75;
+  const bkImgH = H * 0.44 * 1.20;
+  const bkImgW = bkImgH * naturalRatio;
+  const bkBot = deskY;
+  const bkTop = bkBot - bkImgH;
+  const bkW = bkImgW * 0.5;
+  const bkH = bkBot - bkTop;
+  const waterY = bkTop + bkH * 0.22;
+  // draw beaker onto canvas BEFORE bubbles so bubbles appear in front
+  if(_bkOverlay && _bkOverlay.naturalWidth > 0){
+    ctx.drawImage(_bkOverlay, bkX - bkImgW/2, bkTop, bkImgW, bkImgH);
+  }
+
+  // ── TREATMENT EFFECTS ──
+  const treatment = document.getElementById('selTreatment') ? document.getElementById('selTreatment').value : 'none';
+  const innerL = bkX - bkImgW * 0.22;
+  const innerR = bkX + bkImgW * 0.22;
+  const waterSurf = bkTop + bkH * 0.28;
+  const waterMid  = bkTop + bkH * 0.55;
+
+  if(treatment === 'ice'){
+    // Draw ice cubes near desk level (bottom of beaker)
+    ctx.save();
+    const iceBaseY = bkBot - bkH*0.12; // near bottom of beaker
+    const iceCubes = [
+      {x: bkX - bkImgW*0.08, y: iceBaseY - bkH*0.04, s: bkW*0.20},
+      {x: bkX + bkImgW*0.05, y: iceBaseY,             s: bkW*0.16},
+      {x: bkX - bkImgW*0.01, y: iceBaseY + bkH*0.06,  s: bkW*0.13},
+    ];
+    iceCubes.forEach(ic => {
+      const hs = ic.s/2;
+      ctx.fillStyle = 'rgba(200,235,255,0.55)';
+      ctx.strokeStyle = 'rgba(160,210,240,0.9)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(ic.x-hs, ic.y-hs, ic.s, ic.s, 3) : ctx.rect(ic.x-hs, ic.y-hs, ic.s, ic.s);
+      ctx.fill(); ctx.stroke();
+      // shine
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(ic.x-hs+2, ic.y-hs+2, ic.s*0.4, ic.s*0.3, 2) : ctx.rect(ic.x-hs+2, ic.y-hs+2, ic.s*0.4, ic.s*0.3);
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  if(treatment === 'nahco3'){
+    // Draw NaHCO3 powder particles at bottom of beaker (desk level)
+    ctx.save();
+    const now = Date.now();
+    const powderBaseY = bkBot - bkH*0.08; // near bottom
+    const particles = [
+      {x: bkX - bkImgW*0.09, y: powderBaseY - bkH*0.00},
+      {x: bkX + bkImgW*0.07, y: powderBaseY - bkH*0.02},
+      {x: bkX - bkImgW*0.02, y: powderBaseY - bkH*0.04},
+      {x: bkX + bkImgW*0.01, y: powderBaseY - bkH*0.01},
+      {x: bkX - bkImgW*0.06, y: powderBaseY - bkH*0.06},
+      {x: bkX + bkImgW*0.04, y: powderBaseY - bkH*0.05},
+      {x: bkX + bkImgW*0.10, y: powderBaseY - bkH*0.03},
+    ];
+    particles.forEach((p, i) => {
+      const pulse = 0.55 + 0.45 * Math.sin((now/500) + i*1.1);
+      // small granule
+      ctx.fillStyle = `rgba(240,240,220,${0.7 * pulse})`;
+      const sz = bkW * 0.032 * (0.8 + 0.4*(i%3)/2);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, sz, 0, Math.PI*2);
+      ctx.fill();
+      // tiny dissolving ring
+      ctx.strokeStyle = `rgba(200,220,255,${0.35 * pulse})`;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, sz * 1.8 * pulse, 0, Math.PI*2);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // ── BUBBLES ──
+  bubbles.forEach(b=>{
+    ctx.save();
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(180,218,255,0.92)'; ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.fillStyle='rgba(220,240,255,0.28)'; ctx.fill();
+    ctx.restore();
+  });
+
+  // ── CLOCK ──
+  const clkX=W*0.50, clkY=H*0.16, clkR=H*0.11;
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,0.28)'; ctx.shadowBlur=8;
+  const clkOuter=ctx.createRadialGradient(clkX-clkR*0.25,clkY-clkR*0.25,0,clkX,clkY,clkR);
+  clkOuter.addColorStop(0,'#c2853c'); clkOuter.addColorStop(1,'#7a4a1a');
+  ctx.beginPath(); ctx.arc(clkX,clkY,clkR,0,Math.PI*2); ctx.fillStyle=clkOuter; ctx.fill();
+  ctx.restore();
+  const faceG=ctx.createRadialGradient(clkX,clkY,0,clkX,clkY,clkR*0.86);
+  faceG.addColorStop(0,'#ede5d5'); faceG.addColorStop(1,'#c8bca8');
+  ctx.beginPath(); ctx.arc(clkX,clkY,clkR*0.86,0,Math.PI*2); ctx.fillStyle=faceG; ctx.fill();
+  for(let i=0;i<12;i++){
+    const a=i/12*Math.PI*2-Math.PI/2;
+    const r1=clkR*0.74, r2=i%3===0?clkR*0.58:clkR*0.66;
+    ctx.strokeStyle='#555'; ctx.lineWidth=i%3===0?2:1;
+    ctx.beginPath();
+    ctx.moveTo(clkX+Math.cos(a)*r1,clkY+Math.sin(a)*r1);
+    ctx.lineTo(clkX+Math.cos(a)*r2,clkY+Math.sin(a)*r2);
+    ctx.stroke();
+  }
+  const minAngle=(elapsed/3600)*Math.PI*2-Math.PI/2;
+  const secAngle=(elapsed/60)*Math.PI*2-Math.PI/2;
+  ctx.strokeStyle='#333'; ctx.lineWidth=2.5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(clkX,clkY);
+  ctx.lineTo(clkX+Math.cos(minAngle)*clkR*0.52,clkY+Math.sin(minAngle)*clkR*0.52); ctx.stroke();
+  ctx.strokeStyle='#c0392b'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(clkX,clkY);
+  ctx.lineTo(clkX+Math.cos(secAngle)*clkR*0.70,clkY+Math.sin(secAngle)*clkR*0.70); ctx.stroke();
+  ctx.fillStyle='#333'; ctx.beginPath(); ctx.arc(clkX,clkY,2.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#7a4a1a'; ctx.fillRect(clkX-4,clkY-clkR-8,8,10);
+
+  // ── POSITION TOOLTIP next to clock ──
+  const _tt=document.getElementById('simTooltip');
+  if(_tt){
+    const canvasRect2=canvas.getBoundingClientRect();
+    const scX=canvas.width/canvasRect2.width;
+    const scY=canvas.height/canvasRect2.height;
+    // Place tooltip to the right of the clock
+    _tt.style.left=((clkX+clkR+8)/scX)+'px';
+    _tt.style.top=((clkY-clkR)/scY)+'px';
+    _tt.style.right='auto';
+  }
+}
+
+// Tabel laju gelembung realistis (gelembung per menit)
+// Acuan: 100W, 50cm, hijau = 12 gelembung/2 menit = 6/menit
+const BUBBLE_RATE = {
+  // [watt][dist][color] = gelembung per menit
+  100: {
+    50:  { blue: 38, red: 30, green: 6,  white: 24 },
+    100: { blue: 20, red: 16, green: 3,  white: 13 }
+  },
+  40: {
+    50:  { blue: 18, red: 14, green: 3,  white: 11 },
+    100: { blue:  9, red:  7, green: 1,  white:  5 }
+  }
+};
+// Akumulator waktu untuk spawn terkontrol
+let bubbleAccum = 0;
+let lastFrameTime = 0;
+
+function getBeakerBounds(){
+  const W=canvas.width, H=canvas.height;
+  const bkX=W*0.20;
+  const deskY=H*0.72;
+  const _img=document.getElementById('beakerOverlay');
+  const naturalRatio=(_img&&_img.naturalWidth&&_img.naturalHeight)?_img.naturalWidth/_img.naturalHeight:0.75;
+  const bkImgH=H*0.44*1.20;
+  const bkImgW=bkImgH*naturalRatio;
+  const bkBot=deskY;
+  const bkTop=bkBot-bkImgH;
+  const bkH=bkBot-bkTop;
+  // inner water area: approx 15% from sides, water starts at ~28% from top, ends at ~95%
+  const innerLeft  = bkX - bkImgW*0.28;
+  const innerRight = bkX + bkImgW*0.28;
+  const waterTop   = bkTop + bkH*0.28;
+  const waterBot   = bkTop + bkH*0.92;
+  const spawnY     = bkTop + bkH*0.80;
+  return {bkX,deskY,bkTop,bkBot,bkH,bkImgW,innerLeft,innerRight,waterTop,waterBot,spawnY};
+}
+
+function getBubbleRate(){
+  const w = parseInt(document.getElementById('selWatt').value);
+  const d = parseInt(document.getElementById('selDist').value);
+  const c = document.getElementById('selColor').value;
+  const t = document.getElementById('selTreatment').value;
+  let rate = BUBBLE_RATE[w][d][c];
+  if(t==='ice') rate = Math.max(1, Math.round(rate * 0.40));      // es batu: turun ~60%
+  if(t==='nahco3') rate = Math.round(rate * 1.60);                // soda kue: naik ~60%
+  return rate;
+}
+
+function spawnBubble(dt){
+  if(!isRunning) return;
+  const {bkX,innerLeft,innerRight,spawnY}=getBeakerBounds();
+
+  const ratePerSec = getBubbleRate() / 60;
+  bubbleAccum += ratePerSec * dt;
+
+  while(bubbleAccum >= 1){
+    bubbleAccum -= 1;
+    const spawnRange = (innerRight - innerLeft) * 0.5;
+    bubbles.push({
+      x:  bkX + (Math.random()-0.5)*spawnRange,
+      y:  spawnY,
+      r:  2.0 + Math.random()*2.5,
+      vx: 0,
+      vy: -(0.40 + Math.random()*0.40)
+    });
+    bubCnt++;
+    document.getElementById('statB').textContent = bubCnt;
+    document.getElementById('statR').textContent = elapsed>0 ? ((bubCnt/elapsed)*60).toFixed(1) : '–';
+  }
+}
+function animLoop(timestamp){
+  const dt = lastFrameTime ? Math.min((timestamp - lastFrameTime)/1000, 0.1) : 0;
+  lastFrameTime = timestamp;
+  const {waterTop}=getBeakerBounds();
+  bubbles.forEach(b=>{ b.y+=b.vy; });
+  bubbles=bubbles.filter(b=>b.y > waterTop);
+  spawnBubble(dt);
+  drawScene();
+  animId=requestAnimationFrame(animLoop);
+}
+function startSim(){if(isRunning)return;if(_treatPulse){clearInterval(_treatPulse);_treatPulse=null;}isRunning=true;bubbleAccum=0;lastFrameTime=0;document.getElementById('btnStart').disabled=true;document.getElementById('btnStop').disabled=false;timerInt=setInterval(()=>{elapsed++;document.getElementById('statT').textContent=elapsed+'s';},1000);animId=requestAnimationFrame(animLoop);}
+function stopSim(){if(!isRunning)return;isRunning=false;clearInterval(timerInt);cancelAnimationFrame(animId);document.getElementById('btnStart').disabled=false;document.getElementById('btnStop').disabled=true;const cn={blue:'Biru',red:'Merah',green:'Hijau',white:'Putih'},col=document.getElementById('selColor').value,tip=document.getElementById('tipInfo');tip.innerHTML=`<strong style="color:var(--acc2)">Hasil:</strong> ${bubCnt} gelembung O₂ dalam ${elapsed}s — cahaya <strong>${cn[col]}</strong>, ${document.getElementById('selDist').value}cm, ${document.getElementById('selWatt').value}W.`;tip.classList.add('on');const tbody=document.getElementById('wsBody');if(wsRows.length===0)tbody.innerHTML='';const trt={'none':'—','ice':'Es Batu','nahco3':'NaHCO₃'},trv=document.getElementById('selTreatment').value;wsRows.push({watt:document.getElementById('selWatt').value,dist:document.getElementById('selDist').value,color:cn[col],treat:trt[trv],b:bubCnt,t:elapsed});tbody.innerHTML=wsRows.map((r,i)=>`<tr><td>${i+1}</td><td>${r.watt}W</td><td>${r.dist}cm</td><td>${r.color}</td><td>${r.treat}</td><td>${r.b}</td><td>${r.t}s</td></tr>`).join('');}
+function resetSim(){if(isRunning)stopSim();isRunning=false;bubbles=[];bubCnt=0;elapsed=0;bubbleAccum=0;lastFrameTime=0;document.getElementById('statB').textContent='0';document.getElementById('statT').textContent='0s';document.getElementById('statR').textContent='–';document.getElementById('btnStart').disabled=false;document.getElementById('btnStop').disabled=true;document.getElementById('tipInfo').classList.remove('on');document.getElementById('selDist').value='50';initLampX();drawScene();}
+window.addEventListener('load',()=>{resizeCanvas();initLampX();drawScene();});
+// Pulse animation for treatment effects when sim not running
+let _treatPulse=null;
+document.getElementById('selTreatment').addEventListener('change',()=>{
+  if(_treatPulse)clearInterval(_treatPulse);
+  const v=document.getElementById('selTreatment').value;
+  if(v==='nahco3' && !isRunning){
+    _treatPulse=setInterval(()=>{if(!isRunning)drawScene();},80);
+  }
+});
+window.addEventListener('resize',()=>{if(!isRunning){resizeCanvas();initLampX();drawScene();}});
+
+// EVALUASI
+const dqAnswers={};
+function saveDQ(n,v){dqAnswers[n]=v;}
+function clearDQ(){
+  Object.keys(dqAnswers).forEach(k=>delete dqAnswers[k]);
+  document.querySelectorAll('.disc-area').forEach(t=>t.value='');
+}
+</script>
+</body>
+</html>
