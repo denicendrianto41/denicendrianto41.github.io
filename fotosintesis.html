@@ -12,8 +12,11 @@
   --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
   --text:#1e293b;--text2:#475569;--text3:#94a3b8;
   --yellow:#d97706;--red:#dc2626;--green:#059669;
-  --h:46px;
+  --h:66px;
+  --fbase:14px;
 }
+@media (max-width:768px){:root{--fbase:13px;--h:46px;}}
+@media (min-width:1200px){:root{--fbase:15px;}}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
@@ -28,21 +31,21 @@ body::before{
 /* HEADER */
 header{
   position:relative;z-index:10;height:var(--h);flex-shrink:0;
-  background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.12);
   display:flex;align-items:center;padding:0 14px;gap:12px;
-  box-shadow:0 1px 4px rgba(30,41,59,0.07);
+  box-shadow:0 2px 10px rgba(10,30,80,0.45);
 }
 .logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.logo-icon{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(37,99,235,.3);}
-.logo-text{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);line-height:1.1;}
-.logo-sub{font-size:9.5px;color:var(--text3);}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:#ffffff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
 nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
 nav::-webkit-scrollbar{display:none;}
-.nb{position:relative;background:none;border:none;color:var(--text3);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
-.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:var(--acc);transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
-.nb:hover{color:var(--acc2);}
-.nb.active{color:var(--acc);}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,0.95);}
+.nb.active{color:#fff;}
 .nb.active::after{transform:scaleX(1);}
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -69,21 +72,21 @@ nav::-webkit-scrollbar{display:none;}
 .ci.y{background:rgba(217,119,6,.1);}
 .ci.g{background:rgba(5,150,105,.1);}
 .ci.r{background:rgba(220,38,38,.1);}
-.ct{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--acc3);}
-.card p{font-size:11.5px;line-height:1.65;color:var(--text2);margin-bottom:6px;}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
 .card p:last-child{margin-bottom:0;}
-.card h4{font-size:9.5px;font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 .fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
-.fi strong{display:block;font-size:10.5px;color:var(--acc3);margin-bottom:3px;}
-.fi span{font-size:10.5px;color:var(--text2);line-height:1.5;}
+.fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:clamp(11px,1.2vw,13px);color:var(--text2);line-height:1.5;}
 .olist{list-style:none;}
-.olist li{display:flex;align-items:flex-start;gap:7px;font-size:11.5px;color:var(--text2);line-height:1.55;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
 .olist li:last-child{border-bottom:none;}
-.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:13px;margin-top:-1px;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
 .chips{display:flex;gap:5px;margin:6px 0;flex-wrap:wrap;}
-.chip{border-radius:5px;padding:3px 8px;font-size:10.5px;font-weight:500;}
+.chip{border-radius:5px;padding:3px 8px;font-size:clamp(11px,1.2vw,13px);font-weight:500;}
 .chip-b{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:#1d4ed8;}
 .chip-r{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#b91c1c;}
 .chip-g{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#047857;}
@@ -92,10 +95,10 @@ nav::-webkit-scrollbar{display:none;}
 .step{display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;}
 .step:hover{border-color:var(--acc2);background:#eff6ff;}
 .snum{min-width:20px;height:20px;border-radius:50%;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);flex-shrink:0;}
-.step p{font-size:11px;color:var(--text2);line-height:1.55;margin:0;}
+.step p{font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;margin:0;}
 .notebox{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:7px;}
 .notebox .nt{font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
-.notebox p{font-size:11px;color:#92400e;line-height:1.6;margin:0;}
+.notebox p{font-size:clamp(12px,1.2vw,13px);color:#92400e;line-height:1.6;margin:0;}
 .sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
 .sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
 .sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -197,19 +200,27 @@ select option{background:#fff;color:var(--text);}
 </head>
 <body>
 
-<header>
+<header style="justify-content:space-between;">
   <div class="logo">
-    <div class="logo-icon">🌱</div>
+    <div class="logo-icon" style="background:#fff;overflow:hidden;padding:2px;">
+      <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+    </div>
     <div>
-      <div class="logo-text">Lab Virtual Biologi</div>
-      <div class="logo-sub">Fotosintesis &amp; Cahaya</div>
+      <div class="logo-text">Lab Maya Biologi</div>
+      <div class="logo-sub">Fotosintesis</div>
     </div>
   </div>
-  <nav>
-    <button class="nb active" onclick="show('teori',this)">📖 Teori</button>
-    <button class="nb" onclick="show('prosedur',this)">🔬 Prosedur</button>
-    <button class="nb" onclick="show('simulasi',this)">⚗️ Simulasi</button>
-    <button class="nb" onclick="show('evaluasi',this)">💬 Diskusi</button>
+  <nav style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('teori',this)">
+      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:42px;height:42px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this)">
+      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:42px;height:42px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this)">
+      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:42px;height:42px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this)">
+      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:42px;height:42px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('evaluasi',this)">
+      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:42px;height:42px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
   </nav>
 </header>
 
@@ -218,10 +229,6 @@ select option{background:#fff;color:var(--text);}
 <!-- TEORI -->
 <div id="page-teori" class="page active">
   <div class="scroll">
-    <div class="hero">
-      <div><div class="h-label">Lab Virtual Biologi</div><div class="h-title">Pentingnya <span>Cahaya</span> dalam Fotosintesis</div></div>
-      <div class="h-desc">Membuktikan secara eksperimental bahwa cahaya diperlukan untuk proses fotosintesis pada tumbuhan hijau.</div>
-    </div>
     <div class="two-col">
       <div class="card">
         <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Percobaan</div></div>
@@ -271,34 +278,10 @@ select option{background:#fff;color:var(--text);}
 <!-- PROSEDUR -->
 <div id="page-prosedur" class="page">
   <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex-shrink:0;">
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci b">🔧</div><div class="ct">Alat</div></div>
-        <ul class="olist" style="font-size:11px;">
-          <li>Beaker glass 500 mL</li>
-          <li>Lampu LED (40W dan 100W)</li>
-          <li>Filter warna (biru, merah, hijau, putih)</li>
-          <li>Penggaris / meteran &amp; Stopwatch</li>
-          <li>Termometer</li>
-        </ul>
-      </div>
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci g">🧪</div><div class="ct">Bahan</div></div>
-        <ul class="olist" style="font-size:11px;">
-          <li>Tanaman air (<em>Hydrilla verticillata</em>)</li>
-          <li>Air bersih / air akuarium</li>
-          <li>NaHCO₃ (soda kue)</li>
-          <li>Es batu</li>
-        </ul>
-      </div>
-    </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
       <div class="card" style="margin-bottom:0;overflow:auto;">
         <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Simulasi</div></div>
-        <div class="steps" id="simSteps" style="gap:4px;"></div>
-
+        <div id="simSteps" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
       <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
         <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
@@ -310,7 +293,112 @@ select option{background:#fff;color:var(--text);}
         </ul>
       </div>
     </div>
+  </div>
+</div>
 
+<!-- ALAT DAN BAHAN -->
+<div id="page-alatbahan" class="page">
+  <div class="scroll">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+
+      <!-- KIRI: Sumber Alat & Bahan (campur) -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
+        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:0px;">
+
+          <div class="drag-item" draggable="true" data-id="gelasukur" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="18" y="4" width="12" height="4" rx="2" fill="#93c5fd"/><path d="M19 8 L14 40 Q14 44 24 44 Q34 44 34 40 L29 8 Z" fill="#bfdbfe" stroke="#2563eb" stroke-width="1.5"/><line x1="29" y1="16" x2="32" y2="16" stroke="#2563eb" stroke-width="1.2"/><line x1="28" y1="22" x2="31" y2="22" stroke="#2563eb" stroke-width="1.2"/><line x1="27" y1="28" x2="31" y2="28" stroke="#2563eb" stroke-width="1.2"/><line x1="26" y1="34" x2="31" y2="34" stroke="#2563eb" stroke-width="1.2"/><rect x="16" y="36" width="16" height="5" rx="1" fill="#93c5fd" opacity="0.5"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Gelas Ukur</div>
+            <div style="font-size:10px;color:var(--text3);">500 mL</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="tabungreaksi" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="19" y="4" width="10" height="3" rx="1.5" fill="#93c5fd"/><path d="M20 7 L20 36 Q20 44 24 44 Q28 44 28 36 L28 7 Z" fill="#bfdbfe" stroke="#2563eb" stroke-width="1.5"/><ellipse cx="24" cy="38" rx="3" ry="2" fill="#60a5fa" opacity="0.6"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Tabung Reaksi</div>
+            <div style="font-size:10px;color:var(--text3);">Wadah sampel</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="labu" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="20" y="4" width="8" height="3" rx="1.5" fill="#93c5fd"/><path d="M21 7 L21 20 L10 38 Q9 44 24 44 Q39 44 38 38 L27 20 L27 7 Z" fill="#bfdbfe" stroke="#2563eb" stroke-width="1.5"/><ellipse cx="24" cy="40" rx="10" ry="2.5" fill="#60a5fa" opacity="0.4"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Labu Erlenmeyer</div>
+            <div style="font-size:10px;color:var(--text3);">250 mL</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="lampu" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">💡</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Lampu LED</div>
+            <div style="font-size:10px;color:var(--text3);">40W &amp; 100W</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="filter" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">🎨</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Filter Warna</div>
+            <div style="font-size:10px;color:var(--text3);">Biru, Merah, dll.</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="penggaris" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">📏</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Penggaris</div>
+            <div style="font-size:10px;color:var(--text3);">Jarak cahaya</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="stopwatch" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">⏱️</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Stopwatch</div>
+            <div style="font-size:10px;color:var(--text3);">Pencatat waktu</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="termometer" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">🌡️</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Termometer</div>
+            <div style="font-size:10px;color:var(--text3);">Suhu air</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="hydrilla" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">🌿</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Hydrilla</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">H. verticillata</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="air" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">💧</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Air Bersih</div>
+            <div style="font-size:10px;color:var(--text3);">Air akuarium</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="nahco3" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">🥄</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">NaHCO₃</div>
+            <div style="font-size:10px;color:var(--text3);">Soda kue</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="esbatu" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;user-select:none;">
+            <div style="font-size:36px;margin-bottom:4px;">🧊</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Es Batu</div>
+            <div style="font-size:10px;color:var(--text3);">Turunkan suhu</div>
+          </div>
+        </div>
+        <div id="drag-bahan-src" style="display:none;"></div>
+      </div>
+
+      <!-- KANAN: Meja Percobaan (drop zone) -->
+      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
+        <div class="ch"><div class="ci y">🔬</div><div class="ct">Meja Percobaan</div></div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
+
+        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat Percobaan</div>
+        <div id="drop-alat" data-zone="alat" style="min-height:90px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s,border-color .2s;margin-bottom:12px;position:relative;">
+          <span id="drop-alat-hint" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:10px 0;">← Drag alat ke sini</span>
+        </div>
+
+        <div style="font-size:10px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🧫 Bahan Percobaan</div>
+        <div id="drop-bahan" data-zone="bahan" style="min-height:90px;border:2px dashed #86efac;border-radius:10px;background:#f0fdf4;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s,border-color .2s;position:relative;">
+          <span id="drop-bahan-hint" style="color:#86efac;font-size:12px;width:100%;text-align:center;padding:10px 0;">← Drag bahan ke sini</span>
+        </div>
+      </div>
+    </div>
+
+        <div class="card">
+      <div class="ch"><div class="ci y">💡</div><div class="ct">Catatan Penggunaan</div></div>
+      <p>Pastikan semua alat dalam kondisi bersih sebelum digunakan. Gunakan air bersih atau air akuarium yang tidak mengandung klorin berlebih agar tidak menghambat proses fotosintesis tanaman <em>Hydrilla</em>. Tambahkan NaHCO₃ secukupnya untuk meningkatkan konsentrasi CO₂ terlarut dalam air, dan gunakan es batu untuk menurunkan suhu air guna mengamati pengaruh suhu terhadap laju fotosintesis.</p>
+    </div>
   </div>
 </div>
 
@@ -322,22 +410,23 @@ select option{background:#fff;color:var(--text);}
       <div class="cg"><label>Sumber Daya</label>
         <select id="selWatt"><option value="40">40 Watt</option><option value="100" selected>100 Watt</option></select>
       </div>
-      <div class="cg"><label>Jarak Cahaya</label>
-        <select id="selDist"><option value="50" selected>50 cm (dekat)</option><option value="100">100 cm (jauh)</option></select>
+      <div class="cg"><label>Jarak Cahaya <span style="font-family:'JetBrains Mono',monospace;color:var(--acc);font-weight:700;" id="distLabel">50 cm</span></label>
+        <input type="hidden" id="selDist" value="50">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4;">Seret 💡 lampu di kanvas untuk mengatur jarak secara bebas.</div>
       </div>
       <div class="cg"><label>Warna Filter</label>
         <select id="selColor"><option value="blue" selected>🔵 Biru</option><option value="green">🟢 Hijau</option><option value="red">🔴 Merah</option><option value="white">⚪ Putih</option></select>
       </div>
-      <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai</button>
-      <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Stop</button>
-      <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
-      <div class="cg" style="margin-top:6px;"><label>Perlakuan</label>
+      <div class="cg"><label>Perlakuan</label>
         <select id="selTreatment" onchange="drawScene()">
           <option value="none">— Tanpa Perlakuan —</option>
           <option value="ice">🧊 Es Batu</option>
           <option value="nahco3">🧪 Soda Kue (NaHCO₃)</option>
         </select>
       </div>
+      <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai</button>
+      <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Stop</button>
+      <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
       <div class="tipinfo" id="tipInfo"></div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;">
@@ -345,7 +434,7 @@ select option{background:#fff;color:var(--text);}
         <h3>🧫 Wadah Percobaan</h3>
         <div style="position:relative;flex:1;min-height:0;overflow:visible;">
           <canvas id="simCanvas" style="width:100%;height:100%;display:block;border-radius:6px;background:#0f172a;border:1px solid var(--border);"></canvas>
-          <div class="sim-tooltip" id="simTooltip" style="left:auto;right:12px;top:8px;">
+          <div class="sim-tooltip" id="simTooltip" style="left:auto;right:auto;top:8px;">
             <div class="sim-tip-item"><span class="sim-tip-val" id="statB">0</span><span class="sim-tip-lbl">🫧 Gelembung</span></div>
             <div class="sim-tip-item"><span class="sim-tip-val" id="statT">0s</span><span class="sim-tip-lbl">⏱ Waktu</span></div>
             <div class="sim-tip-item"><span class="sim-tip-val" id="statR">–</span><span class="sim-tip-lbl">📈 Laju/min</span></div>
@@ -369,30 +458,30 @@ select option{background:#fff;color:var(--text);}
   <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:6px;">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
       </div>
       <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
     </div>
     <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:11.5px;">Apa yang dihasilkan oleh fotosintesis?</div></div>
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apa yang dihasilkan oleh fotosintesis?</div></div>
         <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:11.5px;">Faktor apa yang mempengaruhi proses fotosintesis?</div></div>
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Faktor apa yang mempengaruhi proses fotosintesis?</div></div>
         <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:11.5px;">Pada perlakuan manakah gelembung paling banyak?</div></div>
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Pada perlakuan manakah gelembung paling banyak?</div></div>
         <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:11.5px;">Apa peranan dari NaHCO₃?</div></div>
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apa peranan dari NaHCO₃?</div></div>
         <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;grid-column:span 2;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:11.5px;">Apakah suhu mempengaruhi fotosintesis? Mengapa demikian?</div></div>
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah suhu mempengaruhi fotosintesis? Mengapa demikian?</div></div>
         <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
     </div>
@@ -414,8 +503,24 @@ function show(id,btn){
 }
 // PROSEDUR
 const labSteps=["Ambil tanaman pot yang sehat dan simpan di tempat gelap selama 2–3 hari untuk menghilangkan pati pada daunnya.","Potong dua lembar kertas hitam yang seragam.","Pilih daun yang sehat, tutupi sebagian daun pada kedua sisinya menggunakan dua lembar kertas hitam.","Tempelkan kedua ujung kertas hitam pada daun menggunakan klip kertas.","Letakkan tanaman pot di bawah sinar matahari sepanjang hari.","Petik daun yang tertutup pada sore hari dan lepaskan kertas hitam.","Ambil gelas kimia berisi air suling, didihkan di atas pelat panas.","Masukkan daun ke dalam air mendidih selama 5–10 menit hingga lunak.","Angkat gelas kimia dan biarkan dingin beberapa saat.","Ambil gelas kimia lain berisi air suling, didihkan pada ±60°C.","Tuangkan sedikit alkohol ke dalam tabung reaksi bersih.","Letakkan tabung reaksi ke dalam gelas kimia berisi air yang sedang direbus.","Keluarkan daun dari gelas kimia pertama menggunakan forsep.","Masukkan daun ke dalam tabung reaksi berisi alkohol.","Biarkan mendidih hingga daun menjadi tidak berwarna.","Keluarkan daun dari tabung rebusan dengan forsep.","Celupkan daun ke dalam air suling lalu cuci.","Taruh daun dalam cawan Petri.","Teteskan larutan iodium setetes demi setetes di atas daun menggunakan pipet."];
-const simSteps=["Atur <strong>daya lampu</strong> (40W atau 100W).","Atur <strong>jarak cahaya</strong> (50 cm atau 100 cm).","Pilih <strong>warna filter</strong> cahaya.","Pilih <strong>perlakuan</strong>: tanpa perlakuan, es batu, atau NaHCO₃.","Klik <strong>▶ Mulai</strong> dan amati gelembung O₂ yang muncul.","Klik <strong>⏹ Stop</strong>, lalu catat hasil di lembar kerja.","Klik <strong>↺ Reset</strong> dan ulangi dengan kondisi berbeda."];
-function buildSteps(data,id){document.getElementById(id).innerHTML=data.map((t,i)=>`<div class="step"><div class="snum">${String(i+1).padStart(2,'0')}</div><p>${t}</p></div>`).join('');}
+const simSteps=[
+  {icon:"🔬",text:"Susun <strong>gelas ukur</strong>, <strong>tabung reaksi</strong>, dan <strong>labu Erlenmeyer</strong> seperti rangkaian percobaan Ingenhouze: isi gelas ukur dengan air, masukkan tanaman <em>Hydrilla</em> ke dalam tabung reaksi terbalik di dalam labu Erlenmeyer yang berisi air, sehingga gelembung O₂ dapat tertampung."},
+  {icon:"⚡",text:"Atur <strong>daya lampu</strong> (40W atau 100W)."},
+  {icon:"📏",text:"Atur <strong>jarak cahaya</strong> (50 cm atau 100 cm)."},
+  {icon:"🎨",text:"Pilih <strong>warna filter</strong> cahaya."},
+  {icon:"🧪",text:"Pilih <strong>perlakuan</strong>: tanpa perlakuan, es batu, atau NaHCO₃."},
+  {icon:"▶️",text:"Klik <strong>▶ Mulai</strong> dan amati gelembung O₂ yang muncul."},
+  {icon:"⏹️",text:"Klik <strong>⏹ Stop</strong>, lalu catat hasil di lembar kerja."},
+  {icon:"🔄",text:"Klik <strong>↺ Reset</strong> dan ulangi dengan kondisi berbeda."}
+];
+function buildSteps(data,id){
+  document.getElementById(id).innerHTML=data.map((s,i)=>`
+    <div class="step" style="align-items:center;gap:10px;padding:8px 12px;">
+      <div class="snum">${String(i+1).padStart(2,'0')}</div>
+      <div style="font-size:22px;flex-shrink:0;">${s.icon}</div>
+      <p style="font-size:clamp(12px,1.3vw,14px);">${s.text}</p>
+    </div>`).join('');
+}
 buildSteps(simSteps,'simSteps');
 
 // SIMULASI
@@ -446,50 +551,115 @@ function getRate(){
 }
 function resizeCanvas(){canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight||canvas.offsetWidth*0.55;}
 
-// animated lamp position
+// ── LAMP DRAG ──
 let lampXCurrent=0, lampXTarget=0, lampAnimating=false;
-function getLampXTarget(){
-  resizeCanvas();
-  const W=canvas.width;
-  const dist=parseInt(document.getElementById('selDist').value);
-  // bkX = W*0.20 = origin 0cm, ruler spans from bkX to W (right edge)
-  const bkX=W*0.20;
-  const rulerSpan=W-bkX;
-  const cm=rulerSpan/100;
-  return Math.min(bkX + dist*cm, W-12);
+let lampDragging=false, lampDragOffX=0;
+
+function getBkX(){ return canvas.width*0.20; }
+function getRulerCm(){ return (canvas.width - getBkX())/100; }
+
+function getLampXDefault(){
+  const dist=parseFloat(document.getElementById('selDist').value)||50;
+  return Math.min(getBkX()+dist*getRulerCm(), canvas.width-12);
 }
 function initLampX(){
-  lampXCurrent=getLampXTarget();
+  document.getElementById('selDist').value='50';
+  const lbl=document.getElementById('distLabel');
+  if(lbl) lbl.textContent='50 cm';
+  lampXCurrent=getLampXDefault();
   lampXTarget=lampXCurrent;
+  syncDistFromLamp();
 }
-function updateLampX(){
-  lampXTarget=getLampXTarget();
-  if(!isRunning && !lampAnimating){
-    lampAnimating=true;
-    animateLamp();
+
+function syncDistFromLamp(){
+  const bkX=getBkX();
+  const cm=getRulerCm();
+  const dist=Math.round(Math.max(5,(lampXCurrent-bkX)/cm));
+  document.getElementById('selDist').value=dist;
+  const lbl=document.getElementById('distLabel');
+  if(lbl) lbl.textContent=dist+' cm';
+}
+
+// hit-test lamp head
+function isOverLamp(mx,my){
+  const deskY=canvas.height*0.72;
+  const poleH=canvas.height*0.30;
+  const hx=lampXCurrent-20, hy=deskY+2-poleH*0.78;
+  return Math.hypot(mx-hx, my-(hy+18))<22;
+}
+
+canvas.addEventListener('mousedown',e=>{
+  if(isRunning) return;
+  const r=canvas.getBoundingClientRect();
+  const scX=canvas.width/r.width;
+  const mx=(e.clientX-r.left)*scX;
+  const my=(e.clientY-r.top)*(canvas.height/r.height);
+  if(isOverLamp(mx,my)){
+    lampDragging=true;
+    lampDragOffX=mx-lampXCurrent;
+    canvas.style.cursor='grabbing';
+    e.preventDefault();
   }
-}
+});
+canvas.addEventListener('mousemove',e=>{
+  if(isRunning) return;
+  const r=canvas.getBoundingClientRect();
+  const scX=canvas.width/r.width;
+  const mx=(e.clientX-r.left)*scX;
+  const my=(e.clientY-r.top)*(canvas.height/r.height);
+  if(lampDragging){
+    const bkX=getBkX();
+    lampXCurrent=Math.max(bkX+5*getRulerCm(), Math.min(canvas.width-8, mx-lampDragOffX));
+    lampXTarget=lampXCurrent;
+    syncDistFromLamp();
+    drawScene();
+  } else {
+    canvas.style.cursor=isOverLamp(mx,my)?'grab':'default';
+  }
+});
+canvas.addEventListener('mouseup',()=>{
+  lampDragging=false;
+  canvas.style.cursor='default';
+});
+canvas.addEventListener('mouseleave',()=>{ lampDragging=false; });
+
+// Touch support
+canvas.addEventListener('touchstart',e=>{
+  if(isRunning) return;
+  const t=e.touches[0];
+  const r=canvas.getBoundingClientRect();
+  const scX=canvas.width/r.width;
+  const mx=(t.clientX-r.left)*scX;
+  const my=(t.clientY-r.top)*(canvas.height/r.height);
+  if(isOverLamp(mx,my)){
+    lampDragging=true;
+    lampDragOffX=mx-lampXCurrent;
+    e.preventDefault();
+  }
+},{passive:false});
+canvas.addEventListener('touchmove',e=>{
+  if(!lampDragging) return;
+  const t=e.touches[0];
+  const r=canvas.getBoundingClientRect();
+  const scX=canvas.width/r.width;
+  const mx=(t.clientX-r.left)*scX;
+  const bkX=getBkX();
+  lampXCurrent=Math.max(bkX+5*getRulerCm(), Math.min(canvas.width-8, mx-lampDragOffX));
+  lampXTarget=lampXCurrent;
+  syncDistFromLamp();
+  drawScene();
+  e.preventDefault();
+},{passive:false});
+canvas.addEventListener('touchend',()=>{ lampDragging=false; });
+
 function animateLamp(){
   const diff=lampXTarget-lampXCurrent;
-  if(Math.abs(diff)<0.5){
-    lampXCurrent=lampXTarget;
-    lampAnimating=false;
-    drawScene();
-    return;
-  }
+  if(Math.abs(diff)<0.5){ lampXCurrent=lampXTarget; lampAnimating=false; drawScene(); return; }
   lampXCurrent+=diff*0.12;
   drawScene();
   requestAnimationFrame(animateLamp);
 }
 
-// listen for dist change to trigger lamp animation
-document.getElementById('selDist').addEventListener('change',()=>{
-  lampXTarget=getLampXTarget();
-  if(!isRunning){
-    lampAnimating=true;
-    animateLamp();
-  }
-});
 document.getElementById('selWatt').addEventListener('change',()=>{ if(!isRunning) drawScene(); });
 document.getElementById('selColor').addEventListener('change',()=>{ if(!isRunning) drawScene(); });
 
@@ -499,7 +669,7 @@ function drawScene(){
   const col=document.getElementById('selColor').value;
   const lc=LC[col];
   const watt=parseInt(document.getElementById('selWatt').value);
-  const lampX=lampXCurrent||getLampXTarget();
+  const lampX=lampXCurrent||getLampXDefault();
   const bkX = W*0.20; // beaker center = posisi 0 cm pada penggaris
 
   ctx.clearRect(0,0,W,H);
@@ -540,6 +710,20 @@ function drawScene(){
   // base
   ctx.fillStyle='#666';
   ctx.beginPath(); ctx.ellipse(lampX,lampBaseY,11,4,0,0,Math.PI*2); ctx.fill();
+  // drag hint label when not running
+  if(!isRunning){
+    const hx2=lampX-20, hy2=lampBaseY-poleH*0.78+18;
+    ctx.save();
+    ctx.font=`bold ${Math.max(9,W/80)}px Inter,sans-serif`;
+    ctx.textAlign='center';
+    const hint='← seret';
+    const tw=ctx.measureText(hint).width;
+    ctx.fillStyle='rgba(0,0,0,0.45)';
+    ctx.beginPath(); ctx.roundRect(hx2-tw/2-5,hy2+14,tw+10,16,4); ctx.fill();
+    ctx.fillStyle='#fff';
+    ctx.fillText(hint, hx2, hy2+26);
+    ctx.restore();
+  }
 
   // ── LIGHT BEAM ──
   const beamOx=hx-9, beamOy=hy+18;
@@ -590,35 +774,33 @@ function drawScene(){
   ctx.fillStyle='#e8e3c8'; ctx.fillRect(0,rulerY+rulerH,W,7);
   ctx.strokeStyle='#c8b96a'; ctx.lineWidth=0.5; ctx.strokeRect(0,rulerY+rulerH,W,7);
 
-  // ── RULER DISTANCE MARKERS ──
-  const dist=parseInt(document.getElementById('selDist').value);
-  // 0 cm = beakerX, lamp is at dist cm
-  const beakerRX=rulerStartX; // 0 cm
-  const lampRX=Math.min(rulerStartX+dist*cm, W-8);
+  // ── RULER DISTANCE MARKERS ── (continuous: use lampXCurrent)
+  const beakerRX=rulerStartX;
+  const lampRX=Math.max(beakerRX+8, Math.min(lampXCurrent, W-8));
+  const distCm = Math.round((lampRX - beakerRX) / cm);
   const midX=(beakerRX+lampRX)/2;
 
   ctx.save();
-  // beaker marker at 0cm
   ctx.strokeStyle='#2563eb'; ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
   ctx.beginPath(); ctx.moveTo(beakerRX,rulerY-2); ctx.lineTo(beakerRX,rulerY+rulerH+7); ctx.stroke();
   ctx.setLineDash([]);
   ctx.font='9px sans-serif'; ctx.textAlign='center';
   ctx.fillText('🧪',beakerRX,rulerY-5);
-  // lamp marker
   ctx.strokeStyle='#ea580c'; ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
   ctx.beginPath(); ctx.moveTo(lampRX,rulerY-2); ctx.lineTo(lampRX,rulerY+rulerH+7); ctx.stroke();
   ctx.setLineDash([]);
   ctx.fillText('💡',lampRX,rulerY-5);
-  // distance arrow + label
   ctx.strokeStyle='#64748b'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(beakerRX,rulerY+rulerH+3); ctx.lineTo(lampRX,rulerY+rulerH+3); ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(beakerRX,rulerY+rulerH+3); ctx.lineTo(beakerRX+5,rulerY+rulerH); ctx.moveTo(beakerRX,rulerY+rulerH+3); ctx.lineTo(beakerRX+5,rulerY+rulerH+6); ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(lampRX,rulerY+rulerH+3); ctx.lineTo(lampRX-5,rulerY+rulerH); ctx.moveTo(lampRX,rulerY+rulerH+3); ctx.lineTo(lampRX-5,rulerY+rulerH+6); ctx.stroke();
-  ctx.fillStyle='white'; ctx.fillRect(midX-18,rulerY+rulerH,36,10);
-  ctx.fillStyle='#1e293b'; ctx.font=`bold ${Math.max(8,W/75)}px sans-serif`; ctx.textAlign='center';
-  ctx.fillText(dist+' cm', midX, rulerY+rulerH+9);
+  if(lampRX-beakerRX>30){
+    ctx.fillStyle='white'; ctx.fillRect(midX-20,rulerY+rulerH,40,10);
+    ctx.fillStyle='#1e293b'; ctx.font=`bold ${Math.max(8,W/75)}px sans-serif`; ctx.textAlign='center';
+    ctx.fillText(distCm+' cm', midX, rulerY+rulerH+9);
+  }
   ctx.restore();
 
   // ── BEAKER ──
@@ -752,9 +934,10 @@ function drawScene(){
     const canvasRect2=canvas.getBoundingClientRect();
     const scX=canvas.width/canvasRect2.width;
     const scY=canvas.height/canvasRect2.height;
-    // Place tooltip to the right of the clock
-    _tt.style.left=((clkX+clkR+8)/scX)+'px';
-    _tt.style.top=((clkY-clkR)/scY)+'px';
+    const ttH=_tt.offsetHeight||84;
+    // Right of clock with small gap, vertically centered on clock center
+    _tt.style.left=((clkX+clkR+14)/scX)+'px';
+    _tt.style.top=((clkY - ttH/2)/scY)+'px';
     _tt.style.right='auto';
   }
 }
@@ -798,12 +981,20 @@ function getBeakerBounds(){
 
 function getBubbleRate(){
   const w = parseInt(document.getElementById('selWatt').value);
-  const d = parseInt(document.getElementById('selDist').value);
+  const rawDist = parseFloat(document.getElementById('selDist').value)||50;
   const c = document.getElementById('selColor').value;
   const t = document.getElementById('selTreatment').value;
-  let rate = BUBBLE_RATE[w][d][c];
-  if(t==='ice') rate = Math.max(1, Math.round(rate * 0.40));      // es batu: turun ~60%
-  if(t==='nahco3') rate = Math.round(rate * 1.60);                // soda kue: naik ~60%
+  // Interpolate between 50cm and 100cm rates for continuous distance
+  const r50 = BUBBLE_RATE[w][50][c];
+  const r100 = BUBBLE_RATE[w][100][c];
+  const clampedDist = Math.max(5, Math.min(120, rawDist));
+  const t_lerp = Math.max(0, Math.min(1, (clampedDist - 50) / 50));
+  let rate;
+  if(clampedDist <= 50) rate = r50 * (50 / Math.max(5, clampedDist));
+  else rate = r50 + (r100 - r50) * t_lerp;
+  rate = Math.max(0.5, rate);
+  if(t==='ice') rate = Math.max(0.5, rate * 0.40);
+  if(t==='nahco3') rate = rate * 1.60;
   return rate;
 }
 
@@ -861,6 +1052,109 @@ function clearDQ(){
   Object.keys(dqAnswers).forEach(k=>delete dqAnswers[k]);
   document.querySelectorAll('.disc-area').forEach(t=>t.value='');
 }
+
+// DRAG AND DROP – Alat & Bahan
+(function(){
+  const CORRECT_ALAT = new Set(['gelasukur','tabungreaksi','labu','lampu','filter','penggaris','stopwatch','termometer']);
+  const CORRECT_BAHAN = new Set(['hydrilla','air','nahco3','esbatu']);
+  let dragged=null;
+
+  function showBenar(zone){
+    // Floating "Kamu Benar!" toast
+    const toast=document.createElement('div');
+    toast.innerHTML='✅ Kamu Benar!';
+    toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+    document.body.appendChild(toast);
+    requestAnimationFrame(()=>{
+      toast.style.opacity='1';
+      toast.style.transform='translate(-50%,-50%) scale(1)';
+    });
+    setTimeout(()=>{
+      toast.style.opacity='0';
+      toast.style.transform='translate(-50%,-50%) scale(0.8)';
+      setTimeout(()=>toast.remove(),300);
+    },1600);
+    // also flash zone border
+    zone.style.borderColor='#10b981';
+    zone.style.boxShadow='0 0 0 3px rgba(16,185,129,0.25)';
+    setTimeout(()=>{
+      zone.style.borderColor='';
+      zone.style.boxShadow='';
+    },1800);
+  }
+
+  function showSalah(zone){
+    zone.style.borderColor='#ef4444';
+    zone.style.boxShadow='0 0 0 3px rgba(239,68,68,0.25)';
+    const shake=[{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'translateX(0)'}];
+    zone.animate(shake,{duration:300,easing:'ease-in-out'});
+    setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },700);
+  }
+
+  function cloneItem(el){
+    const cl=el.cloneNode(true);
+    cl.style.cursor='grab';
+    cl.style.opacity='1';
+    cl.setAttribute('draggable','true');
+    addDragListeners(cl);
+    return cl;
+  }
+
+  function addDragListeners(el){
+    el.addEventListener('dragstart',e=>{
+      dragged=el;
+      setTimeout(()=>el.style.opacity='0.4',0);
+    });
+    el.addEventListener('dragend',e=>{
+      el.style.opacity='1';
+      dragged=null;
+      document.querySelectorAll('[data-zone]').forEach(z=>{
+        z.style.background='';
+        z.style.borderColor='';
+      });
+    });
+  }
+
+  function setupZone(zoneId, hintId, zoneBg, correctSet){
+    const zone=document.getElementById(zoneId);
+    if(!zone) return;
+    zone.addEventListener('dragover',e=>{ e.preventDefault(); zone.style.background=zoneBg; });
+    zone.addEventListener('dragleave',()=>{ zone.style.background=''; });
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();
+      zone.style.background='';
+      if(!dragged) return;
+      const id=dragged.dataset.id;
+      const hint=document.getElementById(hintId);
+      if(zone.querySelector(`[data-id="${id}"]`)) return; // already here
+      const isCorrect=correctSet.has(id);
+      if(!isCorrect){ showSalah(zone); return; }
+      if(hint) hint.style.display='none';
+      const clone=cloneItem(dragged);
+      const rm=document.createElement('button');
+      rm.textContent='✕';
+      rm.title='Hapus';
+      rm.style.cssText='position:absolute;top:4px;right:4px;background:rgba(220,38,38,0.15);border:none;border-radius:50%;width:18px;height:18px;font-size:9px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;';
+      rm.onclick=()=>{
+        clone.remove();
+        if(!zone.querySelector('.drag-item')){
+          const h2=document.getElementById(hintId);
+          if(h2) h2.style.display='';
+        }
+      };
+      clone.style.position='relative';
+      clone.appendChild(rm);
+      zone.appendChild(clone);
+      showBenar(zone);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.drag-item').forEach(addDragListeners);
+    setupZone('drop-alat','drop-alat-hint','#dbeafe',CORRECT_ALAT);
+    setupZone('drop-bahan','drop-bahan-hint','#dcfce7',CORRECT_BAHAN);
+  });
+})();
 </script>
 </body>
 </html>
