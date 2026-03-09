@@ -225,15 +225,15 @@ select option{background:#fff;color:var(--text);}
 #btnMulaiPraktikum{
   display:none;
   background:linear-gradient(135deg,#059669,#10b981);
-  color:#fff;border:none;border-radius:12px;
-  padding:13px 40px;
-  font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.6vw,17px);font-weight:700;
+  color:#fff;border:none;border-radius:10px;
+  padding:10px 28px;
+  font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;
   cursor:pointer;letter-spacing:.03em;
-  box-shadow:0 6px 24px rgba(5,150,105,.45);
+  box-shadow:0 4px 18px rgba(5,150,105,.4);
   animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;
   transition:transform .18s, box-shadow .18s;
 }
-#btnMulaiPraktikum:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 32px rgba(5,150,105,.55);}
+#btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
 </style>
 </head>
@@ -247,7 +247,7 @@ select option{background:#fff;color:var(--text);}
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
   <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
-  <button id="btnMulaiPraktikum" onclick="startPraktikum()">🔬 Mulai Praktikum</button>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 
 <script>
@@ -599,7 +599,7 @@ function show(id,btn){
 // PROSEDUR
 const labSteps=["Ambil tanaman pot yang sehat dan simpan di tempat gelap selama 2–3 hari untuk menghilangkan pati pada daunnya.","Potong dua lembar kertas hitam yang seragam.","Pilih daun yang sehat, tutupi sebagian daun pada kedua sisinya menggunakan dua lembar kertas hitam.","Tempelkan kedua ujung kertas hitam pada daun menggunakan klip kertas.","Letakkan tanaman pot di bawah sinar matahari sepanjang hari.","Petik daun yang tertutup pada sore hari dan lepaskan kertas hitam.","Ambil gelas kimia berisi air suling, didihkan di atas pelat panas.","Masukkan daun ke dalam air mendidih selama 5–10 menit hingga lunak.","Angkat gelas kimia dan biarkan dingin beberapa saat.","Ambil gelas kimia lain berisi air suling, didihkan pada ±60°C.","Tuangkan sedikit alkohol ke dalam tabung reaksi bersih.","Letakkan tabung reaksi ke dalam gelas kimia berisi air yang sedang direbus.","Keluarkan daun dari gelas kimia pertama menggunakan forsep.","Masukkan daun ke dalam tabung reaksi berisi alkohol.","Biarkan mendidih hingga daun menjadi tidak berwarna.","Keluarkan daun dari tabung rebusan dengan forsep.","Celupkan daun ke dalam air suling lalu cuci.","Taruh daun dalam cawan Petri.","Teteskan larutan iodium setetes demi setetes di atas daun menggunakan pipet."];
 const simSteps=[
-  {icon:"🔬",text:"Susun <strong>gelas ukur</strong>, <strong>tabung reaksi</strong>, dan <strong>labu Erlenmeyer</strong> seperti rangkaian percobaan Ingenhouze."},
+  {icon:"🔬",text:"Susun <strong>gelas ukur</strong>, <strong>tabung reaksi</strong>, dan <strong>labu Erlenmeyer</strong>."},
   {icon:"⚡",text:"Atur <strong>daya lampu</strong> (40W atau 100W)."},
   {icon:"📏",text:"Atur <strong>jarak cahaya</strong> (50 cm atau 100 cm)."},
   {icon:"🎨",text:"Pilih <strong>warna filter</strong> cahaya."},
@@ -669,6 +669,7 @@ function zoomStep(iconEl){
 const canvas=document.getElementById('simCanvas');
 const ctx=canvas.getContext('2d');
 let bubbles=[],animId=null,isRunning=false,elapsed=0,bubCnt=0,timerInt=null,wsRows=[];
+const _sfxBlup = new Audio('https://denicendrianto41.github.io/blup.wav');
 // Preload beaker image
 window._beakerLoaded = false;
 window._beakerImg = null;
@@ -1159,6 +1160,8 @@ function spawnBubble(dt){
       vy: -(0.40 + Math.random()*0.40)
     });
     bubCnt++;
+    // play blup sound
+    try{ const b=_sfxBlup.cloneNode(); b.volume=0.35; b.play().catch(()=>{}); }catch(e){}
     document.getElementById('statB').textContent = bubCnt;
     document.getElementById('statR').textContent = elapsed>0 ? ((bubCnt/elapsed)*60).toFixed(1) : '–';
   }
