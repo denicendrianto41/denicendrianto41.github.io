@@ -77,6 +77,11 @@ nav::-webkit-scrollbar{display:none;}
 .card p:last-child{margin-bottom:0;}
 .card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+#page-teori .scroll{overflow:hidden;display:flex;flex-direction:column;}
+#page-teori .card p{font-size:clamp(11px,1.1vw,13px);line-height:1.55;margin-bottom:4px;}
+#page-teori .card h4{margin:6px 0 3px;}
+#page-teori .two-col{gap:5px;}
+#page-teori .card{margin-bottom:5px;padding:9px 12px;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 .fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
 .fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
@@ -200,6 +205,17 @@ select option{background:#fff;color:var(--text);}
 </style>
 </head>
 <body>
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<script>
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('button, .nb, .btn, select, input[type="range"]');
+    if(!el) return;
+    const sfx = document.getElementById('clickSfx');
+    if(!sfx) return;
+    sfx.currentTime = 0;
+    sfx.play().catch(()=>{});
+  });
+</script>
 
 <header style="justify-content:space-between;">
   <div class="logo">
@@ -246,7 +262,11 @@ select option{background:#fff;color:var(--text);}
     </div>
     <div class="card">
       <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
-      <div class="two-col" style="gap:8px;">
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:10px;align-items:start;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+          <img src="https://denicendrianto41.github.io/beaker_putih.png" alt="Beaker Percobaan"
+            style="width:clamp(80px,9vw,130px);object-fit:contain;display:block;">
+        </div>
         <div>
           <p>Fotosintesis adalah proses biokimia pada tumbuhan yang mengubah energi cahaya menjadi energi kimia berupa glukosa, menggunakan CO₂ dan H₂O. Reaksi ini menghasilkan O₂ sebagai produk sampingan.</p>
           <p style="font-family:'JetBrains Mono',monospace;font-size:10.5px;background:#eff6ff;padding:6px 10px;border-radius:6px;color:var(--acc3);">6CO₂ + 6H₂O + cahaya → C₆H₁₂O₆ + 6O₂</p>
@@ -256,20 +276,9 @@ select option{background:#fff;color:var(--text);}
           <p>CO₂ merupakan bahan baku utama reaksi gelap (siklus Calvin). Semakin tinggi konsentrasi CO₂ terlarut dalam air, semakin cepat laju fotosintesis dan semakin banyak O₂ yang dihasilkan.</p>
         </div>
         <div>
-          <h4>Peran Warna Cahaya</h4>
-          <p>Klorofil menyerap cahaya <strong style="color:#1d4ed8">biru</strong> dan <strong style="color:#dc2626">merah</strong> secara maksimal, namun <strong style="color:#059669">memantulkan</strong> cahaya hijau.</p>
-          <div class="chips">
-            <span class="chip chip-b">🔵 Biru — Paling efektif</span>
-            <span class="chip chip-r">🔴 Merah — Efektif</span>
-            <span class="chip chip-g">🟢 Hijau — Dipantulkan</span>
-          </div>
-          <h4>Faktor-Faktor Fotosintesis</h4>
-          <div class="fgrid">
-            <div class="fi"><strong>☀️ Cahaya</strong><span>Intensitas & panjang gelombang</span></div>
-            <div class="fi"><strong>💨 Konsentrasi CO₂</strong><span>Makin tinggi → laju makin cepat</span></div>
-            <div class="fi"><strong>🌡️ Suhu</strong><span>Optimal 25–35°C</span></div>
-            <div class="fi"><strong>💧 Air</strong><span>Media pelarut & bahan baku</span></div>
-          </div>
+          <h4>Peran Cahaya</h4>
+          <p>Cahaya merupakan faktor utama fotosintesis. Klorofil pada daun menyerap cahaya <strong style="color:#1d4ed8">biru</strong> dan <strong style="color:#dc2626">merah</strong> secara maksimal untuk menggerakkan reaksi terang, sementara cahaya <strong style="color:#059669">hijau</strong> sebagian besar dipantulkan — itulah mengapa daun tampak hijau.</p>
+          <p>Intensitas cahaya yang semakin tinggi akan meningkatkan laju fotosintesis hingga titik jenuh. Selain cahaya, konsentrasi CO₂ terlarut juga berperan penting: semakin tinggi kadar CO₂, semakin cepat siklus Calvin berlangsung dan semakin banyak O₂ yang dilepaskan. Suhu optimal berkisar <strong style="color:var(--acc2)">25–35°C</strong>, sedangkan air berperan sebagai media pelarut sekaligus bahan baku reaksi terang yang menghasilkan elektron bebas melalui fotolisis.</p>
         </div>
       </div>
     </div>
@@ -414,6 +423,12 @@ select option{background:#fff;color:var(--text);}
       <div class="cg"><label>Jarak Cahaya <span style="font-family:'JetBrains Mono',monospace;color:var(--acc);font-weight:700;" id="distLabel">50 cm</span></label>
         <input type="hidden" id="selDist" value="50">
         <div style="font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4;">Seret 💡 lampu di kanvas untuk mengatur jarak secara bebas.</div>
+      </div>
+      <div class="cg"><label>Sudut Lampu <span style="font-family:'JetBrains Mono',monospace;color:var(--acc);font-weight:700;" id="angleLabel">0°</span></label>
+        <input type="range" id="lampAngle" min="-10" max="10" value="0" step="1"
+          style="width:100%;accent-color:var(--acc);cursor:pointer;touch-action:none;"
+          oninput="document.getElementById('angleLabel').textContent=this.value+'°';drawScene();">
+        <div style="font-size:10px;color:var(--text3);margin-top:2px;display:flex;justify-content:space-between;"><span>-10°</span><span>0°</span><span>+10°</span></div>
       </div>
       <div class="cg"><label>Warna Filter</label>
         <select id="selColor"><option value="blue" selected>🔵 Biru</option><option value="green">🟢 Hijau</option><option value="red">🔴 Merah</option><option value="white">⚪ Putih</option></select>
@@ -728,7 +743,8 @@ function drawScene(){
 
   // ── LIGHT BEAM ──
   const beamOx=hx-9, beamOy=hy+18;
-  const beamAngle=Math.atan2(deskY*0.55-beamOy, bkX-beamOx);
+  const _sliderDeg = parseFloat((document.getElementById('lampAngle')||{value:'0'}).value)||0;
+  const beamAngle=Math.atan2(deskY*0.55-beamOy, bkX-beamOx) + (_sliderDeg * Math.PI / 180);
   const beamLen=Math.hypot(bkX-beamOx, deskY*0.55-beamOy)*1.1;
   const spread=0.22;
   const beamAlpha=watt===100?0.30:0.17;
@@ -1033,7 +1049,7 @@ function animLoop(timestamp){
 }
 function startSim(){if(isRunning)return;if(_treatPulse){clearInterval(_treatPulse);_treatPulse=null;}isRunning=true;bubbleAccum=0;lastFrameTime=0;document.getElementById('btnStart').disabled=true;document.getElementById('btnStop').disabled=false;timerInt=setInterval(()=>{elapsed++;document.getElementById('statT').textContent=elapsed+'s';},1000);animId=requestAnimationFrame(animLoop);}
 function stopSim(){if(!isRunning)return;isRunning=false;clearInterval(timerInt);cancelAnimationFrame(animId);document.getElementById('btnStart').disabled=false;document.getElementById('btnStop').disabled=true;const cn={blue:'Biru',red:'Merah',green:'Hijau',white:'Putih'},col=document.getElementById('selColor').value,tip=document.getElementById('tipInfo');tip.innerHTML=`<strong style="color:var(--acc2)">Hasil:</strong> ${bubCnt} gelembung O₂ dalam ${elapsed}s — cahaya <strong>${cn[col]}</strong>, ${document.getElementById('selDist').value}cm, ${document.getElementById('selWatt').value}W.`;tip.classList.add('on');const tbody=document.getElementById('wsBody');if(wsRows.length===0)tbody.innerHTML='';const trt={'none':'—','ice':'Es Batu','nahco3':'NaHCO₃'},trv=document.getElementById('selTreatment').value;wsRows.push({watt:document.getElementById('selWatt').value,dist:document.getElementById('selDist').value,color:cn[col],treat:trt[trv],b:bubCnt,t:elapsed});tbody.innerHTML=wsRows.map((r,i)=>`<tr><td>${i+1}</td><td>${r.watt}W</td><td>${r.dist}cm</td><td>${r.color}</td><td>${r.treat}</td><td>${r.b}</td><td>${r.t}s</td></tr>`).join('');}
-function resetSim(){if(isRunning)stopSim();isRunning=false;bubbles=[];bubCnt=0;elapsed=0;bubbleAccum=0;lastFrameTime=0;document.getElementById('statB').textContent='0';document.getElementById('statT').textContent='0s';document.getElementById('statR').textContent='–';document.getElementById('btnStart').disabled=false;document.getElementById('btnStop').disabled=true;document.getElementById('tipInfo').classList.remove('on');document.getElementById('selDist').value='50';initLampX();drawScene();}
+function resetSim(){if(isRunning)stopSim();isRunning=false;bubbles=[];bubCnt=0;elapsed=0;bubbleAccum=0;lastFrameTime=0;document.getElementById('statB').textContent='0';document.getElementById('statT').textContent='0s';document.getElementById('statR').textContent='–';document.getElementById('btnStart').disabled=false;document.getElementById('btnStop').disabled=true;document.getElementById('tipInfo').classList.remove('on');document.getElementById('selDist').value='50';const _la=document.getElementById('lampAngle');if(_la){_la.value='0';document.getElementById('angleLabel').textContent='0°';}initLampX();drawScene();}
 window.addEventListener('load',()=>{resizeCanvas();initLampX();drawScene();});
 // Pulse animation for treatment effects when sim not running
 let _treatPulse=null;
@@ -1063,8 +1079,14 @@ function clearDQ(){
   let ghost = null;          // floating ghost element
   let ghostOffX = 0, ghostOffY = 0;
 
+  /* ── Audio ── */
+  const sfxBenar = new Audio('https://denicendrianto41.github.io/benar.wav');
+  const sfxSalah = new Audio('https://denicendrianto41.github.io/salah.wav');
+  function playSfx(sfx){ sfx.currentTime=0; sfx.play().catch(()=>{}); }
+
   /* ── Toast feedback ── */
   function showBenar(zone){
+    playSfx(sfxBenar);
     const toast=document.createElement('div');
     toast.innerHTML='✅ Kamu Benar!';
     toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
@@ -1075,9 +1097,17 @@ function clearDQ(){
     setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },1800);
   }
   function showSalah(zone){
+    playSfx(sfxSalah);
     zone.style.borderColor='#ef4444'; zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
     zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
     setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },800);
+    // Salah toast
+    const toast=document.createElement('div');
+    toast.innerHTML='❌ Salah! Coba lagi.';
+    toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+    document.body.appendChild(toast);
+    requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+    setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); },1600);
   }
 
   /* ── Ghost (floating copy while dragging) ── */
