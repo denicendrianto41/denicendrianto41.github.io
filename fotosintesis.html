@@ -47,6 +47,31 @@ nav::-webkit-scrollbar{display:none;}
 .nb:hover{color:rgba(255,255,255,0.95);}
 .nb.active{color:#fff;}
 .nb.active::after{transform:scaleX(1);}
+
+/* ── Hamburger ── */
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
+
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:16px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{
+    display:none;
+    flex-direction:column;
+    position:fixed;top:var(--h);right:0;left:0;z-index:999;
+    background:linear-gradient(180deg,#0f2460,#1a3a8f);
+    border-bottom:1px solid rgba(255,255,255,.15);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    overflow:visible;gap:0;flex:none;
+  }
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}
+  .nb.active{background:rgba(255,255,255,.08);}
+  .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
+}
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;overflow:hidden;}
@@ -306,16 +331,21 @@ function startPraktikum(){
       <div class="logo-sub">Fotosintesis</div>
     </div>
   </div>
-  <nav style="margin-left:0;justify-content:flex-end;">
-    <button class="nb active" onclick="show('teori',this)">
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line id="mL1" x1="3" y1="6" x2="21" y2="6"/><line id="mL2" x1="3" y1="12" x2="21" y2="12"/><line id="mL3" x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('teori',this);closeNav()">
       <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
-    <button class="nb" onclick="show('alatbahan',this)">
+    <button class="nb" onclick="show('alatbahan',this);closeNav()">
       <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
-    <button class="nb" onclick="show('prosedur',this)">
+    <button class="nb" onclick="show('prosedur',this);closeNav()">
       <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
-    <button class="nb" onclick="show('simulasi',this)">
+    <button class="nb" onclick="show('simulasi',this);closeNav()">
       <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
-    <button class="nb" onclick="show('evaluasi',this)">
+    <button class="nb" onclick="show('evaluasi',this);closeNav()">
       <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
   </nav>
 </header>
@@ -589,6 +619,19 @@ function startPraktikum(){
 
 <script>
 // NAV
+function toggleNav(){
+  const nav=document.getElementById('mainNav');
+  nav.classList.toggle('open');
+}
+function closeNav(){
+  document.getElementById('mainNav').classList.remove('open');
+}
+// Close nav when clicking outside
+document.addEventListener('click',function(e){
+  if(!e.target.closest('nav') && !e.target.closest('#menuToggle')){
+    closeNav();
+  }
+});
 function show(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
