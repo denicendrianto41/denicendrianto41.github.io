@@ -184,6 +184,10 @@ select option{background:#fff;color:var(--text);}
 .disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
 .disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .drag-item{touch-action:none;-webkit-user-select:none;user-select:none;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+.step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 
 /* SCORE OVERLAY */
 .score-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(8px);}
@@ -617,26 +621,26 @@ function buildSteps(data,id){
         <div style="display:flex;align-items:flex-start;gap:0;margin-bottom:${isLast?'0':'0px'};position:relative;" class="map-step">
           ${isRight?`
           <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
-            <div style="width:44px;height:44px;border-radius:50%;background:${clr};display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;">
-              <span style="font-size:20px;">${s.icon}</span>
-            </div>
+            <button onclick="zoomStep(this)" style="width:44px;height:44px;border-radius:50%;background:${clr};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+              <span style="font-size:20px;pointer-events:none;">${s.icon}</span>
+            </button>
             ${!isLast?`<div style="width:0;flex:1;min-height:16px;border-left:3px dashed ${nextClr}88;margin-top:4px;margin-bottom:4px;"></div>`:''}
           </div>
-          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:${isLast?'0':'0px'};">
+          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:${isLast?'0':'0px'};" class="step-box">
             <div style="position:absolute;left:-8px;top:13px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${clr}40;"></div>
             <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
             <p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p>
           </div>
           `:`
-          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:${isLast?'0':'0px'};">
+          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:${isLast?'0':'0px'};" class="step-box">
             <div style="position:absolute;right:-8px;top:13px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${clr}40;"></div>
             <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
             <p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
-            <div style="width:44px;height:44px;border-radius:50%;background:${clr};display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;">
-              <span style="font-size:20px;">${s.icon}</span>
-            </div>
+            <button onclick="zoomStep(this)" style="width:44px;height:44px;border-radius:50%;background:${clr};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+              <span style="font-size:20px;pointer-events:none;">${s.icon}</span>
+            </button>
             ${!isLast?`<div style="width:0;flex:1;min-height:16px;border-left:3px dashed ${nextClr}88;margin-top:4px;margin-bottom:4px;"></div>`:''}
           </div>
           `}
@@ -645,6 +649,21 @@ function buildSteps(data,id){
     </div>`;
 }
 buildSteps(simSteps,'simSteps');
+
+function zoomStep(iconEl){
+  // Play click sound
+  const sfx = document.getElementById('clickSfx');
+  if(sfx){ sfx.currentTime=0; sfx.play().catch(()=>{}); }
+  // Find sibling step-box and animate
+  const row = iconEl.closest('.map-step');
+  if(!row) return;
+  const box = row.querySelector('.step-box');
+  if(!box) return;
+  box.classList.remove('step-box-zoom');
+  void box.offsetWidth; // reflow to restart animation
+  box.classList.add('step-box-zoom');
+  box.addEventListener('animationend', ()=> box.classList.remove('step-box-zoom'), {once:true});
+}
 
 // SIMULASI
 const canvas=document.getElementById('simCanvas');
@@ -1275,6 +1294,36 @@ function clearDQ(){
     clone.appendChild(rm);
     zone.appendChild(clone);
     showBenar(zone);
+    checkAllPlaced();
+  }
+
+  function checkAllPlaced(){
+    const alatPlaced = document.querySelectorAll('#drop-alat [data-id]').length;
+    const bahanPlaced = document.querySelectorAll('#drop-bahan [data-id]').length;
+    if(alatPlaced >= CORRECT_ALAT.size && bahanPlaced >= CORRECT_BAHAN.size){
+      setTimeout(showSelamat, 400);
+    }
+  }
+
+  function showSelamat(){
+    const sfxT = new Audio('https://denicendrianto41.github.io/tring.wav');
+    sfxT.play().catch(()=>{});
+    const ov = document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease;';
+    const box = document.createElement('div');
+    box.style.cssText='background:#fff;border-radius:20px;padding:36px 44px;text-align:center;max-width:380px;box-shadow:0 16px 48px rgba(0,0,0,0.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);font-family:Space Grotesk,sans-serif;';
+    box.innerHTML=`
+      <div style="font-size:52px;margin-bottom:10px;">🎉</div>
+      <div style="font-size:22px;font-weight:800;color:#059669;margin-bottom:8px;">Selamat!</div>
+      <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:22px;">Kamu berhasil menyusun semua alat dan bahan dengan benar.<br>Lanjutkan membaca <strong>Prosedur Praktikum</strong> dengan baik.</div>
+      <button onclick="this.closest('.selamat-ov').remove();document.querySelector('.nb[onclick*=prosedur]').click();"
+        style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(5,150,105,0.35);">
+        📋 Lihat Prosedur →
+      </button>`;
+    ov.classList.add('selamat-ov');
+    ov.appendChild(box);
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e=>{ if(e.target===ov) ov.remove(); });
   }
 
   /* ── Check if point is inside element ── */
