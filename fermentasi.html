@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Lab Virtual – Fermentasi Alkohol</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;
+  --h:56px;
+  --fbase:14px;
+}
+@media (max-width:768px){:root{--fbase:13px;--h:46px;}}
+@media (min-width:1200px){:root{--fbase:15px;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{
+  position:relative;z-index:10;height:var(--h);flex-shrink:0;
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;padding:0 14px;gap:12px;
+  box-shadow:0 2px 10px rgba(15,23,42,0.45);
+}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#ffffff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#60a5fa;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,0.95);}
+.nb.active{color:#fff;}
+.nb.active::after{transform:scaleX(1);}
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;}
+#menuToggle svg{display:block;}
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:16px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}
+  .nb.active{background:rgba(255,255,255,.08);}
+}
+#app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0f172a,#2563eb);border:none;border-radius:9px;padding:10px 16px;margin-bottom:8px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 4px 18px rgba(37,99,235,.2);}
+.hero::after{content:'🍺';position:absolute;right:12px;top:-8px;font-size:60px;opacity:.08;pointer-events:none;}
+.h-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:#93c5fd;text-transform:uppercase;margin-bottom:2px;}
+.h-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,2vw,18px);font-weight:700;color:#fff;line-height:1.2;}
+.h-title span{color:#bfdbfe;}
+.h-desc{font-size:11px;color:#bfdbfe;line-height:1.5;max-width:480px;}
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(22,163,74,.1);}
+.ci.y{background:rgba(217,119,6,.1);}
+.ci.g{background:rgba(5,150,105,.1);}
+.ci.r{background:rgba(220,38,38,.1);}
+.ci.p{background:rgba(124,58,237,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+#page-teori .scroll{overflow:hidden;display:flex;flex-direction:column;}
+#page-teori .card p{font-size:clamp(11px,1.1vw,13px);line-height:1.55;margin-bottom:4px;}
+#page-teori .card h4{margin:6px 0 3px;}
+#page-teori .two-col{gap:5px;}
+#page-teori .card{margin-bottom:5px;padding:9px 12px;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;flex-direction:column;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:clamp(11px,1.2vw,13px);color:var(--text2);line-height:1.5;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
+.chips{display:flex;gap:5px;margin:6px 0;flex-wrap:wrap;}
+.chip{border-radius:5px;padding:3px 8px;font-size:clamp(11px,1.2vw,13px);font-weight:500;}
+.chip-b{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:#1d4ed8;}
+.chip-r{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#b91c1c;}
+.chip-g{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#047857;}
+.chip-p{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#6d28d9;}
+/* PROSEDUR */
+.steps{display:flex;flex-direction:column;gap:5px;}
+.step{display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;}
+.step:hover{border-color:var(--acc2);background:#eff6ff;}
+.snum{min-width:20px;height:20px;border-radius:50%;background:rgba(22,163,74,.1);border:1px solid rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);flex-shrink:0;}
+.step p{font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;margin:0;}
+.notebox{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:7px;}
+.notebox .nt{font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.notebox p{font-size:clamp(12px,1.2vw,13px);color:#92400e;line-height:1.6;margin:0;}
+.sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
+.sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
+/* SIMULASI */
+.sim-wrap{display:grid;grid-template-columns:210px 1fr;gap:8px;flex:1;min-height:0;}
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.btn{width:100%;border:none;border-radius:6px;padding:8px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-start{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-stop{background:#fff1f2;border:1px solid #fecdd3;color:var(--red);}
+.btn-stop:hover{background:#ffe4e6;}
+.btn-stop:disabled{opacity:.35;cursor:not-allowed;}
+.btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.sim-right{display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.aquarium{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;}
+.aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;}
+#simCanvas{width:100%;border-radius:6px;display:block;background:#0f172a;border:1px solid var(--border);}
+.statsrow{display:flex;gap:6px;margin-top:6px;}
+.sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;color:var(--acc);display:block;}
+.sl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.tipinfo{background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:7px 10px;margin-top:6px;font-size:11px;color:#1e3a8a;display:none;line-height:1.6;}
+.tipinfo.on{display:block;}
+.wstable{width:100%;border-collapse:collapse;font-size:11px;}
+.wstable th{background:#eff6ff;color:var(--acc3);padding:6px 9px;text-align:left;border:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.wstable td{padding:5px 9px;border:1px solid var(--border);color:var(--text2);}
+.wstable tr:nth-child(even) td{background:#f8fafc;}
+.wstable tr:hover td{background:#eff6ff;}
+/* DISKUSI */
+.disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+/* DRAG CARDS */
+.drag-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;cursor:grab;transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s;user-select:none;position:relative;min-height:80px;touch-action:none;-webkit-tap-highlight-color:transparent;}
+.drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);border-color:var(--border2);}
+.drag-card:active{cursor:grabbing;transform:scale(.96);}
+.drag-card.alat{background:#eff6ff;border-color:#93c5fd;}
+.drag-card.alat:hover{border-color:#3b82f6;}
+.drag-card.bahan{background:#fff7ed;border-color:#fed7aa;}
+.drag-card.bahan:hover{border-color:#f97316;}
+.drag-card.dragging{opacity:.3;transform:scale(.95);filter:grayscale(.5);}
+.drag-card.placed{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
+.drag-icon{height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:5px;font-size:28px;line-height:1;}
+.drag-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px;}
+.drag-sub{font-size:9.5px;color:var(--text3);}
+.drag-card.touch-grabbing{transform:scale(1.06);box-shadow:0 8px 24px rgba(37,99,235,.22);border-color:var(--acc2);z-index:10;}
+.drop-zone{border:2px dashed var(--border2);border-radius:9px;padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;transition:background .2s,border-color .2s;position:relative;touch-action:none;}
+.drop-zone.drag-over-ok{background:#eff6ff;border-color:#3b82f6;}
+.drop-zone.bahan-zone.drag-over-ok{background:#fff7ed;border-color:#f97316;}
+.drop-zone.drag-over-wrong{background:#fff1f2;border-color:#f87171;}
+.drop-hint{width:100%;text-align:center;font-size:11.5px;color:var(--text3);padding:16px 0;pointer-events:none;}
+.drop-card{background:#fff;border:1.5px solid #93c5fd;border-radius:8px;padding:7px 9px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--text);position:relative;}
+.drop-card.bahan-card{border-color:#fed7aa;}
+.drop-card.wrong-card{border-color:#fca5a5;background:#fff1f2;color:#991b1b;}
+.drop-card-icon{font-size:18px;flex-shrink:0;width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.drop-card-remove{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:0 2px;line-height:1;transition:color .15s;}
+.drop-card-remove:hover{color:#dc2626;}
+@keyframes shakeWrong{0%{transform:translateX(0);}15%{transform:translateX(-8px);}30%{transform:translateX(8px);}45%{transform:translateX(-6px);}60%{transform:translateX(6px);}75%{transform:translateX(-3px);}90%{transform:translateX(3px);}100%{transform:translateX(0);}}
+@keyframes bounceRight{0%{transform:scale(1);}30%{transform:scale(1.12);}55%{transform:scale(.95);}75%{transform:scale(1.05);}100%{transform:scale(1);}}
+.anim-correct{animation:bounceRight .4s cubic-bezier(.34,1.56,.64,1);}
+.anim-wrong{animation:shakeWrong .5s ease;}
+/* QUIZ */
+.quiz-nav-header{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--surf);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.05);}
+.qprog{display:flex;gap:3px;flex-wrap:wrap;}
+.qprog-dot{width:24px;height:24px;border-radius:5px;border:1px solid var(--border);background:var(--surf2);font-size:9.5px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .17s;}
+.qprog-dot.answered{border-color:var(--acc2);color:var(--acc);background:#eff6ff;}
+.qprog-dot.current{background:var(--acc);color:#fff;border-color:var(--acc);}
+.q-card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:14px;flex:1;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.qnum{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--acc);letter-spacing:.1em;margin-bottom:5px;}
+.qtype-badge{display:inline-block;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;margin-bottom:7px;letter-spacing:.04em;}
+.badge-mc{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;}
+.badge-tf{background:#eff6ff;border:1px solid #93c5fd;color:#1e3a8a;}
+.qtext{font-size:13px;color:var(--text);line-height:1.55;font-weight:500;margin-bottom:10px;}
+.opts{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.opt{display:flex;align-items:flex-start;gap:8px;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 11px;cursor:pointer;transition:all .16s;font-size:12px;color:var(--text2);}
+.opt:hover{border-color:var(--acc2);background:#eff6ff;color:var(--text);}
+.opt input{margin-top:1px;accent-color:var(--acc);cursor:pointer;}
+.opt.sel{border-color:var(--acc);background:#eff6ff;color:var(--acc3);}
+.opt.correct{background:#eff6ff;border-color:#3b82f6;color:#1e3a8a;}
+.opt.wrong{background:#fff1f2;border-color:#f87171;color:#b91c1c;}
+.qfb{margin-top:8px;padding:7px 10px;border-radius:6px;font-size:11.5px;display:none;}
+.qfb.on{display:block;}
+.qfb.ok{background:#eff6ff;color:#1e3a8a;border:1px solid #93c5fd;}
+.qfb.bad{background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3;}
+.quiz-foot{display:flex;align-items:center;gap:7px;padding-top:7px;flex-shrink:0;}
+.btn-qnav{padding:6px 14px;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;border:none;}
+.btn-prev{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-prev:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-next{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+.btn-next:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-submit-q{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;}
+.btn-submit-q:hover{box-shadow:0 3px 12px rgba(37,99,235,.3);}
+.btn-reset-q{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset-q:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.qcounter{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3);}
+/* SCORE */
+.score-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(8px);}
+.score-overlay.on{display:flex;}
+.score-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:32px 44px;text-align:center;box-shadow:0 20px 60px rgba(30,41,59,.18);animation:fu .28s ease;min-width:280px;}
+.score-big{font-family:'Space Grotesk',sans-serif;font-size:68px;font-weight:700;color:var(--acc);line-height:1;}
+.score-pct{font-size:20px;color:var(--text3);margin-top:2px;}
+.score-sub{font-size:12.5px;color:var(--text2);margin:8px 0 4px;}
+.score-grade{font-size:15px;font-weight:600;margin-top:8px;}
+.score-actions{display:flex;gap:8px;justify-content:center;margin-top:18px;}
+.btn-score{padding:8px 20px;border-radius:7px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;border:none;transition:all .17s;}
+.btn-review{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-review:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-ulangi{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;}
+.btn-ulangi:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+/* LOADING */
+#loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#93c5fd,#3b82f6);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+#btnMulaiPraktikum{display:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(37,99,235,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
+#btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(37,99,235,.5);}
+@keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+/* CELEBRATION */
+@keyframes celebBounce{0%,100%{transform:translateY(0) scale(1);}40%{transform:translateY(-14px) scale(1.08);}70%{transform:translateY(-4px) scale(.97);}}
+@keyframes celebRingPulse{0%,100%{opacity:.3;}50%{opacity:.55;}}
+@keyframes starFloat{0%{opacity:0;transform:translateY(0) scale(0);}15%{opacity:1;}85%{opacity:.8;}100%{opacity:0;transform:translateY(-120px) scale(1.2) rotate(180deg);}}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+@media (max-width: 640px) {
+  .sim-wrap{grid-template-columns:1fr;}
+  .ctrl-panel{max-height:180px;}
+  #page-alatbahan .scroll{overflow-y:auto;}
+  #page-alatbahan .scroll > div[style*="grid-template-columns:1fr 1fr"]{display:flex!important;flex-direction:column!important;height:auto!important;gap:10px!important;}
+  #page-alatbahan .card:first-child{max-height:46vh;}
+  #sourceAlat{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))!important;gap:8px!important;}
+  .drag-card{min-height:90px;padding:12px 8px;}
+  .drag-icon{height:48px;font-size:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadScreen">
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Fermentasi Alkohol</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+</div>
+
+<script>
+(function(){
+  const bar=document.getElementById('loadBar');
+  const pct=document.getElementById('loadPercent');
+  const status=document.getElementById('loadStatus');
+  let current=0;
+  const total=3000;const step=20;const inc=100/(total/step);
+  const iv=setInterval(()=>{
+    current=Math.min(100,current+inc);
+    const v=Math.floor(current);
+    bar.style.width=v+'%';
+    pct.textContent=v+'%';
+    if(current>=100){
+      clearInterval(iv);
+      pct.textContent='100%';
+      status.textContent='✅ Laboratorium siap digunakan!';
+      document.getElementById('btnMulaiPraktikum').style.display='block';
+    }
+  },step);
+})();
+function startPraktikum(){
+  const sfx=new Audio('https://denicendrianto41.github.io/tring.wav');
+  sfx.play().catch(()=>{});
+  const ls=document.getElementById('loadScreen');
+  ls.classList.add('hide');
+  setTimeout(()=>{ls.style.display='none';},650);
+}</script>
+
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<audio id="sndBenar" src="https://denicendrianto41.github.io/benar.wav" preload="auto"></audio>
+<audio id="sndSalah" src="https://denicendrianto41.github.io/salah.wav" preload="auto"></audio>
+<audio id="sndBerhasil" src="https://denicendrianto41.github.io/berhasil.wav" preload="auto"></audio>
+<audio id="sndBerhasil2" src="https://denicendrianto41.github.io/berhasil.wav" preload="auto"></audio>
+<script>
+  document.addEventListener('click',function(e){
+    const el=e.target.closest('button, .nb, .btn, select, input[type="range"]');
+    if(!el) return;
+    if(el.id==='btnMulaiPraktikum') return;
+    const sfx=document.getElementById('clickSfx');
+    if(!sfx) return;
+    sfx.currentTime=0;
+    sfx.play().catch(()=>{});
+  });
+</script>
+
+<header style="justify-content:space-between;">
+  <div class="logo">
+    <div class="logo-icon" style="background:#fff;overflow:hidden;padding:2px;">
+      <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+    </div>
+    <div>
+      <div class="logo-text">Lab Maya Biologi</div>
+      <div class="logo-sub">Fermentasi Alkohol</div>
+    </div>
+  </div>
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line id="mL1" x1="3" y1="6" x2="21" y2="6"/><line id="mL2" x1="3" y1="12" x2="21" y2="12"/><line id="mL3" x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('teori',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('diskusi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+  </nav>
+</header>
+
+<div id="app">
+
+<!-- ===== TEORI ===== -->
+<div id="page-teori" class="page active">
+  <div class="scroll" style="overflow-y:auto;padding:10px 14px 14px;">
+    <div class="two-col" style="margin-bottom:5px;">
+      <div class="card">
+        <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Percobaan</div></div>
+        <ul class="olist">
+          <li>Membuktikan bahwa fermentasi alkohol menghasilkan gas CO₂</li>
+          <li>Membuktikan bahwa fermentasi alkohol menghasilkan energi (panas)</li>
+          <li>Membandingkan perangkat dengan ragi dan tanpa ragi sebagai kontrol</li>
+          <li>Memahami peranan <em>Saccharomyces cerevisiae</em> dalam proses fermentasi</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
+        <ul class="olist">
+          <li>Menjelaskan konsep respirasi anaerob dan fermentasi alkohol</li>
+          <li>Menuliskan reaksi kimia fermentasi alkohol dengan benar</li>
+          <li>Mengidentifikasi produk fermentasi alkohol (CO₂, etanol, energi)</li>
+          <li>Menghubungkan fermentasi dengan kehidupan sehari-hari</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
+
+      <p><strong style="color:var(--acc3)">Respirasi Anaerob</strong> merupakan reaksi pemecahan karbohidrat untuk mendapatkan energi <strong style="color:#b91c1c">tanpa menggunakan oksigen (O₂)</strong>. Ketika oksigen tidak tersedia atau tidak mencukupi untuk respirasi aerob, beberapa organisme melakukan respirasi secara anaerob yang juga dikenal sebagai <strong style="color:var(--acc2)">fermentasi</strong>.</p>
+
+      <p><strong style="color:var(--acc3)">Fermentasi Alkohol</strong> adalah salah satu bentuk respirasi anaerob yang dilakukan oleh <strong><em>Saccharomyces cerevisiae</em></strong> (ragi/yeast). Dalam proses ini, glukosa (gula) dipecah menjadi <strong>etanol (alkohol)</strong>, <strong>gas CO₂</strong>, dan <strong>energi (ATP)</strong> dalam kondisi tanpa oksigen.</p>
+
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;background:#eff6ff;border-left:3px solid var(--acc);padding:7px 12px;border-radius:0 6px 6px 0;color:var(--acc3);margin:8px 0;">C₆H₁₂O₆ &nbsp;→&nbsp; 2C₂H₅OH &nbsp;+&nbsp; 2CO₂ &nbsp;+&nbsp; 2ATP &nbsp;&nbsp;(dikatalis oleh Ragi)</p>
+
+      <h4>Tahapan Fermentasi Alkohol</h4>
+      <div class="chips">
+        <span class="chip chip-b">① Glikolisis</span>
+        <span class="chip chip-p">② Dekarboksilasi piruvat</span>
+        <span class="chip chip-g">③ Reduksi asetaldehida → Etanol</span>
+      </div>
+
+      <p>Proses dimulai dengan <strong>glikolisis</strong> di sitoplasma: 1 molekul glukosa (C₆H₁₂O₆) diubah menjadi 2 molekul asam piruvat (C₃H₄O₃) menghasilkan 2 ATP. Karena kondisi anaerob, asam piruvat kemudian mengalami <strong>dekarboksilasi</strong> menjadi asetaldehida sambil melepaskan CO₂. Selanjutnya asetaldehida direduksi oleh NADH menjadi <strong>etanol (C₂H₅OH)</strong>. NAD⁺ yang diregenerasi memungkinkan glikolisis terus berlanjut.</p>
+
+      <h4>Peranan Ragi dalam Kehidupan</h4>
+      <p><em>Saccharomyces cerevisiae</em> dimanfaatkan secara luas dalam industri makanan: pembuatan roti (CO₂ membuat adonan mengembang), tape, tempe, bir, dan berbagai produk fermentasi lainnya. Pada suhu optimal 25–30°C, ragi bekerja paling aktif memfermentasi gula.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALAT DAN BAHAN ===== -->
+<div id="page-alatbahan" class="page">
+  <div class="scroll" style="padding:10px 14px 14px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;height:100%;min-height:0;">
+
+      <!-- KIRI: Daftar Alat & Bahan -->
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="ch" style="flex-shrink:0;">
+          <div class="ci b">🔍</div>
+          <div class="ct">Daftar Alat &amp; Bahan</div>
+        </div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;flex-shrink:0;">Drag atau <strong style="color:var(--acc3)">tekan &amp; geser</strong> item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
+
+        <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px;flex:1;overflow-y:auto;">
+          <!-- ALAT -->
+          <div class="drag-card alat" draggable="true" data-id="erlenmeyer" data-type="alat" data-name="2 Tabung Erlenmeyer" data-sub="Tabung A &amp; B (kontrol)">
+            <div class="drag-icon">🫙</div>
+            <div class="drag-name">2 Erlenmeyer</div>
+            <div class="drag-sub">Tabung A &amp; B</div>
+          </div>
+          <div class="drag-card alat" draggable="true" data-id="selang" data-type="alat" data-name="Selang Penghubung" data-sub="Mengalirkan gas CO₂">
+            <div class="drag-icon">🌀</div>
+            <div class="drag-name">Selang</div>
+            <div class="drag-sub">Alirkan gas CO₂</div>
+          </div>
+          <div class="drag-card alat" draggable="true" data-id="termometer" data-type="alat" data-name="Termometer" data-sub="Mengukur suhu">
+            <div class="drag-icon">🌡️</div>
+            <div class="drag-name">Termometer</div>
+            <div class="drag-sub">Mengukur suhu</div>
+          </div>
+          <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Ukur" data-sub="Mengukur volume">
+            <div class="drag-icon">🧊</div>
+            <div class="drag-name">Gelas Ukur</div>
+            <div class="drag-sub">Mengukur volume</div>
+          </div>
+          <!-- BAHAN -->
+          <div class="drag-card bahan" draggable="true" data-id="gula" data-type="bahan" data-name="Larutan Gula 30%" data-sub="Substrat fermentasi · 100cc">
+            <div class="drag-icon">🍬</div>
+            <div class="drag-name">Larutan Gula 30%</div>
+            <div class="drag-sub">Substrat · 100cc</div>
+          </div>
+          <div class="drag-card bahan" draggable="true" data-id="ragi" data-type="bahan" data-name="Ragi Saccharomyces" data-sub="4 gram · agen fermentasi">
+            <div class="drag-icon">🫧</div>
+            <div class="drag-name">Ragi Yeast</div>
+            <div class="drag-sub">4 gram · agen</div>
+          </div>
+          <div class="drag-card bahan" draggable="true" data-id="airkapur" data-type="bahan" data-name="Air Kapur Ca(OH)₂" data-sub="Indikator CO₂ · 100cc">
+            <div class="drag-icon">🥛</div>
+            <div class="drag-name">Air Kapur</div>
+            <div class="drag-sub">Ca(OH)₂ · 100cc</div>
+          </div>
+          <div class="drag-card bahan" draggable="true" data-id="pp" data-type="bahan" data-name="Indikator PP" data-sub="Fenolftalein · 1 tetes">
+            <div class="drag-icon">🔴</div>
+            <div class="drag-name">Indikator PP</div>
+            <div class="drag-sub">Fenolftalein · 1 tetes</div>
+          </div>
+          <div class="drag-card bahan" draggable="true" data-id="air" data-type="bahan" data-name="Air (H₂O)" data-sub="Kontrol tanpa ragi">
+            <div class="drag-icon">💧</div>
+            <div class="drag-name">Air (H₂O)</div>
+            <div class="drag-sub">Kontrol tanpa ragi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KANAN: Meja Percobaan -->
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="ch" style="flex-shrink:0;">
+          <div class="ci g">⚗️</div>
+          <div class="ct">Meja Percobaan</div>
+        </div>
+
+        <div style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;">⚙️ Alat Percobaan</div>
+        <div id="dropAlat" class="drop-zone" data-accept="alat" style="flex:1;min-height:0;margin-bottom:10px;">
+          <div class="drop-hint">← Drag alat ke sini</div>
+        </div>
+
+        <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;">🧪 Bahan Percobaan</div>
+        <div id="dropBahan" class="drop-zone bahan-zone" data-accept="bahan" style="flex:1;min-height:0;">
+          <div class="drop-hint">← Drag bahan ke sini</div>
+        </div>
+
+        <button onclick="resetMeja()" style="margin-top:10px;flex-shrink:0;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .17s;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↺ Reset Meja</button>
+
+        <div id="catatanMeja" style="display:none;margin-top:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;flex-shrink:0;">
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">💡 Catatan Penggunaan</div>
+          <p id="catatanText" style="font-size:11.5px;color:#92400e;line-height:1.6;margin:0;"></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Popup Modal -->
+<div id="dragPopup" style="display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(15,23,42,.45);backdrop-filter:blur(3px);">
+  <div id="dragPopupBox" style="background:#fff;border-radius:18px;padding:32px 36px;text-align:center;max-width:300px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);transform:scale(.7);opacity:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s;">
+    <div id="dragPopupIcon" style="font-size:56px;line-height:1;margin-bottom:12px;"></div>
+    <div id="dragPopupTitle" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:6px;"></div>
+    <div id="dragPopupMsg" style="font-size:13px;color:#64748b;line-height:1.5;margin-bottom:20px;"></div>
+    <button onclick="closeDragPopup()" style="background:linear-gradient(135deg,var(--acc),var(--acc3));color:#fff;border:none;border-radius:9px;padding:9px 28px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">OK</button>
+  </div>
+</div>
+
+<!-- Celebration -->
+<div id="celebOverlay" style="display:none;position:fixed;inset:0;z-index:20000;align-items:center;justify-content:center;pointer-events:none;">
+  <canvas id="confettiCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+  <div id="celebStars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
+  <div id="celebBox" style="position:relative;background:linear-gradient(145deg,#0a0f2e,#0f172a,#1a2a6e);border:1px solid rgba(99,179,237,0.25);border-radius:28px;padding:44px 52px 40px;text-align:center;max-width:420px;width:92%;box-shadow:0 30px 100px rgba(0,0,0,.7),0 0 60px rgba(37,99,235,.3),inset 0 1px 0 rgba(255,255,255,.1);transform:scale(.4) translateY(80px);opacity:0;transition:transform .6s cubic-bezier(.34,1.56,.64,1),opacity .4s;pointer-events:auto;">
+    <div style="position:absolute;inset:-2px;border-radius:30px;background:linear-gradient(145deg,#3b82f6,#8b5cf6,#ec4899,#3b82f6);opacity:.4;z-index:-1;animation:celebRingPulse 2s ease infinite;"></div>
+    <div style="position:relative;display:inline-block;margin-bottom:16px;">
+      <div style="font-size:72px;line-height:1;animation:celebBounce .8s ease infinite;filter:drop-shadow(0 0 20px rgba(251,191,36,.6));">🏆</div>
+    </div>
+    <div id="celebBadge" style="display:inline-block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a1a;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(251,191,36,.5);opacity:0;transform:scale(.6);transition:opacity .4s .5s,transform .4s .5s cubic-bezier(.34,1.56,.64,1);">✨ SEMPURNA! ✨</div>
+    <div id="celebTitle" style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.1;opacity:0;transform:translateY(10px);transition:opacity .4s .65s,transform .4s .65s ease-out;text-shadow:0 2px 20px rgba(99,179,237,.5);">Luar Biasa! 🎉</div>
+    <div id="celebSub" style="font-size:14px;color:#93c5fd;line-height:1.7;margin-bottom:12px;opacity:0;transform:translateY(8px);transition:opacity .4s .8s,transform .4s .8s ease-out;">Semua alat dan bahan telah ditempatkan<br>dengan <strong style="color:#34d399;">tepat</strong> di meja percobaan!</div>
+    <div id="celebStats" style="display:flex;gap:10px;justify-content:center;margin-bottom:26px;opacity:0;transition:opacity .4s .95s;">
+      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 16px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#34d399;">4</div>
+        <div style="font-size:10px;color:#94a3b8;letter-spacing:.05em;">ALAT</div>
+      </div>
+      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 16px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#60a5fa;">5</div>
+        <div style="font-size:10px;color:#94a3b8;letter-spacing:.05em;">BAHAN</div>
+      </div>
+      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 16px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#fbbf24;">9</div>
+        <div style="font-size:10px;color:#94a3b8;letter-spacing:.05em;">TOTAL</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="closeCelebration()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:12px;padding:11px 30px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(37,99,235,.45);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px) scale(1.04)'" onmouseout="this.style.transform=''">Lanjutkan ➜</button>
+      <button onclick="closeCelebration();resetMeja();" style="background:rgba(255,255,255,.1);color:#e2e8f0;border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:11px 30px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">↺ Coba Lagi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROSEDUR ===== -->
+<div id="page-prosedur" class="page">
+  <div class="scroll">
+    <div class="hero">
+      <div>
+        <div class="h-label">Langkah Kerja</div>
+        <div class="h-title">Prosedur <span>Fermentasi Alkohol</span></div>
+        <div class="h-desc">Ikuti langkah-langkah berikut secara berurutan. Percobaan dilakukan dengan 2 perangkat: Perangkat I (dengan ragi) dan Perangkat II (kontrol, tanpa ragi).</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="ch"><div class="ci b">🧪</div><div class="ct">Perangkat I – Perlakuan</div></div>
+        <div class="steps">
+          <div class="step"><div class="snum">1</div><p>Beri label <strong>A</strong> pada tabung erlenmeyer pertama (tabung fermentasi) dan label <strong>B</strong> pada tabung kedua (tabung indikator).</p></div>
+          <div class="step"><div class="snum">2</div><p>Isi tabung erlenmeyer <strong>A</strong> dengan <strong>100 cc larutan gula 30%</strong>, kemudian tambahkan <strong>4 gram ragi</strong> (<em>Saccharomyces cerevisiae</em>) ke dalamnya.</p></div>
+          <div class="step"><div class="snum">3</div><p>Isi tabung erlenmeyer <strong>B</strong> dengan <strong>100 cc air kapur Ca(OH)₂</strong>, kemudian tambahkan <strong>1 tetes indikator PP (fenolftalein)</strong>. Larutan akan berwarna merah muda.</p></div>
+          <div class="step"><div class="snum">4</div><p>Sambungkan tabung A ke tabung B menggunakan selang, sehingga gas CO₂ dari tabung A mengalir ke tabung B melalui air kapur.</p></div>
+          <div class="step"><div class="snum">5</div><p>Tutup rapat tabung A dengan sumbat berselang agar kondisi anaerob tercapai dan gas CO₂ tersalurkan ke tabung B.</p></div>
+          <div class="step"><div class="snum">6</div><p>Amati perubahan yang terjadi selama <strong>30 menit</strong>: perubahan warna air kapur, timbulnya gelembung gas, dan perubahan suhu pada tabung A.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><div class="ci r">🔬</div><div class="ct">Perangkat II – Kontrol</div></div>
+        <div class="steps">
+          <div class="step"><div class="snum">1</div><p>Ulangi langkah 1, 2, dan 3 di atas pada perangkat kedua dengan cara yang sama persis.</p></div>
+          <div class="step"><div class="snum">2</div><p>Pada tabung A perangkat II, isi dengan <strong>100 cc larutan gula 30%</strong> tetapi <strong>TANPA menambahkan ragi</strong>.</p></div>
+          <div class="step"><div class="snum">3</div><p>Pada tabung B perangkat II, isi dengan <strong>100 cc air kapur + 1 tetes PP</strong> sama seperti perangkat I.</p></div>
+          <div class="step"><div class="snum">4</div><p>Sambungkan tabung A ke tabung B menggunakan selang dengan cara yang sama seperti perangkat I.</p></div>
+          <div class="step"><div class="snum">5</div><p>Tutup rapat tabung A perangkat II dengan sumbat berselang.</p></div>
+          <div class="step"><div class="snum">6</div><p>Amati perangkat II selama <strong>30 menit</strong> dan bandingkan hasilnya dengan Perangkat I.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notebox">
+      <div class="nt">⚠️ Keselamatan Lab</div>
+      <p>Lakukan percobaan di tempat berventilasi baik. Hindari menghirup gas CO₂ berlebih. Gunakan sarung tangan saat memegang larutan kimia. Jangan minum larutan hasil fermentasi. Jauhkan dari api terbuka karena etanol mudah terbakar.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SIMULASI ===== -->
+<div id="page-simulasi" class="page">
+  <div class="scroll" style="overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;">
+    <div class="sim-wrap">
+      <div class="ctrl-panel">
+        <h3>⚙️ Pengaturan Simulasi</h3>
+
+        <div class="cg">
+          <label>Suhu Inkubasi</label>
+          <select id="simSuhu">
+            <option value="10">10°C – Rendah</option>
+            <option value="20">20°C – Sejuk</option>
+            <option value="30" selected>30°C – Optimal</option>
+            <option value="40">40°C – Hangat</option>
+            <option value="60">60°C – Tinggi (ragi mati)</option>
+          </select>
+        </div>
+
+        <div class="cg">
+          <label>Konsentrasi Gula</label>
+          <select id="simGula">
+            <option value="10">10% – Rendah</option>
+            <option value="30" selected>30% – Standar</option>
+            <option value="50">50% – Tinggi</option>
+            <option value="70">70% – Sangat Tinggi</option>
+          </select>
+        </div>
+
+        <div class="cg">
+          <label>Jumlah Ragi</label>
+          <select id="simRagi">
+            <option value="0">0 gram – Kontrol</option>
+            <option value="2">2 gram – Sedikit</option>
+            <option value="4" selected>4 gram – Standar</option>
+            <option value="8">8 gram – Banyak</option>
+          </select>
+        </div>
+
+        <div class="cg">
+          <label>Perangkat</label>
+          <select id="simPerangkat">
+            <option value="I" selected>Perangkat I (dengan ragi)</option>
+            <option value="II">Perangkat II (kontrol)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai Simulasi</button>
+        <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Hentikan</button>
+        <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
+
+        <div class="tipinfo" id="simTip"></div>
+      </div>
+
+      <div class="sim-right">
+        <div class="aquarium">
+          <h3>🔬 Visualisasi Perangkat Fermentasi</h3>
+          <canvas id="simCanvas" height="200"></canvas>
+          <div class="statsrow">
+            <div class="sbox"><span class="sv" id="svCO2">0</span><span class="sl">Gelembung CO₂</span></div>
+            <div class="sbox"><span class="sv" id="svSuhu">--°C</span><span class="sl">Suhu Tabung</span></div>
+            <div class="sbox"><span class="sv" id="svWaktu">0:00</span><span class="sl">Waktu (mnt)</span></div>
+            <div class="sbox"><span class="sv" id="svStatus">⏸</span><span class="sl">Status</span></div>
+          </div>
+        </div>
+
+        <div class="card" style="flex:1;overflow:hidden;display:flex;flex-direction:column;margin-bottom:0;">
+          <div class="ch"><div class="ci b">📊</div><div class="ct">Rekap Hasil Pengamatan</div></div>
+          <div style="overflow-y:auto;flex:1;">
+            <table class="wstable" id="hasilTable">
+              <thead><tr><th>Waktu</th><th>CO₂ (gelembung)</th><th>Suhu (°C)</th><th>Warna Air Kapur</th><th>Keterangan</th></tr></thead>
+              <tbody id="hasilBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DISKUSI ===== -->
+<div id="page-diskusi" class="page">
+  <div class="scroll" style="overflow-y:auto;padding:10px 14px 14px;">
+    <!-- Score Overlay -->
+    <div class="score-overlay" id="scoreOverlay">
+      <div class="score-box">
+        <div class="score-big" id="scoreBig">0</div>
+        <div class="score-pct">/ 10 benar</div>
+        <div class="score-sub" id="scoreSub"></div>
+        <div class="score-grade" id="scoreGrade"></div>
+        <div class="score-actions">
+          <button class="btn-score btn-review" onclick="document.getElementById('scoreOverlay').classList.remove('on')">Tinjau Jawaban</button>
+          <button class="btn-score btn-ulangi" onclick="resetQuiz()">Ulangi Kuis</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-nav-header">
+      <div class="qprog" id="qprog"></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-score btn-ulangi" style="font-size:11px;padding:5px 12px;" onclick="resetQuiz()">↺ Ulangi</button>
+      </div>
+    </div>
+
+    <div id="qContainer" style="flex:1;display:flex;flex-direction:column;gap:6px;min-height:0;"></div>
+
+    <div class="quiz-foot">
+      <button class="btn-qnav btn-prev" id="btnPrev" onclick="prevQ()">← Sebelumnya</button>
+      <span class="qcounter" id="qCounter">1 / 10</span>
+      <button class="btn-qnav btn-next" id="btnNext" onclick="nextQ()">Selanjutnya →</button>
+      <button class="btn-qnav btn-submit-q" id="btnSubmit" onclick="submitQuiz()" style="display:none;">Kumpulkan Jawaban ✓</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end #app -->
+
+<script>
+// ── Navigation ──
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+let navOpen=false;
+function toggleNav(){
+  navOpen=!navOpen;
+  const nav=document.getElementById('mainNav');
+  if(navOpen) nav.classList.add('open'); else nav.classList.remove('open');
+}
+function closeNav(){
+  navOpen=false;
+  document.getElementById('mainNav').classList.remove('open');
+}
+
+// ── DRAG & DROP ──
+const NOTES = {
+  erlenmeyer:'Siapkan 2 tabung erlenmeyer, beri label A (fermentasi) dan B (indikator). Pastikan bersih dan kering.',
+  selang:'Selang penghubung mengalirkan gas CO₂ dari tabung A ke tabung B yang berisi air kapur.',
+  termometer:'Gunakan termometer untuk mengukur suhu tabung fermentasi sebelum dan sesudah percobaan.',
+  gelas:'Gunakan gelas ukur untuk mengukur 100 cc larutan gula dan 100 cc air kapur secara akurat.',
+  gula:'Larutan gula 30% berfungsi sebagai substrat (bahan bakar) untuk fermentasi oleh ragi.',
+  ragi:'Ragi Saccharomyces cerevisiae adalah agen fermentasi. Tambahkan 4 gram ke tabung A.',
+  airkapur:'Air kapur Ca(OH)₂ bereaksi dengan CO₂ membentuk endapan CaCO₃ — larutan menjadi keruh.',
+  pp:'Indikator PP (fenolftalein) menunjukkan perubahan pH: merah muda di basa, bening di asam.',
+  air:'Air digunakan pada perangkat kontrol (tanpa ragi) untuk membandingkan hasil percobaan.',
+};
+
+const TOTAL_ALAT=4, TOTAL_BAHAN=5;
+let dragId=null,dragType=null;
+let touchClone=null,touchCard=null,popupTimer=null;
+let touchLongTimer=null,touchStartX=0,touchStartY=0,touchDragging=false;
+const LONG_PRESS_MS=120;
+
+function playSound(id){try{const a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(()=>{});}}catch(e){}}
+function showPopup(icon,title,msg,type){
+  const overlay=document.getElementById('dragPopup');
+  const box=document.getElementById('dragPopupBox');
+  const accent=type==='ok'?'#059669':'#dc2626';
+  document.getElementById('dragPopupIcon').textContent=icon;
+  document.getElementById('dragPopupTitle').textContent=title;
+  document.getElementById('dragPopupTitle').style.color=accent;
+  document.getElementById('dragPopupMsg').textContent=msg;
+  overlay.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{box.style.transform='scale(1)';box.style.opacity='1';}));
+  clearTimeout(popupTimer);
+  popupTimer=setTimeout(closeDragPopup,2800);
+}
+window.closeDragPopup=function(){
+  clearTimeout(popupTimer);
+  const overlay=document.getElementById('dragPopup');
+  const box=document.getElementById('dragPopupBox');
+  box.style.transform='scale(.7)';box.style.opacity='0';
+  setTimeout(()=>{overlay.style.display='none';},280);
+};
+function highlightZones(type){
+  document.querySelectorAll('.drop-zone').forEach(z=>{z.style.opacity=z.dataset.accept===type?'1':'0.45';});
+}
+function clearZoneHighlights(){
+  document.querySelectorAll('.drop-zone').forEach(z=>{z.style.opacity='';z.classList.remove('drag-over-ok','drag-over-wrong');});
+}
+
+document.querySelectorAll('.drag-card').forEach(card=>{
+  card.addEventListener('dragstart',e=>{
+    if(card.classList.contains('placed')){e.preventDefault();return;}
+    dragId=card.dataset.id;dragType=card.dataset.type;
+    card.classList.add('dragging');e.dataTransfer.effectAllowed='copy';
+    highlightZones(dragType);
+  });
+  card.addEventListener('dragend',()=>{card.classList.remove('dragging');clearZoneHighlights();});
+
+  card.addEventListener('touchstart',e=>{
+    if(card.classList.contains('placed')) return;
+    const t=e.touches[0];touchStartX=t.clientX;touchStartY=t.clientY;touchDragging=false;
+    touchLongTimer=setTimeout(()=>{
+      touchDragging=true;touchCard=card;dragId=card.dataset.id;dragType=card.dataset.type;
+      if(navigator.vibrate) navigator.vibrate(30);
+      card.classList.add('touch-grabbing');
+      const rect=card.getBoundingClientRect();
+      touchClone=card.cloneNode(true);
+      touchClone.style.cssText=['position:fixed','z-index:99999','pointer-events:none',`width:${rect.width}px`,`height:${rect.height}px`,`top:${rect.top}px`,`left:${rect.left}px`,'transition:none','box-shadow:0 12px 36px rgba(0,0,0,.35)','transform:scale(1.1)','opacity:.92','border-radius:10px'].join(';');
+      document.body.appendChild(touchClone);
+      card.classList.add('dragging');highlightZones(dragType);
+    },LONG_PRESS_MS);
+  },{passive:true});
+
+  card.addEventListener('touchmove',e=>{
+    const t=e.touches[0];const dx=t.clientX-touchStartX;const dy=t.clientY-touchStartY;
+    if(!touchDragging){if(Math.abs(dx)>8||Math.abs(dy)>8){clearTimeout(touchLongTimer);touchLongTimer=null;}return;}
+    e.preventDefault();
+    if(!touchClone||!touchCard) return;
+    const rect=touchCard.getBoundingClientRect();
+    touchClone.style.top=(t.clientY-rect.height/2)+'px';touchClone.style.left=(t.clientX-rect.width/2)+'px';
+    touchClone.style.display='none';const el=document.elementFromPoint(t.clientX,t.clientY);touchClone.style.display='';
+    document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('drag-over-ok','drag-over-wrong'));
+    const zone=el&&el.closest('.drop-zone');
+    if(zone){zone.classList.add(zone.dataset.accept===dragType?'drag-over-ok':'drag-over-wrong');}
+  },{passive:false});
+
+  card.addEventListener('touchend',e=>{
+    clearTimeout(touchLongTimer);touchLongTimer=null;
+    if(!touchDragging||!touchClone||!touchCard){touchDragging=false;return;}
+    const t=e.changedTouches[0];
+    touchClone.style.display='none';const el=document.elementFromPoint(t.clientX,t.clientY);touchClone.style.display='';
+    const zone=el&&el.closest('.drop-zone');if(zone) drop(zone);
+    touchClone.remove();touchClone=null;
+    touchCard.classList.remove('dragging','touch-grabbing');touchCard=null;
+    clearZoneHighlights();touchDragging=false;dragId=null;dragType=null;
+  });
+
+  card.addEventListener('touchcancel',()=>{
+    clearTimeout(touchLongTimer);touchLongTimer=null;
+    if(touchClone){touchClone.remove();touchClone=null;}
+    if(touchCard){touchCard.classList.remove('dragging','touch-grabbing');touchCard=null;}
+    clearZoneHighlights();touchDragging=false;dragId=null;dragType=null;
+  });
+});
+
+document.querySelectorAll('.drop-zone').forEach(zone=>{
+  zone.addEventListener('dragover',e=>{
+    e.preventDefault();
+    if(zone.dataset.accept===dragType){zone.classList.add('drag-over-ok');zone.classList.remove('drag-over-wrong');}
+    else{zone.classList.add('drag-over-wrong');zone.classList.remove('drag-over-ok');}
+  });
+  zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over-ok','drag-over-wrong'));
+  zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over-ok','drag-over-wrong');drop(zone);});
+});
+
+function drop(zone){
+  if(!dragId) return;
+  const card=document.querySelector(`.drag-card[data-id="${dragId}"]`);
+  if(!card) return;
+  const isCorrect=zone.dataset.accept===dragType;
+  if(isCorrect){
+    if(card.classList.contains('placed')) return;
+    card.classList.add('placed');
+    const dc=document.createElement('div');
+    dc.className='drop-card'+(dragType==='bahan'?' bahan-card':'');
+    dc.dataset.id=dragId;
+    dc.innerHTML=`<div class="drop-card-icon">${card.querySelector('.drag-icon').textContent||card.querySelector('.drag-icon').innerHTML}</div><span>${card.dataset.name}</span><button class="drop-card-remove" onclick="removeFromZone(this,'${dragId}','${dragType}')">✕</button>`;
+    dc.classList.add('anim-correct');
+    const hint=zone.querySelector('.drop-hint');if(hint) hint.style.display='none';
+    zone.appendChild(dc);
+    playSound('sndBenar');
+    const note=NOTES[dragId];
+    if(note){
+      document.getElementById('catatanMeja').style.display='block';
+      document.getElementById('catatanText').textContent=note;
+    }
+    showPopup('✅',card.dataset.name,'Berhasil ditempatkan!','ok');
+    checkAllPlaced();
+  } else {
+    const clone=document.createElement('div');
+    clone.className='drop-card wrong-card';
+    clone.style.animation='none';
+    clone.innerHTML=`<div class="drop-card-icon">${card.querySelector('.drag-icon').textContent||card.querySelector('.drag-icon').innerHTML}</div><span>${card.dataset.name}</span>`;
+    clone.classList.add('anim-wrong');
+    const hint=zone.querySelector('.drop-hint');if(hint) hint.style.display='none';
+    zone.appendChild(clone);
+    playSound('sndSalah');
+    showPopup('❌','Zona Salah!',`"${card.dataset.name}" harus diletakkan di zona ${dragType==='alat'?'bahan':'alat'}!`,'err');
+    setTimeout(()=>{clone.remove();const h=zone.querySelector('.drop-hint');if(h&&zone.querySelectorAll('.drop-card').length===0) h.style.display='';},1200);
+  }
+  dragId=null;dragType=null;clearZoneHighlights();
+}
+
+function removeFromZone(btn,id,type){
+  const card=document.querySelector(`.drag-card[data-id="${id}"]`);
+  if(card) card.classList.remove('placed');
+  const dc=btn.closest('.drop-card');
+  const zone=dc.parentElement;
+  dc.remove();
+  if(zone.querySelectorAll('.drop-card').length===0){const h=zone.querySelector('.drop-hint');if(h) h.style.display='';}
+}
+
+function checkAllPlaced(){
+  const alatPlaced=document.getElementById('dropAlat').querySelectorAll('.drop-card:not(.wrong-card)').length;
+  const bahanPlaced=document.getElementById('dropBahan').querySelectorAll('.drop-card:not(.wrong-card)').length;
+  if(alatPlaced>=TOTAL_ALAT&&bahanPlaced>=TOTAL_BAHAN){
+    setTimeout(showCelebration,400);
+    playSound('sndBerhasil');
+  }
+}
+
+window.resetMeja=function(){
+  document.querySelectorAll('.drag-card').forEach(c=>c.classList.remove('placed'));
+  ['dropAlat','dropBahan'].forEach(zid=>{
+    const z=document.getElementById(zid);
+    z.querySelectorAll('.drop-card').forEach(d=>d.remove());
+    const h=z.querySelector('.drop-hint');if(h) h.style.display='';
+  });
+  document.getElementById('catatanMeja').style.display='none';
+};
+
+function showCelebration(){
+  const ol=document.getElementById('celebOverlay');
+  ol.style.display='flex';
+  const box=document.getElementById('celebBox');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    box.style.transform='scale(1) translateY(0)';box.style.opacity='1';
+    setTimeout(()=>{document.getElementById('celebBadge').style.opacity='1';document.getElementById('celebBadge').style.transform='scale(1)';},500);
+    setTimeout(()=>{document.getElementById('celebTitle').style.opacity='1';document.getElementById('celebTitle').style.transform='translateY(0)';},650);
+    setTimeout(()=>{document.getElementById('celebSub').style.opacity='1';document.getElementById('celebSub').style.transform='translateY(0)';},800);
+    setTimeout(()=>{document.getElementById('celebStats').style.opacity='1';},950);
+  }));
+  launchConfetti();
+}
+window.closeCelebration=function(){
+  const ol=document.getElementById('celebOverlay');
+  const box=document.getElementById('celebBox');
+  box.style.transform='scale(.4) translateY(80px)';box.style.opacity='0';
+  setTimeout(()=>{ol.style.display='none';resetCelebBox();},600);
+};
+function resetCelebBox(){
+  ['celebBadge','celebTitle','celebSub','celebStats'].forEach(id=>{
+    const el=document.getElementById(id);if(!el) return;
+    el.style.opacity='0';if(id==='celebBadge') el.style.transform='scale(.6)';
+    else if(id!=='celebStats') el.style.transform='translateY(10px)';
+  });
+}
+
+// Confetti
+function launchConfetti(){
+  const canvas=document.getElementById('confettiCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const pieces=[];
+  const colors=['#3b82f6','#f59e0b','#10b981','#ec4899','#8b5cf6','#60a5fa','#fbbf24'];
+  for(let i=0;i<120;i++){
+    pieces.push({x:Math.random()*canvas.width,y:-10-Math.random()*200,r:3+Math.random()*5,c:colors[Math.floor(Math.random()*colors.length)],vx:(Math.random()-.5)*4,vy:3+Math.random()*3,rot:Math.random()*360,vr:(Math.random()-.5)*8,alpha:1});
+  }
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let active=false;
+    pieces.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(p.y>150) p.alpha=Math.max(0,p.alpha-.008);
+      if(p.alpha>0) active=true;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.globalAlpha=p.alpha;
+      ctx.fillStyle=p.c;ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore();
+    });
+    if(active&&frame<300){frame++;requestAnimationFrame(draw);}
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+// ── SIMULATION ──
+let simRunning=false,simTimer=null,simSeconds=0;
+let bubbles=[],simAnimFrame=null;
+let co2Count=0;
+
+const canvas=document.getElementById('simCanvas');
+const ctx2=canvas.getContext('2d');
+
+function calcRate(){
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const gula=parseInt(document.getElementById('simGula').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  if(perangkat==='II'||ragi===0) return 0;
+  let rate=1;
+  // Temperature effect
+  if(suhu<=10) rate*=0.1;
+  else if(suhu===20) rate*=0.5;
+  else if(suhu===30) rate*=1.0;
+  else if(suhu===40) rate*=0.7;
+  else if(suhu>=60) rate*=0.0; // ragi mati
+  // Sugar concentration
+  if(gula===10) rate*=0.4;
+  else if(gula===30) rate*=1.0;
+  else if(gula===50) rate*=1.3;
+  else if(gula===70) rate*=0.8; // osmotik inhibisi
+  // Yeast amount
+  rate*=(ragi/4);
+  return Math.max(0,Math.min(3,rate));
+}
+
+function getTip(){
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  if(perangkat==='II') return '🔬 Perangkat II adalah kontrol: tanpa ragi, tidak terjadi fermentasi. Air kapur tidak berubah warna.';
+  if(ragi===0) return '⚠️ Tanpa ragi tidak ada fermentasi — ini setara Perangkat II (kontrol).';
+  if(suhu>=60) return '🌡️ Suhu 60°C terlalu tinggi! Ragi (protein) mengalami denaturasi dan mati — fermentasi terhenti.';
+  if(suhu<=10) return '❄️ Suhu rendah memperlambat metabolisme ragi secara drastis. Fermentasi hampir tidak terjadi.';
+  if(suhu===30) return '✅ Suhu 30°C adalah suhu optimal untuk Saccharomyces cerevisiae. Fermentasi berlangsung paling aktif!';
+  return '📊 Amati perubahan gelembung CO₂ dan warna air kapur selama simulasi berlangsung.';
+}
+
+function drawSim(){
+  const w=canvas.offsetWidth||400;
+  const h=200;
+  canvas.width=w;canvas.height=h;
+
+  const rate=calcRate();
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+
+  // Background
+  ctx2.fillStyle='#0f172a';ctx2.fillRect(0,0,w,h);
+
+  const tabW=90,tabH=120,gapCenter=w/2;
+  const tabAx=gapCenter-tabW-30;
+  const tabBx=gapCenter+30;
+  const tabY=h-tabH-10;
+
+  // Draw Erlenmeyer A (fermentation)
+  drawErlenmeyer(ctx2,tabAx,tabY,tabW,tabH,'A',suhu,ragi,perangkat,rate,simSeconds);
+
+  // Draw pipe/tube connecting
+  const pipeY=tabY+25;
+  ctx2.strokeStyle='rgba(148,163,184,0.6)';ctx2.lineWidth=3;ctx2.setLineDash([6,4]);
+  ctx2.beginPath();ctx2.moveTo(tabAx+tabW/2,pipeY);ctx2.lineTo(tabBx+tabW/2,pipeY);ctx2.stroke();
+  ctx2.setLineDash([]);
+  // Pipe label
+  ctx2.fillStyle='rgba(148,163,184,0.7)';ctx2.font='9px Inter';ctx2.textAlign='center';
+  ctx2.fillText('selang CO₂',gapCenter,pipeY-6);
+
+  // Draw Erlenmeyer B (indicator)
+  drawErlenmeyerB(ctx2,tabBx,tabY,tabW,tabH,rate,simSeconds);
+
+  // Bubbles in pipe area
+  if(simRunning&&rate>0){
+    const t=Date.now()/1000;
+    // Arrow flow indication
+    ctx2.fillStyle=`rgba(96,165,250,${0.4+0.3*Math.sin(t*3)})`;
+    ctx2.font='12px Arial';ctx2.textAlign='center';
+    ctx2.fillText('→',gapCenter,pipeY+5);
+  }
+}
+
+function drawErlenmeyer(ctx,x,y,w,h,label,suhu,ragi,perangkat,rate,secs){
+  const isControl=perangkat==='II'||ragi===0;
+  // Flask body
+  ctx.beginPath();
+  ctx.moveTo(x+w*0.3,y);ctx.lineTo(x+w*0.7,y);// neck top
+  ctx.lineTo(x+w*0.7,y+h*0.3);
+  ctx.bezierCurveTo(x+w*0.7,y+h*0.35,x+w*0.9,y+h*0.45,x+w,y+h);
+  ctx.lineTo(x,y+h);
+  ctx.bezierCurveTo(x+w*0.1,y+h*0.45,x+w*0.3,y+h*0.35,x+w*0.3,y+h*0.3);
+  ctx.closePath();
+  // Liquid fill
+  const liquidColor=isControl?'rgba(200,200,255,0.35)':'rgba(253,186,116,0.6)';
+  ctx.fillStyle=liquidColor;ctx.fill();
+  ctx.strokeStyle='rgba(148,163,184,0.6)';ctx.lineWidth=1.5;ctx.stroke();
+
+  // Label
+  ctx.fillStyle='#fff';ctx.font='bold 11px Space Grotesk';ctx.textAlign='center';
+  ctx.fillText('Tabung '+label,x+w/2,y+h*0.7);
+
+  // Content label
+  const contentLabel=isControl?'Gula (tanpa ragi)':'Gula + Ragi';
+  ctx.fillStyle='rgba(203,213,225,0.8)';ctx.font='9px Inter';
+  ctx.fillText(contentLabel,x+w/2,y+h*0.85);
+
+  // Bubbles if active
+  if(!isControl&&simRunning&&rate>0){
+    const t=Date.now()/1000;
+    const bCount=Math.floor(rate*3);
+    for(let i=0;i<bCount;i++){
+      const bx=x+w*0.2+Math.sin(t*2+i*1.5)*(w*0.3)+w*0.15;
+      const phase=(t*0.8+i*0.4)%1;
+      const by=y+h*0.9-phase*(h*0.55);
+      const br=2+rate;
+      ctx.beginPath();ctx.arc(bx,by,br,0,Math.PI*2);
+      ctx.fillStyle=`rgba(147,197,253,${0.6*(1-phase)})`;ctx.fill();
+    }
+  }
+
+  // Temperature indicator
+  const tempColor=suhu>=60?'#ef4444':suhu>=40?'#f97316':suhu===30?'#10b981':suhu<=10?'#60a5fa':'#fbbf24';
+  ctx.fillStyle=tempColor;ctx.font='bold 10px JetBrains Mono';ctx.textAlign='center';
+  ctx.fillText(suhu+'°C',x+w/2,y-6);
+}
+
+function drawErlenmeyerB(ctx,x,y,w,h,rate,secs){
+  ctx.beginPath();
+  ctx.moveTo(x+w*0.3,y);ctx.lineTo(x+w*0.7,y);
+  ctx.lineTo(x+w*0.7,y+h*0.3);
+  ctx.bezierCurveTo(x+w*0.7,y+h*0.35,x+w*0.9,y+h*0.45,x+w,y+h);
+  ctx.lineTo(x,y+h);
+  ctx.bezierCurveTo(x+w*0.1,y+h*0.45,x+w*0.3,y+h*0.35,x+w*0.3,y+h*0.3);
+  ctx.closePath();
+
+  // Color changes based on CO2 absorbed
+  const progress=Math.min(1,co2Count/50);
+  // PP indicator: pink→colorless as CO2 makes it acidic
+  const r=Math.round(240+10*progress);
+  const g=Math.round(100+140*progress);
+  const b=Math.round(140+110*progress);
+  const liquidColor=rate>0?`rgba(${r},${g},${b},0.65)`:'rgba(255,150,180,0.65)';
+  ctx.fillStyle=liquidColor;ctx.fill();
+  ctx.strokeStyle='rgba(148,163,184,0.6)';ctx.lineWidth=1.5;ctx.stroke();
+
+  ctx.fillStyle='#fff';ctx.font='bold 11px Space Grotesk';ctx.textAlign='center';
+  ctx.fillText('Tabung B',x+w/2,y+h*0.6);
+  ctx.fillStyle='rgba(203,213,225,0.8)';ctx.font='9px Inter';
+  ctx.fillText('Air Kapur + PP',x+w/2,y+h*0.75);
+
+  // Turbidity label
+  if(co2Count>10&&rate>0){
+    ctx.fillStyle='rgba(251,191,36,0.9)';ctx.font='bold 9px Inter';ctx.textAlign='center';
+    ctx.fillText('keruh ✓',x+w/2,y+h*0.9);
+  }
+}
+
+function animLoop(){
+  drawSim();
+  if(simRunning) simAnimFrame=requestAnimationFrame(animLoop);
+}
+
+window.startSim=function(){
+  if(simRunning) return;
+  simRunning=true;
+  document.getElementById('btnStart').disabled=true;
+  document.getElementById('btnStop').disabled=false;
+  document.getElementById('svStatus').textContent='▶';
+  const tip=document.getElementById('simTip');
+  tip.textContent=getTip();tip.classList.add('on');
+  addTableRow();
+  animLoop();
+  simTimer=setInterval(()=>{
+    simSeconds++;
+    const m=Math.floor(simSeconds/60);const s=simSeconds%60;
+    document.getElementById('svWaktu').textContent=m+':'+(s<10?'0':'')+s;
+    const rate=calcRate();
+    // Update CO2 count
+    if(rate>0){co2Count+=Math.round(rate*2);document.getElementById('svCO2').textContent=co2Count;}
+    // Update temp
+    const suhu=parseInt(document.getElementById('simSuhu').value);
+    const delta=rate*0.5;
+    const dispSuhu=(suhu+delta*(simSeconds/60)).toFixed(1);
+    document.getElementById('svSuhu').textContent=dispSuhu+'°C';
+    // Log every 5 min
+    if(simSeconds%300===0) addTableRow();
+  },1000);
+};
+
+window.stopSim=function(){
+  simRunning=false;
+  clearInterval(simTimer);
+  if(simAnimFrame) cancelAnimationFrame(simAnimFrame);
+  document.getElementById('btnStart').disabled=false;
+  document.getElementById('btnStop').disabled=true;
+  document.getElementById('svStatus').textContent='⏸';
+  drawSim();
+};
+
+window.resetSim=function(){
+  stopSim();
+  simSeconds=0;co2Count=0;
+  document.getElementById('svCO2').textContent='0';
+  document.getElementById('svSuhu').textContent='--°C';
+  document.getElementById('svWaktu').textContent='0:00';
+  document.getElementById('svStatus').textContent='⏸';
+  document.getElementById('hasilBody').innerHTML='';
+  const tip=document.getElementById('simTip');tip.classList.remove('on');
+  drawSim();
+};
+
+function getWaterColor(){
+  if(co2Count>50) return 'Keruh (bening/tidak berwarna)';
+  if(co2Count>20) return 'Mulai keruh (merah muda pudar)';
+  if(co2Count>5) return 'Sedikit berubah';
+  return 'Merah muda (tidak berubah)';
+}
+
+function addTableRow(){
+  const rate=calcRate();
+  const m=Math.floor(simSeconds/60);const s=simSeconds%60;
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const delta=rate>0?+(rate*0.5*(simSeconds/60)).toFixed(1):0;
+  const row=document.createElement('tr');
+  row.innerHTML=`<td>${m}:${s<10?'0':''}${s}</td><td>${co2Count}</td><td>${(suhu+delta).toFixed(1)}</td><td>${getWaterColor()}</td><td>${rate>0?'Fermentasi aktif':'Tidak ada fermentasi'}</td>`;
+  document.getElementById('hasilBody').prepend(row);
+}
+
+// Draw initial state
+window.addEventListener('load',()=>{setTimeout(drawSim,100);});
+window.addEventListener('resize',()=>{if(!simRunning) drawSim();});
+
+// ── QUIZ ──
+const QUESTIONS=[
+  {type:'mc',text:'Reaksi kimia yang tepat untuk fermentasi alkohol oleh Saccharomyces cerevisiae adalah...',opts:['C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP','C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP','2H₂O₂ → 2H₂O + O₂','C₆H₁₂O₆ → C₃H₄O₃ + H₂O'],ans:0,fb:'Fermentasi alkohol: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP. Reaksi ini terjadi tanpa oksigen (anaerob).'},
+  {type:'mc',text:'Mengapa air kapur Ca(OH)₂ pada tabung B (Perangkat I) berubah menjadi keruh?',opts:['Karena bereaksi dengan etanol yang dihasilkan','Karena CO₂ bereaksi dengan Ca(OH)₂ membentuk CaCO₃','Karena suhu fermentasi meningkat','Karena ragi masuk ke tabung B'],ans:1,fb:'CO₂ + Ca(OH)₂ → CaCO₃↓ + H₂O. CaCO₃ adalah endapan putih yang membuat larutan menjadi keruh.'},
+  {type:'mc',text:'Apa fungsi indikator PP (fenolftalein) pada percobaan fermentasi ini?',opts:['Mengukur kadar alkohol yang dihasilkan','Menunjukkan perubahan pH larutan kapur','Mempercepat reaksi fermentasi','Menghambat pertumbuhan bakteri kontaminan'],ans:1,fb:'PP berwarna merah muda dalam suasana basa (air kapur) dan menjadi bening/tidak berwarna saat larutan menjadi asam akibat CO₂.'},
+  {type:'mc',text:'Pada Perangkat II (kontrol, tanpa ragi), apa yang seharusnya terjadi pada air kapur?',opts:['Air kapur menjadi lebih keruh dari Perangkat I','Air kapur tidak berubah (tetap merah muda)','Air kapur berubah menjadi biru','Air kapur menghasilkan gelembung lebih banyak'],ans:1,fb:'Tanpa ragi tidak ada fermentasi, tidak ada CO₂ yang dihasilkan, sehingga air kapur tidak bereaksi dan warnanya tidak berubah.'},
+  {type:'tf',text:'Fermentasi alkohol membutuhkan oksigen (O₂) agar dapat berlangsung.',opts:['Benar','Salah'],ans:1,fb:'SALAH. Fermentasi alkohol adalah proses ANAEROB — berlangsung TANPA oksigen. Itulah mengapa tabung harus ditutup rapat.'},
+  {type:'mc',text:'Mengapa suhu tabung A (Perangkat I) meningkat selama fermentasi berlangsung?',opts:['Karena reaksi fermentasi membutuhkan panas dari lingkungan','Karena fermentasi adalah reaksi eksoterm yang melepaskan energi dalam bentuk panas','Karena ragi menghasilkan air yang panas','Karena CO₂ menyerap panas dari lingkungan'],ans:1,fb:'Fermentasi menghasilkan 2 ATP per molekul glukosa. Energi yang tidak tersimpan dalam ATP dilepaskan sebagai panas (reaksi eksoterm).'},
+  {type:'mc',text:'Saccharomyces cerevisiae paling aktif melakukan fermentasi pada suhu...',opts:['5-10°C','15-20°C','25-30°C','55-60°C'],ans:2,fb:'Suhu optimal Saccharomyces cerevisiae adalah 25-30°C. Suhu terlalu tinggi (>50°C) menyebabkan denaturasi protein ragi.'},
+  {type:'mc',text:'Zat apa saja yang dihasilkan pada Perangkat I (tabung A)?',opts:['Hanya CO₂ dan ATP','Etanol, CO₂, dan energi (ATP dan panas)','Hanya etanol dan air','Glukosa, etanol, dan CO₂'],ans:1,fb:'Produk fermentasi alkohol: etanol (C₂H₅OH), gas CO₂, dan energi (2 ATP per glukosa) yang sebagian dilepas sebagai panas.'},
+  {type:'mc',text:'Apa peranan ragi dalam pembuatan roti yang mengembang?',opts:['Menghasilkan etanol yang membuat adonan lembut','Menghasilkan CO₂ yang membuat adonan mengembang','Mengubah gula menjadi gluten','Menghasilkan uap air yang membuat adonan ringan'],ans:1,fb:'Saat fermentasi, ragi menghasilkan CO₂ yang terperangkap dalam adonan gluten. Gas CO₂ mengembangkan adonan sehingga roti menjadi empuk.'},
+  {type:'tf',text:'Makanan yang dibuat menggunakan ragi (yeast) pasti mengandung alkohol dalam kadar tinggi.',opts:['Benar','Salah'],ans:1,fb:'SALAH. Saat pemanggangan/pengukusan, etanol menguap karena titik didih alkohol (78°C) lebih rendah dari suhu memasak. Selain itu kadar awal sangat kecil.'},
+];
+
+let currentQ=0;
+const userAns=new Array(QUESTIONS.length).fill(null);
+let submitted=false;
+
+function buildQuiz(){
+  const prog=document.getElementById('qprog');
+  prog.innerHTML='';
+  QUESTIONS.forEach((_,i)=>{
+    const dot=document.createElement('div');
+    dot.className='qprog-dot'+(i===currentQ?' current':'')+(userAns[i]!==null?' answered':'');
+    dot.textContent=i+1;dot.onclick=()=>goQ(i);
+    prog.appendChild(dot);
+  });
+  const q=QUESTIONS[currentQ];
+  const cont=document.getElementById('qContainer');
+  cont.innerHTML='';
+  const card=document.createElement('div');
+  card.className='q-card';
+  card.innerHTML=`
+    <div class="qnum">SOAL ${currentQ+1} / ${QUESTIONS.length}</div>
+    <span class="qtype-badge ${q.type==='mc'?'badge-mc':'badge-tf'}">${q.type==='mc'?'Pilihan Ganda':'Benar / Salah'}</span>
+    <div class="qtext">${q.text}</div>
+    <ul class="opts" id="optList"></ul>
+    <div class="qfb" id="qFb"></div>
+  `;
+  cont.appendChild(card);
+  const ol=document.getElementById('optList');
+  q.opts.forEach((opt,i)=>{
+    const li=document.createElement('li');
+    li.className='opt'+(userAns[currentQ]===i?' sel':'');
+    li.innerHTML=`<input type="radio" name="qopt" value="${i}" ${userAns[currentQ]===i?'checked':''} ${submitted?'disabled':''}> ${opt}`;
+    li.onclick=()=>{if(!submitted){selectOpt(i);}};
+    ol.appendChild(li);
+  });
+  if(submitted){
+    revealAnswer(currentQ);
+  }
+  document.getElementById('qCounter').textContent=`${currentQ+1} / ${QUESTIONS.length}`;
+  document.getElementById('btnPrev').disabled=currentQ===0;
+  document.getElementById('btnNext').style.display=currentQ<QUESTIONS.length-1?'':'none';
+  document.getElementById('btnSubmit').style.display=currentQ===QUESTIONS.length-1&&!submitted?'':'none';
+  if(submitted) document.getElementById('btnSubmit').style.display='none';
+}
+
+function selectOpt(i){
+  userAns[currentQ]=i;
+  document.querySelectorAll('.opt').forEach((li,j)=>li.classList.toggle('sel',j===i));
+  buildProg();
+}
+function buildProg(){
+  const dots=document.querySelectorAll('.qprog-dot');
+  dots.forEach((d,i)=>{d.className='qprog-dot'+(i===currentQ?' current':'')+(userAns[i]!==null?' answered':'');});
+}
+function goQ(i){currentQ=i;buildQuiz();}
+window.nextQ=function(){if(currentQ<QUESTIONS.length-1){currentQ++;buildQuiz();}};
+window.prevQ=function(){if(currentQ>0){currentQ--;buildQuiz();}};
+function revealAnswer(qi){
+  const q=QUESTIONS[qi];
+  const opts=document.querySelectorAll('.opt');
+  opts.forEach((li,i)=>{
+    li.classList.remove('sel');
+    if(i===q.ans) li.classList.add('correct');
+    else if(userAns[qi]===i) li.classList.add('wrong');
+  });
+  const fb=document.getElementById('qFb');
+  const isRight=userAns[qi]===q.ans;
+  fb.className='qfb on '+(isRight?'ok':'bad');
+  fb.innerHTML=(isRight?'✅ ':'❌ ')+q.fb;
+}
+window.submitQuiz=function(){
+  submitted=true;
+  const score=userAns.reduce((acc,a,i)=>acc+(a===QUESTIONS[i].ans?1:0),0);
+  buildQuiz();
+  const ol=document.getElementById('scoreOverlay');
+  document.getElementById('scoreBig').textContent=score;
+  document.getElementById('scoreSub').textContent=`Kamu menjawab ${score} dari ${QUESTIONS.length} soal dengan benar.`;
+  const pct=Math.round(score/QUESTIONS.length*100);
+  let grade,color;
+  if(pct>=90){grade='🏆 Sangat Baik (A)';color='#059669';}
+  else if(pct>=75){grade='👍 Baik (B)';color='#2563eb';}
+  else if(pct>=60){grade='📖 Cukup (C) — Pelajari kembali materi fermentasi!';color='#d97706';}
+  else{grade='📚 Perlu Belajar Lagi (D)';color='#dc2626';}
+  document.getElementById('scoreGrade').textContent=grade;
+  document.getElementById('scoreGrade').style.color=color;
+  ol.classList.add('on');
+  if(pct>=80) playSound('sndBerhasil');
+};
+window.resetQuiz=function(){
+  submitted=false;currentQ=0;userAns.fill(null);
+  document.getElementById('scoreOverlay').classList.remove('on');
+  buildQuiz();
+};
+buildQuiz();
+</script>
+</body>
+</html>
