@@ -312,6 +312,7 @@ function startPraktikum(){
 <audio id="sndSalah" src="https://denicendrianto41.github.io/salah.wav" preload="auto"></audio>
 <audio id="sndBerhasil" src="https://denicendrianto41.github.io/berhasil.wav" preload="auto"></audio>
 <audio id="sndBerhasil2" src="https://denicendrianto41.github.io/berhasil.wav" preload="auto"></audio>
+<audio id="sndBlup" src="https://denicendrianto41.github.io/blup.wav" preload="auto"></audio>
 <script>
   document.addEventListener('click',function(e){
     const el=e.target.closest('button, .nb, .btn, select, input[type="range"]');
@@ -419,7 +420,7 @@ function startPraktikum(){
         <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px;flex:1;overflow-y:auto;">
           <!-- ALAT -->
           <div class="drag-card alat" draggable="true" data-id="erlenmeyer" data-type="alat" data-name="2 Tabung Erlenmeyer" data-sub="Tabung A &amp; B (kontrol)">
-            <div class="drag-icon">🫙</div>
+            <div class="drag-icon"><img src="https://denicendrianto41.github.io/elenmeyer.png" alt="Erlenmeyer" style="height:40px;width:auto;object-fit:contain;"></div>
             <div class="drag-name">2 Erlenmeyer</div>
             <div class="drag-sub">Tabung A &amp; B</div>
           </div>
@@ -434,13 +435,13 @@ function startPraktikum(){
             <div class="drag-sub">Mengukur suhu</div>
           </div>
           <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Ukur" data-sub="Mengukur volume">
-            <div class="drag-icon">🧊</div>
+            <div class="drag-icon"><img src="https://denicendrianto41.github.io/beker_glass.png" alt="Gelas Ukur" style="height:40px;width:auto;object-fit:contain;"></div>
             <div class="drag-name">Gelas Ukur</div>
             <div class="drag-sub">Mengukur volume</div>
           </div>
           <!-- BAHAN -->
           <div class="drag-card bahan" draggable="true" data-id="gula" data-type="bahan" data-name="Larutan Gula 30%" data-sub="Substrat fermentasi · 100cc">
-            <div class="drag-icon">🍬</div>
+            <div class="drag-icon"><img src="https://denicendrianto41.github.io/hcl.png" alt="Larutan Gula" style="height:40px;width:auto;object-fit:contain;"></div>
             <div class="drag-name">Larutan Gula 30%</div>
             <div class="drag-sub">Substrat · 100cc</div>
           </div>
@@ -455,7 +456,7 @@ function startPraktikum(){
             <div class="drag-sub">Ca(OH)₂ · 100cc</div>
           </div>
           <div class="drag-card bahan" draggable="true" data-id="pp" data-type="bahan" data-name="Indikator PP" data-sub="Fenolftalein · 1 tetes">
-            <div class="drag-icon">🔴</div>
+            <div class="drag-icon"><img src="https://denicendrianto41.github.io/naoh.png" alt="Indikator PP" style="height:40px;width:auto;object-fit:contain;"></div>
             <div class="drag-name">Indikator PP</div>
             <div class="drag-sub">Fenolftalein · 1 tetes</div>
           </div>
@@ -1065,12 +1066,12 @@ function drawErlenmeyer(ctx,x,y,w,h,label,suhu,ragi,perangkat,rate,secs){
     const t=Date.now()/1000;
     const bCount=Math.floor(rate*3);
     for(let i=0;i<bCount;i++){
-      const bx=x+w*0.2+Math.sin(t*2+i*1.5)*(w*0.3)+w*0.15;
-      const phase=(t*0.8+i*0.4)%1;
-      const by=y+h*0.9-phase*(h*0.55);
+      const bx=x+w*0.25+i*(w*0.18);
+      const phase=(t*0.7+i*0.33)%1;
+      const by=y+h*0.9-phase*(h*0.65);
       const br=2+rate;
       ctx.beginPath();ctx.arc(bx,by,br,0,Math.PI*2);
-      ctx.fillStyle=`rgba(147,197,253,${0.6*(1-phase)})`;ctx.fill();
+      ctx.fillStyle=`rgba(147,197,253,${0.65*(1-phase)})`;ctx.fill();
     }
   }
 
@@ -1133,6 +1134,13 @@ window.startSim=function(){
     const rate=calcRate();
     // Update CO2 count
     if(rate>0){co2Count+=Math.round(rate*2);document.getElementById('svCO2').textContent=co2Count;}
+    // Blup sound: plays every tick proportional to rate
+    if(rate>0){
+      const blupInterval=Math.max(1,Math.round(4/rate));
+      if(simSeconds%blupInterval===0){
+        try{const b=document.getElementById('sndBlup');if(b){b.currentTime=0;b.play().catch(()=>{});}}catch(e){}
+      }
+    }
     // Update temp
     const suhu=parseInt(document.getElementById('simSuhu').value);
     const delta=rate*0.5;
