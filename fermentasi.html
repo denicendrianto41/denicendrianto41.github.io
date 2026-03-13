@@ -1024,26 +1024,183 @@ function drawSim(){
   // Draw Erlenmeyer A (fermentation)
   drawErlenmeyer(ctx2,tabAx,tabY,tabW,tabH,'A',suhu,ragi,perangkat,rate,simSeconds);
 
-  // Draw pipe/tube connecting
-  const pipeY=tabY+25;
-  ctx2.strokeStyle='rgba(148,163,184,0.6)';ctx2.lineWidth=3;ctx2.setLineDash([6,4]);
-  ctx2.beginPath();ctx2.moveTo(tabAx+tabW/2,pipeY);ctx2.lineTo(tabBx+tabW/2,pipeY);ctx2.stroke();
-  ctx2.setLineDash([]);
-  // Pipe label
-  ctx2.fillStyle='rgba(148,163,184,0.7)';ctx2.font='9px Inter';ctx2.textAlign='center';
-  ctx2.fillText('selang CO₂',gapCenter,pipeY-6);
+  // ── Realistic glass tube / pipa kaca penghubung ──
+  const neckAx = tabAx + tabW * 0.5;   // leher erlenmeyer A (tengah)
+  const neckBx = tabBx + tabW * 0.5;   // leher erlenmeyer B (tengah)
+  const neckTopY = tabY;                // puncak leher kedua tabung
+
+  // Ukuran geometri pipa: dari leher A naik, melengkung mendatar, turun ke leher B
+  const tubeOuter = 5;   // tebal pipa kaca luar
+  const tubeInner = 3;   // diameter dalam (bore)
+  const riseH   = 22;    // tinggi vertikal dari leher ke bagian datar
+  const flatY   = neckTopY - riseH;  // ketinggian bagian datar
+
+  // ── Stopper karet di leher erlenmeyer A ──
+  ctx2.fillStyle = '#374151';
+  ctx2.beginPath();
+  ctx2.moveTo(neckAx - 8, neckTopY);
+  ctx2.lineTo(neckAx + 8, neckTopY);
+  ctx2.lineTo(neckAx + 6, neckTopY - 9);
+  ctx2.lineTo(neckAx - 6, neckTopY - 9);
+  ctx2.closePath();
+  ctx2.fill();
+  // Lubang untuk selang di stopper A
+  ctx2.fillStyle = '#1f2937';
+  ctx2.fillRect(neckAx - 2, neckTopY - 9, 4, 9);
+
+  // ── Stopper karet di leher erlenmeyer B ──
+  ctx2.fillStyle = '#374151';
+  ctx2.beginPath();
+  ctx2.moveTo(neckBx - 8, neckTopY);
+  ctx2.lineTo(neckBx + 8, neckTopY);
+  ctx2.lineTo(neckBx + 6, neckTopY - 9);
+  ctx2.lineTo(neckBx - 6, neckTopY - 9);
+  ctx2.closePath();
+  ctx2.fill();
+  ctx2.fillStyle = '#1f2937';
+  ctx2.fillRect(neckBx - 2, neckTopY - 9, 4, 9);
+
+  // ── Gambar pipa kaca: bagian luar (bayangan/refleksi kaca) ──
+  // Pipa dari A naik vertikal, lalu mendatar, lalu turun ke B
+  // Menggunakan 3 segment: vertA | horizontal | vertB
+  const R = 5; // radius sudut belok pipa
+
+  function drawGlassTube(ctx) {
+    // Bangun path tengah pipa sebagai polyline dengan sudut membulat
+    // Titik awal: bawah kiri (dari stopper A), naik → kanan → turun ke stopper B
+    const x1 = neckAx, y1 = neckTopY - 9;  // masuk stopper A
+    const x2 = neckAx, y2 = flatY;          // belok kiri atas
+    const x3 = neckBx, y3 = flatY;          // belok kanan atas
+    const x4 = neckBx, y4 = neckTopY - 9;  // masuk stopper B
+    const O = 5; // half-thickness luar pipa
+    const I = 2; // half-thickness bore dalam
+
+    // ── Layer 1: body kaca (transparan biru muda) ──
+    ctx.save();
+    ctx.lineWidth = O * 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(160,210,255,0.22)';
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2 + 0, y2 + R);
+    ctx.arcTo(x2, y2, x2 + R, y2, R);
+    ctx.lineTo(x3 - R, y3);
+    ctx.arcTo(x3, y3, x3, y3 + R, R);
+    ctx.lineTo(x4, y4);
+    ctx.stroke();
+
+    // ── Layer 2: tepi luar kiri/atas — highlight putih (refleksi cahaya) ──
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+    ctx.beginPath();
+    // Sisi kiri vert A
+    ctx.moveTo(x1 - O, y1);
+    ctx.lineTo(x2 - O, y2 + R);
+    ctx.arcTo(x2 - O, y2 - O, x2 + R, y2 - O, R + O);
+    // Sisi atas horizontal
+    ctx.lineTo(x3 - R, y3 - O);
+    ctx.arcTo(x3 + O, y3 - O, x3 + O, y3 + R, R + O);
+    // Sisi kiri vert B (kanan secara visual tapi sisi yang menghadap cahaya)
+    ctx.lineTo(x4 + O, y4);
+    ctx.stroke();
+
+    // ── Layer 3: tepi dalam kanan/bawah — bayangan gelap ──
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(20,50,120,0.50)';
+    ctx.beginPath();
+    // Sisi kanan vert A
+    ctx.moveTo(x1 + O, y1);
+    ctx.lineTo(x2 + O, y2 + R);
+    ctx.arcTo(x2 + O, y2 + O, x2 + R, y2 + O, R - O < 1 ? 1 : R - O);
+    // Sisi bawah horizontal
+    ctx.lineTo(x3 - R, y3 + O);
+    ctx.arcTo(x3 - O, y3 + O, x3 - O, y3 + R, R - O < 1 ? 1 : R - O);
+    // Sisi kanan vert B
+    ctx.lineTo(x4 - O, y4);
+    ctx.stroke();
+
+    // ── Layer 4: bore dalam (isi gelap transparan — kesan rongga kaca) ──
+    ctx.lineWidth = I * 2;
+    ctx.strokeStyle = 'rgba(5,15,50,0.30)';
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2 + R);
+    ctx.arcTo(x2, y2, x2 + R, y2, R);
+    ctx.lineTo(x3 - R, y3);
+    ctx.arcTo(x3, y3, x3, y3 + R, R);
+    ctx.lineTo(x4, y4);
+    ctx.stroke();
+
+    // ── Layer 5: shimmer/kilap kecil di tepi highlight ──
+    ctx.lineWidth = 0.7;
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath();
+    ctx.moveTo(x1 - O + 1.5, y1);
+    ctx.lineTo(x2 - O + 1.5, y2 + R + 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x3 + O - 1.5, y3 + R + 2);
+    ctx.lineTo(x4 + O - 1.5, y4);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  drawGlassTube(ctx2);
+
+  // ── Gelembung CO₂ bergerak di dalam selang jika aktif ──
+  if(simRunning && rate > 0){
+    const t = Date.now() / 1000;
+    const bCount = Math.max(1, Math.round(rate * 2));
+    // Total panjang jalur pipa (approx)
+    const segV = riseH - 9;       // panjang vertikal kiri & kanan
+    const segH = neckBx - neckAx; // panjang horizontal
+    const totalLen = segV + segH + segV;
+
+    for(let i = 0; i < bCount; i++){
+      const progress = ((t * 0.4 * rate + i / bCount) % 1); // 0..1 sepanjang pipa
+      const dist = progress * totalLen;
+      let bx, by;
+
+      if(dist <= segV){
+        // Naik vertikal di sisi A
+        bx = neckAx;
+        by = (neckTopY - 9) - dist;
+      } else if(dist <= segV + segH){
+        // Mendatar dari A ke B
+        bx = neckAx + (dist - segV);
+        by = flatY;
+      } else {
+        // Turun vertikal di sisi B
+        const d = dist - segV - segH;
+        bx = neckBx;
+        by = flatY + d;
+      }
+
+      const br = 1.8 + rate * 0.5;
+      const alpha = 0.5 + 0.4 * Math.sin(t * 4 + i);
+      ctx2.beginPath();
+      ctx2.arc(bx, by, br, 0, Math.PI * 2);
+      ctx2.fillStyle = `rgba(147,197,253,${alpha})`;
+      ctx2.fill();
+    }
+
+    // Label arah aliran
+    ctx2.fillStyle = 'rgba(147,197,253,0.7)';
+    ctx2.font = 'bold 8px Inter';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('CO₂ →', gapCenter, flatY - 7);
+  } else {
+    // Label statis saat tidak running
+    ctx2.fillStyle = 'rgba(148,163,184,0.5)';
+    ctx2.font = '8px Inter';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('selang CO₂', gapCenter, flatY - 7);
+  }
 
   // Draw Erlenmeyer B (indicator)
-  drawErlenmeyerB(ctx2,tabBx,tabY,tabW,tabH,rate,simSeconds);
-
-  // Bubbles in pipe area
-  if(simRunning&&rate>0){
-    const t=Date.now()/1000;
-    // Arrow flow indication
-    ctx2.fillStyle=`rgba(96,165,250,${0.4+0.3*Math.sin(t*3)})`;
-    ctx2.font='12px Arial';ctx2.textAlign='center';
-    ctx2.fillText('→',gapCenter,pipeY+5);
-  }
+  drawErlenmeyerB(ctx2, tabBx, tabY, tabW, tabH, rate, simSeconds);
 }
 
 function drawErlenmeyer(ctx,x,y,w,h,label,suhu,ragi,perangkat,rate,secs){
@@ -1066,46 +1223,43 @@ function drawErlenmeyer(ctx,x,y,w,h,label,suhu,ragi,perangkat,rate,secs){
   ctx.fill();
   ctx.strokeStyle='rgba(148,163,184,0.6)';ctx.lineWidth=1.5;ctx.stroke();
 
-  // ── Sugar crystal illustration ──
-  // Number of crystals scales with gula concentration
+  // ── Sugar crystal illustration — dasar erlenmeyer, warna putih kekuningan ──
   const crystalCount=Math.round(gula/10); // 1 at 10%, 7 at 70%
-  const seed=42;
+  // Zona dasar: dari x+w*0.15 sampai x+w*0.85, di y+h*0.88 sampai y+h*0.97
   for(let i=0;i<crystalCount;i++){
-    // deterministic positions using i as seed
-    const cx=x+w*0.12+(i%4)*(w*0.19)+((i*37)%11)*0.5;
-    const cy=y+h*0.75+((i*53)%5)*(h*0.025);
-    const cs=2.5+((i*17)%3); // crystal size 2.5–5.5px
+    const cx=x+w*0.18+(i*(w*0.63/(Math.max(crystalCount-1,1))))+((i*7)%5)*0.8;
+    const cy=y+h*0.91+((i*11)%3)*(h*0.025);
+    const cs=2.8+((i*17)%3)*0.6;
     ctx.save();
     ctx.translate(cx,cy);
-    ctx.rotate((i*29%360)*Math.PI/180);
-    // Diamond/crystal shape
+    ctx.rotate((i*43%60-30)*Math.PI/180);
+    // Bentuk kristal belah ketupat — warna kuning muda (gula)
     ctx.beginPath();
-    ctx.moveTo(0,-cs);ctx.lineTo(cs*0.6,0);ctx.lineTo(0,cs);ctx.lineTo(-cs*0.6,0);
+    ctx.moveTo(0,-cs);ctx.lineTo(cs*0.55,0);ctx.lineTo(0,cs*0.8);ctx.lineTo(-cs*0.55,0);
     ctx.closePath();
-    ctx.fillStyle='rgba(255,255,255,0.75)';ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=0.5;ctx.stroke();
+    ctx.fillStyle='rgba(255,240,160,0.9)';ctx.fill();
+    ctx.strokeStyle='rgba(220,180,60,0.6)';ctx.lineWidth=0.6;ctx.stroke();
     ctx.restore();
   }
 
-  // ── Yeast particle illustration ──
+  // ── Yeast particle illustration — dasar erlenmeyer, warna coklat tua ──
   if(!isControl&&ragi>0){
-    // Number of yeast dots scales with ragi amount
-    const yeastCount=ragi*2; // 4 at 2g, 8 at 4g, 16 at 8g
+    const yeastCount=ragi*2; // 4→2g, 8→4g, 16→8g
+    // Yeast tersebar di zona dasar, sedikit di atas kristal gula
     for(let i=0;i<yeastCount;i++){
-      const yx=x+w*0.1+((i*41)%Math.floor(w*0.8));
-      const yy=y+h*0.5+((i*67)%Math.floor(h*0.4));
-      const yr=1.5+((i*13)%3)*0.5;
-      // Animated slight drift
-      const t=Date.now()/1000;
-      const drift=Math.sin(t*0.8+i*1.1)*1.5;
+      const yx=x+w*0.14+((i*(w*0.70/(Math.max(yeastCount-1,1))))+((i*13)%7)*0.6);
+      const yy=y+h*0.86+((i*19)%4)*(h*0.018);
+      const yr=2+((i*11)%3)*0.4;
       ctx.beginPath();
-      ctx.arc(yx+drift,yy,yr,0,Math.PI*2);
-      ctx.fillStyle='rgba(180,120,50,0.75)';ctx.fill();
-      // Budding yeast: small bud attached
+      // Oval sel ragi — warna coklat gelap
+      ctx.ellipse(yx,yy,yr*1.4,yr,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(120,60,20,0.88)';ctx.fill();
+      ctx.strokeStyle='rgba(80,35,10,0.5)';ctx.lineWidth=0.5;ctx.stroke();
+      // Tunas (budding) pada setiap sel ketiga
       if(i%3===0){
         ctx.beginPath();
-        ctx.arc(yx+drift+yr,yy-yr,yr*0.6,0,Math.PI*2);
-        ctx.fillStyle='rgba(180,120,50,0.55)';ctx.fill();
+        ctx.ellipse(yx+yr*1.2,yy-yr*0.6,yr*0.7,yr*0.55,0,0,Math.PI*2);
+        ctx.fillStyle='rgba(140,75,25,0.75)';ctx.fill();
       }
     }
   }
