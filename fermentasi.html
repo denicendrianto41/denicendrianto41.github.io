@@ -653,7 +653,7 @@ function startPraktikum(){
           <div class="ch"><div class="ci b">📊</div><div class="ct">Rekap Hasil Pengamatan</div></div>
           <div style="overflow-y:auto;flex:1;">
             <table class="wstable" id="hasilTable">
-              <thead><tr><th>Waktu</th><th>CO₂ (gelembung)</th><th>Suhu (°C)</th><th>Warna Air Kapur</th><th>Keterangan</th></tr></thead>
+              <thead><tr><th>Waktu</th><th>Perangkat</th><th>Suhu (°C)</th><th>Gula (%)</th><th>Ragi (g)</th><th>CO₂ (gelembung)</th><th>Etanol (est.)</th><th>Suhu Tabung</th><th>Warna Air Kapur</th><th>Keterangan</th></tr></thead>
               <tbody id="hasilBody"></tbody>
             </table>
           </div>
@@ -1173,19 +1173,59 @@ window.resetSim=function(){
 };
 
 function getWaterColor(){
-  if(co2Count>50) return 'Keruh (bening/tidak berwarna)';
-  if(co2Count>20) return 'Mulai keruh (merah muda pudar)';
-  if(co2Count>5) return 'Sedikit berubah';
-  return 'Merah muda (tidak berubah)';
+  const rate=calcRate();
+  if(rate===0) return 'Merah muda (tetap, tidak berubah)';
+  if(co2Count===0) return 'Merah muda (awal)';
+  if(co2Count<10) return 'Merah muda (belum berubah)';
+  if(co2Count<30) return 'Merah muda pudar (mulai bereaksi)';
+  if(co2Count<60) return 'Agak keruh (CO₂ terlarut)';
+  if(co2Count<100) return 'Keruh (endapan CaCO₃ terbentuk)';
+  return 'Sangat keruh / putih (bening, PP tidak berwarna)';
+}
+
+function getEtanolEst(){
+  const rate=calcRate();
+  if(rate===0) return '0 mL (tidak ada)';
+  // Estimasi: per detik rate*0.01 mL etanol dihasilkan
+  const est=+(rate*0.01*simSeconds).toFixed(2);
+  return est+' mL (est.)';
+}
+
+function getKeterangan(rate){
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  if(perangkat==='II') return 'Kontrol: tidak ada fermentasi';
+  if(ragi===0) return 'Kontrol: tanpa ragi, tidak ada fermentasi';
+  if(suhu>=60) return 'Ragi mati (denaturasi), fermentasi terhenti';
+  if(suhu<=10) return 'Fermentasi sangat lambat (suhu terlalu rendah)';
+  if(rate>=1.2) return 'Fermentasi aktif & cepat ✓';
+  if(rate>0) return 'Fermentasi aktif (lambat–sedang)';
+  return 'Tidak ada fermentasi';
 }
 
 function addTableRow(){
   const rate=calcRate();
   const m=Math.floor(simSeconds/60);const s=simSeconds%60;
   const suhu=parseInt(document.getElementById('simSuhu').value);
-  const delta=rate>0?+(rate*0.5*(simSeconds/60)).toFixed(1):0;
+  const gula=parseInt(document.getElementById('simGula').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  const deltaTemp=rate>0?+(rate*0.5*(simSeconds/60)).toFixed(1):0;
+  const suhuTabung=(suhu+deltaTemp).toFixed(1);
   const row=document.createElement('tr');
-  row.innerHTML=`<td>${m}:${s<10?'0':''}${s}</td><td>${co2Count}</td><td>${(suhu+delta).toFixed(1)}</td><td>${getWaterColor()}</td><td>${rate>0?'Fermentasi aktif':'Tidak ada fermentasi'}</td>`;
+  row.innerHTML=`
+    <td>${m}:${s<10?'0':''}${s}</td>
+    <td>Prgkt ${perangkat}</td>
+    <td>${suhu}°C</td>
+    <td>${gula}%</td>
+    <td>${ragi} g</td>
+    <td>${co2Count}</td>
+    <td>${getEtanolEst()}</td>
+    <td>${suhuTabung}°C</td>
+    <td>${getWaterColor()}</td>
+    <td>${getKeterangan(rate)}</td>
+  `;
   document.getElementById('hasilBody').prepend(row);
 }
 
