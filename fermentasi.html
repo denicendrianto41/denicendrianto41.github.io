@@ -1048,34 +1048,86 @@ function drawSim(){
 
 function drawErlenmeyer(ctx,x,y,w,h,label,suhu,ragi,perangkat,rate,secs){
   const isControl=perangkat==='II'||ragi===0;
-  // Flask body
+  const gula=parseInt(document.getElementById('simGula').value);
+
+  // Flask body path
   ctx.beginPath();
-  ctx.moveTo(x+w*0.3,y);ctx.lineTo(x+w*0.7,y);// neck top
+  ctx.moveTo(x+w*0.3,y);ctx.lineTo(x+w*0.7,y);
   ctx.lineTo(x+w*0.7,y+h*0.3);
   ctx.bezierCurveTo(x+w*0.7,y+h*0.35,x+w*0.9,y+h*0.45,x+w,y+h);
   ctx.lineTo(x,y+h);
   ctx.bezierCurveTo(x+w*0.1,y+h*0.45,x+w*0.3,y+h*0.35,x+w*0.3,y+h*0.3);
   ctx.closePath();
-  // Liquid fill
-  const liquidColor=isControl?'rgba(200,200,255,0.35)':'rgba(253,186,116,0.6)';
-  ctx.fillStyle=liquidColor;ctx.fill();
+
+  // Liquid fill — color shifts amber with more sugar
+  const sugarAlpha=0.3+gula*0.005;
+  const liquidColor=isControl?'rgba(200,200,255,0.35)':`rgba(253,${Math.max(140,186-gula),0.6},80,${sugarAlpha})`;
+  ctx.fillStyle=isControl?'rgba(200,200,255,0.35)':`rgba(253,${Math.max(140,186-Math.floor(gula*0.5))},80,${Math.min(0.85,0.45+gula*0.005)})`;
+  ctx.fill();
   ctx.strokeStyle='rgba(148,163,184,0.6)';ctx.lineWidth=1.5;ctx.stroke();
+
+  // ── Sugar crystal illustration ──
+  // Number of crystals scales with gula concentration
+  const crystalCount=Math.round(gula/10); // 1 at 10%, 7 at 70%
+  const seed=42;
+  for(let i=0;i<crystalCount;i++){
+    // deterministic positions using i as seed
+    const cx=x+w*0.12+(i%4)*(w*0.19)+((i*37)%11)*0.5;
+    const cy=y+h*0.75+((i*53)%5)*(h*0.025);
+    const cs=2.5+((i*17)%3); // crystal size 2.5–5.5px
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate((i*29%360)*Math.PI/180);
+    // Diamond/crystal shape
+    ctx.beginPath();
+    ctx.moveTo(0,-cs);ctx.lineTo(cs*0.6,0);ctx.lineTo(0,cs);ctx.lineTo(-cs*0.6,0);
+    ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,0.75)';ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=0.5;ctx.stroke();
+    ctx.restore();
+  }
+
+  // ── Yeast particle illustration ──
+  if(!isControl&&ragi>0){
+    // Number of yeast dots scales with ragi amount
+    const yeastCount=ragi*2; // 4 at 2g, 8 at 4g, 16 at 8g
+    for(let i=0;i<yeastCount;i++){
+      const yx=x+w*0.1+((i*41)%Math.floor(w*0.8));
+      const yy=y+h*0.5+((i*67)%Math.floor(h*0.4));
+      const yr=1.5+((i*13)%3)*0.5;
+      // Animated slight drift
+      const t=Date.now()/1000;
+      const drift=Math.sin(t*0.8+i*1.1)*1.5;
+      ctx.beginPath();
+      ctx.arc(yx+drift,yy,yr,0,Math.PI*2);
+      ctx.fillStyle='rgba(180,120,50,0.75)';ctx.fill();
+      // Budding yeast: small bud attached
+      if(i%3===0){
+        ctx.beginPath();
+        ctx.arc(yx+drift+yr,yy-yr,yr*0.6,0,Math.PI*2);
+        ctx.fillStyle='rgba(180,120,50,0.55)';ctx.fill();
+      }
+    }
+  }
 
   // Label
   ctx.fillStyle='#fff';ctx.font='bold 11px Space Grotesk';ctx.textAlign='center';
-  ctx.fillText('Tabung '+label,x+w/2,y+h*0.7);
+  ctx.fillText('Tabung '+label,x+w/2,y+h*0.65);
 
   // Content label
   const contentLabel=isControl?'Gula (tanpa ragi)':'Gula + Ragi';
-  ctx.fillStyle='rgba(203,213,225,0.8)';ctx.font='9px Inter';
-  ctx.fillText(contentLabel,x+w/2,y+h*0.85);
+  ctx.fillStyle='rgba(203,213,225,0.85)';ctx.font='9px Inter';
+  ctx.fillText(contentLabel,x+w/2,y+h*0.82);
 
-  // Bubbles if active
+  // Bubbles if active — centered, straight up
   if(!isControl&&simRunning&&rate>0){
     const t=Date.now()/1000;
     const bCount=Math.floor(rate*3);
+    // Spread bubbles evenly across center third of the flask body
+    const spread=w*0.3;
+    const startX=x+w/2-spread/2;
     for(let i=0;i<bCount;i++){
-      const bx=x+w*0.25+i*(w*0.18);
+      const bx=startX+(i/(Math.max(bCount-1,1)))*spread;
       const phase=(t*0.7+i*0.33)%1;
       const by=y+h*0.9-phase*(h*0.65);
       const br=2+rate;
@@ -1121,9 +1173,38 @@ function drawErlenmeyerB(ctx,x,y,w,h,rate,secs){
   }
 }
 
+// Per-bubble sound: track previous bubble phases to detect "pop" moment (phase crosses 0)
+let _prevPhases=[];
 function animLoop(){
   drawSim();
-  if(simRunning) simAnimFrame=requestAnimationFrame(animLoop);
+  if(simRunning){
+    // Trigger blup sound once per bubble cycle (when phase resets near 0)
+    const rate=calcRate();
+    if(rate>0){
+      const bCount=Math.floor(rate*3);
+      const t=Date.now()/1000;
+      for(let i=0;i<bCount;i++){
+        const phase=(t*0.7+i*0.33)%1;
+        const prev=_prevPhases[i]||0;
+        // Detect phase wrap-around (bubble completed one full rise = one blup)
+        if(prev>0.85&&phase<0.15){
+          try{
+            const b=document.getElementById('sndBlup');
+            if(b){
+              const clone=b.cloneNode();
+              clone.volume=Math.min(1,0.3+rate*0.2);
+              clone.play().catch(()=>{});
+              setTimeout(()=>clone.remove(),2000);
+            }
+          }catch(e){}
+        }
+        _prevPhases[i]=phase;
+      }
+    } else {
+      _prevPhases=[];
+    }
+    simAnimFrame=requestAnimationFrame(animLoop);
+  }
 }
 
 window.startSim=function(){
@@ -1134,7 +1215,7 @@ window.startSim=function(){
   document.getElementById('svStatus').textContent='▶';
   const tip=document.getElementById('simTip');
   tip.textContent=getTip();tip.classList.add('on');
-  addTableRow();
+  updateLiveRow();
   animLoop();
   simTimer=setInterval(()=>{
     simSeconds++;
@@ -1143,19 +1224,14 @@ window.startSim=function(){
     const rate=calcRate();
     // Update CO2 count
     if(rate>0){co2Count+=Math.round(rate*2);document.getElementById('svCO2').textContent=co2Count;}
-    // Blup sound: plays every tick proportional to rate
-    if(rate>0){
-      const blupInterval=Math.max(1,Math.round(4/rate));
-      if(simSeconds%blupInterval===0){
-        try{const b=document.getElementById('sndBlup');if(b){b.currentTime=0;b.play().catch(()=>{});}}catch(e){}
-      }
-    }
     // Update temp
     const suhu=parseInt(document.getElementById('simSuhu').value);
     const delta=rate*0.5;
     const dispSuhu=(suhu+delta*(simSeconds/60)).toFixed(1);
     document.getElementById('svSuhu').textContent=dispSuhu+'°C';
-    // Log every 5 min
+    // Update live row every second
+    updateLiveRow();
+    // Snapshot row every 5 min
     if(simSeconds%300===0) addTableRow();
   },1000);
 };
@@ -1167,6 +1243,8 @@ window.stopSim=function(){
   document.getElementById('btnStart').disabled=false;
   document.getElementById('btnStop').disabled=true;
   document.getElementById('svStatus').textContent='⏸';
+  // Snapshot the live row on stop
+  addTableRow();
   drawSim();
 };
 
@@ -1213,7 +1291,7 @@ function getKeterangan(rate){
   return 'Tidak ada fermentasi';
 }
 
-function addTableRow(){
+function updateLiveRow(){
   const rate=calcRate();
   const m=Math.floor(simSeconds/60);const s=simSeconds%60;
   const suhu=parseInt(document.getElementById('simSuhu').value);
@@ -1222,9 +1300,17 @@ function addTableRow(){
   const perangkat=document.getElementById('simPerangkat').value;
   const deltaTemp=rate>0?+(rate*0.5*(simSeconds/60)).toFixed(1):0;
   const suhuTabung=(suhu+deltaTemp).toFixed(1);
-  const row=document.createElement('tr');
-  row.innerHTML=`
-    <td>${m}:${s<10?'0':''}${s}</td>
+
+  let liveRow=document.getElementById('liveRow');
+  if(!liveRow){
+    liveRow=document.createElement('tr');
+    liveRow.id='liveRow';
+    liveRow.style.background='rgba(37,99,235,0.07)';
+    liveRow.style.fontWeight='600';
+    document.getElementById('hasilBody').prepend(liveRow);
+  }
+  liveRow.innerHTML=`
+    <td>⏱ ${m}:${s<10?'0':''}${s}</td>
     <td>Prgkt ${perangkat}</td>
     <td>${suhu}°C</td>
     <td>${gula}%</td>
@@ -1235,7 +1321,16 @@ function addTableRow(){
     <td>${getWaterColor()}</td>
     <td>${getKeterangan(rate)}</td>
   `;
-  document.getElementById('hasilBody').prepend(row);
+}
+
+function addTableRow(){
+  // Snapshot baris saat ini: ubah live row menjadi baris tetap, lalu buat live row baru
+  const liveRow=document.getElementById('liveRow');
+  if(liveRow){
+    liveRow.removeAttribute('id');
+    liveRow.style.background='';
+    liveRow.style.fontWeight='';
+  }
 }
 
 // Draw initial state
