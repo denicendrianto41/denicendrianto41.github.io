@@ -383,7 +383,28 @@ function startPraktikum(){
     <div class="card" style="margin-bottom:0;">
       <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
 
+      <!-- Image zoom overlay -->
+      <div id="imgZoomOverlay" onclick="closeImgZoom()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;cursor:zoom-out;">
+        <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <img id="imgZoomSrc" src="" alt="" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:14px;border:2px solid rgba(255,255,255,0.2);box-shadow:0 24px 80px rgba(0,0,0,0.6);transform:scale(0.8);opacity:0;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),opacity 0.25s;">
+          <span style="font-size:12px;color:rgba(255,255,255,0.7);">Klik di mana saja untuk menutup</span>
+        </div>
+      </div>
+
       <div style="display:flex;gap:14px;align-items:flex-start;">
+        <!-- IMAGE ON LEFT -->
+        <div style="flex-shrink:0;width:clamp(110px,20%,165px);display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="position:relative;width:100%;cursor:zoom-in;" onclick="openImgZoom(this.querySelector('img'))">
+            <img src="https://denicendrianto41.github.io/elenmeyer_fermentasi.png" alt="Perangkat Fermentasi Alkohol"
+              style="width:100%;height:auto;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);background:var(--surf2);padding:7px;transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s;display:block;"
+              onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 20px rgba(37,99,235,0.18)'"
+              onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
+            <div style="position:absolute;bottom:10px;right:10px;background:rgba(37,99,235,0.75);border-radius:5px;padding:3px 6px;font-size:9px;color:#fff;pointer-events:none;backdrop-filter:blur(3px);">🔍 Zoom</div>
+          </div>
+          <span style="font-size:9.5px;color:var(--text3);text-align:center;line-height:1.4;">Perangkat uji<br>fermentasi alkohol</span>
+        </div>
+
+        <!-- TEXT ON RIGHT -->
         <div style="flex:1;min-width:0;">
           <p><strong style="color:var(--acc3)">Respirasi Anaerob</strong> merupakan reaksi pemecahan karbohidrat untuk mendapatkan energi <strong style="color:#b91c1c">tanpa menggunakan oksigen (O₂)</strong>. Ketika oksigen tidak tersedia atau tidak mencukupi untuk respirasi aerob, beberapa organisme melakukan respirasi secara anaerob yang juga dikenal sebagai <strong style="color:var(--acc2)">fermentasi</strong>.</p>
 
@@ -403,12 +424,27 @@ function startPraktikum(){
           <h4>Peranan Ragi dalam Kehidupan</h4>
           <p><em>Saccharomyces cerevisiae</em> dimanfaatkan secara luas dalam industri makanan: pembuatan roti (CO₂ membuat adonan mengembang), tape, tempe, bir, dan berbagai produk fermentasi lainnya. Pada suhu optimal 25–30°C, ragi bekerja paling aktif memfermentasi gula.</p>
         </div>
-
-        <div style="flex-shrink:0;width:clamp(120px,22%,180px);display:flex;flex-direction:column;align-items:center;gap:6px;">
-          <img src="https://denicendrianto41.github.io/elenmeyer_fermentasi.png" alt="Perangkat Fermentasi Alkohol" style="width:100%;height:auto;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:var(--surf2);padding:6px;">
-          <span style="font-size:9.5px;color:var(--text3);text-align:center;line-height:1.4;">Perangkat uji<br>fermentasi alkohol</span>
-        </div>
       </div>
+      <script>
+      function openImgZoom(imgEl){
+        const overlay=document.getElementById('imgZoomOverlay');
+        const zoomImg=document.getElementById('imgZoomSrc');
+        zoomImg.src=imgEl.src; zoomImg.alt=imgEl.alt;
+        overlay.style.display='flex';
+        requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+          zoomImg.style.transform='scale(1)';
+          zoomImg.style.opacity='1';
+        });});
+      }
+      function closeImgZoom(){
+        const overlay=document.getElementById('imgZoomOverlay');
+        const zoomImg=document.getElementById('imgZoomSrc');
+        zoomImg.style.transform='scale(0.8)';
+        zoomImg.style.opacity='0';
+        setTimeout(()=>{ overlay.style.display='none'; },280);
+      }
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeImgZoom(); });
+      </script>
     </div>
   </div>
 </div>
@@ -434,7 +470,7 @@ function startPraktikum(){
             <div class="drag-sub">Tabung A &amp; B</div>
           </div>
           <div class="drag-card alat" draggable="true" data-id="selang" data-type="alat" data-name="Selang Penghubung" data-sub="Mengalirkan gas CO₂">
-            <div class="drag-icon">🌀</div>
+            <div class="drag-icon"><img src="https://denicendrianto41.github.io/selang.png" alt="Selang" style="height:40px;width:auto;object-fit:contain;"></div>
             <div class="drag-name">Selang</div>
             <div class="drag-sub">Alirkan gas CO₂</div>
           </div>
@@ -560,31 +596,213 @@ function startPraktikum(){
       </div>
     </div>
 
+    <style>
+    /* ===== TIMELINE PROSEDUR ===== */
+    .tl-section { margin-bottom: 10px; }
+    .tl-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 10px 10px 0 0;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px;
+    }
+    .tl-header.perlakuan { background: linear-gradient(135deg,#1d4ed8,#3b82f6); color: #fff; }
+    .tl-header.kontrol   { background: linear-gradient(135deg,#dc2626,#f87171); color: #fff; }
+    .tl-header-icon { width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0; }
+    .tl-body { background:var(--surf); border:1px solid var(--border); border-top:none; border-radius:0 0 10px 10px; padding:14px 14px 10px; position:relative; }
+    /* Vertical line */
+    .tl-body::before { content:''; position:absolute; left:30px; top:0; bottom:14px; width:2px; background:linear-gradient(to bottom,var(--acc2),transparent); border-radius:2px; }
+    .tl-kontrol .tl-body::before { background:linear-gradient(to bottom,#f87171,transparent); }
+    .tl-item {
+      display:flex; align-items:flex-start; gap:12px; margin-bottom:6px; position:relative;
+      padding: 8px 10px 8px 8px; border-radius:9px;
+      cursor:pointer; transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s, background 0.18s;
+      user-select:none;
+    }
+    .tl-item:hover { transform:scale(1.025); background:#eff6ff; box-shadow:0 4px 16px rgba(37,99,235,0.13); z-index:1; }
+    .tl-kontrol .tl-item:hover { background:#fff1f2; box-shadow:0 4px 16px rgba(220,38,38,0.12); }
+    .tl-item:active { transform:scale(1.045); }
+    .tl-item:last-child { margin-bottom:0; }
+    /* Icon circle */
+    .tl-icon {
+      flex-shrink:0; width:38px; height:38px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:17px; border:2px solid transparent;
+      box-shadow:0 2px 8px rgba(37,99,235,0.15); position:relative; z-index:1;
+      transition: transform 0.2s;
+    }
+    .tl-item:hover .tl-icon { transform: scale(1.12) rotate(-5deg); }
+    /* Connector line between icon and next item */
+    .tl-item:not(:last-child) .tl-icon::after {
+      content:''; position:absolute; left:50%; top:100%; transform:translateX(-50%);
+      width:2px; height:calc(100% + 8px); background:rgba(37,99,235,0.18); z-index:0;
+    }
+    .tl-kontrol .tl-item:not(:last-child) .tl-icon::after { background:rgba(220,38,38,0.18); }
+    .perlakuan .tl-icon { background:linear-gradient(135deg,#dbeafe,#bfdbfe); border-color:#93c5fd; color:#1d4ed8; }
+    .kontrol-icon   { background:linear-gradient(135deg,#fee2e2,#fecaca); border-color:#fca5a5; color:#b91c1c; }
+    .tl-content { flex:1; min-width:0; }
+    .tl-step-label {
+      font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:.1em;
+      text-transform:uppercase; font-weight:600; margin-bottom:2px;
+      color:var(--acc);
+    }
+    .tl-kontrol .tl-step-label { color:#dc2626; }
+    .tl-text { font-size:clamp(11px,1.2vw,13px); color:var(--text2); line-height:1.6; }
+    /* Connector arrow between steps (visual cue) */
+    .tl-connector {
+      display:flex; align-items:center; justify-content:center;
+      padding: 0 0 0 44px; margin: -2px 0;
+    }
+    .tl-connector span {
+      font-size:13px; color:var(--text3);
+      animation: bounceDown 1.2s ease-in-out infinite;
+    }
+    .tl-kontrol .tl-connector span { color:#fca5a5; }
+    @keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+    </style>
+
     <div class="two-col">
-      <div class="card">
-        <div class="ch"><div class="ci b">🧪</div><div class="ct">Perangkat I – Perlakuan</div></div>
-        <div class="steps">
-          <div class="step"><div class="snum">1</div><p>Beri label <strong>A</strong> pada tabung erlenmeyer pertama (tabung fermentasi) dan label <strong>B</strong> pada tabung kedua (tabung indikator).</p></div>
-          <div class="step"><div class="snum">2</div><p>Isi tabung erlenmeyer <strong>A</strong> dengan <strong>100 cc larutan gula 30%</strong>, kemudian tambahkan <strong>4 gram ragi</strong> (<em>Saccharomyces cerevisiae</em>) ke dalamnya.</p></div>
-          <div class="step"><div class="snum">3</div><p>Isi tabung erlenmeyer <strong>B</strong> dengan <strong>100 cc air kapur Ca(OH)₂</strong>, kemudian tambahkan <strong>1 tetes indikator PP (fenolftalein)</strong>. Larutan akan berwarna merah muda.</p></div>
-          <div class="step"><div class="snum">4</div><p>Sambungkan tabung A ke tabung B menggunakan selang, sehingga gas CO₂ dari tabung A mengalir ke tabung B melalui air kapur.</p></div>
-          <div class="step"><div class="snum">5</div><p>Tutup rapat tabung A dengan sumbat berselang agar kondisi anaerob tercapai dan gas CO₂ tersalurkan ke tabung B.</p></div>
-          <div class="step"><div class="snum">6</div><p>Amati perubahan yang terjadi selama <strong>30 menit</strong>: perubahan warna air kapur, timbulnya gelembung gas, dan perubahan suhu pada tabung A.</p></div>
+      <!-- PERANGKAT I – PERLAKUAN -->
+      <div class="tl-section perlakuan">
+        <div class="tl-header perlakuan">
+          <div class="tl-header-icon">🧪</div>
+          Perangkat I – Perlakuan
+        </div>
+        <div class="tl-body">
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon perlakuan">🏷️</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 1 · Pelabelan</div>
+              <div class="tl-text">Beri label <strong>A</strong> pada tabung erlenmeyer pertama (tabung fermentasi) dan label <strong>B</strong> pada tabung kedua (tabung indikator).</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon perlakuan">🍬</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 2 · Isi Tabung A</div>
+              <div class="tl-text">Isi tabung erlenmeyer <strong>A</strong> dengan <strong>100 cc larutan gula 30%</strong>, kemudian tambahkan <strong>4 gram ragi</strong> (<em>Saccharomyces cerevisiae</em>) ke dalamnya.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon perlakuan">🥛</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 3 · Isi Tabung B</div>
+              <div class="tl-text">Isi tabung erlenmeyer <strong>B</strong> dengan <strong>100 cc air kapur Ca(OH)₂</strong>, kemudian tambahkan <strong>1 tetes indikator PP</strong>. Larutan akan berwarna merah muda.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon perlakuan">🔗</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 4 · Sambungkan Selang</div>
+              <div class="tl-text">Sambungkan tabung A ke tabung B menggunakan selang, sehingga gas CO₂ dari tabung A mengalir ke tabung B melalui air kapur.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon perlakuan">🔒</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 5 · Tutup Rapat</div>
+              <div class="tl-text">Tutup rapat tabung A dengan sumbat berselang agar kondisi <strong>anaerob</strong> tercapai dan gas CO₂ tersalurkan ke tabung B.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon perlakuan">👁️</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 6 · Amati</div>
+              <div class="tl-text">Amati perubahan selama <strong>30 menit</strong>: perubahan warna air kapur, timbulnya gelembung gas, dan perubahan suhu pada tabung A.</div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="card">
-        <div class="ch"><div class="ci r">🔬</div><div class="ct">Perangkat II – Kontrol</div></div>
-        <div class="steps">
-          <div class="step"><div class="snum">1</div><p>Ulangi langkah 1, 2, dan 3 di atas pada perangkat kedua dengan cara yang sama persis.</p></div>
-          <div class="step"><div class="snum">2</div><p>Pada tabung A perangkat II, isi dengan <strong>100 cc larutan gula 30%</strong> tetapi <strong>TANPA menambahkan ragi</strong>.</p></div>
-          <div class="step"><div class="snum">3</div><p>Pada tabung B perangkat II, isi dengan <strong>100 cc air kapur + 1 tetes PP</strong> sama seperti perangkat I.</p></div>
-          <div class="step"><div class="snum">4</div><p>Sambungkan tabung A ke tabung B menggunakan selang dengan cara yang sama seperti perangkat I.</p></div>
-          <div class="step"><div class="snum">5</div><p>Tutup rapat tabung A perangkat II dengan sumbat berselang.</p></div>
-          <div class="step"><div class="snum">6</div><p>Amati perangkat II selama <strong>30 menit</strong> dan bandingkan hasilnya dengan Perangkat I.</p></div>
+      <!-- PERANGKAT II – KONTROL -->
+      <div class="tl-section tl-kontrol">
+        <div class="tl-header kontrol">
+          <div class="tl-header-icon">🔬</div>
+          Perangkat II – Kontrol
+        </div>
+        <div class="tl-body">
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon kontrol-icon">🏷️</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 1 · Ulangi Persiapan</div>
+              <div class="tl-text">Ulangi langkah 1, 2, dan 3 di atas pada perangkat kedua dengan cara yang sama persis.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon kontrol-icon">🚫</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 2 · Tanpa Ragi</div>
+              <div class="tl-text">Pada tabung A perangkat II, isi dengan <strong>100 cc larutan gula 30%</strong> tetapi <strong>TANPA menambahkan ragi</strong>.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon kontrol-icon">🥛</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 3 · Isi Tabung B</div>
+              <div class="tl-text">Pada tabung B perangkat II, isi dengan <strong>100 cc air kapur + 1 tetes PP</strong> sama seperti perangkat I.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon kontrol-icon">🔗</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 4 · Sambungkan Selang</div>
+              <div class="tl-text">Sambungkan tabung A ke tabung B menggunakan selang dengan cara yang sama seperti perangkat I.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon kontrol-icon">🔒</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 5 · Tutup Rapat</div>
+              <div class="tl-text">Tutup rapat tabung A perangkat II dengan sumbat berselang.</div>
+            </div>
+          </div>
+          <div class="tl-connector"><span>↓</span></div>
+
+          <div class="tl-item" onclick="tlZoom(this)">
+            <div class="tl-icon kontrol-icon">⚖️</div>
+            <div class="tl-content">
+              <div class="tl-step-label">Langkah 6 · Bandingkan</div>
+              <div class="tl-text">Amati perangkat II selama <strong>30 menit</strong> dan bandingkan hasilnya dengan Perangkat I.</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
+    <script>
+    function tlZoom(el){
+      el.style.transform='scale(1.06)';
+      el.style.boxShadow='0 8px 24px rgba(37,99,235,0.22)';
+      el.style.background=el.closest('.tl-kontrol') ? '#fff1f2' : '#eff6ff';
+      el.style.zIndex='2';
+      setTimeout(()=>{
+        el.style.transform='';
+        el.style.boxShadow='';
+        el.style.background='';
+        el.style.zIndex='';
+      },380);
+    }
+    </script>
 
     <div class="notebox">
       <div class="nt">⚠️ Keselamatan Lab</div>
