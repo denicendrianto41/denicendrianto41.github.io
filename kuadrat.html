@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Virtual – Keanekaragaman Hayati: Metode Kuadrat</title>
+<style>
+/* ── Font Stacks ── */
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.logo-text,.ct,.h-title,.score-big,.score-pct,.ctrl-panel h3,.aquarium h3,.load-title,
+#btnMulaiPraktikum,[style*="Space Grotesk"] { font-family: 'Space Grotesk','Trebuchet MS','Segoe UI Semibold',system-ui,sans-serif; }
+.snum,.qnum,.sv,.sl,.sim-tip-val,.sim-tip-lbl,.sep span,.h-label,.load-sub,.load-percent,
+code,[style*="JetBrains Mono"] { font-family: 'JetBrains Mono','Courier New',Courier,monospace; }
+</style>
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;
+  --h:56px;
+  --fbase:14px;
+}
+@media (max-width:768px){:root{--fbase:13px;--h:46px;}}
+@media (min-width:1200px){:root{--fbase:15px;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{
+  position:relative;z-index:10;height:var(--h);flex-shrink:0;
+  background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;padding:0 14px;gap:12px;
+  box-shadow:0 2px 10px rgba(10,30,80,0.45);
+}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,22px);font-weight:700;color:#ffffff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(11px,1.2vw,13px);font-weight:500;padding:0 11px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,0.95);}
+.nb.active{color:#fff;}
+.nb.active::after{transform:scaleX(1);}
+.nb-icon{font-size:16px;margin-right:4px;}
+
+/* ── Hamburger ── */
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
+
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}
+  .nb.active{background:rgba(255,255,255,.08);}
+}
+/* APP */
+#app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1e3a8a,#2563eb);border:none;border-radius:9px;padding:10px 16px;margin-bottom:8px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 4px 18px rgba(37,99,235,.2);}
+.hero::after{content:'🌿';position:absolute;right:12px;top:-8px;font-size:60px;opacity:.08;pointer-events:none;}
+.h-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:#93c5fd;text-transform:uppercase;margin-bottom:2px;}
+.h-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,2vw,18px);font-weight:700;color:#fff;line-height:1.2;}
+.h-title span{color:#bfdbfe;}
+.h-desc{font-size:11px;color:#bfdbfe;line-height:1.5;max-width:480px;}
+
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(37,99,235,.1);}
+.ci.y{background:rgba(217,119,6,.1);}
+.ci.g{background:rgba(5,150,105,.1);}
+.ci.r{background:rgba(220,38,38,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+#page-teori .card p{font-size:clamp(11px,1.1vw,13px);line-height:1.55;margin-bottom:4px;}
+#page-teori .card h4{margin:6px 0 3px;}
+#page-teori .two-col{gap:5px;}
+#page-teori .card{margin-bottom:5px;padding:9px 12px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:clamp(11px,1.2vw,13px);color:var(--text2);line-height:1.5;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
+.chips{display:flex;gap:5px;margin:6px 0;flex-wrap:wrap;}
+.chip{border-radius:5px;padding:3px 8px;font-size:clamp(11px,1.2vw,13px);font-weight:500;}
+.chip-b{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:#1d4ed8;}
+.chip-r{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#b91c1c;}
+.chip-g{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#047857;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:5px;}
+.step{display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;}
+.step:hover{border-color:var(--acc2);background:#eff6ff;}
+.snum{min-width:20px;height:20px;border-radius:50%;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);flex-shrink:0;}
+.step p{font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;margin:0;}
+.notebox{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:7px;}
+.notebox .nt{font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.notebox p{font-size:clamp(12px,1.2vw,13px);color:#92400e;line-height:1.6;margin:0;}
+.sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
+.sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* FORMULA BOX */
+.formula-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.2vw,13px);color:#1d4ed8;text-align:center;}
+
+/* SIMULASI WRAPPER */
+.sim-wrap{display:grid;grid-template-columns:200px 1fr;gap:8px;flex:1;min-height:0;}
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.btn{width:100%;border:none;border-radius:6px;padding:8px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-start{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-ws{background:linear-gradient(135deg,#065f46,#10b981);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.3);}
+.btn-ws:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(16,185,129,.35);}
+
+/* SIM RIGHT AREA */
+.sim-right{display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.aquarium{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;flex:1;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;flex-shrink:0;}
+
+/* SPECIES LEGEND */
+.species-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:4px;}
+.sp-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);}
+.sp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* STATS ROW */
+.statsrow{display:flex;gap:6px;margin-top:6px;flex-shrink:0;}
+.sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;color:var(--acc);display:block;}
+.sl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+
+/* WORKSHEET TABLE */
+.wstable{width:100%;border-collapse:collapse;font-size:11px;}
+.wstable th{background:#eff6ff;color:var(--acc3);padding:5px 7px;text-align:left;border:1px solid var(--border);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.wstable td{padding:4px 7px;border:1px solid var(--border);color:var(--text2);}
+.wstable tr:nth-child(even) td{background:#f8fafc;}
+.wstable tr:hover td{background:#eff6ff;}
+.ws-input{width:28px;height:22px;text-align:center;font-size:11px;font-weight:700;border:1px solid var(--border);border-radius:3px;padding:0;background:var(--surf2);text-transform:uppercase;font-family:'JetBrains Mono',monospace;outline:none;transition:all .15s;}
+.ws-input.is-y{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
+.ws-input.is-n{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+.ws-freq{font-weight:700;color:var(--acc3);font-family:'JetBrains Mono',monospace;}
+.ws-pct{font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace;}
+
+/* QUIZ / DISKUSI */
+.disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.btn-qnav{padding:6px 14px;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;border:none;}
+.btn-reset-q{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset-q:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+
+/* ANIMATION */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+.step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+
+/* LOADING SCREEN */
+#loadScreen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;transition:opacity .6s ease;
+}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2.5vw,26px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:24px;}
+.load-bar-wrap{width:clamp(200px,28vw,320px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#34d399,#a78bfa);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:12px;text-align:center;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:28px;min-height:16px;text-align:center;}
+#btnMulaiPraktikum{
+  display:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;
+  padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;
+  cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(5,150,105,.4);
+  animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s, box-shadow .18s;
+}
+#btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
+@keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* SIM CANVAS */
+#simCanvas{width:100%;border-radius:6px;display:block;border:1px solid var(--border);}
+
+/* CLOSEUP & WORKSHEET OVERLAY */
+.sim-overlay{position:absolute;inset:0;background:var(--surf);border-radius:9px;display:none;flex-direction:column;z-index:20;padding:10px;}
+.sim-overlay.active{display:flex;}
+.sim-overlay-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0;}
+.btn-back-sim{background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:4px;}
+.btn-back-sim:hover{border-color:var(--acc);color:var(--acc);}
+
+/* DRAG */
+.drag-item{touch-action:none;-webkit-user-select:none;user-select:none;}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadScreen">
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Keanekaragaman Hayati · Metode Kuadrat</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum 🔬</button>
+</div>
+
+<script>
+(function(){
+  const bar=document.getElementById('loadBar');
+  const pct=document.getElementById('loadPercent');
+  const status=document.getElementById('loadStatus');
+  const msgs=['Memuat data spesies tumbuhan…','Menyiapkan lingkungan simulasi…','Mengkalibrasi petak kuadrat…','Laboratorium siap digunakan!'];
+  let current=0;
+  const total=3000;const step=20;const inc=100/(total/step);
+  let mi=0;
+  const iv=setInterval(()=>{
+    current=Math.min(100,current+inc);
+    const v=Math.floor(current);
+    bar.style.width=v+'%';pct.textContent=v+'%';
+    const si=Math.floor(v/25);
+    if(si!==mi){mi=si;status.textContent=msgs[Math.min(si,msgs.length-1)];}
+    if(current>=100){
+      clearInterval(iv);pct.textContent='100%';
+      status.textContent='✅ Laboratorium siap digunakan!';
+      document.getElementById('btnMulaiPraktikum').style.display='block';
+    }
+  },step);
+})();
+function startPraktikum(){
+  try{const s=new Audio('https://denicendrianto41.github.io/tring.wav');s.play().catch(()=>{});}catch(e){}
+  const ls=document.getElementById('loadScreen');
+  ls.classList.add('hide');
+  setTimeout(()=>{ls.style.display='none';},650);
+}
+</script>
+
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<script>
+document.addEventListener('click',function(e){
+  const el=e.target.closest('button,.nb,.btn,select,input[type="range"]');
+  if(!el)return;
+  if(el.id==='btnMulaiPraktikum')return;
+  const sfx=document.getElementById('clickSfx');
+  if(!sfx)return;sfx.currentTime=0;sfx.play().catch(()=>{});
+});
+</script>
+
+<header style="justify-content:space-between;">
+  <div class="logo">
+    <div class="logo-icon" style="background:#fff;overflow:hidden;padding:2px;">
+      <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+    </div>
+    <div>
+      <div class="logo-text">Lab Maya Biologi</div>
+      <div class="logo-sub">Keanekaragaman Hayati – Metode Kuadrat</div>
+    </div>
+  </div>
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('teori',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('evaluasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+  </nav>
+</header>
+
+<div id="app">
+
+<!-- ========================= TEORI ========================= -->
+<div id="page-teori" class="page active">
+  <div style="flex:1;overflow:hidden;padding:7px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+
+    <!-- Row 1: Tujuan + Hasil Belajar -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0;">
+      <div class="card" style="margin-bottom:0;padding:8px 12px;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="width:20px;height:20px;font-size:11px;">🎯</div><div class="ct" style="font-size:12px;">Tujuan Percobaan</div></div>
+        <p style="font-size:11.5px;line-height:1.5;color:var(--text2);margin:0;">Mempelajari <strong style="color:var(--acc2)">frekuensi populasi tumbuhan</strong> menggunakan <strong style="color:var(--acc2)">metode kuadrat</strong> pada berbagai ekosistem untuk memahami distribusi spesies tumbuhan.</p>
+      </div>
+      <div class="card" style="margin-bottom:0;padding:8px 12px;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="width:20px;height:20px;font-size:11px;">🏆</div><div class="ct" style="font-size:12px;">Hasil Belajar</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;">
+          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Memahami konsep metode kuadrat</div>
+          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Menghitung frekuensi populasi</div>
+          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Menganalisis distribusi spesies</div>
+          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Siap praktikum laboratorium nyata</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Dasar Teori gabungan 4 kolom -->
+    <div class="card" style="margin-bottom:0;padding:8px 12px;flex:1;min-height:0;">
+      <div class="ch" style="margin-bottom:6px;"><div class="ci b" style="width:20px;height:20px;font-size:11px;">📚</div><div class="ct" style="font-size:12px;">Dasar Teori, Distribusi &amp; Tingkat Keanekaragaman Hayati</div></div>
+      <div style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:6px;height:calc(100% - 32px);">
+
+        <!-- Metode Kuadrat -->
+        <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:9px;font-weight:700;color:var(--acc3);letter-spacing:.07em;text-transform:uppercase;">🔲 Metode Kuadrat</div>
+          <p style="font-size:11px;line-height:1.5;color:var(--text2);margin:0;"><strong style="color:var(--acc2)">Frekuensi</strong> = tingkat kemunculan spesies dalam komunitas tumbuhan. Metode <strong style="color:var(--acc2)">kuadrat</strong> (petak <strong>1 m × 1 m</strong>) mengukurnya secara objektif.</p>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;">
+            <span class="chip chip-g" style="font-size:10px;padding:2px 6px;">Kepadatan</span>
+            <span class="chip chip-b" style="font-size:10px;padding:2px 6px;">Frekuensi</span>
+            <span class="chip chip-g" style="font-size:10px;padding:2px 6px;">Biomassa</span>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:5px;padding:5px 7px;font-size:10.5px;color:var(--text2);line-height:1.5;">
+            Pilih area <strong>tidak terlalu besar/kecil</strong>, tempatkan kuadrat secara <strong>acak</strong> agar representatif dan bebas bias.
+          </div>
+        </div>
+
+        <!-- Rumus -->
+        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:9px;font-weight:700;color:var(--acc3);letter-spacing:.07em;text-transform:uppercase;">📐 Rumus Frekuensi</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#1d4ed8;text-align:center;background:rgba(255,255,255,.7);border-radius:5px;padding:7px;font-weight:700;">%F = (N/Q) × 100</div>
+          <div style="font-size:10.5px;color:var(--text2);line-height:1.7;">
+            <strong style="color:var(--acc)">N</strong> = Kuadrat berisi spesies<br>
+            <strong style="color:var(--acc)">Q</strong> = Total kuadrat
+          </div>
+          <div style="background:rgba(255,255,255,.6);border-radius:5px;padding:5px 7px;font-size:10.5px;border:1px solid #bfdbfe;">
+            <span style="color:var(--text3);">Contoh:</span><br>
+            <span style="color:var(--green);font-weight:700;">5/7 × 100 = <strong>71,43%</strong></span>
+          </div>
+        </div>
+
+        <!-- Variasi Distribusi -->
+        <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:9px;font-weight:700;color:#065f46;letter-spacing:.07em;text-transform:uppercase;">🌱 Variasi Distribusi</div>
+          <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
+            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Kondisi tanah &amp; nutrisi</div>
+            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Perbanyakan vegetatif &amp; biji</div>
+            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Aktivitas biotik (penggembalaan)</div>
+            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Predasi serangga / penyakit</div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:5px;font-size:10.5px;color:var(--text2);">
+            <span style="color:var(--green);font-weight:700;">Tinggi</span> = persebaran luas &nbsp;|&nbsp; <span style="color:var(--red);font-weight:700;">Rendah</span> = sedikit kuadrat
+          </div>
+        </div>
+
+        <!-- Tingkat Keanekaragaman -->
+        <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:9px;font-weight:700;color:#6d28d9;letter-spacing:.07em;text-transform:uppercase;">🧬 Tingkat Keanekaragaman</div>
+          <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+            <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:5px;padding:5px 8px;"><strong style="font-size:11px;color:#5b21b6;">Alpha (α)</strong><div style="font-size:10px;color:var(--text2);">Dalam satu ekosistem/habitat</div></div>
+            <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;"><strong style="font-size:11px;color:#7e22ce;">Beta (β)</strong><div style="font-size:10px;color:var(--text2);">Antar ekosistem berbeda</div></div>
+            <div style="background:#faf5ff;border:1px solid #ddd6fe;border-radius:5px;padding:5px 8px;"><strong style="font-size:11px;color:#6d28d9;">Gamma (γ)</strong><div style="font-size:10px;color:var(--text2);">Total skala regional</div></div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:5px;font-size:10px;color:var(--text3);">Metode kuadrat mengukur keanekaragaman <strong style="color:#6d28d9;">alpha (α)</strong>.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================= ALAT & BAHAN ========================= -->
+<div id="page-alatbahan" class="page">
+  <div style="flex:1;overflow:hidden;padding:7px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+
+    <!-- Top: Daftar + Meja Percobaan -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;min-height:0;overflow:hidden;">
+
+      <!-- Kiri: Daftar Alat & Bahan -->
+      <div class="card" style="margin-bottom:0;padding:9px 12px;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="ch" style="margin-bottom:5px;flex-shrink:0;"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:6px;flex-shrink:0;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
+
+        <!-- Alat -->
+        <div style="font-size:9.5px;font-weight:700;color:var(--acc);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">⚙️ Alat</div>
+        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:8px;flex-shrink:0;">
+          <div class="drag-item" draggable="true" data-id="tali" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🪢</div>
+            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Tali</div>
+            <div style="font-size:9px;color:var(--text3);">Batas kuadrat</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="paku" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">📌</div>
+            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Paku/Pasak</div>
+            <div style="font-size:9px;color:var(--text3);">Penanda sudut</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="palu" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🔨</div>
+            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Palu</div>
+            <div style="font-size:9px;color:var(--text3);">Pasang paku</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="meteran" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">📏</div>
+            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Meteran</div>
+            <div style="font-size:9px;color:var(--text3);">1 m × 1 m</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="clipboard" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">📋</div>
+            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Lembar Data</div>
+            <div style="font-size:9px;color:var(--text3);">Tabel pengamatan</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="pensil" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">✏️</div>
+            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
+            <div style="font-size:9px;color:var(--text3);">Pencatat data</div>
+          </div>
+        </div>
+
+        <!-- Bahan: Tumbuhan + 5 Lokasi -->
+        <div style="font-size:9.5px;font-weight:700;color:#059669;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">🌿 Bahan &amp; Lokasi</div>
+        <div id="drag-bahan-src" style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;flex-shrink:0;">
+          <div class="drag-item" draggable="true" data-id="tumbuhan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🌿</div>
+            <div style="font-size:10px;font-weight:600;color:#065f46;">Tumbuhan</div>
+            <div style="font-size:9px;color:var(--text3);">Objek penelitian</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="lok-sekolah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🏫</div>
+            <div style="font-size:10px;font-weight:600;color:#065f46;">Halaman Sekolah</div>
+            <div style="font-size:9px;color:var(--text3);">Lokasi 1</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="lok-rumah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🏠</div>
+            <div style="font-size:10px;font-weight:600;color:#065f46;">Halaman Rumah</div>
+            <div style="font-size:9px;color:var(--text3);">Lokasi 2</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="lok-jalanan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🛣️</div>
+            <div style="font-size:10px;font-weight:600;color:#065f46;">Tepi Jalan</div>
+            <div style="font-size:9px;color:var(--text3);">Lokasi 3</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="lok-sungai" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🌊</div>
+            <div style="font-size:10px;font-weight:600;color:#065f46;">Tepi Sungai</div>
+            <div style="font-size:9px;color:var(--text3);">Lokasi 4</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="lok-pabrik" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
+            <div style="font-size:22px;margin-bottom:2px;">🏭</div>
+            <div style="font-size:10px;font-weight:600;color:#065f46;">Kaw. Pabrik</div>
+            <div style="font-size:9px;color:var(--text3);">Lokasi 5</div>
+          </div>
+        </div>
+
+        <!-- Catatan Penting ringkas -->
+        <div class="notebox" style="margin-top:6px;flex-shrink:0;">
+          <div class="nt">💡 Catatan Penting</div>
+          <p style="font-size:10.5px;">Ukuran kuadrat standar <strong>1 m × 1 m</strong>. Tempatkan secara <strong>acak</strong> untuk menghindari bias. Identifikasi semua spesies sebelum pengamatan dimulai.</p>
+        </div>
+      </div>
+
+      <!-- Kanan: Meja Percobaan -->
+      <div class="card" style="margin-bottom:0;padding:9px 12px;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);display:flex;flex-direction:column;overflow:hidden;">
+        <div class="ch" style="margin-bottom:5px;flex-shrink:0;"><div class="ci y">🔬</div><div class="ct">Meja Percobaan</div></div>
+
+        <!-- Progress bar -->
+        <div id="ab-progress-wrap" style="flex-shrink:0;margin-bottom:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <span style="font-size:9.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Progress</span>
+            <span id="ab-progress-label" style="font-size:9.5px;font-weight:700;color:var(--acc);">0 / 14 item</span>
+          </div>
+          <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;">
+            <div id="ab-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#10b981);border-radius:3px;transition:width .4s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Drop zone alat -->
+        <div style="font-size:9.5px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;flex-shrink:0;">⚙️ Alat Percobaan</div>
+        <div id="drop-alat" data-zone="alat" style="flex:1;min-height:0;border:2px dashed #93c5fd;border-radius:8px;background:#eff6ff;padding:7px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;margin-bottom:8px;position:relative;transition:border-color .3s,background .3s;">
+          <span id="drop-alat-hint" style="color:#93c5fd;font-size:11px;width:100%;text-align:center;padding:8px 0;">← Drag alat ke sini</span>
+        </div>
+
+        <!-- Drop zone bahan -->
+        <div style="font-size:9.5px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;flex-shrink:0;">🌿 Bahan &amp; Lokasi Penelitian</div>
+        <div id="drop-bahan" data-zone="bahan" style="flex:1;min-height:0;border:2px dashed #86efac;border-radius:8px;background:#f0fdf4;padding:7px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;position:relative;transition:border-color .3s,background .3s;">
+          <span id="drop-bahan-hint" style="color:#86efac;font-size:11px;width:100%;text-align:center;padding:8px 0;">← Drag bahan &amp; lokasi ke sini</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== SELAMAT OVERLAY ===== -->
+<div id="selamatOverlay" style="display:none;position:fixed;inset:0;z-index:5000;pointer-events:none;">
+  <canvas id="confettiCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+  <div id="selamatCard" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
+    background:linear-gradient(135deg,#0f2460,#1a3a8f);border-radius:20px;padding:28px 36px;text-align:center;
+    box-shadow:0 20px 60px rgba(10,30,80,.5);border:2px solid rgba(255,255,255,.2);
+    pointer-events:all;transition:transform .5s cubic-bezier(.34,1.56,.64,1);">
+    <div style="font-size:52px;margin-bottom:8px;">🎉</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">Luar Biasa!</div>
+    <div style="font-family:'Inter',sans-serif;font-size:13px;color:#bfdbfe;margin-bottom:16px;line-height:1.6;">
+      Kamu berhasil menyusun semua alat dan bahan<br>percobaan metode kuadrat dengan tepat! 🌿
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+      <span style="background:rgba(16,185,129,.2);border:1px solid #10b981;border-radius:20px;padding:4px 12px;font-size:11px;color:#6ee7b7;">✔ 6 Alat Lengkap</span>
+      <span style="background:rgba(16,185,129,.2);border:1px solid #10b981;border-radius:20px;padding:4px 12px;font-size:11px;color:#6ee7b7;">✔ Tumbuhan</span>
+      <span style="background:rgba(16,185,129,.2);border:1px solid #10b981;border-radius:20px;padding:4px 12px;font-size:11px;color:#6ee7b7;">✔ 5 Lokasi Penelitian</span>
+    </div>
+    <button onclick="tutupSelamat()" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(5,150,105,.4);">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ========================= PROSEDUR ========================= -->
+<div id="page-prosedur" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:7px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
+      <div class="card" style="margin-bottom:0;overflow:auto;">
+        <div class="ch"><div class="ci b">📋</div><div class="ct">Langkah Prosedur</div></div>
+        <div id="simSteps" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div class="notebox" style="margin-top:8px;">
+          <div class="nt">Rumus Penting</div>
+          <p>%Frekuensi = (N / Q) × 100<br>N = kuadrat yang mengandung spesies, Q = total kuadrat</p>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
+        <div class="ch"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
+        <ul class="olist" style="font-size:11px;">
+          <li>Pasang paku <strong>tanpa merusak vegetasi</strong> yang ada</li>
+          <li>Tempatkan kuadrat secara <strong>acak</strong>, bukan di area yang sudah diketahui padat</li>
+          <li>Catat keberadaan spesies dengan <strong>Y (ada)</strong> atau <strong>N (tidak ada)</strong></li>
+          <li>Identifikasi spesies dengan cermat sebelum mencatat</li>
+          <li>Gunakan minimal <strong>7 kuadrat</strong> agar data representatif</li>
+          <li>Ulangi percobaan dengan lingkungan berbeda untuk perbandingan</li>
+        </ul>
+        <div class="notebox" style="margin-top:8px;">
+          <div class="nt">Prosedur Lab Nyata</div>
+          <p>1. Pilih lokasi penelitian. 2. Pasang 4 paku membentuk kuadrat 1×1 m. 3. Ikat tali ke setiap paku. 4. Buat 6 kuadrat lagi secara acak. 5. Amati dan catat spesies di tiap kuadrat. 6. Hitung frekuensi setiap spesies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= SIMULASI ========================= -->
+<div id="page-simulasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
+
+    <!-- Control Panel -->
+    <div class="ctrl-panel" style="width:190px;flex-shrink:0;">
+      <div class="cg">
+        <label>Pilih Lingkungan</label>
+        <select id="envSelect" onchange="changeEnv()">
+          <option value="sekolah">🏫 Halaman Sekolah</option>
+          <option value="rumah">🏠 Halaman Rumah</option>
+          <option value="jalanan">🛣️ Tepi Jalan</option>
+          <option value="sungai">🌊 Tepi Sungai</option>
+          <option value="pabrik">🏭 Kawasan Pabrik</option>
+        </select>
+      </div>
+
+      <div style="background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:8px;">
+        <div style="font-size:9px;font-weight:700;color:var(--acc3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Legenda Spesies</div>
+        <div id="speciesLegend" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;"></div>
+      </div>
+
+      <button class="btn btn-ws" onclick="showWsOverlay()">📊 Lembar Kerja</button>
+      <button class="btn btn-start" onclick="toggleHelp()">❓ Bantuan</button>
+      <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
+    </div>
+
+    <!-- Right: Canvas + Overlays -->
+    <div style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;position:relative;">
+      <div class="aquarium" style="position:relative;">
+        <h3>🗺️ Peta Area Penelitian — <span id="envLabel">Halaman Sekolah</span></h3>
+        <div style="position:relative;flex:1;min-height:0;overflow:hidden;">
+          <canvas id="simCanvas" style="width:100%;height:100%;display:block;border-radius:6px;border:1px solid var(--border);"></canvas>
+          <div id="pinsLayer" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+
+          <!-- Close-up overlay -->
+          <div class="sim-overlay" id="closeupOverlay">
+            <div class="sim-overlay-header">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--acc3);">🔍 Tampilan Kuadrat <span id="closeupLabel">1</span></div>
+              <button class="btn-back-sim" onclick="closeCloseup()">◄ Kembali</button>
+            </div>
+            <canvas id="closeupCanvas" style="flex:1;border-radius:6px;border:1px solid var(--border);display:block;width:100%;"></canvas>
+          </div>
+
+          <!-- Worksheet overlay -->
+          <div class="sim-overlay" id="wsOverlay">
+            <div class="sim-overlay-header">
+              <div>
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--acc3);">Lembar Kerja Pengamatan</div>
+                
+              </div>
+              <button class="btn-back-sim" onclick="closeWsOverlay()">◄ Kembali ke Peta</button>
+            </div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px;flex-shrink:0;">Masukkan <strong style="color:var(--green)">Y</strong> jika spesies ada atau <strong style="color:var(--red)">N</strong> jika tidak ada pada setiap kuadrat.</div>
+            <div style="overflow:auto;flex:1;">
+              <table class="wstable" id="wsTable"></table>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;flex-shrink:0;align-items:center;">
+              <div style="font-size:10px;color:var(--text3);">
+                <span style="display:inline-block;width:14px;height:14px;background:#d1fae5;border:1px solid #6ee7b7;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>Y = Hadir
+                <span style="display:inline-block;width:14px;height:14px;background:#fee2e2;border:1px solid #fca5a5;border-radius:2px;vertical-align:middle;margin-left:8px;margin-right:3px;"></span>N = Tidak hadir
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="helpModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(8px);">
+    <div style="background:#fff;border-radius:14px;padding:24px 32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(30,41,59,.18);animation:fu .25s ease;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--acc3);margin-bottom:12px;">❓ Cara Menggunakan Simulator</div>
+      <ol style="padding-left:18px;font-size:12.5px;line-height:1.9;color:var(--text2);">
+        <li>Pilih <strong>lingkungan penelitian</strong> dari dropdown kiri.</li>
+        <li>Klik <strong>pin bernomor</strong> pada peta untuk memperbesar tampilan kuadrat.</li>
+        <li>Amati spesies tumbuhan yang ada dalam kuadrat.</li>
+        <li>Klik <strong>Lembar Kerja</strong>, masukkan <strong style="color:var(--green)">Y</strong> atau <strong style="color:var(--red)">N</strong>.</li>
+        <li>Lembar kerja menghitung <strong>frekuensi populasi</strong> secara otomatis.</li>
+        <li>Klik <strong>Reset</strong> untuk memulai ulang percobaan.</li>
+        <li>Bandingkan hasil antar lingkungan untuk analisis keanekaragaman.</li>
+      </ol>
+      <button onclick="toggleHelp()" style="margin-top:16px;padding:8px 22px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= DISKUSI ========================= -->
+<div id="page-evaluasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,2vw,18px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
+      </div>
+      <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Apa yang dimaksud dengan frekuensi populasi tumbuhan?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban Anda..." oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Bagaimana cara menghitung frekuensi dengan metode kuadrat?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban Anda..." oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Spesies mana yang memiliki frekuensi tertinggi di lingkungan yang kamu amati?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban Anda..." oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Mengapa distribusi spesies berbeda-beda antar lingkungan?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban Anda..." oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;grid-column:span 2;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Apa hubungan antara frekuensi populasi tumbuhan dengan tingkat keanekaragaman hayati suatu ekosistem?</div></div>
+        <textarea class="disc-area" placeholder="Jawaban Anda..." oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ===================== NAV =====================
+function toggleNav(){document.getElementById('mainNav').classList.toggle('open');}
+function closeNav(){document.getElementById('mainNav').classList.remove('open');}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('nav')&&!e.target.closest('#menuToggle'))closeNav();
+});
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='simulasi')setTimeout(()=>{resizeCanvases();drawScene();buildPins();},40);
+}
+
+// ===================== PROSEDUR STEPS =====================
+const simSteps=[
+  {icon:"📍",text:"Pilih <strong>lokasi penelitian</strong> dari menu dropdown di panel kontrol simulasi."},
+  {icon:"🔲",text:"Klik <strong>pin bernomor</strong> pada peta untuk membuka tampilan closeup kuadrat tersebut."},
+  {icon:"👁️",text:"Amati <strong>spesies tumbuhan</strong> yang hadir dalam petak kuadrat tersebut."},
+  {icon:"📊",text:"Klik <strong>Lembar Kerja</strong>, masukkan <strong>Y</strong> (hadir) atau <strong>N</strong> (tidak hadir)."},
+  {icon:"🔄",text:"Ulangi untuk semua <strong>7 kuadrat</strong> yang tersedia di area penelitian."},
+  {icon:"📈",text:"Lembar kerja <strong>menghitung otomatis</strong> nilai N, Q, dan %Frekuensi setiap spesies."},
+  {icon:"🌍",text:"Ganti lingkungan dan <strong>bandingkan</strong> pola distribusi spesies antar ekosistem."},
+];
+(function buildSteps(){
+  const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea'];
+  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">
+    ${simSteps.map((s,i)=>{
+      const clr=colors[i%colors.length];
+      const nclr=colors[(i+1)%colors.length];
+      const isLast=i===simSteps.length-1;
+      return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;" class="map-step">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
+          <div class="step-icon-btn" data-step="${i}" style="width:36px;height:36px;border-radius:50%;background:${clr};display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;font-size:16px;cursor:pointer;transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s;">${s.icon}</div>
+          ${!isLast?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nclr}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+        </div>
+        <div id="step-box-${i}" style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:8px;padding:6px 10px;margin-bottom:${isLast?'0':'0px'};transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,background .25s;">
+          <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+          <p style="font-size:clamp(11px,1.2vw,12.5px);color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Attach click zoom effect to each icon
+  const stepSfx=new Audio('https://denicendrianto41.github.io/jump.wav');
+  document.querySelectorAll('.step-icon-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const idx=+this.dataset.step;
+      const box=document.getElementById('step-box-'+idx);
+      // Sound
+      stepSfx.currentTime=0;stepSfx.play().catch(()=>{});
+      // Icon pop
+      this.style.transform='scale(1.35)';
+      this.style.boxShadow='0 6px 20px '+this.style.background+'88';
+      setTimeout(()=>{this.style.transform='scale(1)';},300);
+      // Box zoom
+      box.style.transform='scale(1.04)';
+      box.style.boxShadow='0 4px 18px rgba(0,0,0,0.12)';
+      box.style.background=box.style.background.replace('10','25');
+      setTimeout(()=>{
+        box.style.transform='scale(1)';
+        box.style.boxShadow='none';
+        box.style.background='';
+      },400);
+    });
+  });
+})();
+
+// ===================== SIMULATION DATA =====================
+const SPECIES=[
+  {id:0,name:"Spesies 1",latin:"Coleus sp.",color:"#dc2626",type:"coleus"},
+  {id:1,name:"Spesies 2",latin:"Viola sp.",color:"#9333ea",type:"violet"},
+  {id:2,name:"Spesies 3",latin:"Helianthus annuus",color:"#d97706",type:"sunflower"},
+  {id:3,name:"Spesies 4",latin:"Epipremnum sp.",color:"#16a34a",type:"pothos"},
+  {id:4,name:"Spesies 5",latin:"Zinnia sp.",color:"#ec4899",type:"zinnia"},
+  {id:5,name:"Spesies 6",latin:"Pandanus sp.",color:"#15803d",type:"pandanus"},
+];
+
+const ENVS={
+  sekolah:{label:"Halaman Sekolah",sky:["#87CEEB","#b0dff5"],ground:["#6b8a40","#4a6a20"],buildingType:"school",
+    pins:[{x:.50,y:.84},{x:.17,y:.78},{x:.82,y:.76},{x:.42,y:.63},{x:.72,y:.61},{x:.14,y:.55},{x:.52,y:.47}],
+    plants:[[true,false,true,false,true,false],[false,true,false,true,true,true],[true,false,true,true,false,false],[false,true,true,false,true,true],[true,true,false,true,false,true],[false,false,true,true,true,false],[true,true,false,false,true,true]]
+  },
+  rumah:{label:"Halaman Rumah",sky:["#87CEEB","#c5e8f8"],ground:["#5a8a30","#3a6a10"],buildingType:"house",
+    pins:[{x:.50,y:.84},{x:.16,y:.78},{x:.83,y:.76},{x:.40,y:.64},{x:.73,y:.62},{x:.13,y:.56},{x:.51,y:.48}],
+    plants:[[true,true,true,false,true,false],[false,true,false,false,true,true],[true,true,true,true,false,false],[false,true,false,true,true,false],[true,false,true,true,false,true],[false,true,true,false,true,false],[true,false,false,true,true,true]]
+  },
+  jalanan:{label:"Tepi Jalan",sky:["#87CEEB","#c5e8f8"],ground:["#8B7355","#6B5335"],buildingType:"roadside",
+    pins:[{x:.50,y:.84},{x:.16,y:.78},{x:.83,y:.76},{x:.40,y:.64},{x:.73,y:.62},{x:.13,y:.56},{x:.51,y:.48}],
+    plants:[[false,true,false,true,false,true],[true,false,true,false,true,false],[false,true,false,false,true,false],[true,false,false,true,false,true],[false,true,true,false,false,false],[true,false,false,true,false,true],[false,false,true,false,true,false]]
+  },
+  sungai:{label:"Tepi Sungai",sky:["#87CEEB","#b0dff5"],ground:["#4a8a30","#3a6a20"],buildingType:"riverside",
+    pins:[{x:.47,y:.84},{x:.14,y:.78},{x:.80,y:.76},{x:.38,y:.64},{x:.70,y:.62},{x:.12,y:.56},{x:.49,y:.48}],
+    plants:[[true,true,true,false,true,true],[true,false,true,true,false,true],[false,true,true,true,true,false],[true,true,false,true,true,true],[true,false,true,false,true,true],[false,true,true,true,false,true],[true,true,false,true,true,false]]
+  },
+  pabrik:{label:"Kawasan Pabrik",sky:["#a0b0c0","#808090"],ground:["#7a7a6a","#5a5a4a"],buildingType:"factory",
+    pins:[{x:.50,y:.84},{x:.16,y:.78},{x:.83,y:.76},{x:.40,y:.64},{x:.73,y:.62},{x:.13,y:.56},{x:.51,y:.48}],
+    plants:[[false,true,false,false,false,true],[true,false,false,true,false,false],[false,false,true,false,true,false],[true,false,false,false,false,true],[false,true,false,true,false,false],[false,false,false,false,true,false],[true,false,true,false,false,false]]
+  }
+};
+
+let currentEnv='sekolah';
+let worksheetData={};
+let currentView='scene';
+let currentQuadrat=0;
+
+function seededRng(seed){
+  let h=0;for(let i=0;i<seed.length;i++)h=Math.imul(31,h)+seed.charCodeAt(i)|0;
+  return()=>{h=Math.imul(2654435761,h)^(h>>>16);return((h>>>0)/4294967296);};
+}
+
+// ===================== SPECIES LEGEND =====================
+function drawSpeciesIcon(canvas, sp){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#f0f8e8';
+  ctx.beginPath();if(ctx.roundRect)ctx.roundRect(2,2,W-4,H-4,6);else ctx.rect(2,2,W-4,H-4);ctx.fill();
+  drawMediumPlant(ctx,W/2,H*0.75,sp.color,sp.type,28,1.0);
+}
+
+function buildSpeciesLegend(){
+  const el=document.getElementById('speciesLegend');
+  el.innerHTML='';
+  SPECIES.forEach(sp=>{
+    const card=document.createElement('div');
+    card.style.cssText='background:#fff;border:2px solid #c8a840;border-radius:6px;display:flex;flex-direction:column;align-items:center;padding:5px 3px;';
+    const cv=document.createElement('canvas');
+    cv.width=80;cv.height=80;
+    cv.style.cssText='width:60px;height:60px;';
+    drawSpeciesIcon(cv,sp);
+    const nm=document.createElement('div');
+    nm.style.cssText='font-size:10px;color:#4a3010;margin-top:2px;font-weight:bold;text-align:center;';
+    nm.textContent=sp.name;
+    card.appendChild(cv);card.appendChild(nm);
+    el.appendChild(card);
+  });
+}
+
+// ===================== CANVAS RESIZE =====================
+function resizeCanvases(){
+  const sc=document.getElementById('simCanvas');
+  const wrap=sc.parentElement;
+  sc.width=wrap.clientWidth||600;
+  sc.height=wrap.clientHeight||350;
+  const cc=document.getElementById('closeupCanvas');
+  cc.width=sc.width;cc.height=sc.height;
+}
+
+// ===================== SCENE DRAWING =====================
+function drawScene(){
+  const canvas=document.getElementById('simCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const env=ENVS[currentEnv];
+  ctx.clearRect(0,0,W,H);
+
+  // Sky
+  const skyG=ctx.createLinearGradient(0,0,0,H*.45);
+  skyG.addColorStop(0,env.sky[0]);skyG.addColorStop(1,env.sky[1]);
+  ctx.fillStyle=skyG;ctx.fillRect(0,0,W,H*.45);
+
+  // Building
+  drawBuilding(ctx,W,H,env.buildingType);
+
+  // Ground
+  const gG=ctx.createLinearGradient(0,H*.35,0,H);
+  gG.addColorStop(0,env.ground[0]);gG.addColorStop(1,env.ground[1]);
+  ctx.fillStyle=gG;
+  ctx.beginPath();ctx.moveTo(0,H*.38);ctx.lineTo(W,H*.38);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+
+  // Scattered plants
+  const rng=seededRng(currentEnv);
+  for(let i=0;i<25;i++){
+    const x=rng()*W;const y=H*.40+rng()*H*.55;
+    const si=Math.floor(rng()*6);
+    drawTinyPlant(ctx,x,y,SPECIES[si].color,SPECIES[si].type,10+rng()*7);
+  }
+
+  // Quadrat frames
+  const env2=ENVS[currentEnv];
+  ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=2.5;
+  env2.pins.forEach((pos,i)=>{
+    const cx=pos.x*W,cy=pos.y*H;
+    const fw=W*.07,fh=H*.085;
+    ctx.beginPath();
+    ctx.moveTo(cx-fw*.9,cy-fh*.2);ctx.lineTo(cx+fw*.9,cy-fh*.2);
+    ctx.lineTo(cx+fw*1.1,cy+fh*.85);ctx.lineTo(cx-fw*1.1,cy+fh*.85);
+    ctx.closePath();ctx.stroke();
+  });
+}
+
+function drawBuilding(ctx,W,H,type){
+  if(type==='school'){
+    ctx.fillStyle='#e8c080';ctx.fillRect(W*.25,H*.08,W*.50,H*.32);
+    ctx.fillStyle='#c09040';ctx.fillRect(W*.25,H*.06,W*.50,H*.05);
+    for(let i=0;i<5;i++){
+      ctx.fillStyle='#5ab0d8';ctx.fillRect(W*(.29+i*.09),H*.14,W*.055,H*.08);
+      ctx.strokeStyle='#a08030';ctx.lineWidth=1.5;ctx.strokeRect(W*(.29+i*.09),H*.14,W*.055,H*.08);
+    }
+    ctx.fillStyle='#7a5030';ctx.fillRect(W*.46,H*.26,W*.08,H*.14);
+    ctx.strokeStyle='#888';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(W*.60,H*.02);ctx.lineTo(W*.60,H*.13);ctx.stroke();
+    ctx.fillStyle='#e03030';ctx.fillRect(W*.60,H*.02,W*.06,H*.04);
+    ctx.fillStyle='#888';ctx.fillRect(0,H*.38,W,H*.04);
+  } else if(type==='house'){
+    ctx.fillStyle='#5a3a10';ctx.fillRect(W*.12,H*.22,W*.03,H*.18);
+    ctx.fillStyle='#3a8a20';ctx.beginPath();ctx.arc(W*.135,H*.18,W*.06,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f0c0b0';ctx.fillRect(W*.38,H*.17,W*.30,H*.22);
+    ctx.fillStyle='#e03030';
+    ctx.beginPath();ctx.moveTo(W*.34,H*.18);ctx.lineTo(W*.53,H*.05);ctx.lineTo(W*.72,H*.18);ctx.fill();
+    ctx.fillStyle='#c8a860';
+    for(let i=0;i<12;i++)ctx.fillRect(W*(.30+i*.035),H*.36,W*.018,H*.05);
+    ctx.fillRect(W*.30,H*.38,W*.42,H*.008);ctx.fillRect(W*.30,H*.40,W*.42,H*.008);
+    ctx.fillStyle='#8ad8f0';ctx.fillRect(W*.42,H*.21,W*.07,H*.07);
+    ctx.fillStyle='#8ad8f0';ctx.fillRect(W*.57,H*.21,W*.07,H*.07);
+    ctx.fillStyle='#8a5020';ctx.fillRect(W*.495,H*.27,W*.06,H*.12);
+    ctx.fillStyle='#6aaa30';ctx.fillRect(0,H*.38,W,H*.02);
+  } else if(type==='roadside'){
+    ctx.fillStyle='#d0d8e8';ctx.fillRect(W*.06,H*.06,W*.14,H*.30);
+    ctx.fillStyle='#5090c0';ctx.fillRect(W*.65,H*.08,W*.12,H*.28);
+    ctx.fillStyle='#708090';ctx.fillRect(W*.79,H*.12,W*.10,H*.24);
+    ctx.fillStyle='#5a3a10';ctx.fillRect(W*.30,H*.26,W*.02,H*.12);
+    ctx.fillStyle='#3a8a20';ctx.beginPath();ctx.arc(W*.31,H*.23,W*.035,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#5a3a10';ctx.fillRect(W*.52,H*.26,W*.02,H*.12);
+    ctx.fillStyle='#3a8a20';ctx.beginPath();ctx.arc(W*.53,H*.23,W*.035,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#888';ctx.fillRect(0,H*.37,W,H*.05);
+    ctx.fillStyle='#ffff80';
+    ctx.fillRect(W*.2,H*.39,W*.06,H*.01);ctx.fillRect(W*.4,H*.39,W*.06,H*.01);ctx.fillRect(W*.6,H*.39,W*.06,H*.01);
+  } else if(type==='riverside'){
+    ctx.fillStyle='#9ab090';ctx.beginPath();ctx.moveTo(0,H*.35);ctx.lineTo(W*.2,H*.05);ctx.lineTo(W*.4,H*.35);ctx.fill();
+    ctx.fillStyle='#8aa080';ctx.beginPath();ctx.moveTo(W*.25,H*.35);ctx.lineTo(W*.5,H*.08);ctx.lineTo(W*.75,H*.35);ctx.fill();
+    ctx.fillStyle='#5098d0';ctx.fillRect(W*.55,H*.10,W*.45,H*.28);
+    ctx.fillStyle='#60a8e0';ctx.fillRect(W*.55,H*.10,W*.45,H*.05);
+    for(let t=0;t<3;t++){
+      ctx.fillStyle='#5a3a10';ctx.fillRect(W*(.60+t*.10),H*.20,W*.015,H*.15);
+      ctx.fillStyle='#2a7a18';ctx.beginPath();ctx.arc(W*(.607+t*.10),H*.18,W*.03,0,Math.PI*2);ctx.fill();
+    }
+  } else if(type==='factory'){
+    ctx.fillStyle='#8a8070';ctx.fillRect(W*.10,H*.10,W*.30,H*.28);
+    ctx.fillStyle='#9a9080';ctx.fillRect(W*.45,H*.15,W*.20,H*.23);
+    ctx.fillStyle='#7a7060';ctx.fillRect(W*.68,H*.12,W*.22,H*.26);
+    [W*.15,W*.25,W*.50,W*.72,W*.82].forEach(cx=>{
+      ctx.fillStyle='#6a6050';ctx.fillRect(cx,H*.03,W*.025,H*.08);
+      ctx.fillStyle='rgba(180,180,180,0.6)';
+      ctx.beginPath();ctx.arc(cx+W*.012,H*.025,W*.018,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(cx+W*.025,H*.01,W*.014,0,Math.PI*2);ctx.fill();
+    });
+  }
+}
+
+function drawTinyPlant(ctx,x,y,color,type,size){
+  ctx.save();ctx.globalAlpha=0.7;
+  if(type==='sunflower'){
+    ctx.fillStyle='#f39c12';
+    for(let p=0;p<6;p++){const a=(p/6)*Math.PI*2;ctx.beginPath();ctx.arc(x+Math.cos(a)*size*.5,y+Math.sin(a)*size*.5,size*.25,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle='#5a3010';ctx.beginPath();ctx.arc(x,y,size*.35,0,Math.PI*2);ctx.fill();
+  } else if(type==='pandanus'){
+    for(let l=0;l<4;l++){ctx.strokeStyle=color;ctx.lineWidth=size*.15;
+    ctx.beginPath();ctx.moveTo(x,y);const a=(l/4)*Math.PI*1.5-.4;
+    ctx.lineTo(x+Math.cos(a)*size,y-Math.abs(Math.sin(a))*size);ctx.stroke();}
+  } else {
+    ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,size*.5,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#2a6a10';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+size*.6);ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawMediumPlant(ctx,x,y,color,type,size,alpha){
+  ctx.save();ctx.globalAlpha=alpha;
+  if(type==='sunflower'){
+    ctx.strokeStyle='#2d7a2d';ctx.lineWidth=size*.1;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-size*1.3);ctx.stroke();
+    ctx.fillStyle='#3a8a20';
+    ctx.beginPath();ctx.ellipse(x-size*.3,y-size*.5,size*.35,size*.15,-.7,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(x+size*.3,y-size*.8,size*.35,size*.15,.7,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f39c12';
+    for(let p=0;p<12;p++){const a=(p/12)*Math.PI*2;ctx.beginPath();ctx.ellipse(x+Math.cos(a)*size*.55,y-size*1.3+Math.sin(a)*size*.55,size*.2,size*.1,a,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle='#5a3010';ctx.beginPath();ctx.arc(x,y-size*1.3,size*.35,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#7a4a20';ctx.beginPath();ctx.arc(x,y-size*1.3,size*.28,0,Math.PI*2);ctx.fill();
+  } else if(type==='coleus'){
+    ctx.strokeStyle='#7a3a2a';ctx.lineWidth=size*.08;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-size*1.2);ctx.stroke();
+    const lc=[color,'#a03050','#c04060'];
+    for(let l=0;l<5;l++){const a=(l/5)*Math.PI*2+.3;const lx=x+Math.cos(a)*size*.5;const ly=y-size*.4-l*size*.15;
+    ctx.fillStyle=lc[l%3];ctx.beginPath();ctx.ellipse(lx,ly,size*.45,size*.28,a-.5,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y-size*1.1,size*.35,size*.45,0,0,Math.PI*2);ctx.fill();
+  } else if(type==='violet'){
+    ctx.strokeStyle='#4a7a30';ctx.lineWidth=size*.07;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-size);ctx.stroke();
+    ctx.fillStyle='#3a8a30';
+    ctx.beginPath();ctx.ellipse(x-size*.35,y-size*.3,size*.35,size*.2,-.5,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(x+size*.35,y-size*.55,size*.35,size*.2,.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=color;
+    for(let p=0;p<5;p++){const a=(p/5)*Math.PI*2;ctx.beginPath();ctx.ellipse(x+Math.cos(a)*size*.4,y-size+Math.sin(a)*size*.4,size*.22,size*.14,a,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle='#f5f070';ctx.beginPath();ctx.arc(x,y-size,size*.15,0,Math.PI*2);ctx.fill();
+  } else if(type==='zinnia'){
+    ctx.strokeStyle='#4a7a20';ctx.lineWidth=size*.08;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-size*1.1);ctx.stroke();
+    ctx.fillStyle='#3a7a20';
+    ctx.beginPath();ctx.ellipse(x-size*.3,y-size*.4,size*.3,size*.15,-.6,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(x+size*.3,y-size*.65,size*.3,size*.15,.6,0,Math.PI*2);ctx.fill();
+    const cols=[color,'#c0186a','#e040a0'];
+    for(let r=0;r<3;r++){ctx.fillStyle=cols[r];for(let p=0;p<8;p++){const a=(p/8)*Math.PI*2+r*.2;ctx.beginPath();ctx.ellipse(x+Math.cos(a)*size*(.5-r*.12),y-size*1.1+Math.sin(a)*size*(.5-r*.12),size*(.2-r*.03),size*.1,a,0,Math.PI*2);ctx.fill();}}
+    ctx.fillStyle='#f0d040';ctx.beginPath();ctx.arc(x,y-size*1.1,size*.18,0,Math.PI*2);ctx.fill();
+  } else if(type==='pothos'){
+    ctx.strokeStyle='#3a6a20';ctx.lineWidth=size*.07;
+    for(let s=0;s<3;s++){const sx=x+(s-1)*size*.3;
+    ctx.beginPath();ctx.moveTo(sx,y);ctx.quadraticCurveTo(sx+size*.2,y-size*.8,sx,y-size*1.2);ctx.stroke();
+    ctx.fillStyle=s===1?'#2d8a30':'#4aaa40';
+    ctx.beginPath();ctx.ellipse(sx,y-size*.6-s*size*.15,size*.38,size*.25,s*.4-.4,0,Math.PI*2);ctx.fill();}
+  } else if(type==='pandanus'){
+    const lc=['#1a6a1a','#2a7a2a','#3a8a1a'];
+    for(let l=0;l<6;l++){const a=(l/6)*Math.PI*2;
+    ctx.strokeStyle=lc[l%3];ctx.lineWidth=size*.12;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+Math.cos(a)*size*.6,y+Math.sin(a)*size*.3-size*.8,x+Math.cos(a)*size*1.2,y+Math.sin(a)*size*.5-size*.2);ctx.stroke();}
+    ctx.fillStyle='#1a5a10';ctx.beginPath();ctx.arc(x,y,size*.18,0,Math.PI*2);ctx.fill();
+  } else {
+    ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y-size*.5,size*.5,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ===================== PINS =====================
+function buildPins(){
+  const layer=document.getElementById('pinsLayer');
+  layer.innerHTML='';
+  const env=ENVS[currentEnv];
+  env.pins.forEach((pos,i)=>{
+    const pin=document.createElement('div');
+    pin.style.cssText=`position:absolute;left:${pos.x*100}%;top:${pos.y*100}%;transform:translate(-50%,-100%);cursor:pointer;pointer-events:all;display:flex;flex-direction:column;align-items:center;transition:transform .1s;`;
+    pin.onmouseenter=()=>pin.style.transform='translate(-50%,-100%) scale(1.1)';
+    pin.onmouseleave=()=>pin.style.transform='translate(-50%,-100%) scale(1)';
+    pin.innerHTML=`<svg width="40" height="50" viewBox="0 0 46 56">
+      <ellipse cx="23" cy="52" rx="8" ry="3" fill="rgba(0,0,0,0.25)"/>
+      <path d="M23 54 C23 54 5 35 5 22 C5 12 13 4 23 4 C33 4 41 12 41 22 C41 35 23 54 23 54Z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.5"/>
+      <circle cx="23" cy="22" r="11" fill="#1e3a8a"/>
+      <text x="23" y="27" text-anchor="middle" fill="white" font-weight="bold" font-size="14" font-family="Arial">${i+1}</text>
+    </svg>`;
+    pin.addEventListener('click',()=>openCloseup(i));
+    layer.appendChild(pin);
+  });
+  // Update quadrat count in stats
+  // quadrat count updated (display removed)
+}
+
+// ===================== CLOSE-UP =====================
+function openCloseup(idx){
+  currentQuadrat=idx;
+  currentView='closeup';
+  document.getElementById('closeupLabel').textContent=idx+1;
+  document.getElementById('closeupOverlay').classList.add('active');
+  document.getElementById('wsOverlay').classList.remove('active');
+  drawCloseup(idx);
+}
+function closeCloseup(){
+  currentView='scene';
+  document.getElementById('closeupOverlay').classList.remove('active');
+}
+
+function drawCloseup(idx){
+  const canvas=document.getElementById('closeupCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const env=ENVS[currentEnv];
+  ctx.clearRect(0,0,W,H);
+
+  const gG=ctx.createLinearGradient(0,0,0,H);
+  gG.addColorStop(0,env.ground[0]);gG.addColorStop(1,env.ground[1]);
+  ctx.fillStyle=gG;ctx.fillRect(0,0,W,H);
+
+  const rng=seededRng(currentEnv+idx+'bg');
+  for(let i=0;i<15;i++){
+    const x=rng()*W;const y=rng()*H;const si=Math.floor(rng()*6);
+    drawMediumPlant(ctx,x,y,SPECIES[si].color,SPECIES[si].type,18+rng()*12,.4);
+  }
+
+  const qx=W*.15,qy=H*.15,qw=W*.70,qh=H*.65;
+  ctx.strokeStyle='rgba(255,255,255,0.95)';ctx.lineWidth=4;
+  ctx.beginPath();
+  ctx.moveTo(qx+qw*.08,qy);ctx.lineTo(qx+qw*.92,qy);
+  ctx.lineTo(qx+qw,qy+qh);ctx.lineTo(qx,qy+qh);
+  ctx.closePath();ctx.stroke();
+  ctx.lineWidth=5;ctx.strokeStyle='rgba(200,200,200,0.9)';
+  ctx.beginPath();ctx.moveTo(qx+qw*.08-10,qy-6);ctx.lineTo(qx+qw*.92+10,qy-6);ctx.stroke();
+
+  // Quadrat label
+  ctx.fillStyle='rgba(0,0,0,0.5)';
+  if(ctx.roundRect)ctx.roundRect(qx,qy-28,80,22,5); else ctx.rect(qx,qy-28,80,22);
+  ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 12px Inter,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText(`Kuadrat ${idx+1}`,qx+8,qy-17);
+
+  // Plants inside quadrat
+  const plants=env.plants[idx];
+  const rng2=seededRng(currentEnv+idx+'inside');
+  plants.forEach((present,si)=>{
+    if(!present)return;
+    const count=Math.floor(rng2()*2)+2;
+    for(let c=0;c<count;c++){
+      const px=qx+qw*.1+rng2()*qw*.8;
+      const py=qy+qh*.05+rng2()*qh*.85;
+      drawMediumPlant(ctx,px,py,SPECIES[si].color,SPECIES[si].type,30+rng2()*18,1.0);
+    }
+  });
+
+  // (legend spesies di closeup dihapus - tersedia di panel kontrol)
+}
+
+// ===================== WORKSHEET =====================
+function showWsOverlay(){
+  currentView='worksheet';
+  document.getElementById('closeupOverlay').classList.remove('active');
+  document.getElementById('wsOverlay').classList.add('active');
+  buildWorksheet();
+}
+function closeWsOverlay(){
+  currentView='scene';
+  document.getElementById('wsOverlay').classList.remove('active');
+}
+
+function buildWorksheet(){
+  const env=ENVS[currentEnv];
+  const tbl=document.getElementById('wsTable');
+  const rNums=['I','II','III','IV','V','VI','VII'];
+  let html=`<thead><tr>
+    <th style="min-width:110px;">Spesies Tumbuhan</th>
+    ${rNums.map(r=>`<th>Kuadrat ${r}</th>`).join('')}
+    <th style="background:#dbeafe;">N (Kuadrat dgn spesies)</th>
+    <th style="background:#dbeafe;">Q (Total)</th>
+    <th style="background:#d1fae5;">%Frekuensi (N/Q×100)</th>
+  </tr></thead><tbody>`;
+  SPECIES.forEach((sp,si)=>{
+    html+=`<tr><td style="text-align:left;font-weight:600;color:var(--text);">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${sp.color};margin-right:5px;vertical-align:middle;"></span>
+      ${sp.name}
+    </td>`;
+    for(let q=0;q<7;q++){
+      const key=`${si}-${q}`;const val=worksheetData[key]||'';
+      const cls=val==='Y'?'is-y':val==='N'?'is-n':'';
+      html+=`<td><input class="ws-input ${cls}" maxlength="1" value="${val}" data-si="${si}" data-qi="${q}"/></td>`;
+    }
+    const freq=calcFreq(si);
+    const pct=freq>0?((freq/7)*100).toFixed(2):'';
+    html+=`<td class="ws-freq">${freq>0?freq:''}</td><td class="ws-freq">7</td><td class="ws-pct">${pct?pct+'%':''}</td></tr>`;
+  });
+  html+=`</tbody>`;
+  tbl.innerHTML=html;
+  tbl.querySelectorAll('.ws-input').forEach(inp=>{
+    inp.addEventListener('input',function(){
+      const v=this.value.toUpperCase().replace(/[^YN]/g,'');
+      this.value=v;
+      const si=+this.dataset.si,qi=+this.dataset.qi;
+      worksheetData[`${si}-${qi}`]=v;
+      this.className='ws-input'+(v==='Y'?' is-y':v==='N'?' is-n':'');
+      refreshRow(si);
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){
+        const si=+this.dataset.si,qi=+this.dataset.qi;
+        const next=tbl.querySelector(`[data-si="${si}"][data-qi="${qi+1}"]`)||
+                    tbl.querySelector(`[data-si="${si+1}"][data-qi="0"]`);
+        if(next)next.focus();
+      }
+    });
+  });
+}
+
+function calcFreq(si){
+  let c=0;for(let q=0;q<7;q++)if((worksheetData[`${si}-${q}`]||'').toUpperCase()==='Y')c++;return c;
+}
+
+function refreshRow(si){
+  const tbl=document.getElementById('wsTable');
+  const rows=tbl.querySelectorAll('tbody tr');
+  if(!rows[si])return;
+  const freq=calcFreq(si);
+  const cells=rows[si].querySelectorAll('td');
+  const last=cells.length-1;
+  cells[last-2].textContent=freq>0?freq:'';
+  cells[last].textContent=freq>0?((freq/7)*100).toFixed(2)+'%':'';
+}
+
+// ===================== HELP MODAL =====================
+function toggleHelp(){
+  const m=document.getElementById('helpModal');
+  m.style.display=m.style.display==='flex'?'none':'flex';
+}
+document.getElementById('helpModal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+
+// ===================== ENV CHANGE / RESET =====================
+function changeEnv(){
+  currentEnv=document.getElementById('envSelect').value;
+  worksheetData={};
+  closeCloseup();closeWsOverlay();
+  document.getElementById('envLabel').textContent=ENVS[currentEnv].label;
+  resizeCanvases();drawScene();buildPins();buildWorksheet();
+}
+
+function resetSim(){
+  worksheetData={};
+  closeCloseup();closeWsOverlay();
+  drawScene();buildPins();buildWorksheet();
+}
+
+// ===================== INIT SIMULASI =====================
+function initSim(){
+  buildSpeciesLegend();
+  resizeCanvases();
+  drawScene();
+  buildPins();
+  buildWorksheet();
+  window.addEventListener('resize',()=>{
+    resizeCanvases();drawScene();
+    if(currentView==='closeup')drawCloseup(currentQuadrat);
+  });
+}
+
+// ===================== DISKUSI =====================
+const dqAnswers={};
+function saveDQ(n,v){dqAnswers[n]=v;}
+function clearDQ(){
+  Object.keys(dqAnswers).forEach(k=>delete dqAnswers[k]);
+  document.querySelectorAll('.disc-area').forEach(t=>t.value='');
+}
+
+// ===================== DRAG & DROP =====================
+(function(){
+  const CORRECT_ALAT=new Set(['tali','paku','palu','meteran','clipboard','pensil']);
+  const CORRECT_BAHAN=new Set(['tumbuhan','lok-sekolah','lok-rumah','lok-jalanan','lok-sungai','lok-pabrik']);
+  const TOTAL_ITEMS=CORRECT_ALAT.size+CORRECT_BAHAN.size; // 12
+  let selected=null,ghost=null;
+
+  const sfxBenar={play:()=>{}};const sfxSalah={play:()=>{}};
+  try{
+    const b=new Audio('https://denicendrianto41.github.io/benar.wav');const s=new Audio('https://denicendrianto41.github.io/salah.wav');
+    sfxBenar.play=()=>{b.currentTime=0;b.play().catch(()=>{});};
+    sfxSalah.play=()=>{s.currentTime=0;s.play().catch(()=>{});};
+  }catch(e){}
+
+  function updateProgress(){
+    const alatCount=document.getElementById('drop-alat').querySelectorAll('[data-id]').length;
+    const bahanCount=document.getElementById('drop-bahan').querySelectorAll('[data-id]').length;
+    const total=alatCount+bahanCount;
+    document.getElementById('ab-progress-label').textContent=total+' / '+TOTAL_ITEMS+' item';
+    document.getElementById('ab-progress-bar').style.width=((total/TOTAL_ITEMS)*100)+'%';
+    if(total>=TOTAL_ITEMS) setTimeout(showSelamat,500);
+  }
+
+  // ── Confetti ──
+  function showSelamat(){
+    const ov=document.getElementById('selamatOverlay');
+    const card=document.getElementById('selamatCard');
+    ov.style.display='block';
+    requestAnimationFrame(()=>{card.style.transform='translate(-50%,-50%) scale(1)';});
+    try{const sfxT=new Audio('https://denicendrianto41.github.io/tring.wav');sfxT.play().catch(()=>{});}catch(e){}
+    startConfetti();
+  }
+  window.tutupSelamat=function(){
+    const ov=document.getElementById('selamatOverlay');
+    const card=document.getElementById('selamatCard');
+    card.style.transform='translate(-50%,-50%) scale(0)';
+    setTimeout(()=>{ov.style.display='none';stopConfetti();},400);
+  };
+
+  let confettiAnim=null;
+  const confColors=['#2563eb','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#f97316'];
+  function startConfetti(){
+    const cv=document.getElementById('confettiCanvas');
+    cv.width=window.innerWidth;cv.height=window.innerHeight;
+    const ctx=cv.getContext('2d');
+    const pieces=Array.from({length:120},()=>({
+      x:Math.random()*cv.width,y:-10-Math.random()*200,
+      w:6+Math.random()*8,h:4+Math.random()*6,
+      color:confColors[Math.floor(Math.random()*confColors.length)],
+      rot:Math.random()*360,spin:(Math.random()-.5)*8,
+      vx:(Math.random()-.5)*3,vy:2+Math.random()*3
+    }));
+    function draw(){
+      ctx.clearRect(0,0,cv.width,cv.height);
+      pieces.forEach(p=>{
+        p.x+=p.vx;p.y+=p.vy;p.rot+=p.spin;
+        if(p.y>cv.height){p.y=-10;p.x=Math.random()*cv.width;}
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+      });
+      confettiAnim=requestAnimationFrame(draw);
+    }
+    draw();
+  }
+  function stopConfetti(){
+    if(confettiAnim)cancelAnimationFrame(confettiAnim);
+    const cv=document.getElementById('confettiCanvas');
+    cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+  }
+
+  function showToast(msg,ok){
+    const t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.7);
+      background:${ok?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)'};
+      color:#fff;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;
+      padding:14px 28px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.3);
+      z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);`;
+    document.body.appendChild(t);
+    requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translate(-50%,-50%) scale(1)';});
+    setTimeout(()=>{t.style.opacity='0';t.style.transform='translate(-50%,-50%) scale(0.85)';setTimeout(()=>t.remove(),300);},1400);
+  }
+
+  function createGhost(el,cx,cy){
+    if(ghost)ghost.remove();
+    ghost=el.cloneNode(true);
+    ghost.style.cssText=`position:fixed;pointer-events:none;z-index:8000;opacity:.85;transform:scale(1.08);border-radius:10px;width:${el.offsetWidth}px;box-shadow:0 8px 24px rgba(0,0,0,0.22);`;
+    ghost.style.left=(cx-el.offsetWidth/2)+'px';ghost.style.top=(cy-el.offsetHeight/2)+'px';
+    document.body.appendChild(ghost);
+  }
+  function moveGhost(cx,cy){if(!ghost)return;ghost.style.left=(cx-parseFloat(ghost.style.width)/2)+'px';ghost.style.top=(cy-ghost.offsetHeight/2)+'px';}
+  function removeGhost(){if(ghost){ghost.remove();ghost=null;}}
+  function hitTest(el,cx,cy){const r=el.getBoundingClientRect();return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom;}
+
+  function placeInZone(zone,srcEl){
+    const zId=zone.id;
+    const hintId=zId==='drop-alat'?'drop-alat-hint':'drop-bahan-hint';
+    const cs=zId==='drop-alat'?CORRECT_ALAT:CORRECT_BAHAN;
+    const id=srcEl.dataset.id;
+    if(zone.querySelector(`[data-id="${id}"]`))return;
+    if(!cs.has(id)){
+      sfxSalah.play();showToast('❌ Salah! Coba lagi.',false);
+      zone.style.borderColor='#ef4444';zone.style.background='#fef2f2';
+      setTimeout(()=>{zone.style.borderColor='';zone.style.background='';},800);
+      return;
+    }
+    const h=document.getElementById(hintId);if(h)h.style.display='none';
+    const cl=srcEl.cloneNode(true);cl.style.cursor='default';cl.removeAttribute('draggable');
+    cl.style.transform='scale(0.8)';cl.style.transition='transform .25s cubic-bezier(.34,1.56,.64,1)';
+    requestAnimationFrame(()=>{cl.style.transform='scale(1)';});
+    const rm=document.createElement('button');rm.textContent='✕';
+    rm.style.cssText='position:absolute;top:2px;right:2px;background:rgba(220,38,38,.18);border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;';
+    rm.addEventListener('click',e=>{
+      e.stopPropagation();cl.remove();
+      if(!zone.querySelector('[data-id]')){const h2=document.getElementById(hintId);if(h2)h2.style.display='';}
+      updateProgress();
+    });
+    cl.appendChild(rm);zone.appendChild(cl);
+    // Flash zone green
+    zone.style.borderColor='#10b981';zone.style.background=zId==='drop-alat'?'#dbeafe':'#dcfce7';
+    setTimeout(()=>{zone.style.borderColor='';zone.style.background='';},900);
+    sfxBenar.play();showToast('✅ Benar!',true);
+    updateProgress();
+  }
+
+  function attachItem(el){
+    el.addEventListener('pointerdown',e=>{
+      if(e.target.tagName==='BUTTON')return;
+      e.preventDefault();el.setPointerCapture(e.pointerId);
+      selected=el;el.style.opacity='.45';
+      createGhost(el,e.clientX,e.clientY);
+    });
+    el.addEventListener('pointermove',e=>{
+      if(!selected||selected!==el)return;e.preventDefault();moveGhost(e.clientX,e.clientY);
+    });
+    el.addEventListener('pointerup',e=>{
+      if(!selected||selected!==el)return;e.preventDefault();
+      el.style.opacity='1';removeGhost();
+      ['drop-alat','drop-bahan'].forEach(id=>{const z=document.getElementById(id);if(z&&hitTest(z,e.clientX,e.clientY))placeInZone(z,el);});
+      selected=null;
+    });
+    el.addEventListener('pointercancel',()=>{if(selected===el)el.style.opacity='1';removeGhost();selected=null;});
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.drag-item').forEach(attachItem);
+  });
+})();
+
+// ===================== START =====================
+window.addEventListener('load',initSim);
+</script>
+</body>
+</html>
