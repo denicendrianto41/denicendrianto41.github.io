@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Virtual – Simulasi Wabah Virus</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#dc2626;--acc2:#ef4444;--acc3:#991b1b;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;--blue:#2563eb;
+  --h:56px;
+}
+@media(max-width:768px){:root{--h:46px;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(220,38,38,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(220,38,38,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{position:relative;z-index:10;height:var(--h);flex-shrink:0;background:linear-gradient(135deg,#3d0000,#7f1d1d,#991b1b);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;padding:0 14px;gap:12px;box-shadow:0 2px 10px rgba(80,10,10,0.45);}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#fff;overflow:hidden;padding:2px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-icon img{width:100%;height:100%;object-fit:contain;display:block;}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;display:flex;align-items:center;gap:0;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,0.95);}
+.nb.active{color:#fff;}
+.nb.active::after{transform:scaleX(1);}
+.nb img{width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;}
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
+@media(max-width:640px){
+  header{padding:0 10px;}
+  .logo-text{font-size:16px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#3d0000,#7f1d1d);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;}
+  .nb::after{display:none;}
+  .nb.active{background:rgba(255,255,255,.08);}
+  .nb img{width:24px!important;height:24px!important;}
+}
+/* APP */
+#app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(37,99,235,.1);}.ci.y{background:rgba(217,119,6,.1);}.ci.g{background:rgba(5,150,105,.1);}.ci.r{background:rgba(220,38,38,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:5px;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:clamp(11px,1.2vw,13px);color:var(--text2);line-height:1.5;}
+.sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
+.sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
+/* ── TEORI ARTIKEL ── */
+.article-wrap{max-width:860px;margin:0 auto;padding:0 2px;}
+.article-hero{background:linear-gradient(135deg,#7f1d1d,#dc2626);border-radius:12px;padding:20px 26px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(220,38,38,0.22);}
+.article-hero::after{content:'🦠';position:absolute;right:20px;top:-12px;font-size:88px;opacity:.09;pointer-events:none;}
+.article-kelas{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:#fca5a5;text-transform:uppercase;margin-bottom:6px;}
+.article-judul{font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,2.5vw,22px);font-weight:800;color:#fff;line-height:1.25;margin-bottom:8px;}
+.article-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.article-meta span{font-size:10.5px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px;}
+.article-toc{background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--acc);border-radius:9px;padding:11px 15px;margin-bottom:12px;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.article-toc-title{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:7px;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:3px;counter-reset:toc;}
+.toc-list li{counter-increment:toc;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;cursor:pointer;padding:3px 6px;border-radius:5px;transition:background .15s;}
+.toc-list li:hover{background:#fff1f2;color:var(--acc);}
+.toc-list li::before{content:counter(toc);min-width:18px;height:18px;border-radius:50%;background:rgba(220,38,38,.1);color:var(--acc);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.article-section{margin-bottom:13px;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:7px;border-bottom:2px solid var(--border);}
+.section-num{width:27px;height:27px;border-radius:50%;background:var(--acc);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(220,38,38,0.3);}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.7vw,16px);font-weight:700;color:var(--acc3);}
+.article-body{font-size:clamp(11.5px,1.3vw,13.5px);line-height:1.75;color:var(--text2);}
+.article-body p{margin-bottom:9px;}
+.article-body strong{color:var(--text);}
+.callout{border-radius:8px;padding:9px 13px;margin:9px 0;}
+.callout-info{background:#eff6ff;border-left:3px solid #2563eb;}
+.callout-warn{background:#fffbeb;border-left:3px solid #d97706;}
+.callout-danger{background:#fff1f2;border-left:3px solid #dc2626;}
+.callout-success{background:#ecfdf5;border-left:3px solid #059669;}
+.callout-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.callout-info .callout-lbl{color:#1d4ed8;}
+.callout-warn .callout-lbl{color:#92400e;}
+.callout-danger .callout-lbl{color:#991b1b;}
+.callout-success .callout-lbl{color:#047857;}
+.callout-body{font-size:clamp(11px,1.2vw,12.5px);line-height:1.6;color:var(--text2);}
+.formula-box{background:#0f172a;border-radius:8px;padding:10px 16px;margin:9px 0;font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.2vw,12.5px);color:#93c5fd;line-height:2;}
+.sir-row{display:flex;gap:8px;margin:9px 0;flex-wrap:wrap;}
+.sir-badge{flex:1;min-width:110px;border-radius:8px;padding:10px 12px;text-align:center;border:1px solid transparent;}
+.sir-s{background:#eff6ff;border-color:#bfdbfe;}
+.sir-i{background:#fff1f2;border-color:#fecdd3;}
+.sir-r{background:#ecfdf5;border-color:#a7f3d0;}
+.sir-letter{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;line-height:1;}
+.sir-s .sir-letter{color:#2563eb;}
+.sir-i .sir-letter{color:#dc2626;}
+.sir-r .sir-letter{color:#059669;}
+.sir-name{font-size:10.5px;font-weight:600;color:var(--text2);margin-top:2px;}
+.sir-desc{font-size:9.5px;color:var(--text3);margin-top:2px;line-height:1.4;}
+.r0-table{width:100%;border-collapse:collapse;font-size:11.5px;margin:8px 0;}
+.r0-table th{background:#fff1f2;color:var(--acc3);padding:6px 10px;text-align:left;border:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.r0-table td{padding:5px 10px;border:1px solid var(--border);color:var(--text2);}
+.r0-table tr:nth-child(even) td{background:#f8fafc;}
+/* PROSEDUR */
+.step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+/* SIMULASI */
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23dc2626' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(220,38,38,.1);}
+input[type="range"]{accent-color:var(--acc);width:100%;}
+.btn{width:100%;border:none;border-radius:6px;padding:8px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-start{background:linear-gradient(135deg,#991b1b,#ef4444);color:#fff;box-shadow:0 2px 8px rgba(220,38,38,.3);}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(220,38,38,.35);}
+.btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-stop{background:#fff1f2;border:1px solid #fecdd3;color:var(--red);}
+.btn-stop:hover{background:#ffe4e6;}
+.btn-stop:disabled{opacity:.35;cursor:not-allowed;}
+.btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#fff1f2;}
+.sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;color:var(--acc);display:block;}
+.sl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.wstable{width:100%;border-collapse:collapse;font-size:11px;}
+.wstable th{background:#fff1f2;color:var(--acc3);padding:6px 9px;text-align:left;border:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.wstable td{padding:5px 9px;border:1px solid var(--border);color:var(--text2);}
+.wstable tr:nth-child(even) td{background:#f8fafc;}
+.wstable tr:hover td{background:#fff1f2;}
+.legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;}
+/* DISKUSI */
+.disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:none;outline:none;transition:border-color .17s;line-height:1.6;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(220,38,38,.1);}
+/* LOADING */
+#loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 50%,#dc2626 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#fca5a5;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#fca5a5,#fb923c,#fbbf24);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#fecaca;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+#btnMulai{display:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(5,150,105,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
+#btnMulai:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
+@keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loadScreen">
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Simulasi Wabah Virus</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <button id="btnMulai" onclick="startPraktikum()">Mulai Praktikum</button>
+</div>
+<script>
+(function(){
+  const bar=document.getElementById('loadBar'),pct=document.getElementById('loadPercent'),status=document.getElementById('loadStatus');
+  const msgs=['Memuat laboratorium virtual…','Menyiapkan model SIR…','Menginisialisasi partikel virus…','Konfigurasi parameter wabah…','Menghitung probabilitas infeksi…'];
+  let cur=0,mi=0;const step=20,inc=100/(3000/step);
+  const iv=setInterval(()=>{
+    cur=Math.min(100,cur+inc);const v=Math.floor(cur);
+    bar.style.width=v+'%';pct.textContent=v+'%';
+    if(v>20&&mi===0){mi=1;status.textContent=msgs[1];}
+    if(v>40&&mi===1){mi=2;status.textContent=msgs[2];}
+    if(v>60&&mi===2){mi=3;status.textContent=msgs[3];}
+    if(v>80&&mi===3){mi=4;status.textContent=msgs[4];}
+    if(cur>=100){clearInterval(iv);pct.textContent='100%';status.textContent='✅ Laboratorium siap digunakan!';document.getElementById('btnMulai').style.display='block';}
+  },step);
+})();
+function startPraktikum(){
+  new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
+  const ls=document.getElementById('loadScreen');ls.classList.add('hide');setTimeout(()=>ls.style.display='none',650);
+}
+</script>
+
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<script>
+document.addEventListener('click',function(e){
+  const el=e.target.closest('button,.nb,.btn,select,input[type="range"]');
+  if(!el||el.id==='btnMulai')return;
+  const sfx=document.getElementById('clickSfx');if(!sfx)return;
+  sfx.currentTime=0;sfx.play().catch(()=>{});
+});
+</script>
+
+<!-- HEADER -->
+<header style="justify-content:space-between;">
+  <div class="logo">
+    <div class="logo-icon"><img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo"></div>
+    <div><div class="logo-text">Lab Maya Biologi</div><div class="logo-sub">Simulasi Wabah Virus</div></div>
+  </div>
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('teori',this);closeNav()"><img src="https://denicendrianto41.github.io/teori.png" alt="">Teori</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()"><img src="https://denicendrianto41.github.io/prosedur.png" alt="">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()"><img src="https://denicendrianto41.github.io/simulasi.png" alt="">Simulasi</button>
+    <button class="nb" onclick="show('evaluasi',this);closeNav()"><img src="https://denicendrianto41.github.io/diskusi.png" alt="">Diskusi</button>
+  </nav>
+</header>
+
+<div id="app">
+
+<!-- ═══ TEORI ═══ -->
+<div id="page-teori" class="page active">
+<div class="scroll">
+<div class="article-wrap">
+
+  <!-- Hero -->
+  <div class="article-hero">
+    <div class="article-kelas">Biologi Kelas X &nbsp;·&nbsp; Virologi &amp; Epidemiologi</div>
+    <div class="article-judul">Virus &amp; Simulasi Wabah: Memahami Model SIR</div>
+    <div class="article-meta">
+      <span>🎯 Menganalisis dinamika penyebaran penyakit menular</span>
+      <span>⏱ 2 × 45 menit</span>
+      <span>📊 Simulasi Komputasional</span>
+    </div>
+  </div>
+
+  <!-- Daftar Isi -->
+  <div class="article-toc">
+    <div class="article-toc-title">📑 Daftar Isi</div>
+    <ol class="toc-list">
+      <li onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">Apa Itu Virus?</li>
+      <li onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">Struktur dan Cara Kerja Virus</li>
+      <li onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">Model Matematis Penyebaran Wabah (SIR)</li>
+      <li onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">Bilangan Reproduksi Dasar R₀</li>
+      <li onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})">Intervensi dan Herd Immunity</li>
+      <li onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">Tujuan &amp; Hasil Belajar</li>
+    </ol>
+  </div>
+
+  <!-- Seksi 1 -->
+  <div class="article-section" id="s1">
+    <div class="section-header"><div class="section-num">1</div><div class="section-title">Apa Itu Virus?</div></div>
+    <div class="article-body">
+      <p>Virus adalah <strong>agen infeksi berukuran sangat kecil</strong> (20–300 nanometer) yang hanya dapat bereplikasi di dalam sel inang yang hidup. Berbeda dari makhluk hidup lainnya, virus tidak memiliki organel sel, tidak bisa melakukan metabolisme secara mandiri, dan tidak dapat berkembang biak tanpa bantuan sel inang.</p>
+      <div class="callout callout-info">
+        <div class="callout-lbl">💡 Fakta Ilmiah</div>
+        <div class="callout-body">Virus berada di perbatasan antara makhluk hidup dan benda mati. Di luar sel inang, virus berperilaku seperti benda kimia biasa. Namun begitu masuk ke dalam sel, virus "hidup" kembali dan mulai bereplikasi secara aktif.</div>
+      </div>
+      <p>Virus ditemukan pertama kali oleh ilmuwan Belanda, <strong>Martinus Beijerinck</strong>, pada tahun 1898 saat meneliti penyakit mosaik tembakau. Sejak saat itu, ribuan jenis virus telah ditemukan yang menginfeksi hampir semua bentuk kehidupan di Bumi.</p>
+      <div class="fgrid" style="grid-template-columns:repeat(auto-fill,minmax(165px,1fr));margin-top:8px;">
+        <div class="fi" style="border-left:3px solid #dc2626;"><strong>Influenza</strong><span>Virus RNA; flu musiman &amp; pandemi; R₀ ≈ 2–3</span></div>
+        <div class="fi" style="border-left:3px solid #7c3aed;"><strong>SARS-CoV-2</strong><span>Coronavirus; COVID-19; R₀ ≈ 2.5–5 (Omicron hingga 10)</span></div>
+        <div class="fi" style="border-left:3px solid #d97706;"><strong>Ebola</strong><span>Filovirus; mematikan; wabah Afrika Barat 2014–2016</span></div>
+        <div class="fi" style="border-left:3px solid #059669;"><strong>HIV</strong><span>Retrovirus; menyerang limfosit T; menyebabkan AIDS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seksi 2 -->
+  <div class="article-section" id="s2">
+    <div class="section-header"><div class="section-num">2</div><div class="section-title">Struktur dan Cara Kerja Virus</div></div>
+    <div class="article-body">
+      <p>Komponen utama virus adalah <strong>materi genetik</strong> (DNA atau RNA) yang terbungkus protein pelindung bernama <strong>kapsid</strong>. Beberapa virus seperti influenza dan SARS-CoV-2 memiliki lapisan lipid tambahan di luar kapsid yang disebut <strong>selubung (envelope)</strong>, yang membuatnya lebih mudah menyatu dengan membran sel inang.</p>
+      <p>Proses infeksi berlangsung melalui <strong>5 tahap siklus litik</strong>:</p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:9px 0;">
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:4px;">🔗</div>
+          <div style="font-size:10px;font-weight:700;color:#991b1b;">1. Adsorpsi</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Virus menempel pada reseptor sel inang</div>
+        </div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:4px;">💉</div>
+          <div style="font-size:10px;font-weight:700;color:#991b1b;">2. Penetrasi</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Materi genetik masuk ke dalam sel</div>
+        </div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:4px;">🧬</div>
+          <div style="font-size:10px;font-weight:700;color:#991b1b;">3. Sintesis</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Sel membuat salinan DNA/RNA virus</div>
+        </div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:4px;">⚙️</div>
+          <div style="font-size:10px;font-weight:700;color:#991b1b;">4. Pematangan</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Virus baru dirakit dari komponen</div>
+        </div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:4px;">💥</div>
+          <div style="font-size:10px;font-weight:700;color:#991b1b;">5. Pelepasan</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Ratusan virus baru keluar menginfeksi sel lain</div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <div class="callout-lbl">⚠️ Perhatikan</div>
+        <div class="callout-body">Dalam satu siklus litik, satu virus dapat menghasilkan ratusan hingga ribuan virus baru dalam waktu kurang dari satu jam. Inilah mengapa wabah dapat menyebar sangat cepat dalam populasi yang belum memiliki kekebalan.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seksi 3 -->
+  <div class="article-section" id="s3">
+    <div class="section-header"><div class="section-num">3</div><div class="section-title">Model Matematis Penyebaran Wabah (SIR)</div></div>
+    <div class="article-body">
+      <p>Untuk memahami penyebaran penyakit menular dalam populasi, para epidemiolog menggunakan <strong>model matematis</strong>. Model paling mendasar adalah <strong>Model SIR</strong> yang dikembangkan oleh Kermack dan McKendrick (1927). Model ini membagi populasi menjadi tiga kelompok:</p>
+      <div class="sir-row">
+        <div class="sir-badge sir-s"><div class="sir-letter">S</div><div class="sir-name">Susceptible (Rentan)</div><div class="sir-desc">Belum terinfeksi; dapat tertular jika kontak dengan individu terinfeksi</div></div>
+        <div class="sir-badge sir-i"><div class="sir-letter">I</div><div class="sir-name">Infected (Terinfeksi)</div><div class="sir-desc">Terinfeksi aktif dan dapat menularkan penyakit ke individu rentan</div></div>
+        <div class="sir-badge sir-r"><div class="sir-letter">R</div><div class="sir-name">Recovered (Pulih)</div><div class="sir-desc">Sudah pulih atau kebal; tidak lagi berperan dalam transmisi</div></div>
+      </div>
+      <p>Dinamika perpindahan antar kelompok digambarkan oleh tiga persamaan diferensial:</p>
+      <div class="formula-box">
+        dS/dt = −β · S · I / N<br>
+        dI/dt = &nbsp;β · S · I / N − γ · I<br>
+        dR/dt = &nbsp;γ · I
+      </div>
+      <p>Di mana <strong>β (beta)</strong> = laju transmisi per kontak per hari, <strong>γ (gamma)</strong> = laju pemulihan per hari, dan <strong>N</strong> = total populasi. Perhatikan bahwa S + I + R = N selalu konstan (populasi tertutup).</p>
+    </div>
+  </div>
+
+  <!-- Seksi 4 -->
+  <div class="article-section" id="s4">
+    <div class="section-header"><div class="section-num">4</div><div class="section-title">Bilangan Reproduksi Dasar R₀</div></div>
+    <div class="article-body">
+      <p><strong>R₀</strong> (dibaca "R-nol") adalah rata-rata jumlah orang baru yang dapat ditulari oleh <em>satu penderita</em> dalam populasi yang sepenuhnya rentan. Nilai ini merupakan parameter kunci dalam epidemiologi.</p>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:10px 16px;margin:9px 0;text-align:center;">
+        <div style="font-size:9.5px;font-weight:600;color:#92400e;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;">Rumus Dasar</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:#92400e;">R₀ = β / γ</div>
+        <div style="font-size:10.5px;color:#92400e;margin-top:3px;">Laju Transmisi ÷ Laju Pemulihan</div>
+      </div>
+      <table class="r0-table">
+        <thead><tr><th>Kondisi</th><th>Nilai R₀</th><th>Interpretasi</th><th>Contoh Penyakit</th></tr></thead>
+        <tbody>
+          <tr><td>✅ Wabah Mereda</td><td style="color:#059669;font-weight:700;">R₀ &lt; 1</td><td>Setiap penderita menularkan ke kurang dari 1 orang; wabah padam sendiri</td><td>MERS-CoV ≈ 0.5</td></tr>
+          <tr><td>⚖️ Endemik Stabil</td><td style="color:#d97706;font-weight:700;">R₀ = 1</td><td>Jumlah kasus stabil; penyakit tetap ada di populasi</td><td>–</td></tr>
+          <tr><td>🚨 Wabah Meluas</td><td style="color:#dc2626;font-weight:700;">R₀ &gt; 1</td><td>Setiap penderita menularkan ke lebih dari 1 orang; wabah menyebar eksponensial</td><td>Campak ≈ 15, COVID ≈ 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Seksi 5 -->
+  <div class="article-section" id="s5">
+    <div class="section-header"><div class="section-num">5</div><div class="section-title">Intervensi dan Herd Immunity</div></div>
+    <div class="article-body">
+      <p><strong>Herd immunity</strong> (kekebalan kelompok) tercapai ketika proporsi populasi yang kebal cukup besar sehingga virus kesulitan menemukan inang baru. Ambang batasnya: <strong>1 − 1/R₀</strong>. Contoh: jika R₀ = 4, dibutuhkan minimal 75% populasi yang kebal.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:9px 0;">
+        <div class="callout callout-info" style="margin:0;">
+          <div class="callout-lbl">😷 Penggunaan Masker</div>
+          <div class="callout-body">Mengurangi kontak efektif; menurunkan β hingga 40%. Mudah dilakukan secara luas.</div>
+        </div>
+        <div class="callout callout-warn" style="margin:0;">
+          <div class="callout-lbl">🏠 Karantina / PSBB</div>
+          <div class="callout-body">Membatasi mobilitas; menurunkan β hingga 70%. Memperlambat puncak wabah secara dramatis.</div>
+        </div>
+        <div class="callout callout-success" style="margin:0;">
+          <div class="callout-lbl">💉 Vaksinasi</div>
+          <div class="callout-body">Memindahkan individu dari S ke R tanpa infeksi. Cara paling aman dan efektif.</div>
+        </div>
+      </div>
+      <div class="callout callout-danger">
+        <div class="callout-lbl">🔬 Implikasi untuk Simulasi</div>
+        <div class="callout-body">Amati bagaimana mengubah β dan γ menggeser kurva S, I, R. Bandingkan: apa yang terjadi pada puncak infeksi ketika kamu mengaktifkan karantina vs tanpa intervensi apapun?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seksi 6 -->
+  <div class="article-section" id="s6" style="margin-bottom:0;">
+    <div class="section-header"><div class="section-num">6</div><div class="section-title">Tujuan &amp; Hasil Belajar</div></div>
+    <div class="two-col" style="margin-top:4px;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci r">🎯</div><div class="ct">Tujuan Percobaan</div></div>
+        <p>Menganalisis <strong style="color:var(--acc2)">dinamika penyebaran wabah virus</strong> melalui simulasi model SIR, dengan memvariasikan laju transmisi (β), laju pemulihan (γ), ukuran populasi, dan intervensi kesehatan masyarakat.</p>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
+        <ul class="olist">
+          <li>Memahami struktur dan cara kerja virus dalam sel inang</li>
+          <li>Menganalisis faktor penentu kecepatan penyebaran wabah</li>
+          <li>Menghitung R₀ dan ambang batas herd immunity</li>
+          <li>Membandingkan efektivitas berbagai intervensi kesehatan</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /article-wrap -->
+</div>
+</div>
+
+<!-- ═══ PROSEDUR ═══ -->
+<div id="page-prosedur" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
+      <div class="card" style="margin-bottom:0;overflow:auto;">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci r">📋</div><div class="ct">Langkah Simulasi</div></div>
+        <div id="simSteps"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
+          <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
+          <ul class="olist" style="font-size:11px;">
+            <li>Klik <strong>Stop</strong> sebelum mengubah parameter</li>
+            <li>Klik <strong>Reset</strong> sebelum memulai percobaan baru</li>
+            <li><strong>Ubah satu variabel saja</strong> per percobaan agar perbandingan valid</li>
+            <li>Catat setiap hasil di lembar kerja observasi</li>
+            <li>Perhatikan nilai <strong>R₀</strong> yang berubah secara real-time</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <div class="ch" style="margin-bottom:5px;"><div class="ci y">💡</div><div class="ct">Variabel Percobaan</div></div>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div class="fi" style="border-left:3px solid var(--acc);"><strong>Variabel Bebas</strong><span>Laju transmisi β, laju pemulihan γ, ukuran populasi, kasus awal, intervensi</span></div>
+            <div class="fi" style="border-left:3px solid #2563eb;"><strong>Variabel Terikat</strong><span>Jumlah S, I, R dari waktu ke waktu; puncak infeksi; durasi wabah</span></div>
+            <div class="fi" style="border-left:3px solid #059669;"><strong>Variabel Kontrol</strong><span>Model SIR deterministik, populasi tertutup (tanpa migrasi)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SIMULASI ═══ -->
+<div id="page-simulasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
+    <!-- Panel Kontrol -->
+    <div class="ctrl-panel" style="width:196px;flex-shrink:0;">
+      <h3>⚙️ Panel Kontrol</h3>
+      <div class="cg"><label>Populasi (N)</label>
+        <select id="selPop"><option value="500">500 orang</option><option value="1000" selected>1.000 orang</option><option value="5000">5.000 orang</option><option value="10000">10.000 orang</option></select>
+      </div>
+      <div class="cg"><label>Kasus Awal (I₀)</label>
+        <select id="selI0"><option value="1">1 kasus</option><option value="5" selected>5 kasus</option><option value="10">10 kasus</option><option value="50">50 kasus</option></select>
+      </div>
+      <div class="cg">
+        <label>Laju Transmisi β: <span id="betaLabel" style="font-family:'JetBrains Mono',monospace;color:var(--acc);font-weight:700;">0.30</span></label>
+        <input type="range" id="slBeta" min="0.05" max="1.0" step="0.05" value="0.30" oninput="document.getElementById('betaLabel').textContent=parseFloat(this.value).toFixed(2);updateR0();">
+      </div>
+      <div class="cg">
+        <label>Laju Pemulihan γ: <span id="gammaLabel" style="font-family:'JetBrains Mono',monospace;color:var(--acc);font-weight:700;">0.10</span></label>
+        <input type="range" id="slGamma" min="0.01" max="0.5" step="0.01" value="0.10" oninput="document.getElementById('gammaLabel').textContent=parseFloat(this.value).toFixed(2);updateR0();">
+      </div>
+      <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:7px;padding:8px;text-align:center;">
+        <div style="font-size:9px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">R₀ = β / γ</div>
+        <div id="r0Val" style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--acc);">3.00</div>
+        <div id="r0Lbl" style="font-size:10px;color:#b91c1c;">🚨 Wabah akan menyebar</div>
+      </div>
+      <div class="cg"><label>Intervensi</label>
+        <select id="selInterv"><option value="none">— Tanpa Intervensi —</option><option value="mask">😷 Masker (β×0.6)</option><option value="quarantine">🏠 Karantina (β×0.3)</option><option value="vaccine">💉 Vaksinasi 50%</option><option value="all">🛡️ Semua Intervensi</option></select>
+      </div>
+      <div class="cg"><label>Kecepatan Animasi</label>
+        <select id="selSpeed"><option value="0.25">🐢 Sangat Lambat</option><option value="0.5" selected>🐌 Lambat</option><option value="1.0">🚶 Normal</option><option value="2.0">🏃 Cepat</option></select>
+      </div>
+      <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai</button>
+      <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Stop</button>
+      <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
+    </div>
+    <!-- Area kanan -->
+    <div style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;">
+      <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;padding:9px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-shrink:0;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);">🦠 Dinamika Populasi — Model SIR</div>
+          <div style="display:flex;gap:12px;align-items:center;font-size:10px;color:var(--text2);">
+            <span><span class="legend-dot" style="background:#3b82f6;"></span>Rentan (S)</span>
+            <span><span class="legend-dot" style="background:#ef4444;"></span>Terinfeksi (I)</span>
+            <span><span class="legend-dot" style="background:#10b981;"></span>Pulih (R)</span>
+          </div>
+        </div>
+        <canvas id="sirCanvas" style="flex:1;min-height:0;width:100%;display:block;border-radius:6px;border:1px solid var(--border);"></canvas>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <div class="sbox"><span class="sv" id="statS" style="color:#3b82f6;">–</span><span class="sl">😐 Rentan</span></div>
+        <div class="sbox"><span class="sv" id="statI" style="color:#ef4444;">–</span><span class="sl">🤒 Terinfeksi</span></div>
+        <div class="sbox"><span class="sv" id="statR" style="color:#10b981;">–</span><span class="sl">✅ Pulih</span></div>
+        <div class="sbox"><span class="sv" id="statDay">0</span><span class="sl">📅 Hari</span></div>
+        <div class="sbox"><span class="sv" id="statPeak" style="color:#f97316;">–</span><span class="sl">📈 Puncak I</span></div>
+      </div>
+      <div class="card" style="flex-shrink:0;overflow:auto;margin-bottom:0;max-height:115px;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci y">📊</div><div class="ct">Lembar Kerja Observasi</div></div>
+        <table class="wstable">
+          <thead><tr><th>#</th><th>N</th><th>I₀</th><th>β</th><th>γ</th><th>R₀</th><th>Intervensi</th><th>Puncak I</th><th>Durasi (hari)</th></tr></thead>
+          <tbody id="wsBody"><tr><td colspan="9" style="text-align:center;color:var(--text3);padding:10px;">Jalankan simulasi untuk mengisi lembar kerja.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DISKUSI ═══ -->
+<div id="page-evaluasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
+      </div>
+      <button style="padding:5px 12px;border-radius:6px;background:var(--surf2);border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;" onclick="clearDQ()">↺ Hapus Jawaban</button>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Apa yang terjadi jika nilai R₀ lebih besar dari 1?</div></div>
+        <textarea class="disc-area" id="dq1" placeholder="Tuliskan jawabanmu di sini..." oninput="saveDQ(1,this.value)" style="flex:1;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Bagaimana intervensi karantina mempengaruhi grafik SIR?</div></div>
+        <textarea class="disc-area" id="dq2" placeholder="Tuliskan jawabanmu di sini..." oninput="saveDQ(2,this.value)" style="flex:1;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Mengapa wabah dengan R₀ tinggi lebih sulit dikendalikan?</div></div>
+        <textarea class="disc-area" id="dq3" placeholder="Tuliskan jawabanmu di sini..." oninput="saveDQ(3,this.value)" style="flex:1;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Berapa % populasi harus divaksin untuk herd immunity jika R₀ = 4?</div></div>
+        <textarea class="disc-area" id="dq4" placeholder="Tuliskan jawabanmu di sini..." oninput="saveDQ(4,this.value)" style="flex:1;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;grid-column:span 2;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Jelaskan perbedaan wabah dengan intervensi dini vs terlambat berdasarkan simulasimu!</div></div>
+        <textarea class="disc-area" id="dq5" placeholder="Tuliskan jawabanmu di sini..." oninput="saveDQ(5,this.value)" style="flex:1;min-height:0;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ── NAV ──
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='simulasi')setTimeout(()=>{resizeCanvas();if(!simRunning)drawIdle();},40);
+}
+let navOpen=false;
+function toggleNav(){navOpen=!navOpen;document.getElementById('mainNav').classList.toggle('open',navOpen);}
+function closeNav(){navOpen=false;document.getElementById('mainNav').classList.remove('open');}
+
+// ── PROSEDUR STEPS ──
+const STEPS=[
+  {icon:"🔬",text:"Pilih <strong>ukuran populasi</strong> dari panel kontrol (500 – 10.000 orang)."},
+  {icon:"🤒",text:"Atur <strong>jumlah kasus awal</strong> (I₀) yang akan memulai wabah."},
+  {icon:"📡",text:"Geser slider <strong>laju transmisi β</strong> — semakin tinggi, virus semakin mudah menular."},
+  {icon:"💊",text:"Geser slider <strong>laju pemulihan γ</strong> — semakin tinggi, pasien semakin cepat sembuh."},
+  {icon:"🛡️",text:"Pilih <strong>intervensi</strong>: masker, karantina, vaksinasi, atau kombinasi semua."},
+  {icon:"▶️",text:"Klik <strong>▶ Mulai</strong> dan amati dinamika kurva S, I, dan R secara perlahan."},
+  {icon:"📊",text:"Amati <strong>puncak infeksi</strong> dan berapa hari durasi wabah berlangsung."},
+  {icon:"🔄",text:"Klik <strong>↺ Reset</strong>, catat di lembar kerja, dan ulangi dengan parameter berbeda."}
+];
+(function(){
+  const colors=['#dc2626','#7c3aed','#0891b2','#059669','#d97706','#2563eb','#9333ea','#0284c7'];
+  const cont=document.getElementById('simSteps');
+  cont.innerHTML='<div style="position:relative;padding:4px 0;">'+STEPS.map((s,i)=>{
+    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===STEPS.length-1,even=i%2===0;
+    const circleBtn=`<button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''"><span style="font-size:18px;pointer-events:none;">${s.icon}</span></button>${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin:4px 0;"></div>`:''}`;
+    const box=`<div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:7px 10px;" class="step-box"><div style="font-size:9px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div><p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p></div>`;
+    return `<div style="display:flex;align-items:flex-start;gap:0;position:relative;" class="map-step">${even?`<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">${circleBtn}</div>${box}`:box+`<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">${circleBtn}</div>`}</div>`;
+  }).join('')+'</div>';
+})();
+function zoomStep(btn){
+  const sfx=document.getElementById('clickSfx');if(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
+  const box=btn.closest('.map-step').querySelector('.step-box');if(!box)return;
+  box.classList.remove('step-box-zoom');void box.offsetWidth;
+  box.classList.add('step-box-zoom');
+  box.addEventListener('animationend',()=>box.classList.remove('step-box-zoom'),{once:true});
+}
+
+// ── R0 ──
+function updateR0(){
+  const b=parseFloat(document.getElementById('slBeta').value);
+  const g=parseFloat(document.getElementById('slGamma').value);
+  const r=(b/g);
+  const el=document.getElementById('r0Val'),st=document.getElementById('r0Lbl');
+  el.textContent=r.toFixed(2);
+  if(r<1){el.style.color='#059669';st.textContent='✅ Wabah akan mereda';st.style.color='#047857';}
+  else if(Math.abs(r-1)<0.05){el.style.color='#d97706';st.textContent='⚖️ Endemik stabil';st.style.color='#92400e';}
+  else{el.style.color='#dc2626';st.textContent='🚨 Wabah akan menyebar';st.style.color='#b91c1c';}
+}
+updateR0();
+
+// ── SIMULATION ──
+const CV=document.getElementById('sirCanvas');
+const cx=CV.getContext('2d');
+let SIR={S:[],I:[],R:[]};
+let simRunning=false,animId=null,fracDay=0,peakI=0,wsRows=[];
+
+function resizeCanvas(){
+  const r=CV.parentElement.getBoundingClientRect();
+  CV.width=Math.floor(r.width);CV.height=Math.floor(r.height);
+  simRunning?drawChart():drawIdle();
+}
+
+function getParams(){
+  let N=parseInt(document.getElementById('selPop').value);
+  let I0=parseInt(document.getElementById('selI0').value);
+  let beta=parseFloat(document.getElementById('slBeta').value);
+  let gamma=parseFloat(document.getElementById('slGamma').value);
+  const iv=document.getElementById('selInterv').value;
+  let S0=N-I0;
+  if(iv==='mask') beta*=0.6;
+  else if(iv==='quarantine') beta*=0.3;
+  else if(iv==='vaccine') S0=Math.floor(S0*0.5);
+  else if(iv==='all'){beta*=0.25;S0=Math.floor(S0*0.5);}
+  return{N,I0,beta,gamma,S0,iv};
+}
+
+function runSIR(){
+  const{N,I0,beta,gamma,S0}=getParams();
+  let S=S0,I=I0,R=N-S0-I0;
+  SIR={S:[S],I:[I],R:[R]};peakI=I0;
+  const dt=0.5,maxD=600;
+  for(let d=0;d<maxD*2;d++){
+    const ni=(beta*S*I)/N,nr=gamma*I;
+    S=Math.max(0,S-ni*dt);I=Math.max(0,I+ni*dt-nr*dt);R=Math.max(0,R+nr*dt);
+    SIR.S.push(S);SIR.I.push(I);SIR.R.push(R);
+    if(I>peakI)peakI=I;
+    if(I<0.5&&d>10)break;
+  }
+}
+
+function drawGrid(w,h,pL,pT,cw,ch){
+  cx.strokeStyle='rgba(255,255,255,0.05)';cx.lineWidth=1;
+  for(let i=0;i<=8;i++){const x=pL+i*(cw/8);cx.beginPath();cx.moveTo(x,pT);cx.lineTo(x,pT+ch);cx.stroke();}
+  for(let j=0;j<=6;j++){const y=pT+j*(ch/6);cx.beginPath();cx.moveTo(pL,y);cx.lineTo(pL+cw,y);cx.stroke();}
+}
+
+function drawIdle(){
+  const w=CV.width,h=CV.height;
+  cx.clearRect(0,0,w,h);
+  cx.fillStyle='#0f172a';cx.fillRect(0,0,w,h);
+  drawGrid(w,h,52,18,w-72,h-50);
+  cx.fillStyle='rgba(255,255,255,0.22)';
+  cx.font=`${Math.max(12,Math.floor(h*0.055))}px 'Space Grotesk',sans-serif`;
+  cx.textAlign='center';cx.fillText('Atur parameter dan klik ▶ Mulai',w/2,h/2);
+  cx.font=`${Math.max(10,Math.floor(h*0.034))}px 'Inter',sans-serif`;
+  cx.fillStyle='rgba(255,255,255,0.1)';
+  cx.fillText('Simulasi Penyebaran Wabah Virus — Model SIR',w/2,h/2+h*0.07);
+}
+
+function drawChart(){
+  const w=CV.width,h=CV.height;
+  const pL=52,pT=18,pR=20,pB=36;
+  const cw=w-pL-pR,ch=h-pT-pB;
+  cx.clearRect(0,0,w,h);cx.fillStyle='#0f172a';cx.fillRect(0,0,w,h);
+  drawGrid(w,h,pL,pT,cw,ch);
+  const len=SIR.S.length;
+  const N=SIR.S[0]+SIR.I[0]+SIR.R[0];
+  // Y labels
+  cx.fillStyle='rgba(255,255,255,0.32)';
+  cx.font=`${Math.min(10,Math.floor(ch*0.055))}px 'JetBrains Mono',monospace`;
+  cx.textAlign='right';
+  [0,0.25,0.5,0.75,1].forEach(p=>{
+    const v=Math.round(N*p),y=pT+ch-(p*ch);
+    cx.fillText(v>=1000?(v/1000).toFixed(v%1000===0?0:1)+'k':v,pL-5,y+4);
+    cx.strokeStyle='rgba(255,255,255,0.06)';cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(pL,y);cx.lineTo(pL+cw,y);cx.stroke();
+  });
+  // X labels
+  const totD=Math.floor(len/2);
+  cx.textAlign='center';
+  const lstep=Math.max(1,Math.ceil(totD/6));
+  for(let d=0;d<=totD;d+=lstep){
+    const x=pL+(d/totD)*cw;
+    cx.fillStyle='rgba(255,255,255,0.28)';cx.fillText('H'+d,x,h-9);
+  }
+  cx.fillStyle='rgba(255,255,255,0.2)';cx.fillText('Hari',pL+cw/2,h-1);
+
+  const maxPt=Math.min(Math.round(fracDay*2),len);
+  const xs=cw/(len-1);
+
+  function line(data,color,fill){
+    if(data.length<2)return;
+    cx.beginPath();
+    data.forEach((v,i)=>{const x=pL+i*xs,y=pT+ch-(v/N)*ch;i===0?cx.moveTo(x,y):cx.lineTo(x,y);});
+    cx.lineTo(pL+(data.length-1)*xs,pT+ch);cx.lineTo(pL,pT+ch);cx.closePath();
+    cx.fillStyle=fill;cx.fill();
+    cx.beginPath();
+    data.forEach((v,i)=>{const x=pL+i*xs,y=pT+ch-(v/N)*ch;i===0?cx.moveTo(x,y):cx.lineTo(x,y);});
+    cx.strokeStyle=color;cx.lineWidth=2.5;cx.lineJoin='round';cx.stroke();
+  }
+
+  const ss=SIR.S.slice(0,maxPt),is=SIR.I.slice(0,maxPt),rs=SIR.R.slice(0,maxPt);
+  line(ss,'#3b82f6','rgba(59,130,246,0.08)');
+  line(rs,'#10b981','rgba(16,185,129,0.08)');
+  line(is,'#ef4444','rgba(239,68,68,0.13)');
+
+  // Day marker
+  if(maxPt>1){
+    const mx=pL+(maxPt-1)*xs;
+    cx.strokeStyle='rgba(255,255,255,0.14)';cx.lineWidth=1;cx.setLineDash([4,3]);
+    cx.beginPath();cx.moveTo(mx,pT);cx.lineTo(mx,pT+ch);cx.stroke();cx.setLineDash([]);
+  }
+
+  if(maxPt>0){
+    const i=maxPt-1;
+    const fmt=v=>v>=10000?(v/1000).toFixed(1)+'k':Math.round(v).toLocaleString();
+    document.getElementById('statS').textContent=fmt(ss[i]);
+    document.getElementById('statI').textContent=fmt(is[i]);
+    document.getElementById('statR').textContent=fmt(rs[i]);
+    document.getElementById('statDay').textContent=Math.floor(fracDay);
+    document.getElementById('statPeak').textContent=fmt(peakI);
+  }
+}
+
+let lastTs=null;
+function animate(ts){
+  if(!simRunning)return;
+  if(!lastTs)lastTs=ts;
+  const dt=(ts-lastTs)/1000;lastTs=ts;
+  const speed=parseFloat(document.getElementById('selSpeed').value);
+  fracDay+=speed*dt;
+  const maxD=SIR.S.length/2;
+  if(fracDay>=maxD){
+    fracDay=maxD;drawChart();
+    simRunning=false;
+    document.getElementById('btnStart').disabled=false;
+    document.getElementById('btnStop').disabled=true;
+    saveWS();showDone();return;
+  }
+  drawChart();
+  animId=requestAnimationFrame(animate);
+}
+
+function startSim(){
+  stopSim();runSIR();fracDay=0;simRunning=true;lastTs=null;
+  document.getElementById('btnStart').disabled=true;
+  document.getElementById('btnStop').disabled=false;
+  animId=requestAnimationFrame(animate);
+}
+function stopSim(){
+  simRunning=false;if(animId){cancelAnimationFrame(animId);animId=null;}
+  document.getElementById('btnStart').disabled=false;
+  document.getElementById('btnStop').disabled=true;
+}
+function resetSim(){
+  stopSim();fracDay=0;peakI=0;SIR={S:[],I:[],R:[]};
+  ['statS','statI','statR','statPeak'].forEach(id=>document.getElementById(id).textContent='–');
+  document.getElementById('statDay').textContent='0';drawIdle();
+}
+
+function saveWS(){
+  const rb=parseFloat(document.getElementById('slBeta').value);
+  const rg=parseFloat(document.getElementById('slGamma').value);
+  const r0=(rb/rg).toFixed(2);
+  const N=parseInt(document.getElementById('selPop').value);
+  const I0=parseInt(document.getElementById('selI0').value);
+  const iv=document.getElementById('selInterv').value;
+  const names={none:'–',mask:'Masker',quarantine:'Karantina',vaccine:'Vaksinasi 50%',all:'Semua'};
+  const fmt=v=>v>=10000?(v/1000).toFixed(1)+'k':Math.round(v).toLocaleString();
+  wsRows.push({n:wsRows.length+1,N:N.toLocaleString(),I0,b:rb.toFixed(2),g:rg.toFixed(2),r0,iv:names[iv]||'–',pk:fmt(peakI),dur:Math.floor(fracDay)});
+  document.getElementById('wsBody').innerHTML=wsRows.map(r=>`
+    <tr><td>${r.n}</td><td>${r.N}</td><td>${r.I0}</td><td>${r.b}</td><td>${r.g}</td>
+    <td style="color:${r.r0>=1?'#dc2626':'#059669'};font-weight:700;">${r.r0}</td>
+    <td>${r.iv}</td><td>${r.pk}</td><td>${r.dur}</td></tr>`).join('');
+}
+
+function showDone(){
+  new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
+  const rb=parseFloat(document.getElementById('slBeta').value);
+  const rg=parseFloat(document.getElementById('slGamma').value);
+  const r0=(rb/rg).toFixed(2);
+  const N=parseInt(document.getElementById('selPop').value);
+  const pct=((peakI/N)*100).toFixed(1);
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease;';
+  const bx=document.createElement('div');
+  bx.style.cssText='background:#fff;border-radius:20px;padding:32px 40px;text-align:center;max-width:380px;box-shadow:0 16px 48px rgba(0,0,0,0.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);font-family:Space Grotesk,sans-serif;';
+  bx.innerHTML=`<div style="font-size:48px;margin-bottom:10px;">📊</div>
+    <div style="font-size:20px;font-weight:800;color:#991b1b;margin-bottom:6px;">Simulasi Selesai!</div>
+    <div style="font-size:13px;color:#475569;line-height:1.8;margin-bottom:18px;">
+      R₀ = <strong style="color:#dc2626;">${r0}</strong><br>
+      Puncak infeksi: <strong style="color:#ef4444;">${pct}%</strong> populasi<br>
+      Durasi wabah: <strong>${Math.floor(fracDay)} hari</strong></div>
+    <button onclick="this.closest('.fin-ov').remove();"
+      style="background:linear-gradient(135deg,#991b1b,#ef4444);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(220,38,38,0.35);">
+      ✅ Tutup &amp; Analisis</button>`;
+  ov.classList.add('fin-ov');ov.appendChild(bx);document.body.appendChild(ov);
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
+}
+
+// ── DISKUSI ──
+const dqData={};
+function saveDQ(n,v){dqData[n]=v;}
+function clearDQ(){for(let i=1;i<=5;i++){const el=document.getElementById('dq'+i);if(el)el.value='';dqData[i]='';}}
+
+// ── RESIZE ──
+window.addEventListener('resize',()=>{
+  if(document.getElementById('page-simulasi').classList.contains('active'))resizeCanvas();
+});
+
+// Inject popup keyframes
+const ks=document.createElement('style');
+ks.textContent='@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}';
+document.head.appendChild(ks);
+</script>
+</body>
+</html>
