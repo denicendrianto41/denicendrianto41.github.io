@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Virtual – Kunci Determinasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;
+  --h:56px;
+  --fbase:14px;
+}
+@media (max-width:768px){:root{--fbase:13px;--h:46px;}}
+@media (min-width:1200px){:root{--fbase:15px;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{
+  position:relative;z-index:10;height:var(--h);flex-shrink:0;
+  background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;padding:0 14px;gap:12px;
+  box-shadow:0 2px 10px rgba(10,30,80,0.45);
+}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#ffffff;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-icon img{width:100%;height:100%;object-fit:contain;display:block;}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#ffffff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,0.95);}
+.nb.active{color:#fff;}
+.nb.active::after{transform:scaleX(1);}
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:16px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{
+    display:none;flex-direction:column;
+    position:fixed;top:var(--h);right:0;left:0;z-index:999;
+    background:linear-gradient(180deg,#0f2460,#1a3a8f);
+    border-bottom:1px solid rgba(255,255,255,.15);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    overflow:visible;gap:0;flex:none;
+  }
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}
+  .nb.active{background:rgba(255,255,255,.08);}
+  .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
+}
+/* APP */
+#app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(37,99,235,.1);}
+.ci.y{background:rgba(217,119,6,.1);}
+.ci.g{background:rgba(5,150,105,.1);}
+.ci.r{background:rgba(220,38,38,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
+/* PROSEDUR STEPS (roadmap style) */
+.map-step{display:flex;align-items:flex-start;gap:0;position:relative;}
+.step-box{transition:transform .15s,box-shadow .15s;}
+.step-box:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1);}
+@keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+.step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
+/* DRAG & DROP */
+.drag-item{touch-action:none;-webkit-user-select:none;user-select:none;}
+/* BUTTONS */
+.btn{border:none;border-radius:6px;padding:7px 14px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-primary{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-ghost{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+/* SIMULASI TABS */
+.sim-outer{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:8px 14px 10px;gap:7px;}
+.sim-tabs{display:flex;gap:3px;flex-shrink:0;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:5px;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.stab{background:none;border:none;border-radius:6px;padding:6px 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text3);transition:all .18s;white-space:nowrap;}
+.stab:hover{background:var(--surf2);color:var(--text2);}
+.stab.active{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+.sim-panel{display:none;flex:1;min-height:0;overflow:hidden;}
+.sim-panel.active{display:flex;}
+/* SIMULASI — determinasi */
+.sim-wrap-det{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;min-height:0;}
+.det-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;overflow:hidden;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.det-panel-title{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.plant-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;flex-shrink:0;}
+.pcard{background:var(--surf2);border:1.5px solid var(--border);border-radius:8px;padding:5px 3px;text-align:center;cursor:pointer;transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;}
+.pcard:hover{transform:translateY(-2px);border-color:var(--acc2);background:#eff6ff;box-shadow:0 4px 12px rgba(37,99,235,.12);}
+.pcard.selected{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.25);background:#eff6ff;}
+.pcard .pe{font-size:1.4rem;display:block;}
+.pcard .pn{font-size:0.55rem;font-weight:700;color:var(--text2);line-height:1.2;margin-top:2px;}
+.pcard .chk{position:absolute;top:2px;right:2px;width:12px;height:12px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.5rem;color:#fff;font-weight:900;}
+.pcard.selected .chk{display:flex;}
+.selected-display{background:#eff6ff;border:1.5px dashed rgba(37,99,235,.35);border-radius:8px;padding:8px;display:flex;align-items:flex-start;gap:8px;min-height:55px;flex-shrink:0;}
+.sd-emoji{font-size:2rem;flex-shrink:0;}
+.sd-name{font-weight:700;font-size:0.85rem;color:var(--text);}
+.sd-latin{font-style:italic;font-size:0.68rem;color:var(--acc);}
+.sd-ciri{font-size:0.65rem;color:var(--text2);margin-top:3px;line-height:1.5;}
+.sd-hint{font-size:0.72rem;color:var(--text3);}
+.kunci-scroll{flex:1;overflow-y:auto;min-height:0;}
+.kunci-scroll::-webkit-scrollbar{width:3px;}
+.kunci-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.kunci-steps{display:flex;flex-direction:column;gap:5px;}
+.kunci-step{background:var(--surf2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .2s;}
+.kunci-step.active-step{border-color:var(--acc);}
+.kunci-step.done-step{border-color:rgba(5,150,105,.35);opacity:0.85;}
+.step-header{display:flex;align-items:center;gap:5px;padding:5px 8px;background:rgba(37,99,235,.04);font-weight:700;font-size:0.7rem;color:var(--acc3);}
+.step-num{width:16px;height:16px;border-radius:50%;background:rgba(37,99,235,.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:900;color:var(--acc);}
+.active-step .step-num{background:var(--acc);color:#fff;}
+.done-step .step-num{background:var(--green);color:#fff;}
+.step-options{padding:4px 6px;display:flex;flex-direction:column;gap:3px;}
+.opt-btn{background:var(--surf);border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;text-align:left;padding:5px 8px;border-radius:6px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px;width:100%;}
+.opt-btn:hover:not(:disabled){background:#eff6ff;border-color:var(--acc2);color:var(--acc3);transform:translateX(2px);}
+.opt-btn.chosen{background:#eff6ff;border-color:var(--acc);color:var(--acc3);}
+.opt-btn:disabled{opacity:0.6;cursor:default;}
+.opt-btn .tag{font-size:0.6rem;background:rgba(37,99,235,.12);padding:1px 5px;border-radius:4px;flex-shrink:0;color:var(--acc);font-family:'JetBrains Mono',monospace;}
+@keyframes popIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.result-box{background:linear-gradient(135deg,rgba(5,150,105,.08),rgba(16,185,129,.12));border:1.5px solid #10b981;border-radius:8px;padding:8px 10px;animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1) both;}
+.result-title{font-size:0.68rem;color:var(--green);font-weight:700;}
+.result-kingdom{font-size:1rem;font-weight:800;color:var(--text);margin:2px 0;}
+.result-key{font-size:0.65rem;color:var(--acc);font-family:'JetBrains Mono',monospace;}
+.result-desc{font-size:0.68rem;color:var(--text2);margin-top:4px;line-height:1.5;}
+/* TABEL */
+.wstable{width:100%;border-collapse:collapse;font-size:11.5px;}
+.wstable th{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:7px 10px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;position:sticky;top:0;z-index:2;}
+.wstable td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;}
+.wstable tr:nth-child(even) td{background:var(--surf2);}
+.wstable tr:hover td{background:#eff6ff;}
+.key-path{font-family:'JetBrains Mono',monospace;color:var(--acc);font-size:0.68rem;}
+.kb{display:inline-block;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.25);border-radius:999px;padding:1px 7px;font-size:0.65rem;font-weight:700;color:var(--acc3);}
+/* DIAGRAM */
+.diag-outer{flex:1;overflow:auto;border-radius:9px;background:var(--surf);border:1px solid var(--border);display:flex;justify-content:center;}
+.diag-canvas{position:relative;width:820px;height:420px;padding:10px;}
+.dn-root{position:absolute;background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:18px;text-align:center;padding:7px 14px;font-weight:800;font-size:0.85rem;color:#fff;border:2px solid #3b82f6;white-space:nowrap;}
+.dn-fixed{position:absolute;background:rgba(37,99,235,.07);border:1.5px solid rgba(37,99,235,.3);border-radius:8px;padding:5px 8px;text-align:center;}
+.dn-fixed .dn-name{font-size:0.75rem;font-weight:800;color:var(--text);}
+.dn-fixed .dn-sub{font-size:0.58rem;color:var(--text3);margin-top:2px;}
+.dn-input{position:absolute;background:rgba(217,119,6,.06);border:1.5px dashed rgba(217,119,6,.5);border-radius:8px;padding:4px 6px;}
+.dn-input .dn-sub{font-size:0.58rem;color:var(--text3);text-align:center;margin-top:2px;}
+.d-input{display:block;width:100%;background:rgba(255,255,255,.9);border:1px solid var(--border);color:var(--yellow);font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;text-align:center;padding:3px 2px;outline:none;border-radius:4px;transition:all .2s;}
+.d-input:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.d-input.correct{color:var(--green);background:rgba(5,150,105,.08);border-color:#10b981;}
+.d-input.wrong{color:var(--red);background:rgba(220,38,38,.06);border-color:#f87171;}
+.dn-leaf{position:absolute;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.2);border-radius:7px;padding:4px 6px;text-align:center;}
+.dn-leaf .dn-emoji{font-size:0.9rem;}
+.dn-leaf .dn-name{font-size:0.62rem;font-weight:700;color:var(--text);}
+.dn-leaf .dn-sub{font-size:0.55rem;color:var(--text3);margin-top:1px;}
+/* DISKUSI */
+.disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+/* FEEDBACK */
+.feedback-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:8px 12px;font-size:11.5px;color:#1e40af;display:none;margin-top:7px;line-height:1.6;}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* LOADING SCREEN */
+#loadScreen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;transition:opacity .6s ease;
+}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#a78bfa,#34d399);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+#btnMulaiPraktikum{
+  display:none;
+  background:linear-gradient(135deg,#059669,#10b981);
+  color:#fff;border:none;border-radius:10px;
+  padding:10px 28px;
+  font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;
+  cursor:pointer;letter-spacing:.03em;
+  box-shadow:0 4px 18px rgba(5,150,105,.4);
+  animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;
+  transition:transform .18s,box-shadow .18s;
+}
+#btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
+@keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadScreen">
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Klasifikasi &amp; Kunci Determinasi</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">🔬 Mulai Praktikum</button>
+</div>
+
+<script>
+(function(){
+  const bar=document.getElementById('loadBar');
+  const pct=document.getElementById('loadPercent');
+  const status=document.getElementById('loadStatus');
+  const msgs=['Memuat laboratorium virtual…','Menyiapkan data tumbuhan…','Menyusun kunci determinasi…','Menginisialisasi diagram klasifikasi…'];
+  let cur=0;const total=3000;const step=20;const inc=100/(total/step);
+  let mi=0;
+  const iv=setInterval(()=>{
+    cur=Math.min(100,cur+inc);const v=Math.floor(cur);
+    bar.style.width=v+'%';pct.textContent=v+'%';
+    const ni=Math.floor(v/26); if(ni!==mi&&ni<msgs.length){mi=ni;status.textContent=msgs[ni];}
+    if(cur>=100){
+      clearInterval(iv);pct.textContent='100%';
+      status.textContent='✅ Laboratorium siap digunakan!';
+      document.getElementById('btnMulaiPraktikum').style.display='block';
+    }
+  },step);
+})();
+function startPraktikum(){
+  const sfx=new Audio('https://denicendrianto41.github.io/tring.wav');
+  sfx.play().catch(()=>{});
+  const ls=document.getElementById('loadScreen');
+  ls.classList.add('hide');
+  setTimeout(()=>{ls.style.display='none';},650);
+}
+</script>
+
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<script>
+  document.addEventListener('click',function(e){
+    const el=e.target.closest('button,.nb,.btn,select,input[type="range"]');
+    if(!el)return;
+    if(el.id==='btnMulaiPraktikum')return;
+    const sfx=document.getElementById('clickSfx');
+    if(!sfx)return;
+    sfx.currentTime=0;sfx.play().catch(()=>{});
+  });
+</script>
+
+<!-- HEADER -->
+<header style="justify-content:space-between;">
+  <div class="logo">
+    <div class="logo-icon">
+      <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+    </div>
+    <div>
+      <div class="logo-text">Lab Maya Biologi</div>
+      <div class="logo-sub">Kunci Determinasi Makhluk Hidup</div>
+    </div>
+  </div>
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line id="mL1" x1="3" y1="6" x2="21" y2="6"/>
+      <line id="mL2" x1="3" y1="12" x2="21" y2="12"/>
+      <line id="mL3" x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('teori',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('diskusi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+  </nav>
+</header>
+
+<div id="app">
+
+<!-- ═══════════ TEORI ═══════════ -->
+<div id="page-teori" class="page active">
+  <div class="scroll">
+
+    <div class="two-col">
+      <div class="card">
+        <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Praktikum</div></div>
+        <ul class="olist">
+          <li>Mampu menggunakan kunci determinasi sederhana untuk mengidentifikasi makhluk hidup</li>
+          <li>Mengelompokkan tumbuhan berdasarkan ciri morfologi (batang, akar, biji, bunga)</li>
+          <li>Membedakan kelompok Monokotil, Dikotil, Fungi, dan Algae</li>
+          <li>Menyusun diagram klasifikasi berdasarkan hasil determinasi</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
+        <ul class="olist">
+          <li>Memahami konsep dan fungsi kunci determinasi dalam biologi</li>
+          <li>Menguasai langkah-langkah penggunaan kunci kuplet/dikotom</li>
+          <li>Mampu membuat klasifikasi sederhana makhluk hidup</li>
+          <li>Menerapkan identifikasi untuk kegiatan praktikum nyata</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <p><strong style="color:var(--acc2)">Klasifikasi makhluk hidup</strong> adalah proses pengelompokan organisme berdasarkan persamaan dan perbedaan ciri-cirinya. Ilmu yang mempelajari klasifikasi disebut <em>taksonomi</em>.</p>
+          <p><strong style="color:var(--acc2)">Kunci determinasi</strong> (kunci dikotom atau kunci kuplet) adalah panduan bercabang yang digunakan untuk mengidentifikasi makhluk hidup secara sistematis. Setiap langkah memberikan dua pilihan (kuplet) berdasarkan ciri yang berlawanan.</p>
+          <h4>Cara Penggunaan</h4>
+          <p>Dimulai dari kuplet nomor 1. Setiap kuplet berisi dua pernyataan (a dan b) yang berlawanan. Pilih pernyataan yang sesuai dengan ciri organisme yang diamati, lalu ikuti petunjuk yang diberikan (lanjut ke nomor berikutnya atau sudah teridentifikasi).</p>
+        </div>
+        <div>
+          <h4>Kunci Determinasi Tumbuhan (Sederhana)</h4>
+          <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:10px;font-size:12px;">
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">1a.</span>
+              <span style="color:var(--text2);">Tidak mempunyai batang</span>
+              <span style="color:var(--acc3);font-weight:600;margin-left:auto;">→ 2</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">1b.</span>
+              <span style="color:var(--text2);">Mempunyai batang</span>
+              <span style="color:var(--acc3);font-weight:600;margin-left:auto;">→ 3</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">2a.</span>
+              <span style="color:var(--text2);">Tidak mengandung klorofil</span>
+              <span style="color:var(--green);font-weight:700;margin-left:auto;">Fungi</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">2b.</span>
+              <span style="color:var(--text2);">Mengandung klorofil</span>
+              <span style="color:var(--green);font-weight:700;margin-left:auto;">Algae</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">3a.</span>
+              <span style="color:var(--text2);">Tidak berbunga</span>
+              <span style="color:var(--green);font-weight:700;margin-left:auto;">Lumut/Paku</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">3b.</span>
+              <span style="color:var(--text2);">Tumbuhan berbunga</span>
+              <span style="color:var(--acc3);font-weight:600;margin-left:auto;">→ 4</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">4a.</span>
+              <span style="color:var(--text2);">Biji 1 keping / akar serabut</span>
+              <span style="color:var(--green);font-weight:700;margin-left:auto;">Monokotil</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:3px 0;align-items:baseline;">
+              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">4b.</span>
+              <span style="color:var(--text2);">Biji 2 keping / akar tunggang</span>
+              <span style="color:var(--green);font-weight:700;margin-left:auto;">Dikotil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ ALAT & BAHAN ═══════════ -->
+<div id="page-alatbahan" class="page">
+  <div class="scroll">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+
+      <!-- KIRI: Daftar Alat & Bahan -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke area <strong>Meja Kerja</strong> di sebelah kanan.</p>
+        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;">
+
+          <!-- ALAT -->
+          <div class="drag-item" draggable="true" data-id="luv" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🔍</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Kaca Pembesar</div>
+            <div style="font-size:10px;color:var(--text3);">Amati ciri</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="pinset" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🥢</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Pinset</div>
+            <div style="font-size:10px;color:var(--text3);">Ambil spesimen</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="buku" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">📖</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Buku Kunci</div>
+            <div style="font-size:10px;color:var(--text3);">Panduan identifikasi</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="penggaris" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/penggaris.png" width="40" height="40" style="object-fit:contain;" alt="Penggaris">
+            </div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Penggaris</div>
+            <div style="font-size:10px;color:var(--text3);">Ukur panjang</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="alatlv" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">📋</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Lembar Kerja</div>
+            <div style="font-size:10px;color:var(--text3);">Catat hasil</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="alatalat" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">✏️</div>
+            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
+            <div style="font-size:10px;color:var(--text3);">Pulpen/pensil</div>
+          </div>
+
+          <!-- BAHAN -->
+          <div class="drag-item" draggable="true" data-id="rumput" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🌾</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Rumput</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">Poaceae</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="jagung" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🌽</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Jagung</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">Zea mays</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="kacang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🥜</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Kacang Tanah</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">A. hypogaea</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="mangga" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🥭</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Daun Mangga</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">Mangifera indica</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="jamur" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🍄</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Jamur</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">Fungi</div>
+          </div>
+          <div class="drag-item" draggable="true" data-id="ganggang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🌿</div>
+            <div style="font-size:12px;font-weight:600;color:#065f46;">Ganggang Hijau</div>
+            <div style="font-size:10px;color:var(--text3);font-style:italic;">Chlorophyta</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KANAN: Meja Kerja (drop zones) -->
+      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
+        <div class="ch"><div class="ci y">🔬</div><div class="ct">Meja Kerja</div></div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
+
+        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat Pengamatan</div>
+        <div id="drop-alat" data-zone="alat" style="min-height:120px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s,border-color .2s;margin-bottom:12px;position:relative;">
+          <span id="drop-alat-hint" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:10px 0;">← Drag alat ke sini</span>
+        </div>
+
+        <div style="font-size:10px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🌱 Spesimen Tumbuhan</div>
+        <div id="drop-bahan" data-zone="bahan" style="min-height:120px;border:2px dashed #86efac;border-radius:10px;background:#f0fdf4;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s,border-color .2s;position:relative;">
+          <span id="drop-bahan-hint" style="color:#86efac;font-size:12px;width:100%;text-align:center;padding:10px 0;">← Drag spesimen ke sini</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><div class="ci y">💡</div><div class="ct">Catatan Penggunaan</div></div>
+      <p>Gunakan kaca pembesar untuk mengamati ciri-ciri morfologi tumbuhan secara detail. Perhatikan dengan seksama bentuk akar, jenis batang, bentuk tulang daun, dan ada tidaknya bunga. Catat semua ciri yang ditemukan pada lembar kerja sebelum mulai menggunakan kunci determinasi agar proses identifikasi berjalan lebih mudah dan akurat.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PROSEDUR ═══════════ -->
+<div id="page-prosedur" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
+      <div class="card" style="margin-bottom:0;overflow:auto;">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Kerja</div></div>
+        <div id="simSteps" style="display:flex;flex-direction:column;gap:0;"></div>
+      </div>
+      <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
+        <ul class="olist" style="font-size:11.5px;">
+          <li>Baca setiap kuplet dengan teliti sebelum memilih</li>
+          <li>Pilih hanya <strong>satu</strong> dari dua pernyataan yang berlawanan</li>
+          <li>Perhatikan semua ciri organisme sebelum memilih</li>
+          <li>Gunakan tombol <strong>Reset</strong> untuk mengulang dari awal</li>
+          <li>Catat jalur kunci pada setiap determinasi di lembar kerja</li>
+        </ul>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:10px;">
+          <div style="font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">📌 Catatan Guru</div>
+          <p style="font-size:12px;color:#92400e;line-height:1.6;margin:0;">Praktikum virtual ini menggantikan pengamatan langsung. Hasil determinasi dapat diverifikasi dengan observasi spesimen nyata di kebun sekolah.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SIMULASI (dengan tabs) ═══════════ -->
+<div id="page-simulasi" class="page">
+  <div class="sim-outer">
+    <!-- Tab bar -->
+    <div class="sim-tabs">
+      <button class="stab active" onclick="showSimTab('determinasi',this)">🔑 Determinasi</button>
+      <button class="stab" onclick="showSimTab('diagram',this)">🗺️ Diagram Klasifikasi</button>
+      <button class="stab" onclick="showSimTab('tabel',this)">📋 Tabel Kunci</button>
+    </div>
+
+    <!-- TAB: Determinasi -->
+    <div id="simtab-determinasi" class="sim-panel active">
+      <div class="sim-wrap-det">
+        <div class="det-panel">
+          <div class="det-panel-title">🌿 Pilih Organisme</div>
+          <div class="plant-grid" id="det-grid"></div>
+          <div class="selected-display" id="selected-display">
+            <span style="font-size:2rem;opacity:0.3;">❓</span>
+            <div class="sd-hint">Klik organisme di atas untuk mulai determinasi</div>
+          </div>
+          <div style="margin-top:auto;display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;">
+            <button class="btn btn-ghost" onclick="resetDet()" style="font-size:11px;">🔄 Reset</button>
+          </div>
+        </div>
+        <div class="det-panel">
+          <div class="det-panel-title">🔑 Kunci Determinasi</div>
+          <div class="kunci-scroll">
+            <div id="kunci-container">
+              <p style="font-size:0.72rem;color:var(--text3);text-align:center;padding:12px 0;">Pilih organisme terlebih dahulu ...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Diagram -->
+    <div id="simtab-diagram" class="sim-panel" style="flex-direction:column;gap:7px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:7px;">
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--acc3);">Lengkapi kotak isian pada diagram berikut</span>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-primary" style="font-size:11px;" onclick="periksaDiagram()">✅ Periksa Jawaban</button>
+          <button class="btn btn-ghost" style="font-size:11px;" onclick="resetDiagram()">🔄 Reset</button>
+        </div>
+      </div>
+      <div class="diag-outer">
+        <div class="diag-canvas">
+          <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;" xmlns="http://www.w3.org/2000/svg">
+            <line x1="385" y1="45" x2="165" y2="100" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="385" y1="45" x2="605" y2="100" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="165" y1="140" x2="75" y2="195" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="165" y1="140" x2="255" y2="195" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="605" y1="140" x2="515" y2="195" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="605" y1="140" x2="695" y2="195" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="695" y1="235" x2="610" y2="295" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="695" y1="235" x2="780" y2="295" stroke="#dde3ec" stroke-width="1.5"/>
+            <line x1="610" y1="330" x2="530" y2="382" stroke="#dde3ec" stroke-width="1.2"/>
+            <line x1="610" y1="330" x2="650" y2="382" stroke="#dde3ec" stroke-width="1.2"/>
+            <line x1="780" y1="330" x2="740" y2="382" stroke="#dde3ec" stroke-width="1.2"/>
+            <line x1="780" y1="330" x2="820" y2="382" stroke="#dde3ec" stroke-width="1.2"/>
+          </svg>
+          <div class="dn-root" style="left:305px;top:14px;width:160px;">🌍 Makhluk Hidup</div>
+          <div class="dn-input" style="left:88px;top:100px;width:150px;">
+            <input class="d-input" data-answer="Tumbuhan Rendah" placeholder="Isian...">
+            <div class="dn-sub">Tidak punya batang</div>
+          </div>
+          <div class="dn-input" style="left:528px;top:100px;width:150px;">
+            <input class="d-input" data-answer="Tumbuhan Tinggi" placeholder="Isian...">
+            <div class="dn-sub">Punya batang</div>
+          </div>
+          <div class="dn-fixed" style="left:18px;top:195px;width:115px;">
+            <div style="font-size:1.2rem;">🍄</div>
+            <div class="dn-name">Jamur (Fungi)</div>
+            <div class="dn-sub">tanpa klorofil</div>
+          </div>
+          <div class="dn-fixed" style="left:200px;top:195px;width:115px;">
+            <div style="font-size:1.2rem;">🌿</div>
+            <div class="dn-name">Ganggang (Algae)</div>
+            <div class="dn-sub">berklorofil</div>
+          </div>
+          <div class="dn-fixed" style="left:455px;top:195px;width:115px;">
+            <div class="dn-name">Lumut &amp; Paku</div>
+            <div class="dn-sub">tidak berbunga</div>
+          </div>
+          <div class="dn-input" style="left:635px;top:195px;width:120px;">
+            <input class="d-input" data-answer="Tumbuhan Berbunga" placeholder="Isian...">
+            <div class="dn-sub">memiliki bunga</div>
+          </div>
+          <div class="dn-input" style="left:548px;top:295px;width:120px;">
+            <input class="d-input" data-answer="Monokotil" placeholder="Isian...">
+            <div class="dn-sub">biji 1 keping</div>
+          </div>
+          <div class="dn-input" style="left:718px;top:295px;width:120px;">
+            <input class="d-input" data-answer="Dikotil" placeholder="Isian...">
+            <div class="dn-sub">biji 2 keping</div>
+          </div>
+          <!-- leaf row: 4 nodes diberi jarak merata -->
+          <div class="dn-leaf" style="left:478px;top:382px;width:108px;">
+            <div class="dn-emoji">🌽 🌾</div>
+            <div class="dn-name">Jagung · Padi</div>
+            <div class="dn-sub">akar serabut</div>
+          </div>
+          <div class="dn-leaf" style="left:598px;top:382px;width:108px;">
+            <div class="dn-emoji">🥥 🌴</div>
+            <div class="dn-name">Kelapa · Palem</div>
+            <div class="dn-sub">biji 1 keping</div>
+          </div>
+          <div class="dn-leaf" style="left:690px;top:382px;width:108px;">
+            <div class="dn-emoji">🥭</div>
+            <div class="dn-name">Pohon Mangga</div>
+            <div class="dn-sub">akar tunggang</div>
+          </div>
+          <div class="dn-leaf" style="left:770px;top:382px;width:108px;">
+            <div class="dn-emoji">🥜 🪴</div>
+            <div class="dn-name">Kacang · Ketela</div>
+            <div class="dn-sub">biji 2 keping</div>
+          </div>
+          <div style="position:absolute;left:6px;bottom:10px;font-size:0.6rem;color:var(--text3);line-height:2;">
+            <div><span style="display:inline-block;width:10px;height:10px;background:rgba(217,119,6,.06);border:1.5px dashed rgba(217,119,6,.5);border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Kotak isian siswa</div>
+            <div><span style="display:inline-block;width:10px;height:10px;background:rgba(37,99,235,.07);border:1.5px solid rgba(37,99,235,.3);border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Jawaban sudah ada</div>
+          </div>
+        </div>
+      </div>
+      <div class="feedback-box" id="diagram-feedback"></div>
+    </div>
+
+    <!-- TAB: Tabel -->
+    <div id="simtab-tabel" class="sim-panel" style="flex-direction:column;gap:7px;">
+      <div style="flex:1;overflow:auto;border-radius:9px;background:var(--surf);border:1px solid var(--border);">
+        <table class="wstable">
+          <thead>
+            <tr>
+              <th style="width:36px;">No</th>
+              <th style="width:160px;">Nama Organisme</th>
+              <th>Urutan Kunci</th>
+              <th style="width:145px;">Kelompok</th>
+              <th>Ciri Utama</th>
+            </tr>
+          </thead>
+          <tbody id="tabel-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ DISKUSI ═══════════ -->
+<div id="page-diskusi" class="page">
+  <div style="padding:8px 14px 10px;display:flex;flex-direction:column;gap:7px;flex:1;overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+      </div>
+      <button class="btn btn-ghost" onclick="clearDQ()" style="font-size:11px;">↺ Hapus Jawaban</button>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Dari semua organisme yang diamati, apakah ada yang memiliki ciri-ciri yang sama?</div></div>
+        <textarea class="disc-area" oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Organisme apa saja yang memiliki ciri-ciri yang sama? Jelaskan!</div></div>
+        <textarea class="disc-area" oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Ada berapa kelompok organisme yang kamu dapatkan? Sebutkan!</div></div>
+        <textarea class="disc-area" oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah kamu mengalami kesulitan mengenali ciri-ciri organisme? Jelaskan!</div></div>
+        <textarea class="disc-area" oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="min-width:22px;font-size:12px;">💡</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah yang dimaksud dengan kunci determinasi?</div></div>
+        <textarea class="disc-area" oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Definisi kunci determinasi..."></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="min-width:22px;font-size:12px;">💡</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah kegunaan kunci determinasi dalam biologi?</div></div>
+        <textarea class="disc-area" oninput="saveDQ(6,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Kegunaan kunci determinasi..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ─── NAV ───
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='simulasi') buildTabel();
+}
+function toggleNav(){document.getElementById('mainNav').classList.toggle('open');}
+function closeNav(){document.getElementById('mainNav').classList.remove('open');}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('nav')&&!e.target.closest('#menuToggle')) closeNav();
+});
+
+// ─── SIM TABS ───
+function showSimTab(id,btn){
+  document.querySelectorAll('.sim-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('simtab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── PROSEDUR STEPS (roadmap) ───
+const simSteps=[
+  {icon:'👀',text:'Ambil spesimen tumbuhan dan amati ciri morfologinya.'},
+  {icon:'📝',text:'Catat semua ciri yang ditemukan.'},
+  {icon:'🔑',text:'Buka halaman <strong>Simulasi</strong> dan pilih organisme yang ingin dideterminasi.'},
+  {icon:'❓',text:'Jawab <strong>Pertanyaan 1</strong> kunci determinasi: apakah organisme memiliki batang?'},
+  {icon:'➡️',text:'Ikuti petunjuk (kuplet) berikutnya sampai dapat hasil determinasi.'},
+  {icon:'📋',text:'Catat <strong>jalur kunci</strong> yang dilalui (mis: 1b → 3b → 4a = Monokotil).'},
+  {icon:'🗺️',text:'Buka tab <strong>Diagram</strong> dan lengkapi kotak isian berdasarkan hasil determinasi.'},
+  {icon:'💬',text:'Buka halaman <strong>Diskusi</strong> dan jawab semua pertanyaan berdasarkan pengamatanmu.'}
+];
+function buildSteps(data,id){
+  const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea','#0284c7'];
+  document.getElementById(id).innerHTML=`
+    <div style="position:relative;padding:4px 0;">
+      ${data.map((s,i)=>{
+        const isRight=i%2===0;
+        const clr=colors[i%colors.length];
+        const nextClr=colors[(i+1)%colors.length];
+        const isLast=i===data.length-1;
+        return `
+        <div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
+          ${isRight?`
+          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
+            <button onclick="zoomStep(this)" style="width:44px;height:44px;border-radius:50%;background:${clr};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+              <span style="font-size:20px;pointer-events:none;">${s.icon}</span>
+            </button>
+            ${!isLast?`<div style="width:0;flex:1;min-height:16px;border-left:3px dashed ${nextClr}88;margin-top:4px;margin-bottom:4px;"></div>`:''}
+          </div>
+          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:0;" class="step-box">
+            <div style="position:absolute;left:-8px;top:13px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${clr}40;"></div>
+            <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+            <p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p>
+          </div>
+          `:`
+          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:0;" class="step-box">
+            <div style="position:absolute;right:-8px;top:13px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${clr}40;"></div>
+            <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+            <p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
+            <button onclick="zoomStep(this)" style="width:44px;height:44px;border-radius:50%;background:${clr};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+              <span style="font-size:20px;pointer-events:none;">${s.icon}</span>
+            </button>
+            ${!isLast?`<div style="width:0;flex:1;min-height:16px;border-left:3px dashed ${nextClr}88;margin-top:4px;margin-bottom:4px;"></div>`:''}
+          </div>
+          `}
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+buildSteps(simSteps,'simSteps');
+
+function zoomStep(iconEl){
+  const sfx=document.getElementById('clickSfx');
+  if(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
+  const row=iconEl.closest('.map-step');
+  if(!row)return;
+  const box=row.querySelector('.step-box');
+  if(!box)return;
+  box.classList.remove('step-box-zoom');
+  void box.offsetWidth;
+  box.classList.add('step-box-zoom');
+  box.addEventListener('animationend',()=>box.classList.remove('step-box-zoom'),{once:true});
+}
+
+// ─── DATA ───
+const plants=[
+  {id:'rumput',name:'Rumput',emoji:'🌾',latin:'Poaceae',ciri:['Punya batang, akar, daun','Berbunga (malai)','Biji 1 keping','Akar serabut','Tulang daun sejajar'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'jagung',name:'Jagung',emoji:'🌽',latin:'Zea mays',ciri:['Punya batang, akar, daun','Berbunga (jantan/betina)','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'kacang',name:'Kacang Tanah',emoji:'🥜',latin:'Arachis hypogaea',ciri:['Punya batang, akar, daun','Berbunga (kuning)','Biji 2 keping','Akar tunggang','Tulang daun menyirip'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
+  {id:'ketela',name:'Ketela',emoji:'🪴',latin:'Manihot esculenta',ciri:['Punya batang, akar, daun','Berbunga','Biji 2 keping','Akar tunggang (umbi)','Tulang daun menjari'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
+  {id:'padi',name:'Padi',emoji:'🌾',latin:'Oryza sativa',ciri:['Punya batang, akar, daun','Berbunga (malai)','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'kelapa',name:'Kelapa',emoji:'🥥',latin:'Cocos nucifera',ciri:['Punya batang, akar, daun','Berbunga','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'palem',name:'Palem',emoji:'🌴',latin:'Arecaceae',ciri:['Punya batang, akar, daun','Berbunga','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'mangga',name:'Pohon Mangga',emoji:'🥭',latin:'Mangifera indica',ciri:['Punya batang, akar, daun','Berbunga (malai kecil)','Biji 2 keping','Akar tunggang','Tulang daun menyirip'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
+  {id:'jamur',name:'Jamur',emoji:'🍄',latin:'Fungi',ciri:['Tidak punya batang/akar/daun sejati','Tidak berklorofil','Tubuh berupa talus','Heterotrof'],kunci:['1a','2a'],kelompok:'Jamur (Fungi)',alasan:'Tidak punya batang · tidak berklorofil'},
+  {id:'ganggang',name:'Ganggang Hijau',emoji:'🌿',latin:'Chlorophyta',ciri:['Tidak punya batang/akar/daun sejati','Berklorofil (hijau)','Tubuh berupa talus','Autotrof'],kunci:['1a','2b'],kelompok:'Ganggang (Algae)',alasan:'Tidak punya batang · memiliki klorofil'},
+];
+
+const kunciDef=[
+  {num:1,a:{text:'Tidak mempunyai batang',tag:'1a',next:true},b:{text:'Mempunyai batang',tag:'1b',next:true}},
+  {num:2,a:{text:'Tidak mengandung klorofil',tag:'2a',result:'Jamur (Fungi) 🍄',desc:'Jamur tidak punya klorofil, tidak berfotosintesis. Kingdom Fungi.'},b:{text:'Mempunyai zat hijau daun',tag:'2b',result:'Ganggang (Algae) 🌿',desc:'Ganggang berklorofil tetapi tidak punya batang/akar/daun sejati. Kingdom Protista.'}},
+  {num:3,a:{text:'Tidak mempunyai bunga',tag:'3a',result:'Lumut & Paku 🌱',desc:'Tumbuhan tidak berbiji dan tidak berbunga. Contoh: lumut (Bryophyta) dan paku (Pteridophyta).'},b:{text:'Merupakan tumbuhan berbunga',tag:'3b',next:true}},
+  {num:4,a:{text:'Berkeping biji satu / berakar serabut',tag:'4a',result:'Monokotil 🌾',desc:'Biji 1 keping. Ciri: akar serabut, tulang daun sejajar, kelopak bunga kelipatan 3.'},b:{text:'Berkeping biji dua / berakar tunggang',tag:'4b',result:'Dikotil 🌳',desc:'Biji 2 keping. Ciri: akar tunggang, tulang daun menyirip/menjari, kelopak bunga kelipatan 2/4/5.'}},
+];
+
+// ─── BUILD GRID ───
+function buildDetGrid(){
+  const g=document.getElementById('det-grid');g.innerHTML='';
+  plants.forEach(p=>{
+    const d=document.createElement('div');d.className='pcard';d.id='pc-'+p.id;
+    d.innerHTML=`<div class="chk">✓</div><span class="pe">${p.emoji}</span><div class="pn">${p.name}</div>`;
+    d.onclick=()=>selPlantFn(p);g.appendChild(d);
+  });
+}
+
+// ─── DETERMINASI ───
+let selPlant=null,curStep=0,kPath=[];
+function selPlantFn(p){
+  document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('pc-'+p.id).classList.add('selected');
+  selPlant=p;curStep=0;kPath=[];
+  document.getElementById('selected-display').innerHTML=`
+    <span class="sd-emoji">${p.emoji}</span>
+    <div><div class="sd-name">${p.name}</div><div class="sd-latin">${p.latin}</div>
+    </div>`;
+  renderKunci();
+}
+function renderKunci(){
+  const c=document.getElementById('kunci-container');
+  if(!selPlant){c.innerHTML='<p style="font-size:0.72rem;color:var(--text3);padding:8px 0;text-align:center;">Pilih organisme ...</p>';return;}
+  let html='<div class="kunci-steps">';
+  const show=Math.min(curStep+1,kunciDef.length);
+  for(let i=0;i<show;i++){
+    const k=kunciDef[i],isDone=i<curStep,isActive=i===curStep,chosenTag=kPath[i];
+    html+=`<div class="kunci-step ${isDone?'done-step':''} ${isActive?'active-step':''}">
+      <div class="step-header"><div class="step-num">${isDone?'✓':k.num}</div>Pertanyaan ke-${k.num}</div>
+      <div class="step-options">`;
+    ['a','b'].forEach(opt=>{
+      const o=k[opt],isChosen=chosenTag===o.tag;
+      html+=`<button class="opt-btn ${isChosen?'chosen':''}" ${isDone?'disabled':''} onclick="pilihKunci(${i},'${opt}','${o.tag}')">
+        <span class="tag">${k.num}${opt}</span>${o.text}</button>`;
+    });
+    html+='</div></div>';
+  }
+  if(curStep>0&&kPath.length>0){
+    const li=kPath.length-1;
+    const lk=kunciDef.find(k=>kPath[li].startsWith(String(k.num)));
+    if(lk){const opt=kPath[li].slice(-1),chosen=lk[opt];
+      if(chosen&&chosen.result) html+=`<div class="result-box">
+        <div class="result-title">🎉 Hasil Determinasi</div>
+        <div class="result-kingdom">${chosen.result}</div>
+        <div class="result-key">Jalur: ${kPath.join(' → ')}</div>
+        <div class="result-desc">${chosen.desc}</div>
+        <button class="btn btn-ghost" style="margin-top:5px;font-size:11px;" onclick="resetDet()">🔄 Coba Lagi</button>
+      </div>`;
+    }
+  }
+  html+='</div>';
+  c.innerHTML=html;
+}
+function pilihKunci(si,opt,tag){kPath[si]=tag;kPath=kPath.slice(0,si+1);curStep=si+1;renderKunci();}
+function resetDet(){
+  selPlant=null;curStep=0;kPath=[];
+  document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('selected-display').innerHTML='<span style="font-size:2rem;opacity:0.3;">❓</span><div class="sd-hint">Klik organisme di atas untuk mulai</div>';
+  document.getElementById('kunci-container').innerHTML='<p style="font-size:0.72rem;color:var(--text3);text-align:center;padding:10px 0;">Pilih organisme terlebih dahulu ...</p>';
+}
+
+// ─── DIAGRAM ───
+const KUNCI_JAWABAN = 'Kunci: Tumbuhan Tinggi · Tumbuhan Rendah · Tumbuhan Berbunga · Ganggang · Monokotil · Dikotil';
+function periksaDiagram(){
+  const inputs=document.querySelectorAll('.d-input');
+  let benar=0;
+  inputs.forEach(inp=>{
+    const v=inp.value.trim().toLowerCase(),a=inp.dataset.answer.toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if(v==='')return;
+    if(v===a||a.includes(v)||v.includes(a.split(' ')[0])){benar++;inp.classList.add('correct');}
+    else inp.classList.add('wrong');
+  });
+  const fb=document.getElementById('diagram-feedback');
+  fb.style.display='block';
+  const kunciHtml=`<div style="margin-top:6px;padding-top:6px;border-top:1px solid currentColor;opacity:0.7;font-size:10.5px;">🔑 ${KUNCI_JAWABAN}</div>`;
+  if(benar===inputs.length){
+    fb.style.background='#ecfdf5';fb.style.border='1px solid #a7f3d0';fb.style.color='#065f46';
+    fb.innerHTML=`✅ <strong>Sempurna!</strong> Semua ${inputs.length} kotak benar!`+kunciHtml;
+    const sfx=new Audio('https://denicendrianto41.github.io/tring.wav');sfx.play().catch(()=>{});
+  } else {
+    fb.style.background='#eff6ff';fb.style.border='1px solid #bfdbfe';fb.style.color='#1e40af';
+    fb.innerHTML=`📝 <strong>${benar} dari ${inputs.length}</strong> kotak benar. <span style="color:var(--green)">Hijau</span>=benar · <span style="color:var(--red)">Merah</span>=perlu diperbaiki.`+kunciHtml;
+  }
+}
+function resetDiagram(){
+  document.querySelectorAll('.d-input').forEach(i=>{i.value='';i.classList.remove('correct','wrong');});
+  const fb=document.getElementById('diagram-feedback');fb.style.display='none';
+}
+
+// ─── TABEL ───
+function buildTabel(){
+  const tb=document.getElementById('tabel-body');
+  if(tb.children.length>0)return;
+  plants.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:var(--acc);font-weight:700;">${i+1}</td>
+      <td>${p.emoji} <strong>${p.name}</strong><br><em style="font-size:10.5px;color:var(--text3);">${p.latin}</em></td>
+      <td><span class="key-path">${p.kunci.join(' → ')}</span></td>
+      <td><span class="kb">${p.kelompok}</span></td>
+      <td style="font-size:11px;color:var(--text2);">${p.alasan}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// ─── DISKUSI ───
+const dqData={};
+function saveDQ(n,v){dqData[n]=v;}
+function clearDQ(){
+  document.querySelectorAll('.disc-area').forEach(t=>{t.value='';});
+  Object.keys(dqData).forEach(k=>delete dqData[k]);
+}
+
+// ─── DRAG & DROP – Alat & Bahan ───
+(function(){
+  const CORRECT_ALAT=new Set(['luv','pinset','buku','penggaris','alatlv','alatalat']);
+  const CORRECT_BAHAN=new Set(['rumput','jagung','kacang','mangga','jamur','ganggang']);
+
+  let selected=null,ghost=null,ghostOffX=0,ghostOffY=0;
+
+  const sfxBenar=new Audio('https://denicendrianto41.github.io/benar.wav');
+  const sfxSalah=new Audio('https://denicendrianto41.github.io/salah.wav');
+  function playSfx(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
+
+  function showBenar(zone){
+    playSfx(sfxBenar);
+    const toast=document.createElement('div');
+    toast.innerHTML='✅ Kamu Benar!';
+    toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+    document.body.appendChild(toast);
+    requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
+    setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
+    zone.style.borderColor='#10b981';zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
+    setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},1800);
+  }
+  function showSalah(zone){
+    playSfx(sfxSalah);
+    zone.style.borderColor='#ef4444';zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+    zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+    setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},800);
+    const toast=document.createElement('div');
+    toast.innerHTML='❌ Salah! Coba lagi.';
+    toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+    document.body.appendChild(toast);
+    requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
+    setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
+  }
+  function createGhost(el,cx,cy){
+    if(ghost)ghost.remove();
+    ghost=el.cloneNode(true);
+    ghost.style.cssText=`position:fixed;pointer-events:none;z-index:8000;opacity:0.85;transform:scale(1.08);transition:none;border-radius:10px;width:${el.offsetWidth}px;box-shadow:0 8px 24px rgba(0,0,0,0.22);`;
+    positionGhost(cx,cy,el.offsetWidth,el.offsetHeight);
+    document.body.appendChild(ghost);
+  }
+  function positionGhost(cx,cy,w,h){
+    if(!ghost)return;
+    ghost.style.left=(cx-(w||ghost.offsetWidth)/2)+'px';
+    ghost.style.top=(cy-(h||ghost.offsetHeight)/2)+'px';
+  }
+  function removeGhost(){if(ghost){ghost.remove();ghost=null;}}
+  function highlightZones(on){
+    ['drop-alat','drop-bahan'].forEach(id=>{const z=document.getElementById(id);if(z)z.style.opacity=on?'1':'';});
+  }
+  function placeIntoZone(zone,sourceEl){
+    const zoneId=zone.id;
+    const hintId=zoneId==='drop-alat'?'drop-alat-hint':'drop-bahan-hint';
+    const correctSet=zoneId==='drop-alat'?CORRECT_ALAT:CORRECT_BAHAN;
+    const id=sourceEl.dataset.id;
+    if(zone.querySelector(`[data-id="${id}"]`))return;
+    if(!correctSet.has(id)){showSalah(zone);return;}
+    const hint=document.getElementById(hintId);
+    if(hint)hint.style.display='none';
+    const clone=sourceEl.cloneNode(true);
+    clone.style.cursor='pointer';
+    clone.removeAttribute('draggable');
+    clone.style.opacity='1';clone.style.position='relative';
+    clone.style.transform='scale(0.85)';clone.style.transition='transform .2s';
+    requestAnimationFrame(()=>{clone.style.transform='scale(1)';});
+    const rm=document.createElement('button');
+    rm.textContent='✕';rm.title='Hapus';
+    rm.style.cssText='position:absolute;top:3px;right:3px;background:rgba(220,38,38,0.18);border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;padding:0;touch-action:manipulation;';
+    rm.addEventListener('pointerdown',e=>{e.stopPropagation();});
+    rm.addEventListener('click',e=>{
+      e.stopPropagation();clone.remove();
+      if(!zone.querySelector('[data-id]')){const h2=document.getElementById(hintId);if(h2)h2.style.display='';}
+    });
+    clone.appendChild(rm);zone.appendChild(clone);
+    showBenar(zone);checkAllPlaced();
+  }
+  function checkAllPlaced(){
+    const alatPlaced=document.querySelectorAll('#drop-alat [data-id]').length;
+    const bahanPlaced=document.querySelectorAll('#drop-bahan [data-id]').length;
+    if(alatPlaced>=CORRECT_ALAT.size&&bahanPlaced>=CORRECT_BAHAN.size){
+      setTimeout(showSelamat,400);
+    }
+  }
+  function showSelamat(){
+    const sfxT=new Audio('https://denicendrianto41.github.io/tring.wav');
+    sfxT.play().catch(()=>{});
+    const ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease;';
+    const box=document.createElement('div');
+    box.style.cssText='background:#fff;border-radius:20px;padding:36px 44px;text-align:center;max-width:380px;box-shadow:0 16px 48px rgba(0,0,0,0.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);font-family:Space Grotesk,sans-serif;';
+    box.innerHTML=`
+      <div style="font-size:52px;margin-bottom:10px;">🎉</div>
+      <div style="font-size:22px;font-weight:800;color:#059669;margin-bottom:8px;">Selamat!</div>
+      <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:22px;">Kamu berhasil menyusun semua alat dan bahan dengan benar.<br>Lanjutkan membaca <strong>Prosedur</strong> untuk langkah kerja selanjutnya.</div>
+      <button onclick="this.closest('.selamat-ov').remove();document.querySelector('.nb[onclick*=prosedur]').click();"
+        style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(5,150,105,0.35);">
+        📋 Lihat Prosedur →
+      </button>`;
+    ov.classList.add('selamat-ov');ov.appendChild(box);document.body.appendChild(ov);
+    ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
+  }
+  function hitTest(el,cx,cy){const r=el.getBoundingClientRect();return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom;}
+  function attachItem(el){
+    el.addEventListener('pointerdown',e=>{
+      if(e.target.tagName==='BUTTON')return;
+      e.preventDefault();el.setPointerCapture(e.pointerId);
+      selected=el;el.style.opacity='0.45';el.style.transform='scale(0.95)';
+      ghostOffX=el.offsetWidth/2;ghostOffY=el.offsetHeight/2;
+      createGhost(el,e.clientX,e.clientY);highlightZones(true);
+      ['drop-alat','drop-bahan'].forEach(id=>{const z=document.getElementById(id);if(z){z.style.borderStyle='solid';z.style.borderWidth='2.5px';}});
+    });
+    el.addEventListener('pointermove',e=>{
+      if(!selected||selected!==el)return;e.preventDefault();
+      positionGhost(e.clientX,e.clientY);
+      ['drop-alat','drop-bahan'].forEach(id=>{
+        const z=document.getElementById(id);if(!z)return;
+        if(hitTest(z,e.clientX,e.clientY)){z.style.background=id==='drop-alat'?'#dbeafe':'#dcfce7';z.style.transform='scale(1.02)';}
+        else{z.style.background='';z.style.transform='';}
+      });
+    });
+    el.addEventListener('pointerup',e=>{
+      if(!selected||selected!==el)return;e.preventDefault();
+      el.style.opacity='1';el.style.transform='';removeGhost();highlightZones(false);
+      ['drop-alat','drop-bahan'].forEach(id=>{
+        const z=document.getElementById(id);if(!z)return;
+        z.style.background='';z.style.transform='';z.style.borderStyle='';z.style.borderWidth='';
+        if(hitTest(z,e.clientX,e.clientY))placeIntoZone(z,el);
+      });
+      selected=null;
+    });
+    el.addEventListener('pointercancel',e=>{
+      if(selected===el){el.style.opacity='1';el.style.transform='';}
+      removeGhost();selected=null;highlightZones(false);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.drag-item').forEach(attachItem);
+  });
+})();
+
+// ─── INIT ───
+buildDetGrid();
+buildTabel();
+</script>
+<style>
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</body>
+</html>
