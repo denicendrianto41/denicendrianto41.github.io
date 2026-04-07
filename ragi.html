@@ -297,7 +297,16 @@ body.is-fullscreen .viewport{padding:0}
 function startPraktikum(){
   new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
   const ls=document.getElementById('loadScreen');
-  ls.classList.add('hide');setTimeout(()=>{ls.style.display='none';},650);
+  ls.classList.add('hide');
+  setTimeout(()=>{
+    ls.style.display='none';
+    // Navigate to Tujuan tab
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn) tujuanBtn.classList.add('active');
+  },650);
 }
 </script>
 
@@ -329,9 +338,9 @@ document.addEventListener('click',function(e){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
-    <button class="nb" onclick="show('tujuan',this);document.getElementById('mainNav').classList.remove('open')">
+    <button class="nb active" onclick="show('tujuan',this);document.getElementById('mainNav').classList.remove('open')">
       <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
-    <button class="nb active" onclick="show('teori',this);document.getElementById('mainNav').classList.remove('open')">
+    <button class="nb" onclick="show('teori',this);document.getElementById('mainNav').classList.remove('open')">
       <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
     <button class="nb" onclick="show('alatbahan',this);document.getElementById('mainNav').classList.remove('open')">
       <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
@@ -351,67 +360,302 @@ document.addEventListener('click',function(e){
 <!-- ══════════════════════════════════════════
      TUJUAN
 ══════════════════════════════════════════ -->
-<div id="page-tujuan" class="page">
-  <div class="scroll">
-    <div class="card" style="margin-bottom:7px;border-left:4px solid var(--acc);">
-      <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Pembelajaran</div></div>
-      <p>Mendeskripsikan <strong>peranan jamur</strong> dalam kehidupan sehari-hari dan kaitannya dengan proses biologi reproduksi sel.</p>
+<div id="page-tujuan" class="page active">
+  <div class="scroll" style="padding:14px 16px 20px;">
+
+    <!-- Hero Banner -->
+    <div style="
+      background: linear-gradient(135deg, #0f2460 0%, #1a3a8f 45%, #2563eb 100%);
+      border-radius: 16px;
+      padding: 22px 24px 18px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(15,36,96,0.28);
+    ">
+      <!-- Decorative circles -->
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="font-size:28px;">🧫</span>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Reproduksi Sel Ragi</div>
+            <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.9);letter-spacing:0.06em;text-transform:uppercase;font-weight:500;margin-top:2px;">Saccharomyces cerevisiae · Kelas X Fungi</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari proses <strong style="color:#93c5fd;">pertunasan (budding)</strong> ragi secara interaktif — dari teori, simulasi, hingga pengamatan di bawah mikroskop.
+        </p>
+      </div>
     </div>
-    <div class="card" style="margin-bottom:7px;border-left:4px solid var(--acc2);">
-      <div class="ch"><div class="ci b">🔬</div><div class="ct">Tujuan Percobaan</div></div>
-      <p>Mempelajari <strong style="color:var(--acc2)">cara reproduksi sel ragi</strong> (<em>Saccharomyces cerevisiae</em>) secara aseksual melalui <strong style="color:var(--acc2)">pertunasan (budding)</strong> dan mengamatinya di bawah mikroskop.</p>
+
+    <!-- 2 Main Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 14px;
+        padding: 16px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+        transition: box-shadow .2s, transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan Pembelajaran</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Kompetensi Dasar</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#1d4ed8;">peranan jamur</strong> dalam kehidupan sehari-hari dan kaitannya dengan proses biologi reproduksi sel pada organisme eukariotik.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 14px;
+        padding: 16px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+        transition: box-shadow .2s, transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan Percobaan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Fokus Praktikum</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mempelajari <strong style="color:#059669;">cara reproduksi sel ragi</strong> (<em>Saccharomyces cerevisiae</em>) secara aseksual melalui <strong style="color:#059669;">pertunasan (budding)</strong> dan mengamatinya di bawah mikroskop.
+        </p>
+      </div>
     </div>
-    <div class="card" style="border-left:4px solid var(--green);">
-      <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
-      <p style="margin-bottom:8px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
-      <ul class="olist">
-        <li>Memahami istilah reproduksi dan jenis-jenisnya</li>
-        <li>Memahami proses budding dan pembelahan biner</li>
-        <li>Menjelaskan tahapan budding pada ragi</li>
-        <li>Mengidentifikasi sel ragi di bawah mikroskop</li>
-      </ul>
+
+    <!-- Hasil Belajar Section -->
+    <div style="
+      background: #fff;
+      border: 1px solid #dde3ec;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+    ">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami istilah <strong style="color:#1d4ed8;">reproduksi</strong> dan jenis-jenisnya pada makhluk hidup</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami proses <strong style="color:#059669;">budding</strong> dan perbedaannya dengan pembelahan biner</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan <strong style="color:#7c3aed;">tahapan budding</strong> pada ragi secara urut dan tepat</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Mengidentifikasi <strong style="color:#dc2626;">sel ragi</strong> dan strukturnya di bawah mikroskop</span>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
 
 <!-- ══════════════════════════════════════════
      TEORI
 ══════════════════════════════════════════ -->
-<div id="page-teori" class="page active">
-  <div class="scroll">
-    <div class="card">
-      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div>
-          <h4>Reproduksi Makhluk Hidup</h4>
-          <p>Reproduksi adalah kemampuan dasar makhluk hidup untuk menghasilkan individu baru sejenisnya guna menjaga kelangsungan spesies. Secara umum reproduksi dibedakan menjadi dua, yaitu <strong>seksual</strong> (melibatkan dua induk dan peleburan gamet sehingga menghasilkan variasi genetik) dan <strong>aseksual</strong> (hanya melibatkan satu induk tanpa gamet, sehingga keturunan identik secara genetik dengan induknya). Reproduksi aseksual berlangsung lebih cepat dan efisien, sehingga banyak dijumpai pada organisme bersel satu seperti bakteri, protozoa, dan jamur bersel satu (ragi).</p>
+<div id="page-teori" class="page">
+  <div class="scroll" style="padding:14px 16px 20px;">
 
-          <h4>Ragi (Yeast) — <em>Saccharomyces cerevisiae</em></h4>
-          <p>Ragi adalah mikroorganisme eukariotik bersel tunggal yang termasuk dalam Kingdom Fungi. Berbeda dari bakteri (prokariot), sel ragi memiliki inti sel yang terbungkus membran, organel lengkap, serta dinding sel berbahan kitin. <em>Saccharomyces cerevisiae</em> adalah spesies ragi yang paling banyak diteliti dan dimanfaatkan; ia mampu mengubah gula (glukosa dan sukrosa) menjadi CO₂ dan etanol melalui proses <strong>fermentasi anaerob</strong>. Proses ini digunakan secara luas dalam pembuatan roti, bir, dan bioetanol. Dalam kondisi aerob, ragi lebih memilih jalur respirasi seluler penuh untuk menghasilkan energi yang lebih besar.</p>
+    <!-- Teori Header -->
+    <div style="
+      background: linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 6px 24px rgba(15,36,96,0.22);
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,19px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.85);margin-top:2px;">Reproduksi Sel Ragi · <em>Saccharomyces cerevisiae</em></div>
+      </div>
+    </div>
 
-          <div style="margin-top:8px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:6px;padding:8px 10px;font-size:11.5px;color:#065f46;">
-            <strong>Fakta menarik:</strong> Ragi telah digunakan manusia selama lebih dari 5.000 tahun dalam pembuatan roti dan minuman fermentasi, jauh sebelum ilmu mikrobiologi berkembang.
+    <!-- 2-column theory grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Left: Reproduksi -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div style="
+          background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+          padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+          position:relative;overflow:hidden;
+          transition:box-shadow .2s,transform .2s;
+        " onmouseover="this.style.boxShadow='0 6px 20px rgba(37,99,235,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🔁</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#1d4ed8;">Reproduksi Makhluk Hidup</div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Reproduksi adalah kemampuan dasar makhluk hidup untuk menghasilkan individu baru guna menjaga kelangsungan spesies. Terbagi menjadi dua jenis:
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">⚤</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#1d4ed8;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Seksual</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Melibatkan dua induk & peleburan gamet → menghasilkan variasi genetik</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🔄</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#059669;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Aseksual</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Satu induk tanpa gamet → keturunan identik secara genetik dengan induknya</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div>
-          <h4>Budding (Pertunasan) pada Ragi</h4>
-          <p>Mekanisme reproduksi utama ragi adalah <strong style="color:var(--acc2)">pertunasan (budding)</strong>, yaitu bentuk pembelahan asimetris di mana sel anak tumbuh sebagai tonjolan kecil dari sel induk. Tahapan budding berlangsung sebagai berikut:</p>
-          <ul class="olist" style="font-size:11.5px;margin-top:4px;">
-            <li>Sel induk membentuk tonjolan kecil (tonas/bud) pada permukaan dindingnya</li>
-            <li>Inti sel induk mengalami mitosis; salah satu inti bermigrasi masuk ke dalam tunas</li>
-            <li>Sitoplasma beserta organel terbagi; tunas terus membesar</li>
-            <li>Terbentuk sekat pemisah (septum) di antara sel induk dan tunas</li>
-            <li>Tunas memisah menjadi sel anak mandiri, meninggalkan bekas berupa <em>bud scar</em> pada sel induk</li>
-          </ul>
-          <p style="margin-top:8px;">Jika kondisi lingkungan sangat mendukung, tunas dapat belum sempat lepas sebelum tunas baru terbentuk, menghasilkan <strong>rantai 3–4 sel</strong> yang tampak seperti mata rantai di bawah mikroskop.</p>
 
-          
-          <div style="margin-top:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:6px 10px;font-size:11px;color:#1e40af;font-family:'JetBrains Mono',monospace;">
-            Ragi tumbuh optimal: suhu ~37°C · larutan gula (sukrosa) · inkubasi ≥ 45 menit
+        <!-- Yeast Card -->
+        <div style="
+          background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+          padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+          position:relative;overflow:hidden;flex:1;
+          transition:box-shadow .2s,transform .2s;
+        " onmouseover="this.style.boxShadow='0 6px 20px rgba(124,58,237,0.1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🍞</div>
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#6d28d9;">Ragi (Yeast)</div>
+              <div style="font-size:10px;color:#8b5cf6;font-style:italic;">Saccharomyces cerevisiae</div>
+            </div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Mikroorganisme <strong style="color:#6d28d9;">eukariotik bersel tunggal</strong> dari Kingdom Fungi. Memiliki inti bermembran, organel lengkap, dan dinding sel berbahan kitin.
+          </p>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin:0;">
+            Mampu mengubah gula menjadi CO₂ & etanol melalui <strong style="color:#6d28d9;">fermentasi anaerob</strong> — digunakan luas dalam pembuatan roti, bir, dan bioetanol.
+          </p>
+          <!-- Fakta menarik -->
+          <div style="margin-top:10px;background:linear-gradient(135deg,#faf5ff,#f5f3ff);border:1px solid #ddd6fe;border-radius:9px;padding:8px 11px;display:flex;align-items:flex-start;gap:7px;">
+            <span style="font-size:14px;flex-shrink:0;">✨</span>
+            <p style="font-size:clamp(10px,1.1vw,11.5px);color:#5b21b6;line-height:1.6;margin:0;"><strong>Fakta:</strong> Ragi telah digunakan manusia selama lebih dari 5.000 tahun dalam pembuatan roti dan minuman fermentasi.</p>
           </div>
         </div>
       </div>
+
+      <!-- Right: Budding -->
+      <div style="
+        background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+        padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+        position:relative;overflow:hidden;
+        transition:box-shadow .2s,transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🌱</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#059669;">Budding (Pertunasan) pada Ragi</div>
+            <div style="font-size:10px;color:#10b981;">Mekanisme reproduksi aseksual utama</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.7;margin-bottom:10px;">
+          Pembelahan asimetris di mana <strong style="color:#059669;">sel anak</strong> tumbuh sebagai tonjolan kecil dari sel induk. Berikut tahapannya:
+        </p>
+
+        <!-- Steps timeline -->
+        <div style="display:flex;flex-direction:column;gap:0;">
+
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">1</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#10b981,#a7f3d0);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Sel induk membentuk <strong style="color:#059669;">tonjolan kecil (tunas/bud)</strong> pada permukaan dindingnya</p></div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">2</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#2dd4bf,#99f6e4);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Inti sel induk mengalami <strong style="color:#0d9488;">mitosis</strong>; salah satu inti bermigrasi masuk ke dalam tunas</p></div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">3</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#38bdf8,#bae6fd);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Sitoplasma beserta <strong style="color:#0891b2;">organel terbagi</strong>; tunas terus membesar mendekati ukuran sel induk</p></div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">4</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#60a5fa,#bfdbfe);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Terbentuk <strong style="color:#2563eb;">sekat pemisah (septum)</strong> di antara sel induk dan tunas</p></div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">5</div>
+            </div>
+            <div style="flex:1;padding:0 0 0 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Tunas memisah menjadi <strong style="color:#7c3aed;">sel anak mandiri</strong>, meninggalkan bekas <em>bud scar</em> pada sel induk</p></div>
+          </div>
+        </div>
+
+        <p style="font-size:clamp(10.5px,1.1vw,12px);color:#475569;line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;">
+          💡 Bila kondisi sangat mendukung, tunas belum sempat lepas sebelum tunas baru terbentuk → menghasilkan <strong>rantai 3–4 sel</strong> terlihat seperti mata rantai di bawah mikroskop.
+        </p>
+
+        <!-- Kondisi optimal -->
+        <div style="margin-top:10px;background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">⚗️</span>
+          <code style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:0.03em;">suhu ~37°C &nbsp;·&nbsp; larutan sukrosa &nbsp;·&nbsp; inkubasi ≥ 45 menit</code>
+        </div>
+      </div>
+
     </div>
+
   </div>
 </div>
 
