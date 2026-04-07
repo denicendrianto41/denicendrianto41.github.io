@@ -2004,17 +2004,40 @@ function abHighlight(on){
     if(z)z.style.transform=on?'scale(1.01)':'';
   });
 }
-function abShowFlash(zone,ok){
-  zone.style.background=ok?'#dcfce7':'#fee2e2';
-  if(ok){new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});}
-  setTimeout(()=>{zone.style.background='';},400);
+/* ── Audio feedback ── */
+const _sfxBenar = new Audio('https://denicendrianto41.github.io/benar.wav');
+const _sfxSalah = new Audio('https://denicendrianto41.github.io/salah.wav');
+function _playSfx(sfx){ sfx.currentTime=0; sfx.play().catch(()=>{}); }
+
+function abShowBenar(zone){
+  _playSfx(_sfxBenar);
+  const toast=document.createElement('div');
+  toast.innerHTML='✅ Kamu Benar!';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); },1600);
+  zone.style.borderColor='#10b981'; zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
+  setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },1800);
+}
+function abShowSalah(zone){
+  _playSfx(_sfxSalah);
+  zone.style.borderColor='#ef4444'; zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+  zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+  setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },800);
+  const toast=document.createElement('div');
+  toast.innerHTML='❌ Salah! Coba lagi.';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); },1600);
 }
 function abPlace(zone,srcEl){
   const id=srcEl.dataset.id;
   if(zone.querySelector('[data-id="'+id+'"]'))return;
   const isAlat=CORRECT_ALAT.has(id),isBahan=CORRECT_BAHAN.has(id);
   const zt=zone.dataset.zone;
-  if((zt==='alat'&&!isAlat)||(zt==='bahan'&&!isBahan)){abShowFlash(zone,false);return;}
+  if((zt==='alat'&&!isAlat)||(zt==='bahan'&&!isBahan)){abShowSalah(zone);return;}
   const hint=document.getElementById(zt==='alat'?'hint-alat':'hint-bahan');
   if(hint)hint.style.display='none';
   const clone=srcEl.cloneNode(true);
@@ -2029,7 +2052,7 @@ function abPlace(zone,srcEl){
   rm.addEventListener('click',e=>{e.stopPropagation();clone.remove();if(!zone.querySelector('[data-id]')){const h2=document.getElementById(zt==='alat'?'hint-alat':'hint-bahan');if(h2)h2.style.display='';}});
   clone.appendChild(rm);
   zone.appendChild(clone);
-  abShowFlash(zone,true);
+  abShowBenar(zone);
   abCheckComplete();
 }
 function abCheckComplete(){
