@@ -192,6 +192,88 @@ nav::-webkit-scrollbar{display:none;}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── CELEBRATION ANIMATIONS ── */
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1;}
+  100%{transform:translateY(110vh) rotate(720deg) scale(0.4);opacity:0;}
+}
+@keyframes celebPop{
+  0%{transform:scale(0.3) translateY(40px);opacity:0;}
+  65%{transform:scale(1.1) translateY(-6px);opacity:1;}
+  82%{transform:scale(0.96) translateY(2px);}
+  100%{transform:scale(1) translateY(0);opacity:1;}
+}
+@keyframes rainbowBorder{
+  0%{border-color:#f59e0b;}25%{border-color:#10b981;}50%{border-color:#3b82f6;}75%{border-color:#8b5cf6;}100%{border-color:#f59e0b;}
+}
+@keyframes floatEmoji{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-10px) scale(1.15);}
+}
+@keyframes shimmerText{
+  0%{background-position:0% 50%;}
+  100%{background-position:200% 50%;}
+}
+/* Wrong answer animations */
+@keyframes shakeWrong{
+  0%,100%{transform:translateX(0);}
+  15%{transform:translateX(-10px) rotate(-2deg);}
+  30%{transform:translateX(10px) rotate(2deg);}
+  45%{transform:translateX(-7px) rotate(-1deg);}
+  60%{transform:translateX(7px) rotate(1deg);}
+  75%{transform:translateX(-4px);}
+  88%{transform:translateX(4px);}
+}
+@keyframes wrongFlashBg{
+  0%,100%{background:rgba(220,38,38,0);}
+  40%{background:rgba(220,38,38,0.12);}
+}
+@keyframes wrongPulse{
+  0%{box-shadow:0 0 0 0 rgba(220,38,38,0.55);}
+  60%{box-shadow:0 0 0 14px rgba(220,38,38,0);}
+  100%{box-shadow:0 0 0 0 rgba(220,38,38,0);}
+}
+.confetti-piece{
+  position:fixed;pointer-events:none;z-index:9999;
+  animation:confettiFall linear forwards;
+  font-style:normal;line-height:1;
+}
+.shake-wrong{animation:shakeWrong 0.55s cubic-bezier(0.36,0.07,0.19,0.97);}
+.wrong-flash-panel{animation:wrongFlashBg 0.45s ease;}
+/* Upgraded score box */
+#scoreOv .score-box{
+  animation:celebPop 0.52s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  border:3px solid #f59e0b;
+  background:linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg,#f59e0b,#10b981,#3b82f6,#8b5cf6,#f59e0b) border-box;
+  max-width:400px;
+  padding:28px 36px 24px;
+}
+#scoreOv.on{animation:none;}
+.score-emoji-big{animation:floatEmoji 1.6s ease-in-out infinite;}
+/* Wrong overlay */
+#wrongOv{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;pointer-events:none;background:rgba(220,38,38,0);}
+#wrongOv.on{display:flex;animation:wrongScreenFlash 0.5s ease forwards;}
+@keyframes wrongScreenFlash{
+  0%{background:rgba(220,38,38,0);}
+  20%{background:rgba(220,38,38,0.18);}
+  100%{background:rgba(220,38,38,0);}
+}
+.wrong-box{
+  background:#fff;border:3px solid #dc2626;border-radius:14px;
+  padding:24px 36px;text-align:center;pointer-events:auto;
+  animation:celebPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards, wrongBorderPulse 0.6s ease 0.4s;
+  box-shadow:0 16px 48px rgba(220,38,38,0.35),0 0 0 0 rgba(220,38,38,0.4);
+  max-width:320px;
+}
+@keyframes wrongBorderPulse{
+  0%{box-shadow:0 16px 48px rgba(220,38,38,0.35),0 0 0 0 rgba(220,38,38,0.5);}
+  50%{box-shadow:0 16px 48px rgba(220,38,38,0.35),0 0 0 16px rgba(220,38,38,0);}
+  100%{box-shadow:0 16px 48px rgba(220,38,38,0.35),0 0 0 0 rgba(220,38,38,0);}
+}
+/* Confetti container */
+#confettiWrap{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
@@ -1341,9 +1423,10 @@ function refreshUI() {
     8: {obj:[&#x27;slide&#x27;,&#x27;microscope&#x27;], target:[&#x27;targetMicro&#x27;]},
     9: {obj:[&#x27;microscope&#x27;], target:[]}
   };
-  highlightObjects(maps[state.step].obj);
-  showTargets(maps[state.step].target);
-  const sh=document.getElementById(&#x27;stepHint&#x27;); if(sh) sh.textContent = state.step &lt; 9 ? &#x27;&#x27; : &#x27;Atur fokus mikroskop&#x27;;
+  highlightObjects((maps[state.step]||{obj:[],target:[]}).obj);
+  showTargets((maps[state.step]||{obj:[],target:[]}).target);
+  const sh=document.getElementById(&#x27;stepHint&#x27;);
+  if(sh) sh.textContent = state.step &gt;= 10 ? &#x27;✅ Fokus berhasil!&#x27; : (state.step &lt; 9 ? &#x27;&#x27; : &#x27;Atur fokus mikroskop&#x27;);
 }
 function advance(message) { state.step += 1; setMessage(message); refreshUI(); }
 
@@ -1657,7 +1740,13 @@ window.adjust = function(type, delta) {
   state[type] = Math.max(0, Math.min(5, state[type] + delta));
   if (getClarity().ok) {
     els.inferenceBtn.disabled = false;
-    setMessage(&#x27;Gambar sudah fokus. Klik Inferensi untuk penjelasan, lalu lanjut ke aktivitas label.&#x27;);
+    // Advance step to 10 so checkmark (✓) appears on step 10 in the sidebar
+    if (state.step === 9) {
+      state.step = 10;
+      renderSteps();
+      new Audio(&#x27;https://denicendrianto41.github.io/tring.wav&#x27;).play().catch(()=&gt;{});
+    }
+    setMessage(&#x27;✅ Gambar sudah fokus! Klik Inferensi untuk penjelasan, lalu lanjut ke aktivitas label.&#x27;);
   }
   openMicroscope();
 }
@@ -1765,13 +1854,71 @@ window.checkLabels = function() {
   });
   const fb = document.getElementById(&#x27;labelFeedback&#x27;);
   if (ok === zones.length) {
-    fb.textContent = &#x27;Semua label benar. Simulasi selesai.&#x27;;
+    fb.innerHTML = &#x27;&lt;strong style=&quot;color:#059669&quot;&gt;✅ Semua label benar! Hebat sekali!&lt;/strong&gt;&#x27;;
+    fb.style.background=&#x27;#ecfdf5&#x27;;fb.style.border=&#x27;1px solid #a7f3d0&#x27;;fb.style.borderRadius=&#x27;8px&#x27;;fb.style.padding=&#x27;8px 12px&#x27;;
     state.labelDone = true;
     els.labelBtn.classList.add(&#x27;hidden&#x27;);
-    setMessage(&#x27;Simulasi selesai. Guru dapat menambahkan evaluasi lanjutan jika diperlukan.&#x27;);
-    setTimeout(() =&gt; { closeModal(); alert(&#x27;Selamat! Semua label benar.&#x27;); }, 250);
+    setMessage(&#x27;Simulasi selesai! Semua label tepat. 🎉&#x27;);
+    new Audio(&#x27;https://denicendrianto41.github.io/misi-selesai.wav&#x27;).play().catch(()=&gt;{});
+    setTimeout(() =&gt; {
+      closeModal();
+      // Festive overlay inside iframe
+      const ovEl = document.createElement(&#x27;div&#x27;);
+      ovEl.style.cssText = &#x27;position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,0.65);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);&#x27;;
+      const box = document.createElement(&#x27;div&#x27;);
+      box.style.cssText = &#x27;background:#fff;border-radius:20px;padding:32px 44px;text-align:center;border:3px solid #f59e0b;box-shadow:0 20px 60px rgba(30,41,59,.35);animation:celebPopAb 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;&#x27;;
+      box.innerHTML = `
+        &lt;div style=&quot;font-size:60px;margin-bottom:8px;&quot;&gt;🎉&lt;/div&gt;
+        &lt;div style=&quot;font-family:Arial,sans-serif;font-size:26px;font-weight:900;color:#059669;margin-bottom:4px;&quot;&gt;Selamat!&lt;/div&gt;
+        &lt;div style=&quot;font-size:16px;color:#475569;margin-bottom:6px;&quot;&gt;Semua Label Benar! 🏆&lt;/div&gt;
+        &lt;div style=&quot;font-size:13px;color:#94a3b8;margin-bottom:18px;&quot;&gt;Kamu berhasil mengidentifikasi semua bagian sel ragi.&lt;/div&gt;
+        &lt;button onclick=&quot;this.closest(&#x27;div[style*=fixed]&#x27;).remove()&quot; style=&quot;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(5,150,105,.4);&quot;&gt;✨ Tutup&lt;/button&gt;
+      `;
+      // Add keyframe
+      const st = document.createElement(&#x27;style&#x27;);
+      st.textContent = &#x27;@keyframes celebPopAb{0%{transform:scale(0.4);opacity:0}65%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}&#x27;;
+      document.head.appendChild(st);
+      // Confetti inside iframe
+      const confWrap = document.createElement(&#x27;div&#x27;);
+      confWrap.style.cssText = &#x27;position:fixed;inset:0;pointer-events:none;z-index:10000;overflow:hidden;&#x27;;
+      const colors=[&#x27;#f59e0b&#x27;,&#x27;#10b981&#x27;,&#x27;#3b82f6&#x27;,&#x27;#8b5cf6&#x27;,&#x27;#ef4444&#x27;,&#x27;#ec4899&#x27;];
+      const shapes=[&#x27;●&#x27;,&#x27;★&#x27;,&#x27;♦&#x27;,&#x27;▲&#x27;,&#x27;■&#x27;,&#x27;✦&#x27;];
+      const cst = document.createElement(&#x27;style&#x27;);
+      cst.textContent = &#x27;@keyframes cFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}.cpc{position:fixed;animation:cFall linear forwards}&#x27;;
+      document.head.appendChild(cst);
+      let cActive=true;
+      function spawnC(){
+        if(!cActive)return;
+        for(let i=0;i&lt;10;i++){
+          const p=document.createElement(&#x27;span&#x27;);
+          p.className=&#x27;cpc&#x27;;p.textContent=shapes[Math.floor(Math.random()*shapes.length)];
+          p.style.left=Math.random()*100+&#x27;vw&#x27;;p.style.top=&#x27;-20px&#x27;;
+          p.style.color=colors[Math.floor(Math.random()*colors.length)];
+          p.style.fontSize=(10+Math.random()*14)+&#x27;px&#x27;;
+          const d=(1.8+Math.random()*2)+&#x27;s&#x27;;p.style.animationDuration=d;
+          confWrap.appendChild(p);setTimeout(()=&gt;p.remove(),parseFloat(d)*1000);
+        }
+      }
+      spawnC();const iv=setInterval(()=&gt;{if(!cActive){clearInterval(iv);return;}spawnC();},400);
+      setTimeout(()=&gt;{cActive=false;clearInterval(iv);confWrap.innerHTML=&#x27;&#x27;;},6000);
+      document.body.appendChild(confWrap);
+      ovEl.appendChild(box);
+      document.body.appendChild(ovEl);
+    }, 300);
   } else {
-    fb.textContent = `Benar ${ok} dari ${zones.length}. Periksa kembali label yang belum tepat.`;
+    fb.innerHTML = `&lt;strong style=&quot;color:#dc2626;&quot;&gt;❌ Benar ${ok} dari ${zones.length}.&lt;/strong&gt; Periksa kembali label yang belum tepat.`;
+    fb.style.background=&#x27;#fff1f2&#x27;;fb.style.border=&#x27;1px solid #fecdd3&#x27;;fb.style.borderRadius=&#x27;8px&#x27;;fb.style.padding=&#x27;8px 12px&#x27;;
+    new Audio(&#x27;https://denicendrianto41.github.io/gameover.wav&#x27;).play().catch(()=&gt;{});
+    // Shake the diagram area
+    const diag = els.modalContent.querySelector(&#x27;.diagram-grid&#x27;);
+    if(diag){
+      diag.style.animation=&#x27;none&#x27;;
+      const shSt=document.createElement(&#x27;style&#x27;);
+      shSt.textContent=&#x27;@keyframes shWr{0%,100%{transform:translateX(0)}15%{transform:translateX(-9px)}30%{transform:translateX(9px)}45%{transform:translateX(-6px)}60%{transform:translateX(6px)}75%{transform:translateX(-3px)}}&#x27;;
+      document.head.appendChild(shSt);
+      diag.style.animation=&#x27;shWr 0.5s ease&#x27;;
+      setTimeout(()=&gt;{diag.style.animation=&#x27;&#x27;;},600);
+    }
   }
 }
 
@@ -1886,16 +2033,41 @@ refreshUI();
 
 </div><!-- #app -->
 
+<!-- Confetti container -->
+<div id="confettiWrap"></div>
+
+<!-- Wrong answer overlay -->
+<div id="wrongOv">
+  <div class="wrong-box">
+    <div style="font-size:50px;margin-bottom:6px;animation:floatEmoji 0.8s ease-in-out infinite alternate;">💥</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:900;color:#dc2626;margin-bottom:4px;letter-spacing:-0.02em;">Salah!</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:6px;">Label tidak sesuai nomor</div>
+    <div style="font-size:12px;color:#94a3b8;margin-bottom:14px;">Coba lagi — kamu pasti bisa! 💪</div>
+    <button class="btn-score" style="background:linear-gradient(135deg,#dc2626,#f87171);color:#fff;padding:8px 24px;border-radius:8px;font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(220,38,38,0.35);" onclick="document.getElementById('wrongOv').classList.remove('on')">↩ Coba Lagi</button>
+  </div>
+</div>
+
+<!-- Celebration Score Overlay -->
 <div class="score-overlay" id="scoreOv">
-  <div class="score-box">
-    <div style="font-size:52px;margin-bottom:8px;">🍄</div>
-    <div class="score-big" id="scoreBig"></div>
-    <div class="score-pct" id="scorePct"></div>
-    <div class="score-sub" id="scoreSub"></div>
-    <div class="score-grade" id="scoreGrade"></div>
-    <div class="score-actions">
-      <button class="btn-score btn-review" onclick="document.getElementById('scoreOv').classList.remove('on')">📋 Review</button>
-      <button class="btn-score btn-ulangi" onclick="resetLabelGame();document.getElementById('scoreOv').classList.remove('on')">↺ Ulangi</button>
+  <div class="score-box" style="position:relative;overflow:visible;">
+    <!-- Floating stars decoration -->
+    <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:28px;display:flex;gap:6px;animation:floatEmoji 1.4s ease-in-out infinite;">⭐🌟⭐</div>
+    <div class="score-emoji-big" style="font-size:58px;margin-bottom:6px;margin-top:10px;">🎉</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:900;margin-bottom:2px;
+      background:linear-gradient(90deg,#f59e0b,#10b981,#3b82f6,#8b5cf6,#f59e0b);
+      background-size:200% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:shimmerText 2s linear infinite;">Selamat! 🥳</div>
+    <div class="score-big" id="scoreBig" style="font-size:72px;line-height:1;margin:4px 0;
+      background:linear-gradient(135deg,#059669,#10b981);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;"></div>
+    <div class="score-pct" id="scorePct" style="font-size:20px;font-weight:700;color:#059669;margin-top:0;"></div>
+    <div class="score-sub" id="scoreSub" style="font-size:13px;"></div>
+    <div class="score-grade" id="scoreGrade" style="font-size:17px;font-weight:700;margin-top:10px;padding:6px 16px;border-radius:999px;background:linear-gradient(135deg,#fef9c3,#fde68a);display:inline-block;"></div>
+    <div style="margin:10px 0 4px;font-size:12px;color:#94a3b8;">Semua label berhasil ditempatkan dengan benar! 🍄</div>
+    <div class="score-actions" style="margin-top:14px;">
+      <button class="btn-score btn-review" onclick="document.getElementById('scoreOv').classList.remove('on');stopConfetti()">📋 Review</button>
+      <button class="btn-score btn-ulangi" onclick="resetLabelGame();document.getElementById('scoreOv').classList.remove('on');stopConfetti()">↺ Ulangi</button>
     </div>
   </div>
 </div>
@@ -2549,12 +2721,19 @@ function fillSlot(slotG){
   if(selectedLbl===correct){
     new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
     if(textEl){textEl.textContent=selectedLbl;textEl.setAttribute('fill','#065f46');}
-    if(rect){rect.setAttribute('fill','#dcfce7');rect.setAttribute('stroke','#16a34a');}
+    if(rect){
+      rect.setAttribute('fill','#dcfce7');rect.setAttribute('stroke','#16a34a');
+      // Mini pop animation on correct slot
+      slotG.style.transform='scale(1.08)';
+      setTimeout(()=>{slotG.style.transform='scale(1)';slotG.style.transition='transform 0.2s ease';},150);
+    }
     slotG.dataset.filled='true';
     document.querySelectorAll('.lbl-btn').forEach(b=>{if(b.dataset.label===selectedLbl){b.classList.add('used');b.classList.remove('selected');}});
     lblCorrect++;
     document.getElementById('labelScoreDisplay').textContent=lblCorrect+' / 4';
     if(lblCorrect===4){
+      // Play mission complete sound
+      new Audio('https://denicendrianto41.github.io/misi-selesai.wav').play().catch(()=>{});
       setTimeout(()=>{
         const sc=document.getElementById('scoreOv');
         document.getElementById('scoreBig').textContent='100';
@@ -2563,20 +2742,39 @@ function fillSlot(slotG){
         document.getElementById('scoreGrade').textContent='🏆 Luar Biasa!';
         document.getElementById('scoreGrade').style.color='#059669';
         sc.classList.add('on');
-        new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
+        launchConfetti();
       },400);
     }
     const fb=document.getElementById('lbl-feedback');
     fb.style.display='block';fb.style.color='#059669';
+    fb.style.background='#ecfdf5';fb.style.border='1px solid #a7f3d0';
+    fb.style.borderRadius='8px';fb.style.padding='6px 10px';
     fb.textContent='✅ Benar! '+correct+' sudah ditempatkan.';
   } else {
-    new Audio('https://denicendrianto41.github.io/blup.wav').play().catch(()=>{});
+    new Audio('https://denicendrianto41.github.io/gameover.wav').play().catch(()=>{});
     if(rect){
       rect.setAttribute('fill','#fee2e2');rect.setAttribute('stroke','#f87171');
       setTimeout(()=>{rect.setAttribute('fill','white');rect.setAttribute('stroke','#c5cfe0');},700);
     }
+    // Shake animation on label panel
+    const lp=document.querySelector('.label-panel');
+    if(lp){
+      lp.classList.remove('shake-wrong');
+      void lp.offsetWidth; // reflow to restart animation
+      lp.classList.add('shake-wrong');
+      lp.style.background='#fff1f2';
+      setTimeout(()=>{lp.style.background='';lp.classList.remove('shake-wrong');},600);
+    }
+    // Show wrong answer overlay
+    const wo=document.getElementById('wrongOv');
+    if(wo){
+      wo.classList.add('on');
+      setTimeout(()=>wo.classList.remove('on'),2200);
+    }
     const fb=document.getElementById('lbl-feedback');
     fb.style.display='block';fb.style.color='#dc2626';
+    fb.style.background='#fff1f2';fb.style.border='1px solid #fecdd3';
+    fb.style.borderRadius='8px';fb.style.padding='6px 10px';
     fb.textContent='❌ Kurang tepat. Coba lagi!';
   }
   selectedLbl=null;
@@ -2596,6 +2794,49 @@ function resetLabelGame(){
     if(textEl){textEl.textContent='— klik untuk label —';textEl.setAttribute('fill','#94a3b8');}
     if(rect){rect.setAttribute('fill','white');rect.setAttribute('stroke','#c5cfe0');}
   });
+}
+
+// ══════════════════════════════════════════
+//  CONFETTI & CELEBRATION
+// ══════════════════════════════════════════
+let _confettiActive=false,_confettiIds=[];
+function launchConfetti(){
+  _confettiActive=true;
+  const wrap=document.getElementById('confettiWrap');
+  if(!wrap)return;
+  const colors=['#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#ec4899','#06b6d4','#fbbf24','#34d399'];
+  const shapes=['●','★','♦','▲','■','✦','❋','✿','◆'];
+  function spawnBatch(){
+    if(!_confettiActive)return;
+    for(let i=0;i<12;i++){
+      const piece=document.createElement('span');
+      piece.className='confetti-piece';
+      piece.textContent=shapes[Math.floor(Math.random()*shapes.length)];
+      piece.style.left=Math.random()*100+'vw';
+      piece.style.top='-24px';
+      piece.style.color=colors[Math.floor(Math.random()*colors.length)];
+      piece.style.fontSize=(10+Math.random()*16)+'px';
+      const dur=(1.8+Math.random()*2.2).toFixed(2);
+      piece.style.animationDuration=dur+'s';
+      piece.style.animationTimingFunction=['linear','ease-in','ease-out'][Math.floor(Math.random()*3)];
+      wrap.appendChild(piece);
+      const tid=setTimeout(()=>piece.remove(),parseFloat(dur)*1000+100);
+      _confettiIds.push(tid);
+    }
+  }
+  spawnBatch();
+  const iv=setInterval(()=>{if(!_confettiActive){clearInterval(iv);return;}spawnBatch();},350);
+  _confettiIds.push(iv);
+  // Auto-stop after 6 seconds
+  const stopTid=setTimeout(stopConfetti,6000);
+  _confettiIds.push(stopTid);
+}
+function stopConfetti(){
+  _confettiActive=false;
+  _confettiIds.forEach(id=>{clearTimeout(id);clearInterval(id);});
+  _confettiIds=[];
+  const wrap=document.getElementById('confettiWrap');
+  if(wrap)wrap.innerHTML='';
 }
 
 // ══════════════════════════════════════════
