@@ -1343,7 +1343,7 @@ function refreshUI() {
   };
   highlightObjects(maps[state.step].obj);
   showTargets(maps[state.step].target);
-  const sh=document.getElementById(&#x27;stepHint&#x27;); if(sh) sh.textContent = state.step &lt; 9 ? &#x27;Drag-and-drop aktif&#x27; : &#x27;Atur fokus mikroskop&#x27;;
+  const sh=document.getElementById(&#x27;stepHint&#x27;); if(sh) sh.textContent = state.step &lt; 9 ? &#x27;&#x27; : &#x27;Atur fokus mikroskop&#x27;;
 }
 function advance(message) { state.step += 1; setMessage(message); refreshUI(); }
 
