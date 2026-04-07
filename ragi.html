@@ -602,8 +602,11 @@ body{
 .step.active{background:#eff6ff;border-color:#93c5fd}
 .step.done{background:#ecfdf5;border-color:#6ee7b7}
 .step.done .num{background:var(--ok);color:#fff}
-.sidebar-foot{padding:8px 12px 10px;border-top:1px solid #bfdbfe;display:grid;gap:6px}
-.message{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.35;min-height:56px;color:#1e3a8a}
+.sidebar-foot{padding:8px 12px 10px;border-top:1px solid #bfdbfe;display:grid;gap:6px;margin-top:-30px}
+.message{display:none}
+.message-balloon{position:absolute;left:300px;top:62px;width:230px;background:#eff6ff;border:1.5px solid #93c5fd;border-radius:14px;padding:10px 13px;font-size:12px;line-height:1.45;color:#1e3a8a;box-shadow:0 4px 16px rgba(37,99,235,0.13);z-index:20;}
+.message-balloon::after{content:'';position:absolute;right:-12px;top:24px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid #93c5fd;}
+.message-balloon::before{content:'';position:absolute;right:-10px;top:25px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid #eff6ff;z-index:1;}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 button{
   border:none;cursor:pointer;border-radius:10px;padding:8px 12px;font-size:13px;
@@ -618,6 +621,7 @@ button.small{padding:6px 10px;font-size:12px}
 .main{display:flex;flex-direction:column;min-width:0}
 .workspace{display:flex;flex-direction:column;height:100%;position:relative;min-width:0}
 .toolbar{display:flex;justify-content:flex-end;gap:6px;padding:6px 6px 0}
+button.icon-btn{width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;}
 .viewport{flex:1;min-height:0;padding:6px;display:grid;place-items:center;overflow:hidden}
 body.is-fullscreen .viewport{padding:0}
 body.is-fullscreen .app{padding:0;grid-template-columns:1fr}
@@ -793,7 +797,7 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 .clock-label{position:absolute;left:540px;top:182px;font-size:11px;font-weight:700;color:#fff;text-align:center;width:148px;display:none}
 .clock-label.visible{display:block}
 .time-label{left:548px;top:172px;font-size:22px;font-weight:700;color:#fff}
-.float-tip{position:absolute;left:25px;top:88px;background:rgba(219,234,254,.95);border:1px solid #93c5fd;border-radius:12px;padding:7px 10px;font-size:12px;max-width:240px;box-shadow:var(--shadow);color:#1e3a8a}
+
 .droptarget-beaker{left:80px;top:145px;width:185px;height:255px}
 .droptarget-yeast{left:190px;top:416px;width:160px;height:100px}
 .droptarget-sugar{left:18px;top:416px;width:160px;height:100px}
@@ -867,17 +871,21 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 
   &lt;section class=&quot;panel main workspace&quot;&gt;
     &lt;div class=&quot;toolbar&quot;&gt;
-      &lt;button id=&quot;helpBtn&quot; class=&quot;ghost small&quot;&gt;Bantuan&lt;/button&gt;
-      &lt;button id=&quot;resetBtn&quot; class=&quot;ghost small&quot;&gt;Atur Ulang&lt;/button&gt;
-      &lt;button id=&quot;maximizeBtn&quot; class=&quot;ghost small&quot;&gt;Layar Penuh&lt;/button&gt;
+      &lt;button id=&quot;helpBtn&quot; class=&quot;ghost small icon-btn&quot; title=&quot;Bantuan&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;path d=&quot;M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;17&quot; x2=&quot;12.01&quot; y2=&quot;17&quot;/&gt;&lt;/svg&gt;
+      &lt;/button&gt;
+      &lt;button id=&quot;resetBtn&quot; class=&quot;ghost small icon-btn&quot; title=&quot;Atur Ulang&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polyline points=&quot;1 4 1 10 7 10&quot;/&gt;&lt;path d=&quot;M3.51 15a9 9 0 1 0 .49-3.5&quot;/&gt;&lt;/svg&gt;
+      &lt;/button&gt;
+      &lt;button id=&quot;maximizeBtn&quot; class=&quot;ghost small icon-btn&quot; title=&quot;Layar Penuh&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polyline points=&quot;15 3 21 3 21 9&quot;/&gt;&lt;polyline points=&quot;9 21 3 21 3 15&quot;/&gt;&lt;line x1=&quot;21&quot; y1=&quot;3&quot; x2=&quot;14&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;3&quot; y1=&quot;21&quot; x2=&quot;10&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;
+      &lt;/button&gt;
     &lt;/div&gt;
     &lt;div class=&quot;viewport&quot;&gt;
       &lt;div class=&quot;stage-shell&quot; id=&quot;stageShell&quot;&gt;
         &lt;div class=&quot;stage-scale&quot; id=&quot;stageScale&quot;&gt;
           &lt;div class=&quot;stage&quot; id=&quot;stage&quot;&gt;
             &lt;div class=&quot;stage-title&quot;&gt;&lt;/div&gt;
-
-            &lt;div class=&quot;float-tip&quot; id=&quot;statusBubble&quot;&gt;Seret alat atau bahan yang disorot sesuai langkah aktif.&lt;/div&gt;
 
             &lt;div class=&quot;target droptarget-yeast&quot; id=&quot;targetYeast&quot;&gt;&lt;/div&gt;
             &lt;div class=&quot;target droptarget-sugar&quot; id=&quot;targetSugar&quot;&gt;&lt;/div&gt;
@@ -909,6 +917,7 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
             &lt;div class=&quot;object coverslip&quot; id=&quot;coverslip&quot;&gt;&lt;/div&gt;
             &lt;div class=&quot;object microscope&quot; id=&quot;microscope&quot;&gt;&lt;img src=&quot;https://denicendrianto41.github.io/mikroskop.png&quot; alt=&quot;mikroskop&quot;&gt;&lt;/div&gt;
             &lt;div class=&quot;clock&quot; id=&quot;clockEl&quot;&gt;&lt;div class=&quot;clock-face&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(0deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(30deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(60deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(90deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(120deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(150deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(180deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(210deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(240deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(270deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(300deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(330deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-hand-hour&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-hand-minute&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-hand-second&quot;&gt;&lt;/div&gt;&lt;div class=&quot;dot&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;message-balloon&quot; id=&quot;messageBalloon&quot;&gt;Mulai dengan menyeret spatula ke bahan ragi.&lt;/div&gt;
             &lt;div class=&quot;clock-label&quot; id=&quot;clockLabel&quot;&gt;⏱ 1 jam inkubasi&lt;/div&gt;
           &lt;/div&gt;
         &lt;/div&gt;
@@ -964,7 +973,6 @@ const els = {
   progressBar: document.getElementById(&#x27;progressBar&#x27;),
   progressText: document.getElementById(&#x27;progressText&#x27;),
   messageBox: document.getElementById(&#x27;messageBox&#x27;),
-  bubble: document.getElementById(&#x27;statusBubble&#x27;),
   inferenceBtn: document.getElementById(&#x27;inferenceBtn&#x27;),
   labelBtn: document.getElementById(&#x27;labelBtn&#x27;),
   modal: document.getElementById(&#x27;modal&#x27;),
@@ -1008,7 +1016,8 @@ setTimeout(fitStage, 30);
 
 function setMessage(text) {
   els.messageBox.textContent = text;
-  els.bubble.textContent = text;
+  const balloon = document.getElementById(&#x27;messageBalloon&#x27;);
+  if(balloon) balloon.textContent = text;
 }
 function renderSteps() {
   els.stepList.innerHTML = &#x27;&#x27;;
