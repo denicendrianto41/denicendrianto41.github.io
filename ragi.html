@@ -2017,7 +2017,10 @@ refreshUI();
         <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
       </div>
-      <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+        <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(37,99,235,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(37,99,235,0.25)'">🖨️ Cetak / Download PDF</button>
+      </div>
     </div>
     <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
@@ -2857,6 +2860,69 @@ function stopConfetti(){
 //  DISKUSI
 // ══════════════════════════════════════════
 function saveDQ(n,v){localStorage.setItem('dq_yeast_'+n,v);}
+
+function printDiskusi(){
+  const questions=[
+    'Apa yang dimaksud dengan budding pada ragi?',
+    'Mengapa ragi memerlukan gula dan suhu hangat?',
+    'Apa yang kamu amati saat melihat ragi di bawah mikroskop?',
+    'Apa perbedaan budding dan pembelahan biner?',
+    'Apakah keturunan hasil budding identik dengan induknya? Jelaskan!'
+  ];
+  const answers=[];
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('dq'+i);
+    answers.push(el?el.value.trim():'');
+  }
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt">${answers[i]||'<em style="color:#94a3b8;">Belum diisi</em>'}</div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Reproduksi Sel Ragi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #2563eb;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1d4ed8;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{
+    body{padding:20px 28px;}
+    @page{margin:1.5cm;size:A4 portrait;}
+  }
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">&#x1F52C; Lab Virtual – Reproduksi Sel Ragi</div>
+  <div class="lab-sub">Kelas X Fungi · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">&#x1F4C5; Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Jawaban Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · SMAN 1 Batujajar · Dicetak dari aplikasi Lab Virtual</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+}
+
 function clearDQ(){
   for(let i=1;i<=5;i++){
     localStorage.removeItem('dq_yeast_'+i);
