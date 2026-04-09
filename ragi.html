@@ -2119,6 +2119,25 @@ window.checkLabels = function() {
       document.body.appendChild(confWrap);
       ovEl.appendChild(box);
       document.body.appendChild(ovEl);
+
+      // Auto-kembali ke menu Tujuan setelah 6 detik
+      setTimeout(function(){
+        // Hapus overlay &amp; confetti
+        try{ ovEl.remove(); }catch(e){}
+        try{ confWrap.remove(); }catch(e){}
+        // Reset simulasi
+        resetSim();
+        // Navigasi parent ke halaman tujuan
+        try{
+          var p = window.parent;
+          p.document.querySelectorAll(&#x27;.page&#x27;).forEach(function(pg){ pg.classList.remove(&#x27;active&#x27;); });
+          p.document.querySelectorAll(&#x27;.nb&#x27;).forEach(function(b){ b.classList.remove(&#x27;active&#x27;); });
+          var tujuan = p.document.getElementById(&#x27;page-tujuan&#x27;);
+          if(tujuan) tujuan.classList.add(&#x27;active&#x27;);
+          var tujuanBtn = p.document.querySelector(&#x27;.nb[onclick*=&quot;tujuan&quot;]&#x27;);
+          if(tujuanBtn) tujuanBtn.classList.add(&#x27;active&#x27;);
+        }catch(e){}
+      }, 6000);
     }, 300);
   } else {
     fb.innerHTML = `&lt;strong style=&quot;color:#dc2626;&quot;&gt;❌ Benar ${ok} dari ${zones.length}.&lt;/strong&gt; Periksa kembali label yang belum tepat.`;
