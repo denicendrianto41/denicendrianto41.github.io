@@ -929,8 +929,8 @@ body{
 .sidebar-foot{padding:8px 12px 10px;border-top:1px solid #bfdbfe;display:grid;gap:6px;margin-top:-30px}
 .message{display:none}
 .message-balloon{position:absolute;left:300px;top:62px;width:230px;background:#eff6ff;border:1.5px solid #93c5fd;border-radius:14px;padding:10px 13px;font-size:12px;line-height:1.45;color:#1e3a8a;box-shadow:0 4px 16px rgba(37,99,235,0.13);z-index:20;}
-.message-balloon::after{content:'';position:absolute;right:-12px;top:24px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid #93c5fd;}
-.message-balloon::before{content:'';position:absolute;right:-10px;top:25px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid #eff6ff;z-index:1;}
+.message-balloon::after{content:&#x27;&#x27;;position:absolute;right:-12px;top:24px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid #93c5fd;}
+.message-balloon::before{content:&#x27;&#x27;;position:absolute;right:-10px;top:25px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid #eff6ff;z-index:1;}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 button{
   border:none;cursor:pointer;border-radius:10px;padding:8px 12px;font-size:13px;
@@ -1164,10 +1164,10 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 .diagram{position:relative;background:#f7fbff;border:1px solid #d7e4ef;border-radius:18px;min-height:460px;overflow:hidden}
 .yeast-diagram{position:absolute;left:30px;top:72px;width:340px;height:300px}
 .yeast-parent{position:absolute;left:20px;bottom:0;width:290px;height:235px;background:radial-gradient(circle at 43% 36%,#06a0b6,#0b7d90 45%,#0a4b5f 72%,#14694c 75%,#f0dfac 78%,#178a40 82%,#0a7b35 100%);border-radius:52% 48% 51% 49%/50% 51% 49% 50%;box-shadow:0 16px 26px rgba(0,0,0,.18)}
-.yeast-bud{position:absolute;left:24px;top:-18px;width:108px;height:146px;background:radial-gradient(circle at 46% 32%,#15b4c7,#0991a8 44%,#0e5165 72%,#178a40 76%,#f0dfac 79%,#18a450 83%,#0a7b35 100%);border-radius:46% 54% 48% 52%/54% 48% 52% 46%;box-shadow:0 12px 20px rgba(0,0,0,.16)}
+.yeast-bud{position:absolute;left:24px;top:-18px;width:81px;height:110px;background:radial-gradient(circle at 46% 32%,#15b4c7,#0991a8 44%,#0e5165 72%,#178a40 76%,#f0dfac 79%,#18a450 83%,#0a7b35 100%);border-radius:46% 54% 48% 52%/54% 48% 52% 46%;box-shadow:0 12px 20px rgba(0,0,0,.16)}
 .diag-nucleus,.diag-nucleus2{position:absolute;border-radius:50%;background:radial-gradient(circle at 45% 35%,#ea5dbf,#ab247d 60%,#6b134d 100%);border:3px solid rgba(245,130,223,.65)}
-.diag-nucleus{left:88px;top:86px;width:76px;height:92px} .diag-nucleus2{left:56px;top:2px;width:42px;height:60px}
-.diag-vacuole{position:absolute;left:220px;top:92px;width:106px;height:146px;border-radius:50% 46% 46% 50%/43% 54% 46% 57%;background:radial-gradient(circle at 55% 40%,rgba(255,255,255,.58),rgba(180,236,246,.9) 45%,rgba(64,217,235,.62) 78%,rgba(20,170,195,.48) 100%)}
+.diag-nucleus{left:88px;top:86px;width:57px;height:69px} .diag-nucleus2{left:56px;top:2px;width:32px;height:45px}
+.diag-vacuole{position:absolute;left:180px;top:100px;width:72px;height:90px;border-radius:50% 46% 46% 50%/43% 54% 46% 57%;background:radial-gradient(circle at 55% 40%,rgba(255,255,255,.58),rgba(180,236,246,.9) 45%,rgba(64,217,235,.62) 78%,rgba(20,170,195,.48) 100%)}
 .diag-cytoplasm{position:absolute;left:58px;top:148px;width:218px;height:92px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(55,214,230,.34),rgba(0,145,180,.18),rgba(1,84,120,.06))}
 .line{position:absolute;height:4px;background:#222;transform-origin:left center}
 .dropzone{position:absolute;width:220px;height:54px;border:3px solid #b8b7be;border-radius:10px;background:#fff}
@@ -1284,6 +1284,97 @@ const home = {
   slide: {x:375,y:465},
   coverslip: {x:495,y:465}
 };
+
+// ── SFX via Web Audio API ──────────────────────────────
+const _ac = new (window.AudioContext || window.webkitAudioContext)();
+function _resume(){ if(_ac.state===&#x27;suspended&#x27;) _ac.resume(); }
+
+function playSound(type){
+  _resume();
+  const t = _ac.currentTime;
+  switch(type){
+
+    case &#x27;pickup&#x27;: {
+      // Swoosh pendek naik – mengambil zat
+      const o=_ac.createOscillator(), g=_ac.createGain();
+      o.connect(g); g.connect(_ac.destination);
+      o.type=&#x27;sine&#x27;;
+      o.frequency.setValueAtTime(300,t);
+      o.frequency.exponentialRampToValueAtTime(800,t+0.12);
+      g.gain.setValueAtTime(0.35,t);
+      g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+      o.start(t); o.stop(t+0.18);
+      break;
+    }
+
+    case &#x27;splash&#x27;: {
+      // Suara plop/splash – memasukkan zat ke beker
+      const buf=_ac.createBuffer(1,_ac.sampleRate*0.35,_ac.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i&lt;d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.5);
+      const src=_ac.createBufferSource(), g=_ac.createGain();
+      const f=_ac.createBiquadFilter(); f.type=&#x27;bandpass&#x27;; f.frequency.value=400; f.Q.value=0.8;
+      src.buffer=buf; src.connect(f); f.connect(g); g.connect(_ac.destination);
+      g.gain.setValueAtTime(0.55,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.35);
+      src.start(t);
+      // Tambah blup pendek
+      const o2=_ac.createOscillator(), g2=_ac.createGain();
+      o2.connect(g2); g2.connect(_ac.destination);
+      o2.type=&#x27;sine&#x27;;
+      o2.frequency.setValueAtTime(220,t); o2.frequency.exponentialRampToValueAtTime(80,t+0.18);
+      g2.gain.setValueAtTime(0.4,t); g2.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+      o2.start(t); o2.stop(t+0.22);
+      break;
+    }
+
+    case &#x27;drip&#x27;: {
+      // Tetesan air – meneteskan ke kaca objek (2 tetes)
+      [0, 0.18].forEach(delay=&gt;{
+        const o=_ac.createOscillator(), g=_ac.createGain();
+        o.connect(g); g.connect(_ac.destination);
+        o.type=&#x27;sine&#x27;;
+        o.frequency.setValueAtTime(900,t+delay);
+        o.frequency.exponentialRampToValueAtTime(400,t+delay+0.14);
+        g.gain.setValueAtTime(0.28,t+delay);
+        g.gain.exponentialRampToValueAtTime(0.001,t+delay+0.16);
+        o.start(t+delay); o.stop(t+delay+0.16);
+      });
+      break;
+    }
+
+    case &#x27;clink&#x27;: {
+      // Bunyi kaca – menempatkan kaca penutup
+      const o=_ac.createOscillator(), g=_ac.createGain();
+      const f=_ac.createBiquadFilter(); f.type=&#x27;highpass&#x27;; f.frequency.value=2000;
+      o.connect(f); f.connect(g); g.connect(_ac.destination);
+      o.type=&#x27;triangle&#x27;;
+      o.frequency.setValueAtTime(2800,t); o.frequency.exponentialRampToValueAtTime(1800,t+0.22);
+      g.gain.setValueAtTime(0.22,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.28);
+      o.start(t); o.stop(t+0.28);
+      break;
+    }
+
+    case &#x27;snap&#x27;: {
+      // Klik mekanis – menempatkan preparat ke mikroskop
+      const buf=_ac.createBuffer(1,_ac.sampleRate*0.08,_ac.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i&lt;d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,4);
+      const src=_ac.createBufferSource(), g=_ac.createGain();
+      const f=_ac.createBiquadFilter(); f.type=&#x27;highshelf&#x27;; f.frequency.value=3000; f.gain.value=8;
+      src.buffer=buf; src.connect(f); f.connect(g); g.connect(_ac.destination);
+      g.gain.setValueAtTime(0.7,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.08);
+      src.start(t);
+      // nada konfirmasi kecil
+      const o=_ac.createOscillator(), g2=_ac.createGain();
+      o.connect(g2); g2.connect(_ac.destination);
+      o.type=&#x27;sine&#x27;; o.frequency.value=660;
+      g2.gain.setValueAtTime(0.18,t+0.05); g2.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+      o.start(t+0.05); o.stop(t+0.22);
+      break;
+    }
+  }
+}
+// ───────────────────────────────────────────────────────
 
 const state = {
   step:0,
@@ -1496,31 +1587,31 @@ function playDripEffect(targetEl) {
 
 
 function playIngredientEffect(type) {
-  const stage = document.getElementById('stage');
+  const stage = document.getElementById(&#x27;stage&#x27;);
   const beakerRect = els.beaker.getBoundingClientRect();
   const stageRect = stage.getBoundingClientRect();
   const scale = getScale();
   const startX = (beakerRect.left - stageRect.left) / scale + 92;
   const startY = (beakerRect.top - stageRect.top) / scale + 10;
   const endY = (beakerRect.top - stageRect.top) / scale + 92;
-  els.beaker.classList.add('adding');
-  setTimeout(() => els.beaker.classList.remove('adding'), 560);
-  for (let i = 0; i < 9; i++) {
-    setTimeout(() => {
-      const dot = document.createElement('div');
-      dot.className = 'ingredient-drop ' + type;
+  els.beaker.classList.add(&#x27;adding&#x27;);
+  setTimeout(() =&gt; els.beaker.classList.remove(&#x27;adding&#x27;), 560);
+  for (let i = 0; i &lt; 9; i++) {
+    setTimeout(() =&gt; {
+      const dot = document.createElement(&#x27;div&#x27;);
+      dot.className = &#x27;ingredient-drop &#x27; + type;
       const offsetX = (Math.random() - 0.5) * 48;
-      dot.style.left = (startX + offsetX) + 'px';
-      dot.style.top = (startY + Math.random() * 8) + 'px';
+      dot.style.left = (startX + offsetX) + &#x27;px&#x27;;
+      dot.style.top = (startY + Math.random() * 8) + &#x27;px&#x27;;
       stage.appendChild(dot);
 
-      setTimeout(() => {
-        const ripple = document.createElement('div');
-        ripple.className = 'ingredient-ripple ' + type;
-        ripple.style.left = (startX + offsetX - 5) + 'px';
-        ripple.style.top = endY + 'px';
+      setTimeout(() =&gt; {
+        const ripple = document.createElement(&#x27;div&#x27;);
+        ripple.className = &#x27;ingredient-ripple &#x27; + type;
+        ripple.style.left = (startX + offsetX - 5) + &#x27;px&#x27;;
+        ripple.style.top = endY + &#x27;px&#x27;;
         stage.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 420);
+        setTimeout(() =&gt; ripple.remove(), 420);
         dot.remove();
       }, 500);
     }, i * 55);
@@ -1530,6 +1621,7 @@ function playIngredientEffect(type) {
 makeDraggable(els.spatula, (el) =&gt; {
   if (state.step === 0 &amp;&amp; overlap(rect(el), rect(els.yeast))) {
     state.carry = &#x27;yeast&#x27;;
+    playSound(&#x27;pickup&#x27;);
     animateTo(el, 230, 350, () =&gt; setTimeout(() =&gt; snapBack(el), 150));
     state.step = 1;
     setMessage(&#x27;Ragi sudah diambil. Sekarang seret spatula ke beker untuk memasukkan ragi.&#x27;);
@@ -1539,6 +1631,7 @@ makeDraggable(els.spatula, (el) =&gt; {
   if (state.step === 1 &amp;&amp; state.carry === &#x27;yeast&#x27; &amp;&amp; overlap(rect(el), rect(els.beaker))) {
     state.carry = null;
     animateTo(el, 155, 220, () =&gt; {
+      playSound(&#x27;splash&#x27;);
       playIngredientEffect(&#x27;yeast&#x27;);
       setTimeout(() =&gt; snapBack(el), 180);
     });
@@ -1547,6 +1640,7 @@ makeDraggable(els.spatula, (el) =&gt; {
   }
   if (state.step === 2 &amp;&amp; overlap(rect(el), rect(els.sugar))) {
     state.carry = &#x27;sugar&#x27;;
+    playSound(&#x27;pickup&#x27;);
     animateTo(el, 65, 350, () =&gt; setTimeout(() =&gt; snapBack(el), 150));
     state.step = 3;
     setMessage(&#x27;Gula sudah diambil. Sekarang seret spatula ke beker untuk menambahkan gula.&#x27;);
@@ -1556,6 +1650,7 @@ makeDraggable(els.spatula, (el) =&gt; {
   if (state.step === 3 &amp;&amp; state.carry === &#x27;sugar&#x27; &amp;&amp; overlap(rect(el), rect(els.beaker))) {
     state.carry = null;
     animateTo(el, 155, 235, () =&gt; {
+      playSound(&#x27;splash&#x27;);
       playIngredientEffect(&#x27;sugar&#x27;);
       setTimeout(() =&gt; snapBack(el), 180);
     });
@@ -1601,6 +1696,7 @@ makeDraggable(els.rod, (el) =&gt; {
 makeDraggable(els.dropper, (el) =&gt; {
   if (state.step === 5 &amp;&amp; overlap(rect(el), rect(els.beaker))) {
     animateTo(el, 155, 160, () =&gt; {
+      playSound(&#x27;pickup&#x27;);
       state.dropperFilled = true;
       setTimeout(() =&gt; snapBack(el), 180);
       advance(&#x27;Pipet terisi larutan. Sekarang seret pipet ke kaca objek.&#x27;);
@@ -1614,12 +1710,13 @@ makeDraggable(els.dropper, (el) =&gt; {
     refreshUI();
     return;
   }
-  // Dropper stays wherever it's dropped - no snapBack
+  // Dropper stays wherever it&#x27;s dropped - no snapBack
 });
 
 makeDraggable(els.coverslip, (el) =&gt; {
   if (state.step === 7 &amp;&amp; state.slideHasSample &amp;&amp; overlap(rect(el), rect(els.slide))) {
     animateTo(el, 520, 468, () =&gt; {
+      playSound(&#x27;clink&#x27;);
       state.slideCovered = true;
       advance(&#x27;Preparat selesai dibuat. Seret kaca objek ke mikroskop untuk pengamatan.&#x27;);
     });
@@ -1630,6 +1727,7 @@ makeDraggable(els.coverslip, (el) =&gt; {
 
 if(els.dropper) els.dropper.addEventListener(&#x27;click&#x27;, () =&gt; {
   if (!(state.step === 6 &amp;&amp; state.dropperFilled &amp;&amp; state.waitingForDropClick)) return;
+  playSound(&#x27;drip&#x27;);
   playDripEffect(els.slide);
   state.waitingForDropClick = false;
   state.dropperFilled = false;
@@ -1651,6 +1749,7 @@ makeDraggable(els.slide, (el) =&gt; {
     home.slide = {x: 845, y: 340};
     state.slidePlaced = true;
     state.waitingForDropClick = false;
+    playSound(&#x27;snap&#x27;);
     setTimeout(() =&gt; {
       el.style.transition = &#x27;&#x27;;
       state.step = 9;
@@ -1801,8 +1900,8 @@ if(els.labelBtn) els.labelBtn.addEventListener(&#x27;click&#x27;, () =&gt; {
           &lt;div class=&quot;diag-nucleus2&quot;&gt;&lt;/div&gt;
         &lt;/div&gt;
         &lt;div class=&quot;num-marker&quot; style=&quot;left:118px;top:78px&quot;&gt;1&lt;/div&gt;
-        &lt;div class=&quot;num-marker&quot; style=&quot;left:190px;top:214px&quot;&gt;2&lt;/div&gt;
-        &lt;div class=&quot;num-marker&quot; style=&quot;left:325px;top:276px&quot;&gt;3&lt;/div&gt;
+        &lt;div class=&quot;num-marker&quot; style=&quot;left:166px;top:186px&quot;&gt;2&lt;/div&gt;
+        &lt;div class=&quot;num-marker&quot; style=&quot;left:265px;top:205px&quot;&gt;3&lt;/div&gt;
         &lt;div class=&quot;num-marker&quot; style=&quot;left:170px;top:348px&quot;&gt;4&lt;/div&gt;
         &lt;div class=&quot;dropzone&quot; data-answer=&quot;Sel tunas ragi&quot; style=&quot;left:540px;top:82px&quot;&gt;&lt;div class=&quot;zone-number&quot;&gt;1&lt;/div&gt;&lt;/div&gt;
         &lt;div class=&quot;dropzone&quot; data-answer=&quot;Nukleus&quot; style=&quot;left:540px;top:156px&quot;&gt;&lt;div class=&quot;zone-number&quot;&gt;2&lt;/div&gt;&lt;/div&gt;
@@ -1814,23 +1913,152 @@ if(els.labelBtn) els.labelBtn.addEventListener(&#x27;click&#x27;, () =&gt; {
   bindLabelDnD();
 });
 
-function bindLabelDnD() {
+function playLabelSound(type){
+  _resume();
+  const t=_ac.currentTime;
+  if(type===&#x27;grab&#x27;){
+    const o=_ac.createOscillator(),g=_ac.createGain();
+    o.connect(g);g.connect(_ac.destination);
+    o.type=&#x27;sine&#x27;;
+    o.frequency.setValueAtTime(400,t);o.frequency.exponentialRampToValueAtTime(700,t+0.09);
+    g.gain.setValueAtTime(0.22,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+    o.start(t);o.stop(t+0.12);
+  } else if(type===&#x27;drop&#x27;){
+    const o=_ac.createOscillator(),g=_ac.createGain();
+    o.connect(g);g.connect(_ac.destination);
+    o.type=&#x27;triangle&#x27;;
+    o.frequency.setValueAtTime(600,t);o.frequency.exponentialRampToValueAtTime(180,t+0.14);
+    g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+    o.start(t);o.stop(t+0.18);
+    const o2=_ac.createOscillator(),g2=_ac.createGain();
+    o2.connect(g2);g2.connect(_ac.destination);
+    o2.type=&#x27;sine&#x27;;o2.frequency.value=520;
+    g2.gain.setValueAtTime(0.12,t+0.1);g2.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+    o2.start(t+0.1);o2.stop(t+0.22);
+  }
+}
+
+function dropLabelToZone(zone, label){
+  if(!label) return;
+  const number = zone.querySelector(&#x27;.zone-number&#x27;)?.textContent || &#x27;&#x27;;
+  const numHtml = number ? &#x27;&lt;div class=&quot;zone-number&quot;&gt;&#x27;+number+&#x27;&lt;/div&gt;&#x27; : &#x27;&#x27;;
+  zone.innerHTML = numHtml + &#x27;&lt;div class=&quot;slot-label&quot;&gt;&#x27;+label+&#x27;&lt;/div&gt;&#x27;;
+  zone.dataset.value = label;
+  playLabelSound(&#x27;drop&#x27;);
+  zone.animate([{transform:&#x27;scale(1.12)&#x27;},{transform:&#x27;scale(1)&#x27;}],{duration:180,easing:&#x27;ease-out&#x27;});
+}
+
+function bindLabelDnD(){
   const draggables = els.modalContent.querySelectorAll(&#x27;.draggable-label&#x27;);
-  const zones = els.modalContent.querySelectorAll(&#x27;.dropzone&#x27;);
-  draggables.forEach(el =&gt; {
-    el.addEventListener(&#x27;dragstart&#x27;, e =&gt; e.dataTransfer.setData(&#x27;text/plain&#x27;, el.dataset.label));
-  });
-  zones.forEach(zone =&gt; {
-    zone.addEventListener(&#x27;dragover&#x27;, e =&gt; e.preventDefault());
-    zone.addEventListener(&#x27;drop&#x27;, e =&gt; {
-      e.preventDefault();
-      const label = e.dataTransfer.getData(&#x27;text/plain&#x27;);
-      const number = zone.querySelector(&#x27;.zone-number&#x27;)?.textContent || &#x27;&#x27;;
-      zone.innerHTML = `${number ? `&lt;div class=&quot;zone-number&quot;&gt;${number}&lt;/div&gt;` : &#x27;&#x27;}&lt;div class=&quot;slot-label&quot;&gt;${label}&lt;/div&gt;`;
-      zone.dataset.value = label;
+  const zones      = els.modalContent.querySelectorAll(&#x27;.dropzone&#x27;);
+
+  // Add drag-over / dragging styles once
+  if(!document.getElementById(&#x27;lblDndStyle&#x27;)){
+    const st=document.createElement(&#x27;style&#x27;);
+    st.id=&#x27;lblDndStyle&#x27;;
+    st.textContent=&#x27;.dragging-label{opacity:0.4;transform:scale(0.95)!important;}.drag-over{border-color:#10b981!important;background:#ecfdf5!important;box-shadow:0 0 0 3px rgba(16,185,129,0.35)!important;}&#x27;;
+    document.head.appendChild(st);
+  }
+
+  // ── A) MOUSE / DESKTOP – HTML5 Drag &amp; Drop ──────────────
+  let _dragLabel = &#x27;&#x27;;
+  draggables.forEach(function(el){
+    el.setAttribute(&#x27;draggable&#x27;,&#x27;true&#x27;);
+    el.addEventListener(&#x27;dragstart&#x27;, function(e){
+      _dragLabel = el.dataset.label;
+      e.dataTransfer.setData(&#x27;text/plain&#x27;, _dragLabel);
+      el.classList.add(&#x27;dragging-label&#x27;);
+      playLabelSound(&#x27;grab&#x27;);
+    });
+    el.addEventListener(&#x27;dragend&#x27;, function(){
+      el.classList.remove(&#x27;dragging-label&#x27;);
+      _dragLabel = &#x27;&#x27;;
     });
   });
+  zones.forEach(function(zone){
+    zone.addEventListener(&#x27;dragover&#x27;,  function(e){ e.preventDefault(); zone.classList.add(&#x27;drag-over&#x27;); });
+    zone.addEventListener(&#x27;dragleave&#x27;, function(){ zone.classList.remove(&#x27;drag-over&#x27;); });
+    zone.addEventListener(&#x27;drop&#x27;, function(e){
+      e.preventDefault();
+      zone.classList.remove(&#x27;drag-over&#x27;);
+      const label = e.dataTransfer.getData(&#x27;text/plain&#x27;) || _dragLabel;
+      dropLabelToZone(zone, label);
+    });
+  });
+
+  // ── B) TOUCH / POINTER – untuk IFP &amp; touchscreen ────────
+  draggables.forEach(function(srcEl){
+    let ghost=null, activeZone=null, startX=0, startY=0, ptId=null;
+
+    function startDrag(cx, cy){
+      _resume();
+      playLabelSound(&#x27;grab&#x27;);
+      startX=cx; startY=cy;
+      ghost=srcEl.cloneNode(true);
+      ghost.removeAttribute(&#x27;draggable&#x27;);
+      var r=srcEl.getBoundingClientRect();
+      ghost.style.cssText=&#x27;position:fixed;z-index:99999;pointer-events:none;opacity:0.85;&#x27;
+        +&#x27;transform:scale(1.08) rotate(-3deg);background:#dcfce7;border:2px solid #4ade80;&#x27;
+        +&#x27;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;color:#065f46;&#x27;
+        +&#x27;box-shadow:0 8px 24px rgba(0,0,0,0.22);white-space:nowrap;left:&#x27;+r.left+&#x27;px;top:&#x27;+r.top+&#x27;px;&#x27;;
+      document.body.appendChild(ghost);
+      srcEl.classList.add(&#x27;dragging-label&#x27;);
+    }
+
+    function moveDrag(cx, cy){
+      if(!ghost) return;
+      var dx=cx-startX, dy=cy-startY;
+      var r=srcEl.getBoundingClientRect();
+      ghost.style.left=(r.left+dx)+&#x27;px&#x27;;
+      ghost.style.top=(r.top+dy)+&#x27;px&#x27;;
+      ghost.style.display=&#x27;none&#x27;;
+      var el2=document.elementFromPoint(cx,cy);
+      ghost.style.display=&#x27;&#x27;;
+      var z=el2 ? el2.closest(&#x27;.dropzone&#x27;) : null;
+      if(activeZone &amp;&amp; activeZone!==z) activeZone.classList.remove(&#x27;drag-over&#x27;);
+      if(z) z.classList.add(&#x27;drag-over&#x27;);
+      activeZone=z;
+    }
+
+    function endDrag(){
+      if(!ghost) return;
+      if(activeZone){ activeZone.classList.remove(&#x27;drag-over&#x27;); dropLabelToZone(activeZone, srcEl.dataset.label); }
+      ghost.remove(); ghost=null; activeZone=null; ptId=null;
+      srcEl.classList.remove(&#x27;dragging-label&#x27;);
+    }
+
+    // Pointer Events (IFP, stylus, modern touch)
+    srcEl.addEventListener(&#x27;pointerdown&#x27;, function(e){
+      if(e.pointerType===&#x27;mouse&#x27;) return;
+      e.preventDefault();
+      ptId=e.pointerId;
+      srcEl.setPointerCapture(ptId);
+      startDrag(e.clientX, e.clientY);
+    },{passive:false});
+    srcEl.addEventListener(&#x27;pointermove&#x27;, function(e){
+      if(e.pointerType===&#x27;mouse&#x27;||e.pointerId!==ptId) return;
+      e.preventDefault();
+      moveDrag(e.clientX, e.clientY);
+    },{passive:false});
+    srcEl.addEventListener(&#x27;pointerup&#x27;,     function(e){ if(e.pointerType!==&#x27;mouse&#x27;) endDrag(); },{passive:false});
+    srcEl.addEventListener(&#x27;pointercancel&#x27;, function(e){ if(e.pointerType!==&#x27;mouse&#x27;) endDrag(); },{passive:false});
+
+    // Touch Events fallback (older Android WebView)
+    srcEl.addEventListener(&#x27;touchstart&#x27;, function(e){
+      e.preventDefault();
+      var t=e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    },{passive:false});
+    srcEl.addEventListener(&#x27;touchmove&#x27;, function(e){
+      e.preventDefault();
+      var t=e.touches[0];
+      moveDrag(t.clientX, t.clientY);
+    },{passive:false});
+    srcEl.addEventListener(&#x27;touchend&#x27;,    function(e){ e.preventDefault(); endDrag(); },{passive:false});
+    srcEl.addEventListener(&#x27;touchcancel&#x27;, function(e){ e.preventDefault(); endDrag(); },{passive:false});
+  });
 }
+
 window.checkLabels = function() {
   const zones = els.modalContent.querySelectorAll(&#x27;.dropzone&#x27;);
   let ok = 0;
