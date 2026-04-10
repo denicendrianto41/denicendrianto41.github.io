@@ -168,6 +168,9 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 50%,#dc2626 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(60,0,0,0.60);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
 .load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#fca5a5;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
@@ -238,7 +241,8 @@ document.addEventListener('click',function(e){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
-    <button class="nb active" onclick="show('teori',this);closeNav()"><img src="https://denicendrianto41.github.io/teori.png" alt="">Teori</button>
+    <button class="nb active" onclick="show('tujuan',this);closeNav()"><img src="https://denicendrianto41.github.io/tujuan.png" alt="">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()"><img src="https://denicendrianto41.github.io/teori.png" alt="">Teori</button>
     <button class="nb" onclick="show('prosedur',this);closeNav()"><img src="https://denicendrianto41.github.io/prosedur.png" alt="">Prosedur</button>
     <button class="nb" onclick="show('simulasi',this);closeNav()"><img src="https://denicendrianto41.github.io/simulasi.png" alt="">Simulasi</button>
     <button class="nb" onclick="show('evaluasi',this);closeNav()"><img src="https://denicendrianto41.github.io/diskusi.png" alt="">Diskusi</button>
@@ -247,38 +251,150 @@ document.addEventListener('click',function(e){
 
 <div id="app">
 
-<!-- ═══ TEORI ═══ -->
-<div id="page-teori" class="page active">
-<div class="scroll">
-<div class="article-wrap">
+<!-- ═══ TUJUAN ═══ -->
+<div id="page-tujuan" class="page active">
+  <div class="scroll" style="padding:14px 16px 20px;">
 
-  <!-- Hero -->
-  <div class="article-hero">
-    <div class="article-kelas">Biologi Kelas X &nbsp;·&nbsp; Virologi &amp; Epidemiologi</div>
-    <div class="article-judul">Virus &amp; Simulasi Wabah: Memahami Model SIR</div>
-    <div class="article-meta">
-      <span>🎯 Menganalisis dinamika penyebaran penyakit menular</span>
-      <span>⏱ 2 × 45 menit</span>
-      <span>📊 Simulasi Komputasional</span>
+    <!-- Hero Banner -->
+    <div style="background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 45%,#dc2626 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(100,0,0,0.28);">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:absolute;right:24px;top:-8px;font-size:88px;opacity:.08;pointer-events:none;">🦠</div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Simulasi Wabah Virus</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#fca5a5,#fb923c);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari dinamika penyebaran wabah virus melalui <strong style="color:#fca5a5;">Model SIR</strong> secara interaktif — dari teori, simulasi parameter β/γ, hingga analisis R₀ dan herd immunity.
+        </p>
+      </div>
     </div>
+
+    <!-- 2 Main Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;"
+        onmouseover="this.style.boxShadow='0 6px 24px rgba(220,38,38,0.13)';this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#dc2626,#f87171);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fee2e2,#fff1f2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#dc2626;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#991b1b;">peranan virus</strong> dalam ekosistem dan kehidupan manusia, serta memahami mekanisme penyebaran penyakit menular melalui pendekatan matematis.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;"
+        onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Menganalisis <strong style="color:#059669;">dinamika penyebaran wabah virus</strong> menggunakan <strong style="color:#059669;">Model SIR</strong> dengan memvariasikan parameter laju transmisi (β), laju pemulihan (γ), dan intervensi kesehatan masyarakat.
+        </p>
+      </div>
+    </div>
+
+    <!-- Hasil Belajar Section -->
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;box-shadow:0 2px 12px rgba(30,41,59,0.07);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami konsep <strong style="color:#dc2626;">Model SIR</strong> dan persamaan diferensialnya dalam epidemiologi</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menghitung <strong style="color:#059669;">bilangan reproduksi dasar R₀</strong> dan menginterpretasikan maknanya</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menganalisis pengaruh <strong style="color:#7c3aed;">intervensi kesehatan</strong> (masker, karantina, vaksinasi) terhadap dinamika wabah</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fcd34d'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fef9c3,#fef08a);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#d97706;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan konsep <strong style="color:#d97706;">herd immunity</strong> dan menghitung ambang batas vaksinasi minimal</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ TEORI ═══ -->
+<div id="page-teori" class="page">
+<div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+
+  <!-- Tab Bar -->
+  <div id="teori-tabbar" style="flex-shrink:0;background:linear-gradient(135deg,#1e0000,#4a0000);border-bottom:1px solid rgba(255,255,255,0.1);display:flex;overflow-x:auto;padding:0 10px;gap:2px;">
+    <style>
+      #teori-tabbar::-webkit-scrollbar{height:3px;}
+      #teori-tabbar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:2px;}
+      .ttab{background:none;border:none;color:rgba(255,255,255,0.55);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(11px,1.2vw,13px);font-weight:500;padding:0 13px;height:38px;white-space:nowrap;display:flex;align-items:center;gap:6px;position:relative;transition:color .18s;flex-shrink:0;}
+      .ttab::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:2px;background:#ef4444;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+      .ttab:hover{color:rgba(255,255,255,0.85);}
+      .ttab.active{color:#fff;}
+      .ttab.active::after{transform:scaleX(1);}
+      .ttab .tnum{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.12);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s;}
+      .ttab.active .tnum{background:var(--acc);}
+      /* Teori panels */
+      .tpanel{display:none;flex:1;overflow-y:auto;padding:16px 18px 20px;}
+      .tpanel.active{display:block;animation:fu .2s ease;}
+      .tpanel::-webkit-scrollbar{width:4px;}
+      .tpanel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+      /* Nav arrows */
+      .tnav{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+      .tnav-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .17s;}
+      .tnav-btn:hover{border-color:var(--acc);color:var(--acc);background:#fff1f2;}
+      .tnav-btn:disabled{opacity:0.3;cursor:default;pointer-events:none;}
+      .tnav-prog{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;}
+    </style>
+    <button class="ttab active" onclick="showTeoriTab(0,this)"><span class="tnum">1</span>Apa Itu Virus?</button>
+    <button class="ttab" onclick="showTeoriTab(1,this)"><span class="tnum">2</span>Struktur &amp; Siklus</button>
+    <button class="ttab" onclick="showTeoriTab(2,this)"><span class="tnum">3</span>Model SIR</button>
+    <button class="ttab" onclick="showTeoriTab(3,this)"><span class="tnum">4</span>Bilangan R₀</button>
+    <button class="ttab" onclick="showTeoriTab(4,this)"><span class="tnum">5</span>Intervensi</button>
+    <button class="ttab" onclick="showTeoriTab(5,this)"><span class="tnum">6</span>Ringkasan</button>
   </div>
 
-  <!-- Daftar Isi -->
-  <div class="article-toc">
-    <div class="article-toc-title">📑 Daftar Isi</div>
-    <ol class="toc-list">
-      <li onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">Apa Itu Virus?</li>
-      <li onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">Struktur dan Cara Kerja Virus</li>
-      <li onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">Model Matematis Penyebaran Wabah (SIR)</li>
-      <li onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">Bilangan Reproduksi Dasar R₀</li>
-      <li onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})">Intervensi dan Herd Immunity</li>
-      <li onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">Tujuan &amp; Hasil Belajar</li>
-    </ol>
-  </div>
-
-  <!-- Seksi 1 -->
-  <div class="article-section" id="s1">
-    <div class="section-header"><div class="section-num">1</div><div class="section-title">Apa Itu Virus?</div></div>
+  <!-- ── Panel 1: Apa Itu Virus ── -->
+  <div class="tpanel active" id="tp0">
+    <div class="article-hero" style="margin-bottom:14px;">
+      <div class="article-kelas">Biologi Kelas X &nbsp;·&nbsp; Virologi &amp; Epidemiologi</div>
+      <div class="article-judul">Apa Itu Virus?</div>
+      <div class="article-meta">
+        <span>🦠 Agen infeksi non-seluler</span>
+        <span>📐 Ukuran 20–300 nm</span>
+      </div>
+    </div>
     <div class="article-body">
       <p>Virus adalah <strong>agen infeksi berukuran sangat kecil</strong> (20–300 nanometer) yang hanya dapat bereplikasi di dalam sel inang yang hidup. Berbeda dari makhluk hidup lainnya, virus tidak memiliki organel sel, tidak bisa melakukan metabolisme secara mandiri, dan tidak dapat berkembang biak tanpa bantuan sel inang.</p>
       <div class="callout callout-info">
@@ -286,144 +402,277 @@ document.addEventListener('click',function(e){
         <div class="callout-body">Virus berada di perbatasan antara makhluk hidup dan benda mati. Di luar sel inang, virus berperilaku seperti benda kimia biasa. Namun begitu masuk ke dalam sel, virus "hidup" kembali dan mulai bereplikasi secara aktif.</div>
       </div>
       <p>Virus ditemukan pertama kali oleh ilmuwan Belanda, <strong>Martinus Beijerinck</strong>, pada tahun 1898 saat meneliti penyakit mosaik tembakau. Sejak saat itu, ribuan jenis virus telah ditemukan yang menginfeksi hampir semua bentuk kehidupan di Bumi.</p>
-      <div class="fgrid" style="grid-template-columns:repeat(auto-fill,minmax(165px,1fr));margin-top:8px;">
-        <div class="fi" style="border-left:3px solid #dc2626;"><strong>Influenza</strong><span>Virus RNA; flu musiman &amp; pandemi; R₀ ≈ 2–3</span></div>
-        <div class="fi" style="border-left:3px solid #7c3aed;"><strong>SARS-CoV-2</strong><span>Coronavirus; COVID-19; R₀ ≈ 2.5–5 (Omicron hingga 10)</span></div>
-        <div class="fi" style="border-left:3px solid #d97706;"><strong>Ebola</strong><span>Filovirus; mematikan; wabah Afrika Barat 2014–2016</span></div>
-        <div class="fi" style="border-left:3px solid #059669;"><strong>HIV</strong><span>Retrovirus; menyerang limfosit T; menyebabkan AIDS</span></div>
+      <div class="sep"><span>Contoh Virus Berbahaya</span></div>
+      <div class="fgrid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-top:5px;">
+        <div class="fi" style="border-left:3px solid #dc2626;padding:12px 14px;">
+          <strong style="font-size:14px;">🤧 Influenza</strong>
+          <span style="display:block;margin-top:4px;">Virus RNA; flu musiman &amp; pandemi; R₀ ≈ 2–3. Menyerang saluran pernapasan atas dan bawah.</span>
+        </div>
+        <div class="fi" style="border-left:3px solid #7c3aed;padding:12px 14px;">
+          <strong style="font-size:14px;">😷 SARS-CoV-2</strong>
+          <span style="display:block;margin-top:4px;">Coronavirus; COVID-19; R₀ ≈ 2.5–5 (Omicron hingga 10). Pandemi global 2020–2023.</span>
+        </div>
+        <div class="fi" style="border-left:3px solid #d97706;padding:12px 14px;">
+          <strong style="font-size:14px;">🩸 Ebola</strong>
+          <span style="display:block;margin-top:4px;">Filovirus; tingkat fatalitas 25–90%; wabah besar Afrika Barat 2014–2016.</span>
+        </div>
+        <div class="fi" style="border-left:3px solid #059669;padding:12px 14px;">
+          <strong style="font-size:14px;">🔴 HIV</strong>
+          <span style="display:block;margin-top:4px;">Retrovirus; menyerang limfosit T CD4+; menyebabkan AIDS jika tidak ditangani.</span>
+        </div>
       </div>
+      <div class="callout callout-danger" style="margin-top:12px;">
+        <div class="callout-lbl">🔬 Mengapa Penting Dipelajari?</div>
+        <div class="callout-body">Memahami sifat dasar virus adalah kunci untuk mengerti bagaimana wabah bermula. Karakteristik virus — ukuran, laju replikasi, kemampuan mutasi — secara langsung menentukan seberapa cepat dan luas sebuah penyakit menyebar dalam populasi.</div>
+      </div>
+    </div>
+    <div class="tnav">
+      <button class="tnav-btn" disabled>← Sebelumnya</button>
+      <span class="tnav-prog">1 / 6</span>
+      <button class="tnav-btn" onclick="showTeoriTab(1,document.querySelectorAll('.ttab')[1])">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- Seksi 2 -->
-  <div class="article-section" id="s2">
-    <div class="section-header"><div class="section-num">2</div><div class="section-title">Struktur dan Cara Kerja Virus</div></div>
+  <!-- ── Panel 2: Struktur & Siklus ── -->
+  <div class="tpanel" id="tp1">
+    <div class="article-hero" style="margin-bottom:14px;">
+      <div class="article-kelas">Virologi</div>
+      <div class="article-judul">Struktur dan Cara Kerja Virus</div>
+      <div class="article-meta"><span>🧬 Kapsid · Envelope · Materi Genetik</span><span>⚙️ 5 Tahap Siklus Litik</span></div>
+    </div>
     <div class="article-body">
       <p>Komponen utama virus adalah <strong>materi genetik</strong> (DNA atau RNA) yang terbungkus protein pelindung bernama <strong>kapsid</strong>. Beberapa virus seperti influenza dan SARS-CoV-2 memiliki lapisan lipid tambahan di luar kapsid yang disebut <strong>selubung (envelope)</strong>, yang membuatnya lebih mudah menyatu dengan membran sel inang.</p>
-      <p>Proses infeksi berlangsung melalui <strong>5 tahap siklus litik</strong>:</p>
+      <div class="sep"><span>Komponen Utama Virus</span></div>
+      <div class="fgrid" style="grid-template-columns:repeat(3,1fr);margin:8px 0 12px;">
+        <div class="fi" style="border-left:3px solid #2563eb;padding:10px 12px;"><strong>🧬 Materi Genetik</strong><span style="display:block;margin-top:3px;">DNA atau RNA — cetak biru untuk membuat virus baru di dalam sel inang</span></div>
+        <div class="fi" style="border-left:3px solid #dc2626;padding:10px 12px;"><strong>🛡️ Kapsid</strong><span style="display:block;margin-top:3px;">Selubung protein berbentuk ikosahedral atau heliks; melindungi materi genetik</span></div>
+        <div class="fi" style="border-left:3px solid #059669;padding:10px 12px;"><strong>💧 Envelope</strong><span style="display:block;margin-top:3px;">Lapisan lipid bilayer; dimiliki virus tertentu; memudahkan fusi dengan sel</span></div>
+      </div>
+      <div class="sep"><span>5 Tahap Siklus Litik</span></div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:9px 0;">
-        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
-          <div style="font-size:20px;margin-bottom:4px;">🔗</div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:10px 6px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:5px;">🔗</div>
           <div style="font-size:10px;font-weight:700;color:#991b1b;">1. Adsorpsi</div>
-          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Virus menempel pada reseptor sel inang</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:4px;">Virus menempel pada reseptor spesifik di permukaan sel inang</div>
         </div>
-        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
-          <div style="font-size:20px;margin-bottom:4px;">💉</div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:10px 6px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:5px;">💉</div>
           <div style="font-size:10px;font-weight:700;color:#991b1b;">2. Penetrasi</div>
-          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Materi genetik masuk ke dalam sel</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:4px;">Materi genetik virus disuntikkan masuk ke dalam sel inang</div>
         </div>
-        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
-          <div style="font-size:20px;margin-bottom:4px;">🧬</div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:10px 6px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:5px;">🧬</div>
           <div style="font-size:10px;font-weight:700;color:#991b1b;">3. Sintesis</div>
-          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Sel membuat salinan DNA/RNA virus</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:4px;">Sel "diprogram ulang" untuk memproduksi komponen virus baru</div>
         </div>
-        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
-          <div style="font-size:20px;margin-bottom:4px;">⚙️</div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:10px 6px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:5px;">⚙️</div>
           <div style="font-size:10px;font-weight:700;color:#991b1b;">4. Pematangan</div>
-          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Virus baru dirakit dari komponen</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:4px;">Komponen dirakit menjadi partikel virus utuh yang fungsional</div>
         </div>
-        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;padding:8px 5px;text-align:center;">
-          <div style="font-size:20px;margin-bottom:4px;">💥</div>
+        <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:10px 6px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:5px;">💥</div>
           <div style="font-size:10px;font-weight:700;color:#991b1b;">5. Pelepasan</div>
-          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:3px;">Ratusan virus baru keluar menginfeksi sel lain</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.4;margin-top:4px;">Sel pecah; ratusan–ribuan virus baru keluar menginfeksi sel lain</div>
         </div>
       </div>
       <div class="callout callout-warn">
-        <div class="callout-lbl">⚠️ Perhatikan</div>
-        <div class="callout-body">Dalam satu siklus litik, satu virus dapat menghasilkan ratusan hingga ribuan virus baru dalam waktu kurang dari satu jam. Inilah mengapa wabah dapat menyebar sangat cepat dalam populasi yang belum memiliki kekebalan.</div>
+        <div class="callout-lbl">⚠️ Implikasi Wabah</div>
+        <div class="callout-body">Dalam satu siklus litik (~1 jam), satu virus menghasilkan ratusan hingga ribuan virus baru. Pertumbuhan eksponensial ini menjelaskan mengapa wabah dapat tumbuh begitu cepat dalam populasi yang belum punya kekebalan.</div>
       </div>
+    </div>
+    <div class="tnav">
+      <button class="tnav-btn" onclick="showTeoriTab(0,document.querySelectorAll('.ttab')[0])">← Sebelumnya</button>
+      <span class="tnav-prog">2 / 6</span>
+      <button class="tnav-btn" onclick="showTeoriTab(2,document.querySelectorAll('.ttab')[2])">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- Seksi 3 -->
-  <div class="article-section" id="s3">
-    <div class="section-header"><div class="section-num">3</div><div class="section-title">Model Matematis Penyebaran Wabah (SIR)</div></div>
+  <!-- ── Panel 3: Model SIR ── -->
+  <div class="tpanel" id="tp2">
+    <div class="article-hero" style="margin-bottom:14px;">
+      <div class="article-kelas">Epidemiologi Matematis</div>
+      <div class="article-judul">Model Matematis Penyebaran Wabah (SIR)</div>
+      <div class="article-meta"><span>📊 Kermack &amp; McKendrick, 1927</span><span>⚖️ S + I + R = N (konstan)</span></div>
+    </div>
     <div class="article-body">
-      <p>Untuk memahami penyebaran penyakit menular dalam populasi, para epidemiolog menggunakan <strong>model matematis</strong>. Model paling mendasar adalah <strong>Model SIR</strong> yang dikembangkan oleh Kermack dan McKendrick (1927). Model ini membagi populasi menjadi tiga kelompok:</p>
-      <div class="sir-row">
-        <div class="sir-badge sir-s"><div class="sir-letter">S</div><div class="sir-name">Susceptible (Rentan)</div><div class="sir-desc">Belum terinfeksi; dapat tertular jika kontak dengan individu terinfeksi</div></div>
-        <div class="sir-badge sir-i"><div class="sir-letter">I</div><div class="sir-name">Infected (Terinfeksi)</div><div class="sir-desc">Terinfeksi aktif dan dapat menularkan penyakit ke individu rentan</div></div>
-        <div class="sir-badge sir-r"><div class="sir-letter">R</div><div class="sir-name">Recovered (Pulih)</div><div class="sir-desc">Sudah pulih atau kebal; tidak lagi berperan dalam transmisi</div></div>
+      <p>Untuk memahami penyebaran penyakit menular dalam populasi, para epidemiolog menggunakan <strong>model matematis</strong>. Model paling mendasar adalah <strong>Model SIR</strong> yang dikembangkan oleh Kermack dan McKendrick (1927). Model ini membagi populasi menjadi tiga kelompok dinamis:</p>
+      <div class="sir-row" style="margin:12px 0;">
+        <div class="sir-badge sir-s" style="padding:14px 16px;">
+          <div class="sir-letter" style="font-size:36px;">S</div>
+          <div class="sir-name" style="font-size:11px;margin-top:4px;">Susceptible (Rentan)</div>
+          <div class="sir-desc" style="font-size:10px;margin-top:4px;">Belum terinfeksi; dapat tertular jika kontak dengan individu terinfeksi. Populasi awal hampir seluruhnya ada di sini.</div>
+        </div>
+        <div class="sir-badge sir-i" style="padding:14px 16px;">
+          <div class="sir-letter" style="font-size:36px;">I</div>
+          <div class="sir-name" style="font-size:11px;margin-top:4px;">Infected (Terinfeksi)</div>
+          <div class="sir-desc" style="font-size:10px;margin-top:4px;">Terinfeksi aktif dan dapat menularkan penyakit ke individu rentan. Jumlah ini yang kita usahakan untuk ditekan.</div>
+        </div>
+        <div class="sir-badge sir-r" style="padding:14px 16px;">
+          <div class="sir-letter" style="font-size:36px;">R</div>
+          <div class="sir-name" style="font-size:11px;margin-top:4px;">Recovered (Pulih)</div>
+          <div class="sir-desc" style="font-size:10px;margin-top:4px;">Sudah pulih atau kebal (atau meninggal). Tidak lagi berperan dalam transmisi penyakit.</div>
+        </div>
       </div>
-      <p>Dinamika perpindahan antar kelompok digambarkan oleh tiga persamaan diferensial:</p>
-      <div class="formula-box">
+      <div class="sep"><span>Persamaan Diferensial Model SIR</span></div>
+      <div class="formula-box" style="margin:10px 0;font-size:clamp(12px,1.4vw,15px);line-height:2.4;">
         dS/dt = −β · S · I / N<br>
         dI/dt = &nbsp;β · S · I / N − γ · I<br>
         dR/dt = &nbsp;γ · I
       </div>
-      <p>Di mana <strong>β (beta)</strong> = laju transmisi per kontak per hari, <strong>γ (gamma)</strong> = laju pemulihan per hari, dan <strong>N</strong> = total populasi. Perhatikan bahwa S + I + R = N selalu konstan (populasi tertutup).</p>
+      <div class="fgrid" style="grid-template-columns:repeat(3,1fr);margin-top:10px;">
+        <div class="fi" style="border-left:3px solid #dc2626;padding:10px 12px;"><strong>β (beta)</strong><span style="display:block;margin-top:3px;">Laju transmisi per kontak per hari. Semakin tinggi β, semakin mudah virus menyebar.</span></div>
+        <div class="fi" style="border-left:3px solid #059669;padding:10px 12px;"><strong>γ (gamma)</strong><span style="display:block;margin-top:3px;">Laju pemulihan per hari. Semakin tinggi γ, semakin cepat pasien sembuh.</span></div>
+        <div class="fi" style="border-left:3px solid #2563eb;padding:10px 12px;"><strong>N (populasi)</strong><span style="display:block;margin-top:3px;">Total populasi tertutup. S + I + R = N selalu konstan sepanjang simulasi.</span></div>
+      </div>
+    </div>
+    <div class="tnav">
+      <button class="tnav-btn" onclick="showTeoriTab(1,document.querySelectorAll('.ttab')[1])">← Sebelumnya</button>
+      <span class="tnav-prog">3 / 6</span>
+      <button class="tnav-btn" onclick="showTeoriTab(3,document.querySelectorAll('.ttab')[3])">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- Seksi 4 -->
-  <div class="article-section" id="s4">
-    <div class="section-header"><div class="section-num">4</div><div class="section-title">Bilangan Reproduksi Dasar R₀</div></div>
+  <!-- ── Panel 4: Bilangan R₀ ── -->
+  <div class="tpanel" id="tp3">
+    <div class="article-hero" style="margin-bottom:14px;">
+      <div class="article-kelas">Parameter Epidemiologi</div>
+      <div class="article-judul">Bilangan Reproduksi Dasar R₀</div>
+      <div class="article-meta"><span>📐 R₀ = β / γ</span><span>🔑 Penentu nasib wabah</span></div>
+    </div>
     <div class="article-body">
-      <p><strong>R₀</strong> (dibaca "R-nol") adalah rata-rata jumlah orang baru yang dapat ditulari oleh <em>satu penderita</em> dalam populasi yang sepenuhnya rentan. Nilai ini merupakan parameter kunci dalam epidemiologi.</p>
-      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:10px 16px;margin:9px 0;text-align:center;">
-        <div style="font-size:9.5px;font-weight:600;color:#92400e;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;">Rumus Dasar</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:#92400e;">R₀ = β / γ</div>
-        <div style="font-size:10.5px;color:#92400e;margin-top:3px;">Laju Transmisi ÷ Laju Pemulihan</div>
+      <p><strong>R₀</strong> (dibaca "R-nol") adalah rata-rata jumlah orang baru yang dapat ditulari oleh <em>satu penderita</em> dalam populasi yang sepenuhnya rentan. Nilai ini merupakan parameter kunci dalam epidemiologi — satu angka yang menentukan apakah wabah akan meledak atau padam dengan sendirinya.</p>
+      <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fde68a;border-radius:14px;padding:16px 22px;margin:12px 0;text-align:center;box-shadow:0 4px 16px rgba(217,119,6,0.12);">
+        <div style="font-size:10px;font-weight:700;color:#92400e;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Rumus Dasar</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,40px);font-weight:800;color:#92400e;letter-spacing:-.02em;">R₀ = β / γ</div>
+        <div style="font-size:11.5px;color:#b45309;margin-top:5px;font-weight:500;">Laju Transmisi ÷ Laju Pemulihan</div>
       </div>
-      <table class="r0-table">
+      <table class="r0-table" style="margin:10px 0;">
         <thead><tr><th>Kondisi</th><th>Nilai R₀</th><th>Interpretasi</th><th>Contoh Penyakit</th></tr></thead>
         <tbody>
-          <tr><td>✅ Wabah Mereda</td><td style="color:#059669;font-weight:700;">R₀ &lt; 1</td><td>Setiap penderita menularkan ke kurang dari 1 orang; wabah padam sendiri</td><td>MERS-CoV ≈ 0.5</td></tr>
-          <tr><td>⚖️ Endemik Stabil</td><td style="color:#d97706;font-weight:700;">R₀ = 1</td><td>Jumlah kasus stabil; penyakit tetap ada di populasi</td><td>–</td></tr>
-          <tr><td>🚨 Wabah Meluas</td><td style="color:#dc2626;font-weight:700;">R₀ &gt; 1</td><td>Setiap penderita menularkan ke lebih dari 1 orang; wabah menyebar eksponensial</td><td>Campak ≈ 15, COVID ≈ 3</td></tr>
+          <tr><td>✅ Wabah Mereda</td><td style="color:#059669;font-weight:700;font-family:'JetBrains Mono',monospace;">R₀ &lt; 1</td><td>Setiap penderita menularkan ke &lt;1 orang; wabah padam sendiri</td><td>MERS-CoV ≈ 0.5</td></tr>
+          <tr><td>⚖️ Endemik Stabil</td><td style="color:#d97706;font-weight:700;font-family:'JetBrains Mono',monospace;">R₀ = 1</td><td>Jumlah kasus stabil; penyakit tetap ada di populasi</td><td>–</td></tr>
+          <tr><td>🚨 Wabah Meluas</td><td style="color:#dc2626;font-weight:700;font-family:'JetBrains Mono',monospace;">R₀ &gt; 1</td><td>Setiap penderita menularkan ke &gt;1 orang; wabah menyebar eksponensial</td><td>Campak ≈ 15, COVID ≈ 3</td></tr>
         </tbody>
       </table>
+      <div class="sep"><span>R₀ Berbagai Penyakit Nyata</span></div>
+      <div class="fgrid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr));margin-top:8px;">
+        <div class="fi" style="border-left:3px solid #059669;text-align:center;padding:10px;"><strong style="font-size:20px;display:block;color:#059669;">0.5</strong><span>MERS-CoV</span></div>
+        <div class="fi" style="border-left:3px solid #2563eb;text-align:center;padding:10px;"><strong style="font-size:20px;display:block;color:#2563eb;">2–3</strong><span>Influenza</span></div>
+        <div class="fi" style="border-left:3px solid #d97706;text-align:center;padding:10px;"><strong style="font-size:20px;display:block;color:#d97706;">2–5</strong><span>COVID-19</span></div>
+        <div class="fi" style="border-left:3px solid #dc2626;text-align:center;padding:10px;"><strong style="font-size:20px;display:block;color:#dc2626;">5–7</strong><span>Cacar Air</span></div>
+        <div class="fi" style="border-left:3px solid #7c3aed;text-align:center;padding:10px;"><strong style="font-size:20px;display:block;color:#7c3aed;">12–18</strong><span>Campak</span></div>
+      </div>
+    </div>
+    <div class="tnav">
+      <button class="tnav-btn" onclick="showTeoriTab(2,document.querySelectorAll('.ttab')[2])">← Sebelumnya</button>
+      <span class="tnav-prog">4 / 6</span>
+      <button class="tnav-btn" onclick="showTeoriTab(4,document.querySelectorAll('.ttab')[4])">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- Seksi 5 -->
-  <div class="article-section" id="s5">
-    <div class="section-header"><div class="section-num">5</div><div class="section-title">Intervensi dan Herd Immunity</div></div>
+  <!-- ── Panel 5: Intervensi & Herd Immunity ── -->
+  <div class="tpanel" id="tp4">
+    <div class="article-hero" style="margin-bottom:14px;">
+      <div class="article-kelas">Kesehatan Masyarakat</div>
+      <div class="article-judul">Intervensi dan Herd Immunity</div>
+      <div class="article-meta"><span>🛡️ Strategi pengendalian wabah</span><span>💉 Ambang herd immunity = 1 − 1/R₀</span></div>
+    </div>
     <div class="article-body">
-      <p><strong>Herd immunity</strong> (kekebalan kelompok) tercapai ketika proporsi populasi yang kebal cukup besar sehingga virus kesulitan menemukan inang baru. Ambang batasnya: <strong>1 − 1/R₀</strong>. Contoh: jika R₀ = 4, dibutuhkan minimal 75% populasi yang kebal.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:9px 0;">
-        <div class="callout callout-info" style="margin:0;">
-          <div class="callout-lbl">😷 Penggunaan Masker</div>
-          <div class="callout-body">Mengurangi kontak efektif; menurunkan β hingga 40%. Mudah dilakukan secara luas.</div>
+      <p><strong>Herd immunity</strong> (kekebalan kelompok) tercapai ketika proporsi populasi yang kebal cukup besar sehingga virus kesulitan menemukan inang baru. Ambang batasnya dihitung sebagai <strong>1 − 1/R₀</strong>.</p>
+      <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #6ee7b7;border-radius:12px;padding:14px 18px;margin:10px 0;text-align:center;">
+        <div style="font-size:10px;font-weight:700;color:#047857;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;">Ambang Herd Immunity</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:#059669;">H = 1 − 1/R₀</div>
+        <div style="font-size:11px;color:#065f46;margin-top:4px;">Contoh: R₀ = 4 → dibutuhkan minimal <strong>75%</strong> populasi kebal</div>
+      </div>
+      <div class="sep"><span>3 Strategi Intervensi Utama</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0;">
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 14px;">
+          <div style="font-size:28px;margin-bottom:6px;">😷</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:#1d4ed8;margin-bottom:5px;">Penggunaan Masker</div>
+          <div style="font-size:11.5px;color:#475569;line-height:1.6;">Mengurangi kontak efektif; menurunkan β hingga <strong style="color:#1d4ed8;">40%</strong>. Mudah diterapkan secara luas dan murah.</div>
+          <div style="margin-top:8px;background:#dbeafe;border-radius:6px;padding:5px 9px;font-size:10px;font-weight:600;color:#1d4ed8;text-align:center;">β × 0.6</div>
         </div>
-        <div class="callout callout-warn" style="margin:0;">
-          <div class="callout-lbl">🏠 Karantina / PSBB</div>
-          <div class="callout-body">Membatasi mobilitas; menurunkan β hingga 70%. Memperlambat puncak wabah secara dramatis.</div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 14px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏠</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:#b45309;margin-bottom:5px;">Karantina / PSBB</div>
+          <div style="font-size:11.5px;color:#475569;line-height:1.6;">Membatasi mobilitas; menurunkan β hingga <strong style="color:#b45309;">70%</strong>. Memperlambat puncak wabah secara dramatis.</div>
+          <div style="margin-top:8px;background:#fef3c7;border-radius:6px;padding:5px 9px;font-size:10px;font-weight:600;color:#b45309;text-align:center;">β × 0.3</div>
         </div>
-        <div class="callout callout-success" style="margin:0;">
-          <div class="callout-lbl">💉 Vaksinasi</div>
-          <div class="callout-body">Memindahkan individu dari S ke R tanpa infeksi. Cara paling aman dan efektif.</div>
+        <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:14px 14px;">
+          <div style="font-size:28px;margin-bottom:6px;">💉</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:#047857;margin-bottom:5px;">Vaksinasi</div>
+          <div style="font-size:11.5px;color:#475569;line-height:1.6;">Memindahkan individu dari S → R tanpa infeksi. Cara paling aman dan efektif jangka panjang.</div>
+          <div style="margin-top:8px;background:#d1fae5;border-radius:6px;padding:5px 9px;font-size:10px;font-weight:600;color:#047857;text-align:center;">S × 50% → R</div>
         </div>
       </div>
       <div class="callout callout-danger">
         <div class="callout-lbl">🔬 Implikasi untuk Simulasi</div>
-        <div class="callout-body">Amati bagaimana mengubah β dan γ menggeser kurva S, I, R. Bandingkan: apa yang terjadi pada puncak infeksi ketika kamu mengaktifkan karantina vs tanpa intervensi apapun?</div>
+        <div class="callout-body">Amati bagaimana mengubah β dan γ menggeser kurva S, I, R. Bandingkan: apa yang terjadi pada puncak infeksi ketika kamu mengaktifkan karantina vs tanpa intervensi apapun? Perhatikan perbedaan "flattening the curve"!</div>
       </div>
+    </div>
+    <div class="tnav">
+      <button class="tnav-btn" onclick="showTeoriTab(3,document.querySelectorAll('.ttab')[3])">← Sebelumnya</button>
+      <span class="tnav-prog">5 / 6</span>
+      <button class="tnav-btn" onclick="showTeoriTab(5,document.querySelectorAll('.ttab')[5])">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- Seksi 6 -->
-  <div class="article-section" id="s6" style="margin-bottom:0;">
-    <div class="section-header"><div class="section-num">6</div><div class="section-title">Tujuan &amp; Hasil Belajar</div></div>
-    <div class="two-col" style="margin-top:4px;">
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch"><div class="ci r">🎯</div><div class="ct">Tujuan Percobaan</div></div>
-        <p>Menganalisis <strong style="color:var(--acc2)">dinamika penyebaran wabah virus</strong> melalui simulasi model SIR, dengan memvariasikan laju transmisi (β), laju pemulihan (γ), ukuran populasi, dan intervensi kesehatan masyarakat.</p>
+  <!-- ── Panel 6: Ringkasan ── -->
+  <div class="tpanel" id="tp5">
+    <div class="article-hero" style="margin-bottom:14px;">
+      <div class="article-kelas">Ringkasan Materi</div>
+      <div class="article-judul">Kesimpulan &amp; Poin Kunci</div>
+      <div class="article-meta"><span>✅ Siap melanjutkan ke simulasi</span><span>🎯 6 konsep utama</span></div>
+    </div>
+    <div class="article-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;border-left:4px solid #dc2626;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:#dc2626;margin-bottom:6px;">🦠 Tentang Virus</div>
+          <ul class="olist" style="font-size:12px;">
+            <li>Agen infeksi 20–300 nm; bukan makhluk hidup sejati</li>
+            <li>Hanya bereplikasi di dalam sel inang hidup</li>
+            <li>Siklus litik: Adsorpsi → Penetrasi → Sintesis → Pematangan → Pelepasan</li>
+          </ul>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;border-left:4px solid #2563eb;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:#2563eb;margin-bottom:6px;">📊 Model SIR</div>
+          <ul class="olist" style="font-size:12px;">
+            <li>Populasi dibagi: Susceptible, Infected, Recovered</li>
+            <li>S + I + R = N selalu konstan (populasi tertutup)</li>
+            <li>Dikontrol oleh dua parameter: β (transmisi) dan γ (pemulihan)</li>
+          </ul>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;border-left:4px solid #d97706;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:#d97706;margin-bottom:6px;">📐 Bilangan R₀</div>
+          <ul class="olist" style="font-size:12px;">
+            <li>R₀ = β / γ — rata-rata penularan per penderita</li>
+            <li>R₀ &lt; 1: wabah mereda; R₀ &gt; 1: wabah meluas</li>
+            <li>Campak ≈ 15; COVID ≈ 3; Influenza ≈ 2</li>
+          </ul>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;border-left:4px solid #059669;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:#059669;margin-bottom:6px;">🛡️ Intervensi</div>
+          <ul class="olist" style="font-size:12px;">
+            <li>Masker: menurunkan β × 0.6</li>
+            <li>Karantina: menurunkan β × 0.3 (lebih efektif)</li>
+            <li>Vaksinasi: pindahkan S → R tanpa infeksi</li>
+          </ul>
+        </div>
       </div>
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
-        <ul class="olist">
-          <li>Memahami struktur dan cara kerja virus dalam sel inang</li>
-          <li>Menganalisis faktor penentu kecepatan penyebaran wabah</li>
-          <li>Menghitung R₀ dan ambang batas herd immunity</li>
-          <li>Membandingkan efektivitas berbagai intervensi kesehatan</li>
-        </ul>
+      <div class="callout callout-success">
+        <div class="callout-lbl">🚀 Siap Melanjutkan!</div>
+        <div class="callout-body">Kamu sudah mempelajari semua konsep dasar yang dibutuhkan. Sekarang pergi ke tab <strong>Prosedur</strong> untuk melihat langkah percobaan, lalu ke <strong>Simulasi</strong> untuk mengeksplorasi model SIR secara langsung dan menjawab pertanyaan diskusi!</div>
       </div>
+    </div>
+    <div class="tnav">
+      <button class="tnav-btn" onclick="showTeoriTab(4,document.querySelectorAll('.ttab')[4])">← Sebelumnya</button>
+      <span class="tnav-prog">6 / 6</span>
+      <button class="tnav-btn" disabled>Selesai ✓</button>
     </div>
   </div>
 
-</div><!-- /article-wrap -->
-</div>
+</div><!-- /teori-flex -->
 </div>
 
 <!-- ═══ PROSEDUR ═══ -->
@@ -533,6 +782,7 @@ document.addEventListener('click',function(e){
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
       </div>
       <button style="padding:5px 12px;border-radius:6px;background:var(--surf2);border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;" onclick="clearDQ()">↺ Hapus Jawaban</button>
+      <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#991b1b,#dc2626);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(220,38,38,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(220,38,38,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(220,38,38,0.25)'">🖨️ Cetak / Download PDF</button>
     </div>
     <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
@@ -562,6 +812,16 @@ document.addEventListener('click',function(e){
 </div><!-- #app -->
 
 <script>
+// ── TEORI TABS ──
+function showTeoriTab(idx, btn){
+  document.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ttab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tp'+idx).classList.add('active');
+  btn.classList.add('active');
+  // scroll tab into view on mobile
+  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
 // ── NAV ──
 function show(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -809,9 +1069,9 @@ function showDone(){
       R₀ = <strong style="color:#dc2626;">${r0}</strong><br>
       Puncak infeksi: <strong style="color:#ef4444;">${pct}%</strong> populasi<br>
       Durasi wabah: <strong>${Math.floor(fracDay)} hari</strong></div>
-    <button onclick="this.closest('.fin-ov').remove();"
+    <button onclick="this.closest('.fin-ov').remove();show('simulasi',document.querySelector('.nb[onclick*=simulasi]'));"
       style="background:linear-gradient(135deg,#991b1b,#ef4444);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(220,38,38,0.35);">
-      ✅ Tutup &amp; Analisis</button>`;
+      🔄 Coba Kembali</button>`;
   ov.classList.add('fin-ov');ov.appendChild(bx);document.body.appendChild(ov);
   ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
 }
@@ -820,6 +1080,95 @@ function showDone(){
 const dqData={};
 function saveDQ(n,v){dqData[n]=v;}
 function clearDQ(){for(let i=1;i<=5;i++){const el=document.getElementById('dq'+i);if(el)el.value='';dqData[i]='';}}
+
+/* ── Audio feedback (Alat & Bahan) ── */
+const _sfxBenar = new Audio('https://denicendrianto41.github.io/benar.wav');
+const _sfxSalah = new Audio('https://denicendrianto41.github.io/salah.wav');
+function _playSfx(sfx){ sfx.currentTime=0; sfx.play().catch(()=>{}); }
+
+function abShowBenar(zone){
+  _playSfx(_sfxBenar);
+  const toast=document.createElement('div');
+  toast.innerHTML='✅ Kamu Benar!';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); },1600);
+  zone.style.borderColor='#10b981'; zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
+  setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },1800);
+}
+function abShowSalah(zone){
+  _playSfx(_sfxSalah);
+  zone.style.borderColor='#ef4444'; zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+  zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+  setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; },800);
+  const toast=document.createElement('div');
+  toast.innerHTML='❌ Salah! Coba lagi.';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); },1600);
+}
+
+/* ── Print Diskusi ── */
+function printDiskusi(){
+  const questions=[
+    'Apa yang terjadi jika nilai R₀ lebih besar dari 1?',
+    'Bagaimana intervensi karantina mempengaruhi grafik SIR?',
+    'Mengapa wabah dengan R₀ tinggi lebih sulit dikendalikan?',
+    'Berapa % populasi harus divaksin untuk herd immunity jika R₀ = 4?',
+    'Jelaskan perbedaan wabah dengan intervensi dini vs terlambat berdasarkan simulasimu!'
+  ];
+  const answers=[];
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('dq'+i);
+    answers.push(el?el.value.trim():'');
+  }
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt">${answers[i]||'<em style="color:#94a3b8;">Belum diisi</em>'}</div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Simulasi Wabah Virus</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #dc2626;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#991b1b;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#991b1b;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#fee2e2;color:#991b1b;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{body{padding:20px 28px;}@page{margin:1.5cm;size:A4 portrait;}}
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">🦠 Lab Virtual – Simulasi Wabah Virus</div>
+  <div class="lab-sub">Kelas X Virologi · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">📅 Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Jawaban Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · Simulasi Wabah Virus — Model SIR · Dicetak dari aplikasi Lab Virtual</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+}
 
 // ── RESIZE ──
 window.addEventListener('resize',()=>{
