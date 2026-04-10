@@ -448,17 +448,17 @@ function startPraktikum(){
 <div id="page-teori" class="page">
   <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:6px;">
 
-    <!-- ROW 1: 3 kolom atas -->
+    <!-- ROW 1: 3 kolom atas — flex:1 -->
     <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:6px;flex:1;min-height:0;">
 
       <!-- Apa itu Bakteri -->
-      <div class="card" style="margin-bottom:0;overflow:auto;display:flex;flex-direction:column;">
+      <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:5px;flex-shrink:0;">
           <div class="ci b" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);">🔬</div>
           <div class="ct">Apa itu Bakteri?</div>
         </div>
-        <p style="font-size:clamp(11px,1.1vw,12.5px);line-height:1.55;margin-bottom:5px;">Bakteri adalah organisme <strong>prokariotik</strong> bersel tunggal yang tidak memiliki membran inti. Ditemukan hampir di setiap lingkungan — tanah, air, udara, bahkan di dalam tubuh makhluk hidup. Ukurannya 0,5–5 µm.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:auto;">
+        <p style="font-size:clamp(11px,1.1vw,12.5px);line-height:1.55;margin-bottom:5px;flex-shrink:0;">Bakteri adalah organisme <strong>prokariotik</strong> bersel tunggal yang tidak memiliki membran inti. Ditemukan hampir di setiap lingkungan — tanah, air, udara, bahkan di dalam tubuh makhluk hidup. Ukurannya 0,5–5 µm.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;flex:1;align-content:start;">
           <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:5px 8px;">
             <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;margin-bottom:1px;">Prokariot</div>
             <div style="font-size:10.5px;color:#475569;line-height:1.4;">Tanpa membran inti</div>
@@ -479,103 +479,103 @@ function startPraktikum(){
       </div>
 
       <!-- Bakteri pada Makanan Busuk -->
-      <div class="card" style="margin-bottom:0;overflow:auto;display:flex;flex-direction:column;">
+      <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:5px;flex-shrink:0;">
           <div class="ci y">🍎</div>
-          <div class="ct">Bakteri & Makanan Busuk</div>
+          <div class="ct">Bakteri &amp; Makanan Busuk</div>
         </div>
-        <p style="font-size:clamp(11px,1.1vw,12.5px);line-height:1.55;margin-bottom:6px;">Makanan membusuk akibat aktivitas bakteri yang mengurai protein, karbohidrat, dan lemak — menghasilkan bau, perubahan tekstur, dan warna.</p>
-        <div style="font-size:9.5px;font-weight:700;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">Faktor Pertumbuhan</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">
+        <p style="font-size:clamp(11px,1.1vw,12.5px);line-height:1.55;margin-bottom:6px;flex-shrink:0;">Makanan membusuk akibat aktivitas bakteri yang mengurai protein, karbohidrat, dan lemak — menghasilkan bau, perubahan tekstur, dan warna.</p>
+        <div style="font-size:9.5px;font-weight:700;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">Faktor Pertumbuhan</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;flex-shrink:0;">
           <span style="background:#dbeafe;border:1px solid #93c5fd;border-radius:5px;padding:2px 7px;font-size:10.5px;font-weight:600;color:#1d4ed8;">🌡️ Suhu</span>
           <span style="background:#dbeafe;border:1px solid #93c5fd;border-radius:5px;padding:2px 7px;font-size:10.5px;font-weight:600;color:#1d4ed8;">⚗️ pH</span>
           <span style="background:#dbeafe;border:1px solid #93c5fd;border-radius:5px;padding:2px 7px;font-size:10.5px;font-weight:600;color:#1d4ed8;">💧 Air</span>
           <span style="background:#fce7f3;border:1px solid #fbcfe8;border-radius:5px;padding:2px 7px;font-size:10.5px;font-weight:600;color:#be185d;">💨 O₂</span>
           <span style="background:#dcfce7;border:1px solid #86efac;border-radius:5px;padding:2px 7px;font-size:10.5px;font-weight:600;color:#15803d;">🌾 Nutrisi</span>
         </div>
-        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:7px;padding:5px 9px;margin-top:auto;">
-          <div style="font-size:9.5px;font-weight:700;color:#92400e;margin-bottom:1px;">📌 Suhu Optimal</div>
-          <div style="font-size:10.5px;color:#78350f;line-height:1.4;">Bakteri tumbuh paling baik pada <strong>20–40°C</strong>. Suhu kulkas (4°C) memperlambat pertumbuhan.</div>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:7px;padding:6px 9px;flex:1;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;font-weight:700;color:#92400e;margin-bottom:2px;">📌 Suhu Optimal</div>
+          <div style="font-size:10.5px;color:#78350f;line-height:1.5;">Bakteri tumbuh paling baik pada <strong>20–40°C</strong>. Suhu kulkas (4°C) memperlambat pertumbuhan.</div>
         </div>
       </div>
 
       <!-- Media Agar -->
-      <div class="card" style="margin-bottom:0;overflow:auto;display:flex;flex-direction:column;">
+      <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:5px;flex-shrink:0;">
           <div class="ci g" style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);">🧫</div>
           <div class="ct">Media Agar Kultur</div>
         </div>
-        <p style="font-size:clamp(11px,1.1vw,12.5px);line-height:1.55;margin-bottom:6px;">Media agar adalah campuran agar-agar dan kaldu nutrisi. Setelah memadat, bakteri yang diinokulasikan akan membentuk koloni yang dapat diamati.</p>
-        <div style="display:flex;flex-direction:column;gap:4px;margin-top:auto;">
-          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:5px 8px;">
-            <span style="font-size:16px;">🟩</span>
+        <p style="font-size:clamp(11px,1.1vw,12.5px);line-height:1.55;margin-bottom:6px;flex-shrink:0;">Media agar adalah campuran agar-agar dan kaldu nutrisi. Setelah memadat, bakteri yang diinokulasikan akan membentuk koloni yang dapat diamati.</p>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;justify-content:space-evenly;">
+          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:6px 8px;">
+            <span style="font-size:16px;flex-shrink:0;">🟩</span>
             <div><div style="font-size:9.5px;font-weight:700;color:#059669;">Agar-agar</div><div style="font-size:10.5px;color:#475569;">Agen pemadat, tidak dicerna bakteri</div></div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:5px 8px;">
-            <span style="font-size:16px;">🍲</span>
+          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:6px 8px;">
+            <span style="font-size:16px;flex-shrink:0;">🍲</span>
             <div><div style="font-size:9.5px;font-weight:700;color:#059669;">Kaldu Nutrisi</div><div style="font-size:10.5px;color:#475569;">Sumber N, C, mineral untuk bakteri</div></div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:5px 8px;">
-            <span style="font-size:16px;">💧</span>
+          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:6px 8px;">
+            <span style="font-size:16px;flex-shrink:0;">💧</span>
             <div><div style="font-size:9.5px;font-weight:700;color:#059669;">Air Suling</div><div style="font-size:10.5px;color:#475569;">Pelarut steril bebas mineral</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ROW 2: 2 kolom bawah -->
-    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:6px;flex:1;min-height:0;">
+    <!-- ROW 2: 2 kolom bawah — tinggi sama dengan align-items:stretch -->
+    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:6px;flex:1;min-height:0;align-items:stretch;">
 
       <!-- Koloni Bakteri -->
       <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;">
-        <div class="ch" style="margin-bottom:5px;flex-shrink:0;">
+        <div class="ch" style="margin-bottom:6px;flex-shrink:0;">
           <div class="ci p" style="background:rgba(124,58,237,.1);">🦠</div>
           <div class="ct">Macam-macam Koloni Bakteri</div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex:1;align-content:start;">
-          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:7px 5px;text-align:center;">
-            <div style="font-size:20px;margin-bottom:3px;">⭕</div>
-            <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;">Sirkuler</div>
-            <div style="font-size:9px;color:#64748b;line-height:1.3;margin-top:2px;">Bulat, tepi rata</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:5px;flex:1;">
+          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+            <div style="font-size:22px;line-height:1;">⭕</div>
+            <div style="font-size:10px;font-weight:700;color:#1d4ed8;">Sirkuler</div>
+            <div style="font-size:9px;color:#64748b;line-height:1.3;">Bulat, tepi rata</div>
           </div>
-          <div style="background:linear-gradient(135deg,#faf5ff,#ede9fe);border:1px solid #ddd6fe;border-radius:8px;padding:7px 5px;text-align:center;">
-            <div style="font-size:20px;margin-bottom:3px;">🌀</div>
-            <div style="font-size:9.5px;font-weight:700;color:#7c3aed;">Irreguler</div>
-            <div style="font-size:9px;color:#64748b;line-height:1.3;margin-top:2px;">Tidak beraturan</div>
+          <div style="background:linear-gradient(135deg,#faf5ff,#ede9fe);border:1px solid #ddd6fe;border-radius:8px;padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+            <div style="font-size:22px;line-height:1;">🌀</div>
+            <div style="font-size:10px;font-weight:700;color:#7c3aed;">Irreguler</div>
+            <div style="font-size:9px;color:#64748b;line-height:1.3;">Tidak beraturan</div>
           </div>
-          <div style="background:linear-gradient(135deg,#fff7ed,#fed7aa);border:1px solid #fdba74;border-radius:8px;padding:7px 5px;text-align:center;">
-            <div style="font-size:20px;margin-bottom:3px;">🕸️</div>
-            <div style="font-size:9.5px;font-weight:700;color:#c2410c;">Filamen</div>
-            <div style="font-size:9px;color:#64748b;line-height:1.3;margin-top:2px;">Seperti benang</div>
+          <div style="background:linear-gradient(135deg,#fff7ed,#fed7aa);border:1px solid #fdba74;border-radius:8px;padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+            <div style="font-size:22px;line-height:1;">🕸️</div>
+            <div style="font-size:10px;font-weight:700;color:#c2410c;">Filamen</div>
+            <div style="font-size:9px;color:#64748b;line-height:1.3;">Seperti benang</div>
           </div>
-          <div style="background:linear-gradient(135deg,#f0fdf4,#bbf7d0);border:1px solid #86efac;border-radius:8px;padding:7px 5px;text-align:center;">
-            <div style="font-size:20px;margin-bottom:3px;">·</div>
-            <div style="font-size:9.5px;font-weight:700;color:#15803d;">Punctiform</div>
-            <div style="font-size:9px;color:#64748b;line-height:1.3;margin-top:2px;">Titik kecil</div>
+          <div style="background:linear-gradient(135deg,#f0fdf4,#bbf7d0);border:1px solid #86efac;border-radius:8px;padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+            <div style="font-size:20px;line-height:1;">●</div>
+            <div style="font-size:10px;font-weight:700;color:#15803d;">Punctiform</div>
+            <div style="font-size:9px;color:#64748b;line-height:1.3;">Titik kecil</div>
           </div>
         </div>
       </div>
 
       <!-- Metode Inokulasi -->
       <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;">
-        <div class="ch" style="margin-bottom:5px;flex-shrink:0;">
+        <div class="ch" style="margin-bottom:6px;flex-shrink:0;">
           <div class="ci b">🔧</div>
           <div class="ct">Metode Inokulasi Bakteri</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;flex:1;align-content:start;">
-          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:8px 10px;">
-            <div style="font-size:20px;margin-bottom:4px;">〰️</div>
-            <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;margin-bottom:3px;">Zig-zag</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;flex:1;">
+          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;justify-content:flex-start;">
+            <div style="font-size:22px;margin-bottom:5px;">〰️</div>
+            <div style="font-size:10px;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Zig-zag</div>
             <div style="font-size:10px;color:#475569;line-height:1.45;">Goresan zig-zag untuk mendapat koloni terpisah. Paling umum digunakan.</div>
           </div>
-          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:8px 10px;">
-            <div style="font-size:20px;margin-bottom:4px;">•</div>
-            <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;margin-bottom:3px;">Titik</div>
+          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;justify-content:flex-start;">
+            <div style="font-size:22px;margin-bottom:5px;line-height:1;">·</div>
+            <div style="font-size:10px;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Titik</div>
             <div style="font-size:10px;color:#475569;line-height:1.45;">Inokulasi pada titik tertentu. Untuk kultur tunggal terkonsentrasi.</div>
           </div>
-          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:8px 10px;">
-            <div style="font-size:20px;margin-bottom:4px;">≡</div>
-            <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;margin-bottom:3px;">Sebar</div>
+          <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;justify-content:flex-start;">
+            <div style="font-size:22px;margin-bottom:5px;">≡</div>
+            <div style="font-size:10px;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Sebar</div>
             <div style="font-size:10px;color:#475569;line-height:1.45;">Sampel disebarkan merata. Untuk menghitung total koloni.</div>
           </div>
         </div>
@@ -597,59 +597,59 @@ function startPraktikum(){
 
           <!-- ALAT -->
           <div class="drag-item" draggable="true" data-id="cawanpetri" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🧫</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/cawan_petri.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Cawan Petri"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Cawan Petri</div>
             <div style="font-size:10px;color:var(--text3);">Steril</div>
           </div>
           <div class="drag-item" draggable="true" data-id="ose" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🔧</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/ose.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Ose"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Ose</div>
             <div style="font-size:10px;color:var(--text3);">Jarum inokulasi</div>
           </div>
           <div class="drag-item" draggable="true" data-id="bunsen" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🔥</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/bunsen.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Bunsen"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Bunsen</div>
             <div style="font-size:10px;color:var(--text3);">Sterilisasi ose</div>
           </div>
           <div class="drag-item" draggable="true" data-id="mikroskop" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🔭</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/mikroskop.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Mikroskop"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Mikroskop</div>
             <div style="font-size:10px;color:var(--text3);">Pengamatan</div>
           </div>
           <div class="drag-item" draggable="true" data-id="pipet" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">💉</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/pipet.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Pipet Tetes"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Pipet Tetes</div>
             <div style="font-size:10px;color:var(--text3);">Steril</div>
           </div>
           <div class="drag-item" draggable="true" data-id="objekglass" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🪟</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/kaca_objek.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Objek Glass"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Objek Glass</div>
             <div style="font-size:10px;color:var(--text3);">+ Cover glass</div>
           </div>
 
           <!-- BAHAN -->
           <div class="drag-item" draggable="true" data-id="agaragar" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🟩</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/media_agar.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Agar-agar"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Agar-agar</div>
             <div style="font-size:10px;color:var(--text3);">Media kultur</div>
           </div>
           <div class="drag-item" draggable="true" data-id="kaldu" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🍲</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/kaldu.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Kaldu Nutrisi"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Kaldu Nutrisi</div>
             <div style="font-size:10px;color:var(--text3);">Nutrisi bakteri</div>
           </div>
           <div class="drag-item" draggable="true" data-id="airsuling" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">💧</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/air.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Air Suling"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Air Suling</div>
             <div style="font-size:10px;color:var(--text3);">Aquades</div>
           </div>
           <div class="drag-item" draggable="true" data-id="makananBusuk" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🍎</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/buah_busuk.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Makanan Busuk"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Makanan Busuk</div>
             <div style="font-size:10px;color:var(--text3);">Buah/roti basi</div>
           </div>
           <div class="drag-item" draggable="true" data-id="alkohol" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="font-size:28px;margin-bottom:4px;">🧴</div>
+            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/alkohol.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Alkohol 70%"></div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Alkohol 70%</div>
             <div style="font-size:10px;color:var(--text3);">Sterilisasi</div>
           </div>
