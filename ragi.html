@@ -278,6 +278,9 @@ nav::-webkit-scrollbar{display:none;}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
 
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 
