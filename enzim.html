@@ -235,6 +235,9 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(22,163,74,.1);}
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:0;transition:opacity .6s ease;
 }
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
@@ -301,7 +304,14 @@ function startPraktikum(){
   sfx.play().catch(()=>{});
   const ls=document.getElementById('loadScreen');
   ls.classList.add('hide');
-  setTimeout(()=>{ls.style.display='none';},650);
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn) tujuanBtn.classList.add('active');
+  },650);
 }
 </script>
 
@@ -334,7 +344,9 @@ function startPraktikum(){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
-    <button class="nb active" onclick="show('teori',this);closeNav()">
+    <button class="nb active" onclick="show('tujuan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()">
       <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
     <button class="nb" onclick="show('alatbahan',this);closeNav()">
       <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
@@ -349,48 +361,252 @@ function startPraktikum(){
 
 <div id="app">
 
-<!-- ===== TEORI ===== -->
-<div id="page-teori" class="page active">
-  <div class="scroll" style="overflow-y:auto;padding:10px 14px 14px;">
-    <!-- TUJUAN & HASIL BELAJAR -->
-    <div class="two-col" style="margin-bottom:5px;">
-      <div class="card">
-        <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Percobaan</div></div>
-        <ul class="olist">
-          <li>Membuktikan enzim katalase memecah H<sub>2</sub>O<sub>2</sub> menjadi H<sub>2</sub>O dan O<sub>2</sub></li>
-          <li>Membandingkan kadar katalase di hati dan jantung</li>
-          <li>Membuktikan pengaruh pH, suhu, dan konsentrasi substrat pada kerja enzim</li>
-        </ul>
+<!-- ===== TUJUAN ===== -->
+<div id="page-tujuan" class="page">
+  <div class="scroll" style="padding:14px 16px 20px;">
+
+    <!-- Hero Banner -->
+    <div style="
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);
+      border-radius: 16px;
+      padding: 22px 24px 18px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(15,23,42,0.28);
+    ">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Enzim Katalase</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#93c5fd);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari cara kerja <strong style="color:#93c5fd;">enzim katalase</strong> secara interaktif — dari teori, simulasi, hingga diskusi hasil percobaan.
+        </p>
       </div>
-      <div class="card">
-        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
-        <ul class="olist">
-          <li>Memahami struktur dan fungsi enzim katalase</li>
-          <li>Menjelaskan faktor-faktor yang mempengaruhi kerja enzim</li>
-          <li>Mampu melakukan percobaan enzim di lab nyata</li>
-        </ul>
+    </div>
+
+    <!-- 2 Main Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 14px;
+        padding: 16px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+        transition: box-shadow .2s, transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#1d4ed8;">peranan enzim katalase</strong> dalam metabolisme sel dan membuktikan pengaruh faktor lingkungan terhadap kerja enzim.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 14px;
+        padding: 16px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+        transition: box-shadow .2s, transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Membuktikan cara kerja <strong style="color:#059669;">enzim katalase</strong> (<em>dari hati, jantung, dan daun pepaya</em>) dalam mengurai H<sub>2</sub>O<sub>2</sub> dan mengamati pengaruh pH serta suhu.
+        </p>
+      </div>
+    </div>
+
+    <!-- Hasil Belajar Section -->
+    <div style="
+      background: #fff;
+      border: 1px solid #dde3ec;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+    ">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami struktur dan fungsi <strong style="color:#1d4ed8;">enzim katalase</strong> sebagai biokatalisator</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan reaksi penguraian <strong style="color:#059669;">H<sub>2</sub>O<sub>2</sub></strong> menjadi H<sub>2</sub>O dan O<sub>2</sub></span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menganalisis pengaruh <strong style="color:#7c3aed;">pH dan suhu</strong> terhadap aktivitas enzim katalase</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Membandingkan kadar katalase pada <strong style="color:#dc2626;">hati, jantung, dan daun pepaya</strong></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== TEORI ===== -->
+<div id="page-teori" class="page">
+  <div class="scroll" style="overflow-y:auto;padding:10px 14px 14px;">
+
+    <!-- Teori Header -->
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f172a 60%,#1d4ed8 100%);border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(15,36,96,0.22);position:relative;overflow:hidden;flex-shrink:0;">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,19px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.85);margin-top:2px;">Enzim Katalase · <em>Hidrogen Peroksida → Air + Oksigen</em></div>
       </div>
     </div>
 
     <!-- DASAR TEORI SATU KESATUAN -->
-    <div class="card" style="margin-bottom:0;">
-      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
 
-      <img src="https://denicendrianto41.github.io/enzim.png" alt="Ilustrasi Enzim Katalase"
-        style="float:left;width:clamp(110px,16%,165px);margin:2px 14px 8px 0;display:block;border:none;box-shadow:none;">
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
 
-      <p><strong style="color:var(--acc3)">Enzim</strong> merupakan senyawa protein yang berperan sebagai <strong style="color:var(--acc2)">katalisator biologis</strong> — mempercepat reaksi kimia di dalam sel makhluk hidup tanpa ikut bereaksi. Secara kimiawi, enzim tersusun atas bagian protein (<em>apoenzim</em>) dan bagian non-protein (<em>kofaktor</em>). Salah satu enzim penting dalam sel adalah <strong style="color:var(--acc2)">enzim katalase</strong>, yaitu enzim intraseluler yang berfungsi menguraikan <strong>Hidrogen Peroksida (H<sub>2</sub>O<sub>2</sub>)</strong> menjadi air (H<sub>2</sub>O) dan oksigen (O<sub>2</sub>).</p>
+        <!-- Enzim & Katalase -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(37,99,235,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🧬</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1d4ed8;">Apa itu Enzim Katalase?</div>
+          </div>
+          <p style="font-size:clamp(11px,1.1vw,12.5px);color:#334155;line-height:1.7;margin:0 0 8px;">
+            <strong style="color:#1d4ed8;">Enzim katalase</strong> adalah enzim intraseluler yang berfungsi menguraikan <strong>Hidrogen Peroksida (H<sub>2</sub>O<sub>2</sub>)</strong> — zat racun hasil respirasi sel — menjadi air (H<sub>2</sub>O) dan gas oksigen (O<sub>2</sub>) yang tidak berbahaya.
+          </p>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;background:#eff6ff;border-left:3px solid #2563eb;padding:7px 12px;border-radius:0 6px 6px 0;color:#1d4ed8;margin:8px 0;">
+            2H<sub>2</sub>O<sub>2</sub> &nbsp;→&nbsp; 2H<sub>2</sub>O &nbsp;+&nbsp; O<sub>2</sub> &nbsp;&nbsp;<span style="opacity:.7;">(dikatalis Katalase)</span>
+          </div>
+          <p style="font-size:clamp(11px,1.1vw,12.5px);color:#334155;line-height:1.7;margin:0;">
+            Enzim ini paling banyak ditemukan di <strong>sel hati</strong> karena hati adalah organ detoksifikasi utama tubuh. Namun katalase juga ada pada jantung, daun pepaya, daun singkong, dan daun jeruk.
+          </p>
+        </div>
 
-      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;background:#eff6ff;border-left:3px solid var(--acc);padding:7px 12px;border-radius:0 6px 6px 0;color:var(--acc3);margin:8px 0;">2H<sub>2</sub>O<sub>2</sub> &nbsp;→&nbsp; 2H<sub>2</sub>O &nbsp;+&nbsp; O<sub>2</sub> &nbsp;&nbsp;(dikatalis oleh Katalase)</p>
+        <!-- Struktur Enzim -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(124,58,237,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚗️</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#7c3aed;">Struktur Enzim</div>
+          </div>
+          <p style="font-size:clamp(11px,1.1vw,12.5px);color:#334155;line-height:1.7;margin:0 0 6px;">Secara kimiawi enzim tersusun atas dua bagian:</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:center;gap:8px;background:#f5f3ff;border-radius:8px;padding:7px 10px;">
+              <span style="font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;">Apoenzim</span>
+              <span style="font-size:11px;color:#475569;">Bagian protein — menentukan spesifisitas reaksi</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;background:#eff6ff;border-radius:8px;padding:7px 10px;">
+              <span style="font-weight:800;color:#2563eb;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;">Kofaktor</span>
+              <span style="font-size:11px;color:#475569;">Bagian non-protein (ion mineral / koenzim)</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <p>Hidrogen Peroksida merupakan hasil sampingan proses respirasi intraseluler yang dihasilkan secara terus-menerus di dalam sel hidup. Zat ini bersifat <strong style="color:#b91c1c">racun</strong> dan dapat merusak sel itu sendiri, sehingga enzim katalase harus segera mengurainya menjadi zat yang tidak membahayakan. Enzim katalase paling banyak ditemukan pada <strong>sel hati</strong> karena hati berperan sebagai organ detoksifikasi utama, namun juga terdapat pada jantung, daun singkong, daun pepaya, dan daun jeruk.</p>
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
 
-      <p>Kerja enzim katalase — seperti enzim pada umumnya — dipengaruhi oleh beberapa faktor. Pertama, <strong>suhu</strong>: enzim bekerja optimal pada suhu tertentu; suhu yang terlalu tinggi menyebabkan denaturasi (kerusakan struktur) enzim sehingga aktivitasnya menurun drastis. Kedua, <strong>pH</strong>: perubahan pH memengaruhi ionisasi sisi aktif enzim — kondisi terlalu asam (penambahan HCl) maupun terlalu basa (penambahan NaOH) akan menghambat kerja enzim. Ketiga, <strong>konsentrasi substrat</strong>: semakin tinggi konsentrasi H<sub>2</sub>O<sub>2</sub>, semakin cepat laju reaksi hingga mencapai titik jenuh enzim. Keempat, <strong>konsentrasi enzim</strong>: semakin banyak molekul enzim yang tersedia, semakin banyak reaksi yang dapat berlangsung secara bersamaan.</p>
+        <!-- Faktor yang mempengaruhi -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🌡️</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#059669;">Faktor yang Mempengaruhi</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+              <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">1</div>
+                <div style="width:2px;flex:1;background:linear-gradient(180deg,#10b981,#a7f3d0);min-height:8px;"></div>
+              </div>
+              <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#059669;">Suhu</strong> — optimal di suhu tubuh (~37°C); suhu tinggi menyebabkan denaturasi enzim</p></div>
+            </div>
+            <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+              <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">2</div>
+                <div style="width:2px;flex:1;background:linear-gradient(180deg,#2dd4bf,#99f6e4);min-height:8px;"></div>
+              </div>
+              <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#0d9488;">pH</strong> — HCl (asam, pH 2) dan NaOH (basa, pH 11) menghambat kerja enzim</p></div>
+            </div>
+            <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+              <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">3</div>
+                <div style="width:2px;flex:1;background:linear-gradient(180deg,#38bdf8,#bae6fd);min-height:8px;"></div>
+              </div>
+              <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#0891b2;">Konsentrasi substrat</strong> — semakin tinggi [H<sub>2</sub>O<sub>2</sub>], laju reaksi meningkat hingga titik jenuh</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:0;position:relative;">
+              <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">4</div>
+              </div>
+              <div style="flex:1;padding:0 0 0 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#2563eb;">Konsentrasi enzim</strong> — lebih banyak molekul enzim = lebih banyak reaksi paralel</p></div>
+            </div>
+          </div>
+        </div>
 
-      <p>Produk reaksi yang paling mudah diamati adalah gas <strong>O<sub>2</sub></strong> yang tampak sebagai <strong>gelembung-gelembung</strong> pada cairan, serta dapat diuji dengan <strong>lidi membara</strong>: jika lidi yang hampir padam dimasukkan ke dalam tabung reaksi dan menyala kembali, hal itu membuktikan adanya gas oksigen hasil kerja enzim katalase. Semakin besar nyala api yang muncul, semakin banyak O<sub>2</sub> yang dihasilkan, dan semakin aktif enzim bekerja.</p>
-
-      <div style="clear:both;"></div>
+        <!-- Membaca Hasil -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(220,38,38,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#dc2626,#f87171);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#fee2e2,#fff1f2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💡</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#dc2626;">Membaca Hasil Percobaan</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:9px;padding:5px 8px;background:#f0fdf4;border-radius:8px;font-size:12px;color:var(--text2);align-items:center;">
+              <span style="font-size:15px;flex-shrink:0;">🫧</span><span>Banyak gelembung → <strong style="color:#059669;">enzim aktif mengurai H<sub>2</sub>O<sub>2</sub></strong></span>
+            </div>
+            <div style="display:flex;gap:9px;padding:5px 8px;background:#fff7ed;border-radius:8px;font-size:12px;color:var(--text2);align-items:center;">
+              <span style="font-size:15px;flex-shrink:0;">🔥</span><span>Bara api membesar → <strong style="color:#d97706;">banyak O<sub>2</sub> yang dihasilkan</strong></span>
+            </div>
+            <div style="display:flex;gap:9px;padding:5px 8px;background:#fff1f2;border-radius:8px;font-size:12px;color:var(--text2);align-items:center;">
+              <span style="font-size:15px;flex-shrink:0;">❌</span><span>Tidak ada gelembung → <strong style="color:#b91c1c;">enzim terhambat / terdenaturasi</strong></span>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;">
+            <span style="font-size:14px;">🧪</span>
+            <code style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:0.03em;">pH optimal ~7 &nbsp;·&nbsp; suhu ~37°C &nbsp;·&nbsp; ekstrak segar</code>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -574,10 +790,10 @@ function startPraktikum(){
 }
 .drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);border-color:var(--border2);}
 .drag-card:active{cursor:grabbing;transform:scale(.96);}
-.drag-card.alat{background:#fff7ed;border-color:#fed7aa;}
-.drag-card.alat:hover{border-color:#f97316;}
-.drag-card.bahan{background:#fff7ed;border-color:#fed7aa;}
-.drag-card.bahan:hover{border-color:#f97316;}
+.drag-card.alat{background:#eff6ff;border-color:#93c5fd;}
+.drag-card.alat:hover{border-color:#2563eb;}
+.drag-card.bahan{background:#f0fdf4;border-color:#86efac;}
+.drag-card.bahan:hover{border-color:#059669;}
 .drag-card.dragging{opacity:.3;transform:scale(.95);filter:grayscale(.5);}
 .drag-card.placed{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
 .drag-icon{height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:5px;line-height:1;}
@@ -906,6 +1122,37 @@ function startPraktikum(){
   });
 
   // ── Core drop logic ──
+  // ── Toast animation helpers (like ragi.html) ──
+  function showToastBenar(zone) {
+    const a = new Audio('https://denicendrianto41.github.io/benar.wav');
+    a.play().catch(()=>{});
+    const toast = document.createElement('div');
+    toast.innerHTML = '✅ Kamu Benar!';
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+    document.body.appendChild(toast);
+    requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+    setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); }, 1400);
+    if(zone) {
+      zone.style.borderColor='#10b981'; zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
+      setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; }, 1600);
+    }
+  }
+  function showToastSalah(zone) {
+    const a = new Audio('https://denicendrianto41.github.io/salah.wav');
+    a.play().catch(()=>{});
+    if(zone) {
+      zone.style.borderColor='#ef4444'; zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+      zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+      setTimeout(()=>{ zone.style.borderColor=''; zone.style.boxShadow=''; }, 800);
+    }
+    const toast = document.createElement('div');
+    toast.innerHTML = '❌ Salah! Coba lagi.';
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+    document.body.appendChild(toast);
+    requestAnimationFrame(()=>{ toast.style.opacity='1'; toast.style.transform='translate(-50%,-50%) scale(1)'; });
+    setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translate(-50%,-50%) scale(0.8)'; setTimeout(()=>toast.remove(),300); }, 1400);
+  }
+
   function drop(zone) {
     if(!dragId) return;
     const src = document.querySelector(`.drag-card[data-id="${dragId}"]`);
@@ -914,17 +1161,13 @@ function startPraktikum(){
     const isCorrect = zone.dataset.accept === dragType;
 
     if(!isCorrect) {
-      // Wrong zone — place it anyway but show warning popup + sound
       zone.classList.add('anim-wrong');
       zone.addEventListener('animationend', () => zone.classList.remove('anim-wrong'), {once:true});
-      playSound('sndSalah');
-      const correctLabel = dragType === 'alat' ? 'Alat Percobaan ⚙️' : 'Bahan Percobaan 🧫';
-      showPopup('⚠️', 'Penempatan Kurang Tepat!', 'Item ini seharusnya diletakkan di area ' + correctLabel + '. Kamu bisa memindahkannya.', 'wrong');
+      showToastSalah(zone);
 
       // Still place the card (with error styling) in wrong zone
       const hint = zone.querySelector('.drop-hint');
       if(hint) hint.remove();
-      const isBahan = dragType === 'bahan';
       const dcW = document.createElement('div');
       dcW.className = 'drop-card wrong-card anim-wrong-card';
       dcW.dataset.id = dragId;
@@ -947,7 +1190,7 @@ function startPraktikum(){
       return;
     }
 
-    // Correct — place card, sound, popup
+    // Correct — place card, toast, animate
     const hint = zone.querySelector('.drop-hint');
     if(hint) hint.remove();
 
@@ -973,10 +1216,7 @@ function startPraktikum(){
     zone.appendChild(dc);
     src.classList.add('placed');
 
-    playSound('sndBenar');
-    const itemName = src.querySelector('.drag-name').textContent;
-    showPopup('✅', 'Tepat!', itemName + ' berhasil diletakkan di meja percobaan.', 'ok');
-
+    showToastBenar(zone);
     updateCatatan();
     dragId = null; dragType = null;
   }
@@ -1158,94 +1398,130 @@ function startPraktikum(){
 
 <!-- ===== PROSEDUR ===== -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:6px 10px;display:flex;flex-direction:column;">
-    <div class="card" style="margin-bottom:0;flex:1;display:flex;flex-direction:column;overflow:hidden;padding:10px 12px;">
+  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
 
-      <!-- Header -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--border);">
-        <div class="ch" style="margin-bottom:0;">
-          <div class="ci b">&#x1F4CB;</div>
-          <div class="ct">Prosedur Percobaan</div>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <span style="background:#eff6ff;border:1px solid #93c5fd;border-radius:5px;padding:3px 9px;font-size:10.5px;color:var(--acc3);font-weight:600;">&#x1F9EA; Tabung A &ndash; E</span>
-          <span style="background:#fff1f2;border:1px solid #fecdd3;border-radius:5px;padding:3px 9px;font-size:10.5px;color:#b91c1c;font-weight:600;">&#x26A0;&#xFE0F; Satu variabel per percobaan</span>
-        </div>
+      <!-- KIRI: Langkah Prosedur (animated roadmap) -->
+      <div class="card" style="margin-bottom:0;overflow-y:auto;">
+        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Percobaan</div></div>
+        <div id="enzimSteps"></div>
       </div>
 
-      <!-- Body: KIRI flowchart = KANAN panel info (1fr 1fr) -->
-      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0;overflow:hidden;">
+      <!-- KANAN: Perhatikan + Membaca Hasil + Kondisi Tabung -->
+      <div class="card" style="margin-bottom:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
 
-        <!-- KIRI: Alur Timeline Putus-putus -->
-        <div id="flowchartArea" style="overflow-y:auto;overflow-x:hidden;padding:4px 8px 4px 4px;border-right:1px solid var(--border);"></div>
+        <!-- Perhatikan -->
+        <div>
+          <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
+          <ul class="olist" style="font-size:11px;">
+            <li>Gunakan <strong>pipet tetes</strong>, takaran tiap larutan <strong>2 ml</strong></li>
+            <li>Beri label tabung A–E sebelum memulai percobaan</li>
+            <li>Catat <strong>gelembung</strong> &amp; <strong>nyala bara api</strong> tiap tabung</li>
+            <li>Hati-hati saat menangani suhu <strong>panas / dingin</strong></li>
+            <li>Gunakan <strong>satu variabel</strong> berbeda per tabung percobaan</li>
+          </ul>
+        </div>
 
-        <!-- KANAN: 3 panel info tersebar merata -->
-        <div style="overflow:hidden;display:flex;flex-direction:column;gap:8px;">
+        <!-- Membaca Hasil -->
+        <div class="notebox">
+          <div class="nt">💡 Membaca Hasil</div>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-top:4px;">
+            <div style="display:flex;gap:8px;font-size:11.5px;color:#92400e;align-items:center;"><span>🫧</span><span>Banyak gelembung → <strong>enzim aktif</strong></span></div>
+            <div style="display:flex;gap:8px;font-size:11.5px;color:#92400e;align-items:center;"><span>🔥</span><span>Bara api membesar → <strong>O<sub>2</sub> banyak dihasilkan</strong></span></div>
+            <div style="display:flex;gap:8px;font-size:11.5px;color:#92400e;align-items:center;"><span>❌</span><span>Tidak ada gelembung → <strong>enzim terhambat</strong></span></div>
+          </div>
+        </div>
 
-          <!-- Perhatikan -->
-          <div style="flex:1;background:#fff8f8;border:1px solid #fecdd3;border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;min-height:0;">
-            <div style="font-size:10px;font-weight:700;color:#b91c1c;letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-shrink:0;">
-              <span>&#x26A0;&#xFE0F;</span> Perhatikan
+        <!-- Kondisi Tabung -->
+        <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:9px;padding:10px 14px;">
+          <div style="font-size:10px;font-weight:700;color:var(--acc3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+            <span>🧪</span> Kondisi Tabung
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
+              <span style="background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">A</span>
+              <span style="font-size:12px;color:var(--text2);">Normal &middot; pH 7 &middot; 25&deg;C</span>
             </div>
-            <div style="display:flex;flex-direction:column;flex:1;justify-content:space-evenly;">
-              <div style="display:flex;gap:9px;padding:4px 0;border-bottom:1px solid #fecdd344;font-size:12px;color:var(--text2);align-items:flex-start;"><span style="color:#b91c1c;flex-shrink:0;">&#x25CF;</span><span>Gunakan <strong>pipet tetes</strong>, takaran tiap larutan <strong>2 ml</strong></span></div>
-              <div style="display:flex;gap:9px;padding:4px 0;border-bottom:1px solid #fecdd344;font-size:12px;color:var(--text2);align-items:flex-start;"><span style="color:#b91c1c;flex-shrink:0;">&#x25CF;</span><span>Catat <strong>gelembung</strong> &amp; <strong>nyala bara api</strong> tiap tabung</span></div>
-              <div style="display:flex;gap:9px;padding:4px 0;font-size:12px;color:var(--text2);align-items:flex-start;"><span style="color:#b91c1c;flex-shrink:0;">&#x25CF;</span><span>Hati-hati saat menangani suhu <strong>panas / dingin</strong></span></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
+              <span style="background:#fee2e2;color:#b91c1c;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">B</span>
+              <span style="font-size:12px;color:var(--text2);">+ HCl &middot; pH 2 &middot; 25&deg;C</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
+              <span style="background:#ede9fe;color:#6d28d9;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">C</span>
+              <span style="font-size:12px;color:var(--text2);">+ NaOH &middot; pH 11 &middot; 25&deg;C</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
+              <span style="background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">D</span>
+              <span style="font-size:12px;color:var(--text2);">Panas &middot; pH 7 &middot; 80&deg;C</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;">
+              <span style="background:#e0f2fe;color:#0369a1;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">E</span>
+              <span style="font-size:12px;color:var(--text2);">Dingin &middot; pH 7 &middot; &minus;10&deg;C</span>
             </div>
           </div>
+        </div>
 
-          <!-- Membaca Hasil -->
-          <div style="flex:1;background:#f0fdf4;border:1px solid #86efac;border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;min-height:0;">
-            <div style="font-size:10px;font-weight:700;color:#15803d;letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-shrink:0;">
-              <span>&#x1F4A1;</span> Membaca Hasil
-            </div>
-            <div style="display:flex;flex-direction:column;flex:1;justify-content:space-evenly;">
-              <div style="display:flex;gap:9px;padding:4px 0;border-bottom:1px solid #86efac44;font-size:12px;color:var(--text2);align-items:center;">
-                <span style="font-size:15px;flex-shrink:0;">&#x1FAE7;</span><span>Banyak gelembung &rarr; <strong style="color:var(--acc3)">enzim aktif</strong></span>
-              </div>
-              <div style="display:flex;gap:9px;padding:4px 0;border-bottom:1px solid #86efac44;font-size:12px;color:var(--text2);align-items:center;">
-                <span style="font-size:15px;flex-shrink:0;">&#x1F525;</span><span>Nyala bara membesar &rarr; <strong style="color:var(--acc3)">O&#x2082; banyak</strong></span>
-              </div>
-              <div style="display:flex;gap:9px;padding:4px 0;font-size:12px;color:var(--text2);align-items:center;">
-                <span style="font-size:15px;flex-shrink:0;">&#x274C;</span><span>Tidak ada gelembung &rarr; <strong style="color:#b91c1c">enzim terhambat</strong></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Kondisi Tabung -->
-          <div style="flex:1.5;background:#eff6ff;border:1px solid #93c5fd;border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;min-height:0;">
-            <div style="font-size:10px;font-weight:700;color:var(--acc3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-shrink:0;">
-              <span>&#x1F9EA;</span> Kondisi Tabung
-            </div>
-            <div style="display:flex;flex-direction:column;flex:1;justify-content:space-evenly;">
-              <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-                <span style="background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">A</span>
-                <span style="font-size:12px;color:var(--text2);">Normal &middot; pH 7 &middot; 25&deg;C</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-                <span style="background:#fee2e2;color:#b91c1c;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">B</span>
-                <span style="font-size:12px;color:var(--text2);">+ HCl &middot; pH 2 &middot; 25&deg;C</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-                <span style="background:#ede9fe;color:#6d28d9;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">C</span>
-                <span style="font-size:12px;color:var(--text2);">+ NaOH &middot; pH 11 &middot; 25&deg;C</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-                <span style="background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">D</span>
-                <span style="font-size:12px;color:var(--text2);">Panas &middot; pH 7 &middot; 80&deg;C</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:9px;padding:3px 0;">
-                <span style="background:#e0f2fe;color:#0369a1;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:22px;text-align:center;flex-shrink:0;">E</span>
-                <span style="font-size:12px;color:var(--text2);">Dingin &middot; pH 7 &middot; &minus;10&deg;C</span>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- end KANAN -->
-      </div><!-- end grid -->
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+// ══ PROSEDUR — animated roadmap (like ragi.html) ══
+const enzimStepsData = [
+  {icon:'https://denicendrianto41.github.io/tabung_reaksi.png', text:'Siapkan <strong>5 tabung reaksi</strong> bersih, beri label A–E. Pastikan setiap tabung kering sebelum diisi.'},
+  {icon:'https://denicendrianto41.github.io/hati.png', text:'Masukkan <strong>2 ml ekstrak hati/jantung/daun pepaya</strong> ke masing-masing tabung dengan pipet tetes.'},
+  {icon:'https://denicendrianto41.github.io/hcl.png', text:'Tambahkan perlakuan khusus: <strong>HCl</strong> ke tabung B (pH 2), <strong>NaOH</strong> ke tabung C (pH 11). Tabung A tetap netral.'},
+  {icon:'https://denicendrianto41.github.io/tabung_reaksi.png', text:'Panaskan tabung D hingga <strong>80°C</strong> dan dinginkan tabung E hingga <strong>-10°C</strong> sebelum menambahkan substrat.'},
+  {icon:'https://denicendrianto41.github.io/h2o2.png', text:'Tambahkan <strong>2 ml larutan H₂O₂ 10%</strong> ke setiap tabung. Amati segera munculnya gelembung gas O₂.'},
+  {icon:'https://denicendrianto41.github.io/korek.png', text:'Masukkan <strong>lidi membara</strong> ke mulut tabung untuk menguji keberadaan O₂. Catat intensitas nyala api.'},
+  {icon:'https://denicendrianto41.github.io/tabung_reaksi.png', text:'Catat hasil: jumlah gelembung dan nyala api pada tabel pengamatan untuk <strong>seluruh tabung A–E</strong>.'},
+];
+(function(){
+  const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea'];
+  document.getElementById('enzimSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${enzimStepsData.map((s,i)=>{
+    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===enzimStepsData.length-1,right=i%2===0;
+    return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
+      ${right?`
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
+        <button onclick="zoomEnzimStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+          <img src="${s.icon}" style="width:24px;height:24px;object-fit:contain;pointer-events:none;filter:brightness(0) invert(1);">
+        </button>
+        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+      </div>
+      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
+        <div style="position:absolute;left:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${c}40;"></div>
+        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>`:`
+      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
+        <div style="position:absolute;right:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${c}40;"></div>
+        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
+        <button onclick="zoomEnzimStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+          <img src="${s.icon}" style="width:24px;height:24px;object-fit:contain;pointer-events:none;filter:brightness(0) invert(1);">
+        </button>
+        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+      </div>`}
+    </div>`;
+  }).join('')}</div>`;
+})();
+
+function zoomEnzimStep(btn){
+  const sfx = document.getElementById('clickSfx');
+  if(sfx){ sfx.currentTime=0; sfx.play().catch(()=>{}); }
+  const row = btn.closest('.map-step');
+  if(!row) return;
+  const box = row.querySelector('.step-box');
+  if(!box) return;
+  box.classList.remove('step-box-zoom');
+  void box.offsetWidth;
+  box.classList.add('step-box-zoom');
+  box.addEventListener('animationend', ()=>box.classList.remove('step-box-zoom'), {once:true});
+}
+</script>
 
 <!-- ===== SIMULASI ===== -->
 <div id="page-simulasi" class="page">
@@ -1262,24 +1538,31 @@ function startPraktikum(){
         <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
       </div>
-      <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+        <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(37,99,235,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(37,99,235,0.25)'">🖨️ Cetak / Download PDF</button>
+      </div>
     </div>
-    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6px;min-height:0;">
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Bahan apa yang berperan sebagai substrat? Mengapa substrat tersebut digunakan dalam percobaan ini?</div></div>
-        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(1,this.value)" id="dq1" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Gelembung apa yang timbul akibat reaksi dengan H<sub>2</sub>O<sub>2</sub>? Tuliskan reaksi kimia enzim pada percobaan tersebut!</div></div>
-        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(2,this.value)" id="dq2" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Pada tabung mana terbentuk gelembung gas paling banyak? Mengapa demikian? (faktor-faktor yang mempengaruhi kerja enzim)</div></div>
-        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(3,this.value)" id="dq3" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Dari hasil percobaan yang diamati, apakah yang dapat Anda simpulkan tentang kerja enzim? (sifat-sifat enzim)</div></div>
-        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(4,this.value)" id="dq4" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;grid-column:span 2;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Mengapa hati ayam menghasilkan gelembung lebih banyak dibanding jantung dan daun pepaya? Jelaskan hubungannya dengan fungsi organ hati!</div></div>
+        <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(5,this.value)" id="dq5" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
       </div>
     </div>
   </div>
@@ -1440,12 +1723,81 @@ function zoomStep(iconEl){
 }
 
 // ===== DISKUSI =====
-const dqStorage={};
-function saveDQ(n,val){dqStorage[n]=val;}
+function saveDQ(n,val){try{localStorage.setItem('dq_enzim_'+n,val);}catch(e){}}
 function clearDQ(){
-  Object.keys(dqStorage).forEach(k=>delete dqStorage[k]);
-  document.querySelectorAll('.disc-area').forEach(ta=>ta.value='');
+  for(let i=1;i<=5;i++){
+    try{localStorage.removeItem('dq_enzim_'+i);}catch(e){}
+    const el=document.getElementById('dq'+i);
+    if(el)el.value='';
+  }
 }
+function printDiskusi(){
+  const questions=[
+    'Bahan apa yang berperan sebagai substrat? Mengapa substrat tersebut digunakan dalam percobaan ini?',
+    'Gelembung apa yang timbul akibat reaksi dengan H₂O₂? Tuliskan reaksi kimia enzim pada percobaan tersebut!',
+    'Pada tabung mana terbentuk gelembung gas paling banyak? Mengapa demikian? (faktor-faktor yang mempengaruhi kerja enzim)',
+    'Dari hasil percobaan yang diamati, apakah yang dapat Anda simpulkan tentang kerja enzim? (sifat-sifat enzim)',
+    'Mengapa hati ayam menghasilkan gelembung lebih banyak dibanding jantung dan daun pepaya? Jelaskan hubungannya dengan fungsi organ hati!'
+  ];
+  const answers=[];
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('dq'+i);
+    answers.push(el?el.value.trim():'');
+  }
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt">${answers[i]||'<em style="color:#94a3b8;">Belum diisi</em>'}</div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Enzim Katalase</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #2563eb;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1d4ed8;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{body{padding:20px 28px;}@page{margin:1.5cm;size:A4 portrait;}}
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">🔬 Lab Virtual – Enzim Katalase</div>
+  <div class="lab-sub">Percobaan Enzim Katalase · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">📅 Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Jawaban Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · Dicetak dari aplikasi Lab Virtual Enzim Katalase</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  for(let i=1;i<=5;i++){
+    try{
+      const v=localStorage.getItem('dq_enzim_'+i);
+      const el=document.getElementById('dq'+i);
+      if(v&&el)el.value=v;
+    }catch(e){}
+  }
+});
 const SIM_HTML=atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImlkIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgo8dGl0bGU+U2ltdWxhc2kgRW56aW0gS2F0YWxhc2U8L3RpdGxlPgo8c3R5bGU+CkBpbXBvcnQgdXJsKCdodHRwczovL2ZvbnRzLmdvb2dsZWFwaXMuY29tL2NzczI/ZmFtaWx5PU51bml0bzp3Z2h0QDQwMDs2MDA7NzAwOzgwMDs5MDAmZmFtaWx5PVJvYm90bytNb25vOndnaHRANDAwOzYwMCZkaXNwbGF5PXN3YXAnKTsKOnJvb3R7CiAgLS10ZWFsOiMyNTYzZWI7LS10ZWFsLWRrOiMxZDRlZDg7LS1vcmFuZ2U6I2Q5NzcwNjsKICAtLXNpZGViYXI6I2YwZjRmZjstLWJvcmRlcjojZGRlM2VjOy0tbGFiZWw6IzFlM2E4YTsKICAtLXR1YmUtaDoyMjBweDsgLyogdHViZSBpbm5lciBoZWlnaHQgKi8KICAtLWV4dHJhY3QtaDo0OHB4Owp9Cip7Ym94LXNpemluZzpib3JkZXItYm94O21hcmdpbjowO3BhZGRpbmc6MDt9Cmh0bWwsYm9keXt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO292ZXJmbG93OmhpZGRlbjtmb250LWZhbWlseTonTnVuaXRvJyxzYW5zLXNlcmlmO2JhY2tncm91bmQ6I2RiZWFmZTt9CgovKiAmIzk1NTI7JiM5NTUyOyBBUFAgJiM5NTUyOyYjOTU1MjsgKi8KLmFwcHtkaXNwbGF5OmZsZXg7aGVpZ2h0OjEwMHZoO3dpZHRoOjEwMHZ3O292ZXJmbG93OmhpZGRlbjt9Ci5sZWZ0e2ZsZXg6MTtkaXNwbGF5OmZsZXg7ZmxleC1kaXJlY3Rpb246Y29sdW1uO292ZXJmbG93OmhpZGRlbjtwYWRkaW5nOjZweCAxMHB4O2dhcDo1cHg7cG9zaXRpb246cmVsYXRpdmU7fQouc2lkZWJhcnt3aWR0aDoyNTZweDtiYWNrZ3JvdW5kOnZhcigtLXNpZGViYXIpO2JvcmRlci1sZWZ0OjFweCBzb2xpZCB2YXIoLS1ib3JkZXIpO2Rpc3BsYXk6ZmxleDtmbGV4LWRpcmVjdGlvbjpjb2x1bW47b3ZlcmZsb3cteTphdXRvO2ZsZXgtc2hyaW5rOjA7fQouc2ItaW5uZXJ7cGFkZGluZzo4cHggMTFweDtkaXNwbGF5OmZsZXg7ZmxleC1kaXJlY3Rpb246Y29sdW1uO2dhcDo5cHg7fQoKLyogJiM5NTUyOyYjOTU1MjsgSEVBREVSICYjOTU1MjsmIzk1NTI7ICovCi5oZHJ7YmFja2dyb3VuZDojZmZmO2JvcmRlci1yYWRpdXM6OHB4O2JvcmRlcjoxcHggc29saWQgdmFyKC0tYm9yZGVyKTtwYWRkaW5nOjVweCAxMnB4O2Rpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7Z2FwOjhweDtmbGV4LXNocmluazowO30KLmhkciBoMntmb250LXNpemU6MTRweDtmb250LXdlaWdodDo5MDA7Y29sb3I6IzFhMmEzYTtmbGV4OjE7fQouaGRyIC5oaW50e2ZvbnQtc2l6ZTo5cHg7Y29sb3I6Izg4ODtsaW5lLWhlaWdodDoxLjQ7fQoucGlsbHtwYWRkaW5nOjJweCAxMHB4O2JvcmRlci1yYWRpdXM6MjBweDtmb250LXNpemU6MTBweDtmb250LXdlaWdodDo4MDA7Y29sb3I6I2ZmZjtiYWNrZ3JvdW5kOnZhcigtLXRlYWwpO3doaXRlLXNwYWNlOm5vd3JhcDt0cmFuc2l0aW9uOmJhY2tncm91bmQgLjJzO30KCi8qICYjOTU1MjsmIzk1NTI7IE1BSU4gQ09OVEVOVCBBUkVBICYjOTU1MjsmIzk1NTI7ICovCi5jb250ZW50LWFyZWF7ZmxleDoxO2Rpc3BsYXk6ZmxleDtmbGV4LWRpcmVjdGlvbjpjb2x1bW47b3ZlcmZsb3c6aGlkZGVuO2dhcDowO21pbi1oZWlnaHQ6MDt9CgovKiAmIzk1NTI7JiM5NTUyOyBVTklGSUVEIEVYUEVSSU1FTlQgQk9YIChkcm9wcGVyIHNwYWNlICsgdHViZXMgbWVyZ2VkKSAmIzk1NTI7JiM5NTUyOyAqLwouZXhwLWJveHsKICBiYWNrZ3JvdW5kOnJnYmEoMjU1LDI1NSwyNTUsMC40MCk7CiAgYm9yZGVyOjFweCBzb2xpZCAjYmZkYmZlOwogIGJvcmRlci1yYWRpdXM6MTBweDsKICBwYWRkaW5nOjc4cHggMTBweCA4cHg7IC8qIHRvcCBwYWRkaW5nIGdpdmVzIGVtcHR5IHJvb20gZm9yIHBpcGV0L2xpZGkgYWJvdmUgdHViZXMgKi8KICBkaXNwbGF5OmZsZXg7CiAgZmxleC1kaXJlY3Rpb246Y29sdW1uOwogIGZsZXgtc2hyaW5rOjA7CiAgZ2FwOjA7CiAgbWFyZ2luLXRvcDoyMnB4OwogIHBvc2l0aW9uOnJlbGF0aXZlOwp9Ci5leHAtYnRuc3sKICBwb3NpdGlvbjphYnNvbHV0ZTsKICB0b3A6NnB4OwogIHJpZ2h0OjhweDsKICBkaXNwbGF5OmZsZXg7CiAgZ2FwOjVweDsKICB6LWluZGV4OjUwOwp9Ci5leHAtYnRuewogIHdpZHRoOjI4cHg7aGVpZ2h0OjI4cHg7CiAgYm9yZGVyLXJhZGl1czo2cHg7CiAgZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyOwogIGN1cnNvcjpwb2ludGVyOwogIGZvbnQtc2l6ZToxM3B4OwogIGJvcmRlcjpub25lOwogIGNvbG9yOiNmZmY7CiAgdHJhbnNpdGlvbjpvcGFjaXR5IC4xNXMsIHRyYW5zZm9ybSAuMXM7CiAgYm94LXNoYWRvdzowIDFweCA0cHggcmdiYSgwLDAsMCwuMTgpOwp9Ci5leHAtYnRuOmhvdmVye29wYWNpdHk6Ljg1O3RyYW5zZm9ybTpzY2FsZSgxLjA4KTt9Ci5leHAtYnRuLWluZm97YmFja2dyb3VuZDojMjU2M2ViO30KLmV4cC1idG4tcmVzZXR7YmFja2dyb3VuZDojMmQzNDM2O30KLnR1YmVzLXJvd3tkaXNwbGF5OmZsZXg7Z2FwOjE4cHg7YWxpZ24taXRlbXM6ZmxleC1lbmQ7ZmxleC13cmFwOm5vd3JhcDtvdmVyZmxvdy14OmF1dG87cGFkZGluZy1ib3R0b206MnB4O30KCi8qICYjOTU1MjsmIzk1NTI7IFRVQkUgJiM5NTUyOyYjOTU1MjsgKi8KLnR1YmUtd3JhcHtkaXNwbGF5OmZsZXg7ZmxleC1kaXJlY3Rpb246Y29sdW1uO2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6M3B4O2N1cnNvcjpwb2ludGVyO2ZsZXgtc2hyaW5rOjA7dHJhbnNpdGlvbjp0cmFuc2Zvcm0gLjE1czt9Ci50dWJlLXdyYXA6aG92ZXJ7dHJhbnNmb3JtOnRyYW5zbGF0ZVkoLTJweCk7fQoudHViZS13cmFwLnNlbGVjdGVkIC50dWJlLWJvZHl7Ym9yZGVyLWNvbG9yOiMxZTNhOGEgIWltcG9ydGFudDtib3gtc2hhZG93OjAgMCAwIDNweCAjYmZkYmZlICFpbXBvcnRhbnQ7fQoudHViZS13cmFwLmRyb3AtdGd0IC50dWJlLWJvZHl7Ym9yZGVyLWNvbG9yOiNmZjk4MDAgIWltcG9ydGFudDtib3gtc2hhZG93OjAgMCAwIDRweCByZ2JhKDI1NSwxNTIsMCwuMjgpICFpbXBvcnRhbnQ7fQoKLyogVFVCRSBIRUlHSFQgPSAyMjBweCB1c2FibGUgaW5uZXIuCiAgIGV4dHJhY3QgPSA0OHB4IGF0IGJvdHRvbS4KICAgTGlxdWlkIGZpbGxzIGZyb20gYWJvdmUgZXh0cmFjdCB1cHdhcmQuCiAgIE1heCBsaXF1aWQgaGVpZ2h0ID0gMjIwIC0gNDggPSAxNzJweCAoPSAxMG1sKS4KICAgMSBtbCA9IDE3Mi8xMCA9IDE3LjJweCAqLwoudHViZS1ib2R5ewogIHdpZHRoOjU2cHg7aGVpZ2h0OjIyMHB4OwogIGJvcmRlcjoycHggc29saWQgI2FhZDRkYzsKICBib3JkZXItcmFkaXVzOjNweCAzcHggMTJweCAxMnB4OwogIGJhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE4MGRlZywjZDlmM2Y4LCNiOGU4ZjApOwogIHBvc2l0aW9uOnJlbGF0aXZlO292ZXJmbG93OmhpZGRlbjsKICBib3gtc2hhZG93Omluc2V0IC0zcHggMCA2cHggcmdiYSgwLDAsMCwuMDYpLDJweCAzcHggNnB4IHJnYmEoMCwwLDAsLjEpOwp9Ci5tYXJrcy1zdmd7cG9zaXRpb246YWJzb2x1dGU7aW5zZXQ6MDt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO3BvaW50ZXItZXZlbnRzOm5vbmU7ei1pbmRleDo4O30KCi8qICYjOTQ3MjsmIzk0NzI7IEV4dHJhY3QgKGJvdHRvbSBmaXhlZCBsYXllcikgJiM5NDcyOyYjOTQ3MjsgKi8KLnQtZXh0cmFjdHtwb3NpdGlvbjphYnNvbHV0ZTtib3R0b206MDtsZWZ0OjA7cmlnaHQ6MDtoZWlnaHQ6NDhweDt6LWluZGV4OjE7fQouZXh0LWhhdGkgICB7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTgwZGVnLCNhMDYxM2EsIzZiM2ExZik7fQouZXh0LWphbnR1bmd7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTgwZGVnLCM4YjFhMWEsIzVjMGYwZik7fQouZXh0LXBlcGF5YSB7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTgwZGVnLCM0Y2FmNTAsIzJlN2QzMik7fQoKLyogJiM5NDcyOyYjOTQ3MjsgTGlxdWlkIGxheWVyOiBIMk8yIGJhc2UgJiM5NDcyOyYjOTQ3MjsgKi8KLnQtbGlxLWgybzJ7CiAgcG9zaXRpb246YWJzb2x1dGU7Ym90dG9tOjQ4cHg7bGVmdDowO3JpZ2h0OjA7ei1pbmRleDoyOwogIGJhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE4MGRlZyxyZ2JhKDEzNywyMTIsMjI0LC42OCkscmdiYSgxMDAsMTkwLDIxMCwuODgpKTsKICB0cmFuc2l0aW9uOmhlaWdodCAuNTVzIGVhc2U7Cn0KLnQtbGlxLWgybzIuaG90IHtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxODBkZWcscmdiYSgyNTUsMjAwLDgwLC43MikscmdiYSgyMzAsMTUwLDMwLC44OCkpO30KLnQtbGlxLWgybzIuY29sZHtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxODBkZWcscmdiYSgxODAsMjMwLDI1NSwuNzgpLHJnYmEoMTUwLDIxMCwyNDAsLjkzKSk7fQoKLyogJiM5NDcyOyYjOTQ3MjsgQWRkaXRpdmUgbGF5ZXI6IHNpdHMgZGlyZWN0bHkgYWJvdmUgaDJvMiAmIzk0NzI7JiM5NDcyOyAqLwoudC1saXEtYWRkewogIHBvc2l0aW9uOmFic29sdXRlO2xlZnQ6MDtyaWdodDowO3otaW5kZXg6MzsKICB0cmFuc2l0aW9uOmhlaWdodCAuNTVzIGVhc2UsIGJvdHRvbSAuNTVzIGVhc2U7CiAgcG9pbnRlci1ldmVudHM6bm9uZTsKfQouYWRkLW5hb2h7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTgwZGVnLHJnYmEoNDAsMTEwLDI1NSwuNjIpLHJnYmEoMjAsNzUsMjE1LC43OCkpO30KLmFkZC1oY2wge2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE4MGRlZyxyZ2JhKDI1NSw3MCw2MCwuNjIpLHJnYmEoMjA1LDMwLDI1LC43OCkpO30KLmFkZC1oMm8ge2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE4MGRlZyxyZ2JhKDE4NCwyMzQsMjQ0LC41NSkscmdiYSgxNDAsMjEwLDIzMCwuNzIpKTt9CgouYnViYmxlc3twb3NpdGlvbjphYnNvbHV0ZTtib3R0b206NDhweDtsZWZ0OjA7cmlnaHQ6MDtoZWlnaHQ6MTYwcHg7ei1pbmRleDo0O292ZXJmbG93OmhpZGRlbjtwb2ludGVyLWV2ZW50czpub25lO30KLmJ1YmJsZXtwb3NpdGlvbjphYnNvbHV0ZTtib3JkZXItcmFkaXVzOjUwJTtiYWNrZ3JvdW5kOnJhZGlhbC1ncmFkaWVudChjaXJjbGUgYXQgMzUlIDM1JSxyZ2JhKDI1NSwyNTUsMjU1LC45KSxyZ2JhKDIwMCwyNDAsMjU1LC41KSk7Ym9yZGVyOjFweCBzb2xpZCByZ2JhKDI1NSwyNTUsMjU1LC42KTthbmltYXRpb246cmlzZSBsaW5lYXIgaW5maW5pdGU7b3BhY2l0eTowO30KQGtleWZyYW1lcyByaXNlezAle3RyYW5zZm9ybTp0cmFuc2xhdGVZKDApO29wYWNpdHk6Ljg1O30xMDAle3RyYW5zZm9ybTp0cmFuc2xhdGVZKC0xNjBweCkgdHJhbnNsYXRlWCh2YXIoLS1kLDNweCkpO29wYWNpdHk6MDt9fQoKLmZyb3N0LW92e3Bvc2l0aW9uOmFic29sdXRlO2luc2V0OjA7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTgwZGVnLHJnYmEoMjAwLDIzMCwyNTUsLjUpLHJnYmEoMTUwLDIwMCwyNDAsLjMpKTt6LWluZGV4OjU7cG9pbnRlci1ldmVudHM6bm9uZTt9Ci5mcm9zdC1jcntwb3NpdGlvbjphYnNvbHV0ZTtpbnNldDowO2JhY2tncm91bmQtaW1hZ2U6cmVwZWF0aW5nLWxpbmVhci1ncmFkaWVudCg2MGRlZyxyZ2JhKDIwMCwyMzAsMjU1LC4yKSAwLHRyYW5zcGFyZW50IDJweCx0cmFuc3BhcmVudCAxMHB4KSxyZXBlYXRpbmctbGluZWFyLWdyYWRpZW50KC02MGRlZyxyZ2JhKDIwMCwyMzAsMjU1LC4yKSAwLHRyYW5zcGFyZW50IDJweCx0cmFuc3BhcmVudCAxMHB4KTt6LWluZGV4OjY7cG9pbnRlci1ldmVudHM6bm9uZTt9CgoubzItYmFkZ2V7cG9zaXRpb246YWJzb2x1dGU7dG9wOjVweDtyaWdodDoycHg7YmFja2dyb3VuZDojNDNhMDQ3O2NvbG9yOiNmZmY7Zm9udC1zaXplOjYuNXB4O2ZvbnQtd2VpZ2h0OjgwMDtwYWRkaW5nOjFweCAzcHg7Ym9yZGVyLXJhZGl1czozcHg7ei1pbmRleDoxMDtmb250LWZhbWlseTonUm9ib3RvIE1vbm8nLG1vbm9zcGFjZTt9Ci5hZGQtYmFkZ2V7cG9zaXRpb246YWJzb2x1dGU7dG9wOjVweDtsZWZ0OjJweDtjb2xvcjojZmZmO2ZvbnQtc2l6ZTo2LjVweDtmb250LXdlaWdodDo4MDA7cGFkZGluZzoxcHggM3B4O2JvcmRlci1yYWRpdXM6M3B4O3otaW5kZXg6MTA7fQoKLnR1YmUtZmxhbWUtd3JhcHtwb3NpdGlvbjphYnNvbHV0ZTt0b3A6NXB4O2xlZnQ6NTAlO3RyYW5zZm9ybTp0cmFuc2xhdGVYKC01MCUpO3otaW5kZXg6MTA7cG9pbnRlci1ldmVudHM6bm9uZTt9Ci50dWJlLWZsYW1le3dpZHRoOjEycHg7aGVpZ2h0OjE4cHg7YmFja2dyb3VuZDpyYWRpYWwtZ3JhZGllbnQoZWxsaXBzZSBhdCBib3R0b20sI2ZmOTgwMCwjZmY1NzIyIDQwJSwjZjQ0MzM2IDcwJSx0cmFuc3BhcmVudCk7Ym9yZGVyLXJhZGl1czo1MCUgNTAlIDMwJSAzMCU7YW5pbWF0aW9uOmZsaWNrZXIgLjNzIGVhc2UtaW4tb3V0IGluZmluaXRlIGFsdGVybmF0ZTtwb3NpdGlvbjpyZWxhdGl2ZTt9Ci50dWJlLWZsYW1lOjphZnRlcntjb250ZW50OicnO3Bvc2l0aW9uOmFic29sdXRlO2JvdHRvbToxcHg7bGVmdDo1MCU7dHJhbnNmb3JtOnRyYW5zbGF0ZVgoLTUwJSk7d2lkdGg6NXB4O2hlaWdodDoxMHB4O2JhY2tncm91bmQ6cmFkaWFsLWdyYWRpZW50KGVsbGlwc2UgYXQgYm90dG9tLCNmZmViM2IsI2ZmOTgwMCA2MCUsdHJhbnNwYXJlbnQpO2JvcmRlci1yYWRpdXM6NTAlIDUwJSAzMCUgMzAlO30KQGtleWZyYW1lcyBmbGlja2VyezAle3RyYW5zZm9ybTpzY2FsZVgoMSkgc2NhbGVZKDEpO30xMDAle3RyYW5zZm9ybTpzY2FsZVgoLjg1KSBzY2FsZVkoMS4wNyk7fX0KCi50dWJlLXJpcHBsZXtwb3NpdGlvbjphYnNvbHV0ZTt3aWR0aDo0NHB4O2hlaWdodDo0NHB4O2JvcmRlci1yYWRpdXM6NTAlO2xlZnQ6NTAlO3RvcDo0MCU7dHJhbnNmb3JtOnRyYW5zbGF0ZSgtNTAlLC01MCUpIHNjYWxlKDApO3BvaW50ZXItZXZlbnRzOm5vbmU7ei1pbmRleDoyMDthbmltYXRpb246cnBsIC41cyBlYXNlLW91dCBmb3J3YXJkczt9CkBrZXlmcmFtZXMgcnBsezAle3RyYW5zZm9ybTp0cmFuc2xhdGUoLTUwJSwtNTAlKSBzY2FsZSgwKTtvcGFjaXR5Oi43NTt9MTAwJXt0cmFuc2Zvcm06dHJhbnNsYXRlKC01MCUsLTUwJSkgc2NhbGUoMik7b3BhY2l0eTowO319CgoudHViZS1sYmx7Zm9udC1zaXplOjEwcHg7Zm9udC13ZWlnaHQ6NzAwO2NvbG9yOiMzMzM7fQoudHViZS1zdWJ7Zm9udC1zaXplOjguNXB4O2NvbG9yOiM2NjY7Zm9udC13ZWlnaHQ6NjAwO30KLnR1YmUtY29uZHtmb250LXNpemU6OHB4O2NvbG9yOiM4ODg7dGV4dC1hbGlnbjpjZW50ZXI7bGluZS1oZWlnaHQ6MS4zO21heC13aWR0aDo2MnB4O30KCi8qICYjOTU1MjsmIzk1NTI7IE9CUyBUQUJMRSAoYm90dG9tLCBmbGV4IGNoaWxkKSAmIzk1NTI7JiM5NTUyOyAqLwoub2JzLXNlY3sKICBiYWNrZ3JvdW5kOiNmZmY7Ym9yZGVyLXJhZGl1czo4cHg7Ym9yZGVyOjFweCBzb2xpZCB2YXIoLS1ib3JkZXIpOwogIHBhZGRpbmc6NXB4IDlweDsKICBmbGV4OjE7b3ZlcmZsb3c6YXV0bzttaW4taGVpZ2h0OjA7CiAgbWFyZ2luLXRvcDoxOHB4Owp9Ci5vYnMtdHRse2ZvbnQtd2VpZ2h0OjgwMDtmb250LXNpemU6MTFweDtjb2xvcjp2YXIoLS1sYWJlbCk7bWFyZ2luLWJvdHRvbTozcHg7fQoub2JzLXRibHt3aWR0aDoxMDAlO2JvcmRlci1jb2xsYXBzZTpjb2xsYXBzZTtmb250LXNpemU6OS41cHg7fQoub2JzLXRibCB0aHtiYWNrZ3JvdW5kOnZhcigtLXRlYWwpO2NvbG9yOiNmZmY7cGFkZGluZzozcHggNXB4O3RleHQtYWxpZ246bGVmdDtmb250LXdlaWdodDo3MDA7fQoub2JzLXRibCB0ZHtwYWRkaW5nOjNweCA1cHg7Ym9yZGVyLWJvdHRvbToxcHggc29saWQgI2VlZTtjb2xvcjojMzMzO30KLm9icy10YmwgdHI6bnRoLWNoaWxkKGV2ZW4pIHRke2JhY2tncm91bmQ6I2Y1ZjVmNTt9Ci5iaXtkaXNwbGF5OmlubGluZS1ibG9jazt3aWR0aDo3cHg7aGVpZ2h0OjdweDtib3JkZXItcmFkaXVzOjUwJTttYXJnaW4tcmlnaHQ6MnB4O3ZlcnRpY2FsLWFsaWduOm1pZGRsZTt9Ci5iaS1ub25le2JhY2tncm91bmQ6I2NjYzt9LmJpLWZld3tiYWNrZ3JvdW5kOiNmZmNjODA7fS5iaS1tYW55e2JhY2tncm91bmQ6IzY2YmI2YTt9CgovKiAmIzk1NTI7JiM5NTUyOyBTSURFQkFSICYjOTU1MjsmIzk1NTI7ICovCi5zYi10dGx7Zm9udC1zaXplOjE1cHg7Zm9udC13ZWlnaHQ6OTAwO2NvbG9yOiMxYTJhM2E7cGFkZGluZzo5cHggMTFweCA1cHg7Ym9yZGVyLWJvdHRvbToycHggc29saWQgdmFyKC0tYm9yZGVyKTt9Ci5zYi1pY29uc3tkaXNwbGF5OmZsZXg7Z2FwOjdweDtwYWRkaW5nOjVweCAxMXB4IDA7fQouaWJ7d2lkdGg6MjZweDtoZWlnaHQ6MjZweDtiYWNrZ3JvdW5kOiM1NTU7Ym9yZGVyLXJhZGl1czo0cHg7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO2N1cnNvcjpwb2ludGVyO2NvbG9yOiNmZmY7Zm9udC1zaXplOjEycHg7dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIC4yczt9Ci5pYjpob3ZlcntiYWNrZ3JvdW5kOiMzMzM7fQouc2VjLWx7Zm9udC1zaXplOjExcHg7Zm9udC13ZWlnaHQ6ODAwO2NvbG9yOnZhcigtLWxhYmVsKTttYXJnaW4tYm90dG9tOjRweDt9Ci5zZWMtaHtkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpzcGFjZS1iZXR3ZWVuO21hcmdpbi1ib3R0b206NXB4O30KLmNoZW0tZ3JpZHtkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOjFmciAxZnI7Z2FwOjVweDt9Ci5jYntwYWRkaW5nOjdweCA0cHg7YmFja2dyb3VuZDp2YXIoLS10ZWFsKTtjb2xvcjojZmZmO2JvcmRlcjpub25lO2JvcmRlci1yYWRpdXM6NHB4O2ZvbnQtZmFtaWx5OidOdW5pdG8nLHNhbnMtc2VyaWY7Zm9udC13ZWlnaHQ6NzAwO2ZvbnQtc2l6ZToxMC41cHg7Y3Vyc29yOnBvaW50ZXI7dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIC4xNXMsdHJhbnNmb3JtIC4xczt0ZXh0LWFsaWduOmNlbnRlcjtwb3NpdGlvbjpyZWxhdGl2ZTt9Ci5jYjpob3ZlcntiYWNrZ3JvdW5kOnZhcigtLXRlYWwtZGspO3RyYW5zZm9ybTp0cmFuc2xhdGVZKC0xcHgpO30KLmNiLmFjdGl2ZXtiYWNrZ3JvdW5kOiMwMDdmNzg7Ym94LXNoYWRvdzppbnNldCAwIDJweCA0cHggcmdiYSgwLDAsMCwuMjUpLDAgMCAwIDJweCByZ2JhKDAsMTgxLDE3MywuMzUpO30KLmNiLmFjdGl2ZTo6YWZ0ZXJ7Y29udGVudDonJztwb3NpdGlvbjphYnNvbHV0ZTt0b3A6MnB4O3JpZ2h0OjRweDtmb250LXNpemU6OHB4O2NvbG9yOiNiZmRiZmU7fQouY2JbZGF0YS1jPSJIMk8yIl17Ym9yZGVyLWJvdHRvbTozcHggc29saWQgIzkzYzVmZDt9Ci5jYltkYXRhLWM9Ik5hT0giXXtib3JkZXItYm90dG9tOjNweCBzb2xpZCAjNGY5ZWY4O30KLmNiW2RhdGEtYz0iSENMIl0ge2JvcmRlci1ib3R0b206M3B4IHNvbGlkICNmMDcwNzA7fQouY2JbZGF0YS1jPSJIMk8iXSB7Ym9yZGVyLWJvdHRvbTozcHggc29saWQgI2JmZGJmZTt9Ci5zZXR1cC1idG57d2lkdGg6MTAwJTtwYWRkaW5nOjdweDtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxMzVkZWcsIzFlM2E4YSwjMjU2M2ViKTtjb2xvcjojZmZmO2JvcmRlcjpub25lO2JvcmRlci1yYWRpdXM6NHB4O2ZvbnQtZmFtaWx5OidOdW5pdG8nLHNhbnMtc2VyaWY7Zm9udC13ZWlnaHQ6ODAwO2ZvbnQtc2l6ZToxMXB4O2N1cnNvcjpwb2ludGVyO3RyYW5zaXRpb246b3BhY2l0eSAuMTVzO30KLnNldHVwLWJ0bjpob3ZlcntvcGFjaXR5Oi44ODt9Ci50cHtiYWNrZ3JvdW5kOiNmZmY7Ym9yZGVyOjFweCBzb2xpZCB2YXIoLS1ib3JkZXIpO2JvcmRlci1yYWRpdXM6NnB4O3BhZGRpbmc6OXB4O30KLnRwLXR0bHtmb250LXdlaWdodDo4MDA7Zm9udC1zaXplOjExcHg7Y29sb3I6IzFhMmEzYTttYXJnaW4tYm90dG9tOjdweDt9Ci5mcntkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpzcGFjZS1iZXR3ZWVuO21hcmdpbi1ib3R0b206NXB4O30KLmZse2ZvbnQtc2l6ZToxMHB4O2NvbG9yOiM1NTU7Zm9udC13ZWlnaHQ6NjAwO30KLmZ2e2ZvbnQtc2l6ZToxMHB4O2ZvbnQtd2VpZ2h0OjcwMDtjb2xvcjojMjIyO2ZvbnQtZmFtaWx5OidSb2JvdG8gTW9ubycsbW9ub3NwYWNlO30KLnNlbGJ7d2lkdGg6MTAwJTtwYWRkaW5nOjRweCA2cHg7Ym9yZGVyOjFweCBzb2xpZCAjY2NjO2JvcmRlci1yYWRpdXM6NHB4O2ZvbnQtZmFtaWx5OidOdW5pdG8nLHNhbnMtc2VyaWY7Zm9udC1zaXplOjEwcHg7bWFyZ2luLWJvdHRvbTo3cHg7Y29sb3I6IzMzMztiYWNrZ3JvdW5kOiNmZmY7fQouc3J7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6NHB4O21hcmdpbi10b3A6MXB4O30KLnNtLC5zeHtmb250LXNpemU6OC41cHg7Y29sb3I6Izg4ODtmb250LWZhbWlseTonUm9ib3RvIE1vbm8nLG1vbm9zcGFjZTt9CmlucHV0W3R5cGU9cmFuZ2Vde2ZsZXg6MTstd2Via2l0LWFwcGVhcmFuY2U6bm9uZTtoZWlnaHQ6NXB4O2JvcmRlci1yYWRpdXM6M3B4O291dGxpbmU6bm9uZTtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCh0byByaWdodCx2YXIoLS10ZWFsKSAwJSx2YXIoLS10ZWFsKSB2YXIoLS12YWwsMCUpLCNkZGQgdmFyKC0tdmFsLDAlKSwjZGRkIDEwMCUpO30KaW5wdXRbdHlwZT1yYW5nZV06Oi13ZWJraXQtc2xpZGVyLXRodW1iey13ZWJraXQtYXBwZWFyYW5jZTpub25lO3dpZHRoOjEzcHg7aGVpZ2h0OjEzcHg7Ym9yZGVyLXJhZGl1czo1MCU7YmFja2dyb3VuZDp2YXIoLS10ZWFsKTtib3JkZXI6MnB4IHNvbGlkICNmZmY7Ym94LXNoYWRvdzowIDFweCAzcHggcmdiYSgwLDAsMCwuMik7Y3Vyc29yOnBvaW50ZXI7fQppbnB1dFt0eXBlPXJhbmdlXS50c3tiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCh0byByaWdodCwjNjBhNWZhIDAlLCM2MGE1ZmEgdmFyKC0tdmFsLDUwJSksI2RkZCB2YXIoLS12YWwsNTAlKSwjZGRkIDEwMCUpO30KaW5wdXRbdHlwZT1yYW5nZV0udHM6Oi13ZWJraXQtc2xpZGVyLXRodW1ie2JhY2tncm91bmQ6IzYwYTVmYTt9Ci5kYnt3aWR0aDoxMDAlO21hcmdpbi10b3A6NXB4O3BhZGRpbmc6NXB4O2JhY2tncm91bmQ6I2ZmZjtib3JkZXI6MXB4IHNvbGlkICNmNDQzMzY7Ym9yZGVyLXJhZGl1czo0cHg7Y29sb3I6I2Y0NDMzNjtmb250LWZhbWlseTonTnVuaXRvJyxzYW5zLXNlcmlmO2ZvbnQtd2VpZ2h0OjcwMDtmb250LXNpemU6MTBweDtjdXJzb3I6cG9pbnRlcjt9Ci5kYjpob3ZlcntiYWNrZ3JvdW5kOiNmZmY1ZjU7fQouYXRie3dpZHRoOjI2cHg7aGVpZ2h0OjI2cHg7YmFja2dyb3VuZDp2YXIoLS10ZWFsKTtib3JkZXI6bm9uZTtib3JkZXItcmFkaXVzOjRweDtjb2xvcjojZmZmO2ZvbnQtc2l6ZToxN3B4O2N1cnNvcjpwb2ludGVyO2Rpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1jb250ZW50OmNlbnRlcjt9Ci5hdGI6aG92ZXJ7YmFja2dyb3VuZDp2YXIoLS10ZWFsLWRrKTt9CgovKiBsaWRpIGluZm8gKi8KLmxpZGktaW5mb3tiYWNrZ3JvdW5kOiNmZmY4ZTE7Ym9yZGVyOjFweCBzb2xpZCAjZmZlMDgyO2JvcmRlci1yYWRpdXM6NnB4O3BhZGRpbmc6N3B4IDlweDt9Ci5saWRpLWluZm8gLmxpLXR0bHtmb250LXNpemU6MTFweDtmb250LXdlaWdodDo4MDA7Y29sb3I6I2U2NTEwMDttYXJnaW4tYm90dG9tOjJweDt9Ci5saWRpLWluZm8gcHtmb250LXNpemU6OS41cHg7Y29sb3I6IzY2NjtsaW5lLWhlaWdodDoxLjU7fQoKLyogbGVnZW5kICovCi5sZWd7ZGlzcGxheTpmbGV4O2ZsZXgtd3JhcDp3cmFwO2dhcDo0cHg7fQoubGl7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6M3B4O2ZvbnQtc2l6ZTo5cHg7Y29sb3I6IzU1NTtmb250LXdlaWdodDo2MDA7fQoubGR7d2lkdGg6OHB4O2hlaWdodDo4cHg7Ym9yZGVyLXJhZGl1czo1MCU7ZmxleC1zaHJpbms6MDt9CgovKiAmIzk1NTI7JiM5NTUyOyBUT09MIFdSQVBQRVIgKHBpcGV0L2xpZGkgKyBsYWJlbCkgJiM5NTUyOyYjOTU1MjsgKi8KLnRvb2wtd3JhcHtwb3NpdGlvbjpmaXhlZDt6LWluZGV4OjcwMDtkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2dhcDo1cHg7Y3Vyc29yOmdyYWI7dXNlci1zZWxlY3Q6bm9uZTt0b3VjaC1hY3Rpb246bm9uZTt9Ci50b29sLXdyYXA6YWN0aXZle2N1cnNvcjpncmFiYmluZzt9Ci50b29sLWxhYmVse2ZvbnQtc2l6ZTo5cHg7Zm9udC13ZWlnaHQ6ODAwO2NvbG9yOiNmZmY7YmFja2dyb3VuZDpyZ2JhKDMwLDUwLDcwLC43NSk7cGFkZGluZzoycHggNnB4O2JvcmRlci1yYWRpdXM6OHB4O3doaXRlLXNwYWNlOm5vd3JhcDtwb2ludGVyLWV2ZW50czpub25lO2xldHRlci1zcGFjaW5nOi4zcHg7fQoKCiNwaXBldFd7Y3Vyc29yOmdyYWI7dXNlci1zZWxlY3Q6bm9uZTt0b3VjaC1hY3Rpb246bm9uZTtmaWx0ZXI6ZHJvcC1zaGFkb3coMnB4IDNweCA2cHggcmdiYSgwLDAsMCwuMjgpKTt0cmFuc2l0aW9uOmZpbHRlciAuMTVzO2ZsZXgtc2hyaW5rOjA7fQojcGlwZXRXOmFjdGl2ZXtjdXJzb3I6Z3JhYmJpbmc7fQojcGlwZXRXLm92ZXItdHViZXtmaWx0ZXI6ZHJvcC1zaGFkb3coMCAwIDlweCByZ2JhKDI1NSwxNTIsMCwuOSkpO30KI3BpcGV0QnVsYnt0cmFuc2Zvcm0tb3JpZ2luOjI2cHggMThweDt9CiNwaXBldFcuc3F1ZWV6aW5nICNwaXBldEJ1bGJ7YW5pbWF0aW9uOnNxIC4zNXMgZWFzZS1vdXQ7fQpAa2V5ZnJhbWVzIHNxezAle3RyYW5zZm9ybTpzY2FsZSgxLDEpO30zMCV7dHJhbnNmb3JtOnNjYWxlKDEuMjIsLjc4KTt9NjAle3RyYW5zZm9ybTpzY2FsZSguOSwxLjEpO30xMDAle3RyYW5zZm9ybTpzY2FsZSgxLDEpO319CgovKiAmIzk1NTI7JiM5NTUyOyBMSURJICYjOTU1MjsmIzk1NTI7ICovCiNsaWRpV3tjdXJzb3I6Z3JhYjt1c2VyLXNlbGVjdDpub25lO3RvdWNoLWFjdGlvbjpub25lO2ZpbHRlcjpkcm9wLXNoYWRvdygycHggM3B4IDZweCByZ2JhKDAsMCwwLC4yOCkpO3RyYW5zaXRpb246ZmlsdGVyIC4xNXM7ZmxleC1zaHJpbms6MDt9CiNsaWRpVzphY3RpdmV7Y3Vyc29yOmdyYWJiaW5nO30KI2xpZGlXLm92ZXItdHViZXtmaWx0ZXI6ZHJvcC1zaGFkb3coMCAwIDEycHggcmdiYSgyNTUsMTAwLDAsLjkpKTt9CgovKiAmIzk1NTI7JiM5NTUyOyBGQUxMSU5HIERST1AgJiM5NTUyOyYjOTU1MjsgKi8KLmZhbGxpbmctZHJvcHtwb3NpdGlvbjpmaXhlZDt3aWR0aDo5cHg7aGVpZ2h0OjEzcHg7Ym9yZGVyLXJhZGl1czo1MCUgNTAlIDU1JSA1NSUvNDAlIDQwJSA2MCUgNjAlO3BvaW50ZXItZXZlbnRzOm5vbmU7ei1pbmRleDo4MDA7YW5pbWF0aW9uOmZhbGwgLjU1cyBjdWJpYy1iZXppZXIoLjQsMCwxLDEpIGZvcndhcmRzO30KQGtleWZyYW1lcyBmYWxsezAle3RyYW5zZm9ybTp0cmFuc2xhdGVZKDApIHNjYWxlWCgxKTtvcGFjaXR5OjE7fTcwJXt0cmFuc2Zvcm06dHJhbnNsYXRlWSh2YXIoLS1kaXN0LDExMHB4KSkgc2NhbGVYKDEpO29wYWNpdHk6MTt9ODUle3RyYW5zZm9ybTp0cmFuc2xhdGVZKHZhcigtLWRpc3QsMTEwcHgpKSBzY2FsZVgoMi4yKSBzY2FsZVkoLjM1KTtvcGFjaXR5Oi44O30xMDAle3RyYW5zZm9ybTp0cmFuc2xhdGVZKHZhcigtLWRpc3QsMTEwcHgpKSBzY2FsZVgoMCkgc2NhbGVZKDApO29wYWNpdHk6MDt9fQoKLyogJiM5NTUyOyYjOTU1MjsgRkxBTUUgUE9QVVAgJiM5NTUyOyYjOTU1MjsgKi8KLmZwb3B7cG9zaXRpb246Zml4ZWQ7YmFja2dyb3VuZDpyZ2JhKDE1LDgsMiwuOSk7Y29sb3I6I2ZmOTgwMDtmb250LXNpemU6MTFweDtmb250LXdlaWdodDo4MDA7cGFkZGluZzo3cHggMTNweDtib3JkZXItcmFkaXVzOjE4cHg7ei1pbmRleDo5MDA7cG9pbnRlci1ldmVudHM6bm9uZTtmb250LWZhbWlseTonTnVuaXRvJyxzYW5zLXNlcmlmO2JvcmRlcjoxcHggc29saWQgI2ZmOTgwMDthbmltYXRpb246cG9wSW4gLjNzIGVhc2Utb3V0O30KQGtleWZyYW1lcyBwb3BJbnswJXt0cmFuc2Zvcm06c2NhbGUoLjUpO29wYWNpdHk6MDt9MTAwJXt0cmFuc2Zvcm06c2NhbGUoMSk7b3BhY2l0eToxO319CgovKiAmIzk1NTI7JiM5NTUyOyBOT1RJRiAmIzk1NTI7JiM5NTUyOyAqLwoubm90aWZ7cG9zaXRpb246Zml4ZWQ7Ym90dG9tOjE0cHg7bGVmdDo1MCU7dHJhbnNmb3JtOnRyYW5zbGF0ZVgoLTUwJSkgdHJhbnNsYXRlWSg2MHB4KTtiYWNrZ3JvdW5kOiMxYTJhM2E7Y29sb3I6I2ZmZjtwYWRkaW5nOjdweCAxOHB4O2JvcmRlci1yYWRpdXM6MThweDtmb250LXNpemU6MTFweDtmb250LXdlaWdodDo2MDA7ei1pbmRleDoyMDAwO3RyYW5zaXRpb246dHJhbnNmb3JtIC4zcyBlYXNlO3BvaW50ZXItZXZlbnRzOm5vbmU7fQoubm90aWYuc2hvd3t0cmFuc2Zvcm06dHJhbnNsYXRlWCgtNTAlKSB0cmFuc2xhdGVZKDApO30KCi8qICYjOTU1MjsmIzk1NTI7IE1PREFMICYjOTU1MjsmIzk1NTI7ICovCi5tb3Z7cG9zaXRpb246Zml4ZWQ7aW5zZXQ6MDtiYWNrZ3JvdW5kOnJnYmEoMCwwLDAsLjUpO3otaW5kZXg6MTAwMDtkaXNwbGF5Om5vbmU7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXI7fQoubW92LnNob3d7ZGlzcGxheTpmbGV4O30KLm1ib3h7YmFja2dyb3VuZDojZmZmO2JvcmRlci1yYWRpdXM6MTJweDtwYWRkaW5nOjE4cHg7bWF4LXdpZHRoOjQ0MHB4O3dpZHRoOjkwJTttYXgtaGVpZ2h0Ojgwdmg7b3ZlcmZsb3cteTphdXRvO2JveC1zaGFkb3c6MCA4cHggMzJweCByZ2JhKDAsMCwwLC4yKTt9Ci5tdHRse2ZvbnQtc2l6ZToxNXB4O2ZvbnQtd2VpZ2h0OjgwMDtjb2xvcjp2YXIoLS1sYWJlbCk7bWFyZ2luLWJvdHRvbTo5cHg7fQoubWNsc3tmbG9hdDpyaWdodDtiYWNrZ3JvdW5kOm5vbmU7Ym9yZGVyOm5vbmU7Zm9udC1zaXplOjIwcHg7Y3Vyc29yOnBvaW50ZXI7Y29sb3I6Izg4ODt9Ci5tY29ue2ZvbnQtc2l6ZToxMXB4O2xpbmUtaGVpZ2h0OjEuNztjb2xvcjojNDQ0O30KLm1jb24gaDR7Y29sb3I6IzFlM2E4YTttYXJnaW46N3B4IDAgMnB4O30KLm1jb24gb2wsLm1jb24gdWx7bWFyZ2luLWxlZnQ6MTNweDt9Cgo6Oi13ZWJraXQtc2Nyb2xsYmFye3dpZHRoOjNweDtoZWlnaHQ6M3B4O30KOjotd2Via2l0LXNjcm9sbGJhci10cmFja3tiYWNrZ3JvdW5kOiNlOGYwZjM7fQo6Oi13ZWJraXQtc2Nyb2xsYmFyLXRodW1ie2JhY2tncm91bmQ6I2FhYztib3JkZXItcmFkaXVzOjJweDt9Cjwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+Cgo8IS0tICYjOTU1MjsmIzk1NTI7IFBJUEVUICYjOTU1MjsmIzk1NTI7IC0tPgo8ZGl2IGlkPSJwaXBldFdyYXAiIGNsYXNzPSJ0b29sLXdyYXAiPgo8c3ZnIGlkPSJwaXBldFciIHdpZHRoPSI1MCIgaGVpZ2h0PSIxMTUiIHZpZXdCb3g9IjAgMCA1MCAxMTUiPgogIDxnIGlkPSJwaXBldEJ1bGIiPgogICAgPGVsbGlwc2UgY3g9IjI1IiBjeT0iMTciIHJ4PSIxNSIgcnk9IjE2IiBmaWxsPSIjNzc4ODk5Ii8+CiAgICA8ZWxsaXBzZSBjeD0iMjUiIGN5PSIxNyIgcng9IjExIiByeT0iMTIiIGZpbGw9IiM5NWE1YjUiLz4KICAgIDxlbGxpcHNlIGN4PSIyMCIgY3k9IjExIiByeD0iNCIgcnk9IjMiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsLjI1KSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1LDIwLDExKSIvPgogIDwvZz4KICA8cmVjdCB4PSIyMCIgeT0iMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSI1NyIgcng9IjMiIGZpbGw9IiNlZWY2ZmEiIHN0cm9rZT0iI2JmZGJmZSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8cmVjdCBpZD0icGlwZXRMaXF1aWQiIHg9IjIyIiB5PSI0NCIgd2lkdGg9IjYiIGhlaWdodD0iMjkiIHJ4PSIyIiBmaWxsPSJyZ2JhKDEzNywyMTIsMjI0LC42NSkiLz4KICA8bGluZSB4MT0iMjAiIHkxPSI1NiIgeDI9IjI0IiB5Mj0iNTYiIHN0cm9rZT0iI2FhYyIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGxpbmUgeDE9IjIwIiB5MT0iNjgiIHgyPSIyNCIgeTI9IjY4IiBzdHJva2U9IiNhYWMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxsaW5lIHgxPSIyMCIgeTE9IjgwIiB4Mj0iMjQiIHkyPSI4MCIgc3Ryb2tlPSIjYWFjIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIyMiIgeT0iODciIHdpZHRoPSI2IiBoZWlnaHQ9IjciIHJ4PSIxIiBmaWxsPSIjYmZkYmZlIi8+CiAgPHBhdGggZD0iTTIyIDk0IEwyOCA5NCBMMjcgMTA0IEwyMyAxMDQgWiIgZmlsbD0iI2M4ZGRlNiIvPgogIDxjaXJjbGUgaWQ9InBpcGV0VGlwIiBjeD0iMjUiIGN5PSIxMDgiIHI9IjQiIGZpbGw9IiM5M2M1ZmQiIG9wYWNpdHk9Ii45MiIvPgo8L3N2Zz4KPHNwYW4gY2xhc3M9InRvb2wtbGFiZWwiPlBpcGV0IFRldGVzPC9zcGFuPgo8L2Rpdj4KCjwhLS0gJiM5NTUyOyYjOTU1MjsgTElESSAoYmFyYSBkaSB1anVuZyBiYXdhaCwgbnlhbGEgbWVuZ2FyYWgga2UgYmF3YWgpICYjOTU1MjsmIzk1NTI7IC0tPgo8ZGl2IGlkPSJsaWRpV3JhcCIgY2xhc3M9InRvb2wtd3JhcCI+CjxzdmcgaWQ9ImxpZGlXIiB3aWR0aD0iMjQiIGhlaWdodD0iMTY1IiB2aWV3Qm94PSIwIDAgMjQgMTY1Ij4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZmxhbWVHcmFkIiBjeD0iNTAlIiBjeT0iMzAlIiByPSI3MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZkZDAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjZmY4ODAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZmMzMwMCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJmbGFtZUdyYWQyIiBjeD0iNTAlIiBjeT0iMzAlIiByPSI3MCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZhYTAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZmNDQwMCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIEJhdGFuZyBsaWRpIC0tPgogIDxyZWN0IHg9IjkiIHk9IjAiIHdpZHRoPSI2IiBoZWlnaHQ9IjExMiIgcng9IjMiIGZpbGw9IiNjOGEwNjAiLz4KICA8cmVjdCB4PSIxMCIgeT0iMCIgd2lkdGg9IjIiIGhlaWdodD0iMTEyIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwuMTUpIi8+CiAgPCEtLSBVanVuZyBsaWRpIG1lcmFoIG1lbWJhcmEgLS0+CiAgPHJlY3QgeD0iOSIgeT0iMTA4IiB3aWR0aD0iNiIgaGVpZ2h0PSIxNCIgcng9IjIiIGZpbGw9IiNjYzExMDAiLz4KICA8IS0tIEFTQVA6IG11bmN1bCBzYWF0IGRpIHRhYnVuZyB0YW5wYSBPMiAmIzgyMTI7IGtlcHVsYW4gaGl0YW0gcGVrYXQgLS0+CiAgPGcgaWQ9ImxpZGlTbW9rZSIgc3R5bGU9ImRpc3BsYXk6bm9uZSI+CiAgICA8IS0tIFBhcnRpa2VsIGFzYXAgYnVsYXQgbWVuZ2VwdWwga2UgYXRhcyAtLT4KICAgIDxjaXJjbGUgY3g9IjEyIiBjeT0iMTE4IiByPSIyLjUiIGZpbGw9IiMxYTFhMWEiIG9wYWNpdHk9IjAiPgogICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJjeSIgdmFsdWVzPSIxMTg7MTA4Ozk2Ozg0IiBkdXI9IjEuNnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InIiIHZhbHVlcz0iMi41OzMuNTs0LjU7NS41IiBkdXI9IjEuNnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMDswLjc7MC40NTswIiBkdXI9IjEuNnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICA8L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9IjExIiBjeT0iMTE4IiByPSIyIiBmaWxsPSIjMTExIiBvcGFjaXR5PSIwIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iY3kiIHZhbHVlcz0iMTE4OzEwNjs5NDs4MiIgZHVyPSIycyIgYmVnaW49IjAuNXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InIiIHZhbHVlcz0iMjszOzQ7NSIgZHVyPSIycyIgYmVnaW49IjAuNXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMDswLjY7MC4zNTswIiBkdXI9IjJzIiBiZWdpbj0iMC41cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iY3giIHZhbHVlcz0iMTE7MTM7MTA7MTIiIGR1cj0iMnMiIGJlZ2luPSIwLjVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgogICAgPC9jaXJjbGU+CiAgICA8Y2lyY2xlIGN4PSIxMyIgY3k9IjExOCIgcj0iMS44IiBmaWxsPSIjMjIyIiBvcGFjaXR5PSIwIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iY3kiIHZhbHVlcz0iMTE4OzEwNzs5NTs4MyIgZHVyPSIxLjhzIiBiZWdpbj0iMC45cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgdmFsdWVzPSIxLjg7Mi44OzMuODs0LjUiIGR1cj0iMS44cyIgYmVnaW49IjAuOXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMDswLjU1OzAuMzswIiBkdXI9IjEuOHMiIGJlZ2luPSIwLjlzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgogICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJjeCIgdmFsdWVzPSIxMzsxMDsxMzsxMSIgZHVyPSIxLjhzIiBiZWdpbj0iMC45cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz4KICAgIDwvY2lyY2xlPgogIDwvZz4KICA8IS0tIEJBUkEgKyBOWUFMQTogbXVuY3VsIHNhYXQgZGkgdGFidW5nIGRlbmdhbiBPMiAtLT4KICA8ZyBpZD0ibGlkaUVtYmVyIiBzdHlsZT0iZGlzcGxheTpub25lIj4KICAgIDxjaXJjbGUgY3g9IjEyIiBjeT0iMTIyIiByPSI1IiBmaWxsPSIjZmY0NDAwIiBvcGFjaXR5PSIuOSIvPgogICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMjIiIHI9IjMiIGZpbGw9IiNmZjg4MDAiLz4KICAgIDxlbGxpcHNlIGN4PSIxMiIgY3k9IjEzMiIgcng9IjUiIHJ5PSI4IiBmaWxsPSJ1cmwoI2ZsYW1lR3JhZCkiIG9wYWNpdHk9Ii45NSI+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InJ5IiB2YWx1ZXM9Ijg7MTA7Nzs5OzgiIGR1cj0iLjRzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgogICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJjeCIgdmFsdWVzPSIxMjsxMS41OzEyLjU7MTI7MTEuODsxMiIgZHVyPSIuMzVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgogICAgPC9lbGxpcHNlPgogICAgPGVsbGlwc2UgY3g9IjEyIiBjeT0iMTM5IiByeD0iMyIgcnk9IjUiIGZpbGw9InVybCgjZmxhbWVHcmFkMikiIG9wYWNpdHk9Ii44NSI+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InJ5IiB2YWx1ZXM9IjU7Nzs0OzY7NSIgZHVyPSIuM3MiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+CiAgICA8L2VsbGlwc2U+CiAgICA8ZWxsaXBzZSBjeD0iMTIiIGN5PSIxNDQiIHJ4PSIxLjUiIHJ5PSIzIiBmaWxsPSIjZmZmOGRjIiBvcGFjaXR5PSIuNzUiPgogICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJyeSIgdmFsdWVzPSIzOzQ7Mi41OzMiIGR1cj0iLjI1cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz4KICAgIDwvZWxsaXBzZT4KICA8L2c+Cjwvc3ZnPgo8c3BhbiBjbGFzcz0idG9vbC1sYWJlbCI+TGlkaTwvc3Bhbj4KPC9kaXY+Cgo8ZGl2IGNsYXNzPSJhcHAiPgogIDwhLS0gTEVGVCAtLT4KICA8ZGl2IGNsYXNzPSJsZWZ0Ij4KICAgIDwhLS0gSGVhZGVyIC0tPgogICAgPGRpdiBjbGFzcz0iaGRyIj4KICAgICAgPGRpdj4mIzEyODMwMDs8L2Rpdj4KICAgICAgPGgyPlNpbXVsYXNpIEVuemltIEthdGFsYXNlPC9oMj4KICAgICAgPGRpdiBjbGFzcz0iaGludCI+PGI+UGlwZXQ6PC9iPiBnZXNlciBrZSBhdGFzIHRhYnVuZyAmIzg1OTQ7IHRla2FuICZuYnNwO3wmbmJzcDsgPGI+TGlkaTo8L2I+IGdlc2VyICYjODU5NDsgdGVrYW4gdW50dWsgdWppIE8yPC9kaXY+CiAgICAgIDxzcGFuIGNsYXNzPSJwaWxsIiBpZD0iYWN0aXZlQmFkZ2UiPkg8c3ViPjI8L3N1Yj5PPHN1Yj4yPC9zdWI+PC9zcGFuPgogICAgPC9kaXY+CgogICAgPGRpdiBjbGFzcz0iY29udGVudC1hcmVhIj4KICAgICAgPCEtLSBVbmlmaWVkIGV4cGVyaW1lbnQgYm94OiB0b29sIHNwYWNlICsgdHViZXMgLS0+CiAgICAgIDxkaXYgY2xhc3M9ImV4cC1ib3giPgogICAgICAgIDwhLS0gQWN0aW9uIGJ1dHRvbnMgdG9wLXJpZ2h0IC0tPgogICAgICAgIDxkaXYgY2xhc3M9ImV4cC1idG5zIj4KICAgICAgICAgIDxidXR0b24gY2xhc3M9ImV4cC1idG4gZXhwLWJ0bi1pbmZvIiBvbmNsaWNrPSJzaG93SW5mbygpIiB0aXRsZT0iUGFuZHVhbiBQcmFrdGlrdW0iPiYjMTAwNjc7PC9idXR0b24+CiAgICAgICAgICA8YnV0dG9uIGNsYXNzPSJleHAtYnRuIGV4cC1idG4tcmVzZXQiIG9uY2xpY2s9InJlc2V0QWxsKCkiIHRpdGxlPSJSZXNldCBTZW11YSI+JiM4NjM0OzwvYnV0dG9uPgogICAgICAgIDwvZGl2PgogICAgICAgIDwhLS0gVHViZXMgLS0+CiAgICAgICAgPGRpdiBjbGFzcz0idHViZXMtcm93IiBpZD0idHViZXNSb3ciPjwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDwhLS0gT2JzZXJ2YXRpb24gdGFibGUgJiM4MjEyOyBwdXNoZWQgdG8gYm90dG9tIHZpYSBmbGV4OjEgLS0+CiAgICAgIDxkaXYgY2xhc3M9Im9icy1zZWMiPgogICAgICAgIDxkaXYgc3R5bGU9ImRpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1jb250ZW50OnNwYWNlLWJldHdlZW47bWFyZ2luLWJvdHRvbTo0cHg7Ij4KICAgICAgICAgIDxkaXYgY2xhc3M9Im9icy10dGwiIHN0eWxlPSJtYXJnaW46MCI+JiMxMjgyMDM7IFRhYmVsIEhhc2lsIFBlbmdhbWF0YW48L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3M9ImxlZyI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxpIj48ZGl2IGNsYXNzPSJsZCIgc3R5bGU9ImJhY2tncm91bmQ6IzkzYzVmZCI+PC9kaXY+SDxzdWI+Mjwvc3ViPk88c3ViPjI8L3N1Yj48L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0ibGkiPjxkaXYgY2xhc3M9ImxkIiBzdHlsZT0iYmFja2dyb3VuZDojMjg3MGZmIj48L2Rpdj5OYU9IPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxpIj48ZGl2IGNsYXNzPSJsZCIgc3R5bGU9ImJhY2tncm91bmQ6I2RkMjAyMCI+PC9kaXY+SENsPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxpIj48ZGl2IGNsYXNzPSJsZCIgc3R5bGU9ImJhY2tncm91bmQ6I2JmZGJmZTtib3JkZXI6MXB4IHNvbGlkICNhYWMiPjwvZGl2PkFpcjwvZGl2PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGRpdiBzdHlsZT0ib3ZlcmZsb3cteDphdXRvIj4KICAgICAgICAgIDx0YWJsZSBjbGFzcz0ib2JzLXRibCI+CiAgICAgICAgICAgIDx0aGVhZD48dHI+CiAgICAgICAgICAgICAgPHRoPlRhYnVuZzwvdGg+PHRoPktvbmRpc2k8L3RoPjx0aD5Fa3N0cmFrPC90aD4KICAgICAgICAgICAgICA8dGg+cEg8L3RoPjx0aD5TdWh1PC90aD48dGg+R2VsZW1idW5nPC90aD48dGg+QmFyYSBBcGk8L3RoPjx0aD5PMihtbCk8L3RoPgogICAgICAgICAgICA8L3RyPjwvdGhlYWQ+CiAgICAgICAgICAgIDx0Ym9keSBpZD0ib2JzVGJvZHkiPjwvdGJvZHk+CiAgICAgICAgICA8L3RhYmxlPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogIDwvZGl2PgoKICA8IS0tIFNJREVCQVIgLS0+CiAgPGRpdiBjbGFzcz0ic2lkZWJhciI+CiAgICA8ZGl2IGNsYXNzPSJzYi10dGwiPkVuemltIEthdGFsYXNlPC9kaXY+CiAgICAKICAgIDxkaXYgY2xhc3M9InNiLWlubmVyIj4KICAgICAgPGRpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJzZWMtbCI+UGlsaWggU2VueWF3YSAoUGlwZXQpPC9kaXY+CiAgICAgICAgPGRpdiBjbGFzcz0iY2hlbS1ncmlkIj4KICAgICAgICAgIDxidXR0b24gY2xhc3M9ImNiIGFjdGl2ZSIgZGF0YS1jPSJIMk8yIiBpZD0iYnRuSDJPMiIgb25jbGljaz0ic2VsQ2hlbSgnSDJPMicpIj5IPHN1Yj4yPC9zdWI+TzxzdWI+Mjwvc3ViPjwvYnV0dG9uPgogICAgICAgICAgPGJ1dHRvbiBjbGFzcz0iY2IiIGRhdGEtYz0iTmFPSCIgaWQ9ImJ0bk5hT0giIG9uY2xpY2s9InNlbENoZW0oJ05hT0gnKSI+TmFPSDwvYnV0dG9uPgogICAgICAgICAgPGJ1dHRvbiBjbGFzcz0iY2IiIGRhdGEtYz0iSENMIiAgaWQ9ImJ0bkhDTCIgIG9uY2xpY2s9InNlbENoZW0oJ0hDTCcpIj5IQ0w8L2J1dHRvbj4KICAgICAgICAgIDxidXR0b24gY2xhc3M9ImNiIiBkYXRhLWM9IkgyTyIgIGlkPSJidG5IMk8iICBvbmNsaWNrPSJzZWxDaGVtKCdIMk8nKSI+QWlyIChIMk8pPC9idXR0b24+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJsaWRpLWluZm8iPgogICAgICAgIDxkaXYgY2xhc3M9ImxpLXR0bCI+JiM5ODc5OyYjNjUwMzk7IFVqaSBCYXJhIEFwaSAoTGlkaSk8L2Rpdj4KICAgICAgICA8cD5HZXNlciBsaWRpIGtlIGRla2F0IHRhYnVuZywgdGVrYW4gdW50dWsgbWVtYXN1a2thbiBiYXJhIGtlIGRhbGFtIHRhYnVuZyBkYW4gbGloYXQgbnlhbGEgYXBpLjwvcD4KICAgICAgPC9kaXY+CiAgICAgIDxkaXY+CiAgICAgICAgPGRpdiBjbGFzcz0ic2VjLWwiPlNldHVwIENlcGF0PC9kaXY+CiAgICAgICAgPGJ1dHRvbiBjbGFzcz0ic2V0dXAtYnRuIiBvbmNsaWNrPSJzZXR1cFByYWt0aWt1bSgpIj4mIzk4Nzk7JiM2NTAzOTsgU2V0dXAgUHJha3Rpa3VtIEEmIzgyMTE7RTwvYnV0dG9uPgogICAgICA8L2Rpdj4KICAgICAgPGRpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJzZWMtaCI+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJzZWMtbCIgc3R5bGU9Im1hcmdpbjowIj5UYWJ1bmcgUmVha3NpPC9kaXY+CiAgICAgICAgICA8YnV0dG9uIGNsYXNzPSJhdGIiIG9uY2xpY2s9ImFkZFR1YmUoKSI+KzwvYnV0dG9uPgogICAgICAgIDwvZGl2PgogICAgICAgIDxkaXYgaWQ9InR1YmVQYW5lbHMiPjwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogIDwvZGl2Pgo8L2Rpdj4KCjxkaXYgY2xhc3M9Im5vdGlmIiBpZD0ibm90aWYiPjwvZGl2PgoKPCEtLSBNb2RhbCAtLT4KPGRpdiBjbGFzcz0ibW92IiBpZD0iaW5mb01vZGFsIiBvbmNsaWNrPSJpZihldmVudC50YXJnZXQ9PT10aGlzKWNsb3NlSW5mbygpIj4KICA8ZGl2IGNsYXNzPSJtYm94Ij4KICAgIDxidXR0b24gY2xhc3M9Im1jbHMiIG9uY2xpY2s9ImNsb3NlSW5mbygpIj4mIzIxNTs8L2J1dHRvbj4KICAgIDxkaXYgY2xhc3M9Im10dGwiPiYjMTI4MjE4OyBQYW5kdWFuIFByYWt0aWt1bSBFbnppbSBLYXRhbGFzZTwvZGl2PgogICAgPGRpdiBjbGFzcz0ibWNvbiI+CiAgICAgIDxoND5UdWp1YW46PC9oND4KICAgICAgPG9sPgogICAgICAgIDxsaT5NZW1idWt0aWthbiBlbnppbSBrYXRhbGFzZSBtZW1lY2FoIEg8c3ViPjI8L3N1Yj5PPHN1Yj4yPC9zdWI+ICYjODU5NDsgSDxzdWI+Mjwvc3ViPk8gKyBPPHN1Yj4yPC9zdWI+PC9saT4KICAgICAgICA8bGk+TWVtYmFuZGluZ2thbjogSGF0aSBBeWFtLCBKYW50dW5nIEF5YW0sIERhdW4gUGVwYXlhPC9saT4KICAgICAgICA8bGk+RmFrdG9yOiBwSCwgU3VodSwgS29uc2VudHJhc2kgc3Vic3RyYXQgJmFtcDsgZW56aW08L2xpPgogICAgICA8L29sPgogICAgICA8aDQ+V2FybmEgQ2FpcmFuOjwvaDQ+CiAgICAgIDx1bD4KICAgICAgICA8bGk+JiMxMjgzMDk7IEJpcnUgbXVkYSA9IEg8c3ViPjI8L3N1Yj5PPHN1Yj4yPC9zdWI+PC9saT4KICAgICAgICA8bGk+JiMxMjgzMDk7IEJpcnUgdHVhIChvdmVybGF5KSA9IE5hT0ggKHBIIDExKTwvbGk+CiAgICAgICAgPGxpPiYjMTI4MzA4OyBNZXJhaCAob3ZlcmxheSkgPSBIQ2wgKHBIIDIpPC9saT4KICAgICAgICA8bGk+JiMxMjk2NTM7IEJpcnUgdGVyYW5nIChvdmVybGF5KSA9IEFpciAocGVuZ2VuY2VyKTwvbGk+CiAgICAgIDwvdWw+CiAgICAgIDxoND5DYXJhIE1lbmdndW5ha2FuOjwvaDQ+CiAgICAgIDxvbD4KICAgICAgICA8bGk+UGlsaWggc2VueWF3YSAmIzg1OTQ7IGdlc2VyIHBpcGV0IGtlIGFyZWEgYWJ1LWFidSAmIzg1OTQ7IHRla2FuIGRpIGF0YXMgdGFidW5nPC9saT4KICAgICAgICA8bGk+U2V0aWFwIHRldGVzIG1lbmFtYmFoIHZvbHVtZSBjYWlyYW4gZGFsYW0gdGFidW5nPC9saT4KICAgICAgICA8bGk+R2VzZXIgbGlkaSAoYmFyYSBkaSBiYXdhaCkgJiM4NTk0OyB0ZWthbiB1bnR1ayB1amkgTzI8L2xpPgogICAgICA8L29sPgogICAgPC9kaXY+CiAgPC9kaXY+CjwvZGl2PgoKPHNjcmlwdD4KLy8gVHViZSBkaW1lbnNpb25zIChtdXN0IG1hdGNoIENTUykKY29uc3QgVFVCRV9JTk5FUl9IID0gMjIwOyAvLyBweCwgdG90YWwgdHViZSBoZWlnaHQKY29uc3QgRVhUUkFDVF9IICAgID0gNDg7ICAvLyBweCwgZXh0cmFjdCBsYXllcgpjb25zdCBNQVhfTElRX0ggICAgPSBUVUJFX0lOTkVSX0ggLSBFWFRSQUNUX0g7IC8vIDE3MnB4ID0gZnVsbCAxMCBtbApjb25zdCBQWF9QRVJfTUwgICAgPSBNQVhfTElRX0ggLyAxMDsgICAgICAgICAgICAvLyAxNy4ycHggcGVyIG1sCgovLyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyBTVEFURSAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOwpsZXQgdHViZXM9W10sIHNlbFR1YmU9MCwgdHViZUN0cj0wLCBhY3RpdmVDaGVtPSdIMk8yJzsKCmNvbnN0IEVYVFJBQ1RTPVsnSGF0aSBBeWFtJywnSmFudHVuZyBBeWFtJywnRGF1biBQZXBheWEnXTsKY29uc3QgQ0NPTCA9e0gyTzI6JyM5M2M1ZmQnLE5hT0g6JyMzMDYwZWUnLEhDTDonI2RkMzAzMCcsSDJPOicjYmZkYmZlJ307CmNvbnN0IENMQkwgPXtIMk8yOidIPHN1Yj4yPC9zdWI+TzxzdWI+Mjwvc3ViPicsTmFPSDonTmFPSCcsSENMOidIQ2wnLEgyTzonQWlyJ307CmNvbnN0IENWTEJMPXtIMk8yOidWb2x1bWUgSDxzdWI+Mjwvc3ViPk88c3ViPjI8L3N1Yj4nLE5hT0g6J1ZvbHVtZSBOYU9IJyxIQ0w6J1ZvbHVtZSBIQ0wnLEgyTzonVm9sdW1lIEFpcid9Owpjb25zdCBDQkFER0U9e0hDTDonI2M2MjgyOCcsTmFPSDonIzE1MzVhYScsSDJPOicjMWQ0ZWQ4J307CgpmdW5jdGlvbiBta1R1YmUobGJsKXsKICB0dWJlQ3RyKys7CiAgcmV0dXJue2lkOnR1YmVDdHIsbGFiZWw6bGJsfHxgVGFidW5nICR7dHViZUN0cn1gLGV4dHJhY3Q6J0hhdGkgQXlhbScsCiAgICAgICAgIHZvbEgyTzI6MCwgdm9sQWRkOjAsIGFkZGl0aXZlOm51bGwsIHBoOjcsIHRlbXA6MjUsCiAgICAgICAgIGhhc0gyTzI6ZmFsc2UsIHJlYWN0aW5nOmZhbHNlLCBvMjowLCBjaGVja2VkOmZhbHNlfTsKfQpmdW5jdGlvbiBpbml0KCl7CiAgdHViZXM9W107IHR1YmVDdHI9MDsKICBmb3IobGV0IGk9MDtpPDU7aSsrKSB0dWJlcy5wdXNoKG1rVHViZShgVGFidW5nICR7aSsxfWApKTsKICBzZWxUdWJlPTA7IHJlbmRlcigpOwp9CmZ1bmN0aW9uIHNldHVwUHJha3Rpa3VtKCl7CiAgdHViZXM9W107IHR1YmVDdHI9MDsKICBbe2w6J1RhYnVuZyBBJyxwaDo3LCB0OjI1LCAgYWRkOm51bGwsICB2SDo1LCB2QTowfSwKICAge2w6J1RhYnVuZyBCJyxwaDoyLCB0OjI1LCAgYWRkOidIQ0wnLCB2SDo1LCB2QTozfSwKICAge2w6J1RhYnVuZyBDJyxwaDoxMSx0OjI1LCAgYWRkOidOYU9IJyx2SDo1LCB2QTozfSwKICAge2w6J1RhYnVuZyBEJyxwaDo3LCB0OjgwLCAgYWRkOm51bGwsICB2SDo1LCB2QTowfSwKICAge2w6J1RhYnVuZyBFJyxwaDo3LCB0Oi0xMCwgYWRkOm51bGwsICB2SDo1LCB2QTowfQogIF0uZm9yRWFjaChjPT57CiAgICB0dWJlQ3RyKys7CiAgICBjb25zdCB0dWJlPXtpZDp0dWJlQ3RyLGxhYmVsOmMubCxleHRyYWN0OidIYXRpIEF5YW0nLAogICAgICAgICAgICAgICAgdm9sSDJPMjpjLnZILCB2b2xBZGQ6Yy52QSwgYWRkaXRpdmU6Yy5hZGQsCiAgICAgICAgICAgICAgICBwaDpjLnBoLCB0ZW1wOmMudCwKICAgICAgICAgICAgICAgIGhhc0gyTzI6dHJ1ZSwgcmVhY3Rpbmc6dHJ1ZSwgbzI6MCwgY2hlY2tlZDpmYWxzZX07CiAgICB0dWJlLm8yPWNhbGNPMih0dWJlKTsgdHViZXMucHVzaCh0dWJlKTsKICB9KTsKICBzZWxUdWJlPTA7IHJlbmRlcigpOwogIHNob3dOb3RpZignJiM5OTg5OyBQcmFrdGlrdW0gQSYjODIxMTtFIGRpc2lhcGthbiEnKTsKfQoKLy8gJiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsgQ0FMQyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOwpmdW5jdGlvbiBjYWxjTzIodCl7CiAgaWYoIXQuaGFzSDJPMikgcmV0dXJuIDA7CiAgbGV0IGI9ODsKICBpZih0LnBoPT09NyliKj0xOyBlbHNlIGlmKHQucGg+PTYmJnQucGg8PTgpYio9Ljg1OwogIGVsc2UgaWYodC5waD49NSYmdC5waDw9OSliKj0uNTsgZWxzZSBpZih0LnBoPD0zKWIqPS4xOwogIGVsc2UgaWYodC5waD49MTApYio9LjE1OyBlbHNlIGIqPS4zOwogIGlmKHQudGVtcD49MzUmJnQudGVtcDw9NDUpYio9MTsgZWxzZSBpZih0LnRlbXA+PTI1KWIqPS45OwogIGVsc2UgaWYodC50ZW1wPj0yMCliKj0uNzU7IGVsc2UgaWYodC50ZW1wPj02MCYmdC50ZW1wPDcwKWIqPS41OwogIGVsc2UgaWYodC50ZW1wPj03MCliKj0uMDU7IGVsc2UgaWYodC50ZW1wPDEwKWIqPS4wNTsgZWxzZSBiKj0uNDsKICBpZih0LmV4dHJhY3Q9PT0nSmFudHVuZyBBeWFtJyliKj0uNjsKICBpZih0LmV4dHJhY3Q9PT0nRGF1biBQZXBheWEnKWIqPS43NTsKICBiKj0odC52b2xIMk8yLzUpOwogIC8vIEFpciBtZW5nZW5jZXJrYW4gZW56aW0gJiM4MjEyOyBPMiBiZXJrdXJhbmcgcHJvcG9yc2lvbmFsCiAgaWYodC5hZGRpdGl2ZT09PSdIMk8nJiZ0LnZvbEFkZD4wKXsKICAgIGNvbnN0IGRpbHV0aW9uPXQudm9sSDJPMi8odC52b2xIMk8yK3Qudm9sQWRkKTsKICAgIGIqPWRpbHV0aW9uOwogIH0KICByZXR1cm4gTWF0aC5taW4oMTAsTWF0aC5tYXgoMCxwYXJzZUZsb2F0KGIudG9GaXhlZCgxKSkpKTsKfQpmdW5jdGlvbiBnZXRCTChvMil7cmV0dXJuIG8yPD0uNT8nbm9uZSc6bzI8PTM/J2Zldyc6bzI8PTY/J21vZGVyYXRlJzonbWFueSc7fQpmdW5jdGlvbiBnZXRGbGFtZShvMil7cmV0dXJuIG8yPD0uNT8nJiM4NzIyOyc6bzI8PTM/JysnOm8yPD02PycrKyc6JysrKyc7fQpmdW5jdGlvbiBnZXRGbGFtZUxldmVsKG8yKXtyZXR1cm4gbzI8PS41PzA6bzI8PTM/MTpvMjw9Nj8yOjM7fQpmdW5jdGlvbiBnZXRFeHRDbHMoZSl7cmV0dXJuIGU9PT0nSmFudHVuZyBBeWFtJz8nZXh0LWphbnR1bmcnOmU9PT0nRGF1biBQZXBheWEnPydleHQtcGVwYXlhJzonZXh0LWhhdGknO30KZnVuY3Rpb24gZ2V0QWRkQ2xzKGEpe3JldHVybiBhPT09J05hT0gnPydhZGQtbmFvaCc6YT09PSdIQ0wnPydhZGQtaGNsJzphPT09J0gyTyc/J2FkZC1oMm8nOicnO30KCi8vIENvbnZlcnQgbWwgJiM4NTk0OyBwaXhlbCBoZWlnaHQgKGNsYW1wZWQgdG8gbWF4KQpmdW5jdGlvbiBtbFRvUHgobWwpe3JldHVybiBNYXRoLm1pbihNQVhfTElRX0gsIE1hdGgubWF4KDAsIG1sICogUFhfUEVSX01MKSk7fQoKLy8gJiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsgUkVOREVSICYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7CmZ1bmN0aW9uIHJlbmRlcigpe3JlbmRlclR1YmVzKCk7cmVuZGVyUGFuZWwoKTtyZW5kZXJUYWJsZSgpO30KCmZ1bmN0aW9uIHJlbmRlclR1YmVzKCl7CiAgY29uc3Qgcm93PWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCd0dWJlc1JvdycpOwogIHJvdy5pbm5lckhUTUw9Jyc7CiAgdHViZXMuZm9yRWFjaCgodCxpKT0+ewogICAgY29uc3QgbzI9Y2FsY08yKHQpLCBibD1nZXRCTChvMik7CiAgICAvLyBMaXF1aWQgaGVpZ2h0cyBpbiBweCAmIzgyMTI7IHRvdGFsIG11c3Qgbm90IGV4Y2VlZCBNQVhfTElRX0gKICAgIGNvbnN0IGgySF9yYXcgPSBtbFRvUHgodC52b2xIMk8yKTsKICAgIGNvbnN0IGFkZEhfcmF3ID0gbWxUb1B4KHQudm9sQWRkKTsKICAgIGNvbnN0IHRvdGFsSCA9IGgySF9yYXcgKyBhZGRIX3JhdzsKICAgIGNvbnN0IHNjYWxlID0gdG90YWxIID4gTUFYX0xJUV9IID8gTUFYX0xJUV9IIC8gdG90YWxIIDogMTsKICAgIGNvbnN0IGgySCA9IGgySF9yYXcgKiBzY2FsZTsKICAgIGNvbnN0IGFkZEggPSBhZGRIX3JhdyAqIHNjYWxlOwogICAgLy8gQWRkaXRpdmUgc2l0cyBPTiBUT1Agb2YgaDJvMiBsYXllciAmIzgyMTI7IGl0cyBib3R0b20gPSA0OCArIGgySAogICAgY29uc3QgYWRkQm90dG9tID0gRVhUUkFDVF9IICsgaDJIOwogICAgY29uc3QgaG90Y2xzID0gdC50ZW1wPj02MD8naG90JzogdC50ZW1wPDEwPydjb2xkJzonJzsKCiAgICAvLyBTVkcgbWFya3MgKDEwIGxpbmVzIGluc2lkZSAyMjBweCB0dWJlKQogICAgbGV0IG1hcmtzPScnOwogICAgZm9yKGxldCBtPTE7bTw9MTA7bSsrKXsKICAgICAgY29uc3QgeT0oMS1tLzEwKSooVFVCRV9JTk5FUl9ILTQpKzIsIHc9bSU1PT09MHx8bT09PTEwPzExOjY7CiAgICAgIG1hcmtzKz1gPGxpbmUgeDE9IjMiIHkxPSIke3l9IiB4Mj0iJHszK3d9IiB5Mj0iJHt5fSIgc3Ryb2tlPSJyZ2JhKDAsMCwwLC4yOCkiIHN0cm9rZS13aWR0aD0iMSIvPmA7CiAgICAgIGlmKG0lMj09PTB8fG09PT0xMCkgbWFya3MrPWA8dGV4dCB4PSIkezMrdysyfSIgeT0iJHt5KzN9IiBmb250LXNpemU9IjYiIGZpbGw9InJnYmEoMCwwLDAsLjQpIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj4ke219PC90ZXh0PmA7CiAgICB9CgogICAgLy8gQnViYmxlcwogICAgbGV0IGJ1YnM9Jyc7CiAgICBpZih0LnJlYWN0aW5nJiZibCE9PSdub25lJyl7CiAgICAgIGNvbnN0IG49Ymw9PT0nZmV3Jz80OmJsPT09J21vZGVyYXRlJz85OjE3OwogICAgICBmb3IobGV0IGI9MDtiPG47YisrKXsKICAgICAgICBjb25zdCBzej0yK01hdGgucmFuZG9tKCkqNCxsZnQ9NStNYXRoLnJhbmRvbSgpKjM4LAogICAgICAgICAgICAgIGRsPU1hdGgucmFuZG9tKCkqMi41LGRyPTErTWF0aC5yYW5kb20oKSoyLGRyaWZ0PShNYXRoLnJhbmRvbSgpLS41KSoxMDsKICAgICAgICBidWJzKz1gPGRpdiBjbGFzcz0iYnViYmxlIiBzdHlsZT0id2lkdGg6JHtzen1weDtoZWlnaHQ6JHtzen1weDtsZWZ0OiR7bGZ0fXB4O2JvdHRvbToke01hdGgucmFuZG9tKCkqMjJ9cHg7YW5pbWF0aW9uLWRlbGF5OiR7ZGx9czthbmltYXRpb24tZHVyYXRpb246JHtkcn1zOy0tZDoke2RyaWZ0fXB4Ij48L2Rpdj5gOwogICAgICB9CiAgICB9CgogICAgY29uc3QgZmxhbWUgPSB0LmNoZWNrZWQmJm8yPjMgPyAnPGRpdiBjbGFzcz0idHViZS1mbGFtZS13cmFwIj48ZGl2IGNsYXNzPSJ0dWJlLWZsYW1lIj48L2Rpdj48L2Rpdj4nIDogJyc7CiAgICBjb25zdCBmcm9zdCAgPSB0Lmhhc0gyTzImJnQudGVtcDwxMCA/ICc8ZGl2IGNsYXNzPSJmcm9zdC1vdiI+PC9kaXY+PGRpdiBjbGFzcz0iZnJvc3QtY3IiPjwvZGl2PicgOiAnJzsKICAgIGNvbnN0IGFiICAgICA9IHQuYWRkaXRpdmUgPyBgPGRpdiBjbGFzcz0iYWRkLWJhZGdlIiBzdHlsZT0iYmFja2dyb3VuZDoke0NCQURHRVt0LmFkZGl0aXZlXX0iPiR7Q0xCTFt0LmFkZGl0aXZlXX08L2Rpdj5gIDogJyc7CiAgICBjb25zdCBvMmIgICAgPSB0LmNoZWNrZWQgID8gYDxkaXYgY2xhc3M9Im8yLWJhZGdlIj4ke28yfW1sPC9kaXY+YCA6ICcnOwogICAgY29uc3QgY29uZCAgID0gW3QuaGFzSDJPMj8nSDxzdWI+Mjwvc3ViPk88c3ViPjI8L3N1Yj4nOm51bGwsIHQuYWRkaXRpdmU/Q0xCTFt0LmFkZGl0aXZlXTpudWxsLAogICAgICAgICAgICAgICAgICAgIGBwSCR7dC5waH1gLCBgJHt0LnRlbXB9JiMxNzY7YF0uZmlsdGVyKEJvb2xlYW4pLmpvaW4oJyYjMTgzOycpOwoKICAgIC8vIEFkZGl0aXZlIGxheWVyIChvbiB0b3Agb2YgaDJvMikKICAgIGNvbnN0IGFkZExheWVyID0gdC5hZGRpdGl2ZSAmJiBhZGRIPjAKICAgICAgPyBgPGRpdiBjbGFzcz0idC1saXEtYWRkICR7Z2V0QWRkQ2xzKHQuYWRkaXRpdmUpfSIgc3R5bGU9ImhlaWdodDoke2FkZEh9cHg7Ym90dG9tOiR7YWRkQm90dG9tfXB4Ij48L2Rpdj5gIDogJyc7CgogICAgcm93LmlubmVySFRNTCs9YAogICAgICA8ZGl2IGNsYXNzPSJ0dWJlLXdyYXAke2k9PT1zZWxUdWJlPycgc2VsZWN0ZWQnOicnfSIgZGF0YS1pZHg9IiR7aX0iIG9uY2xpY2s9InNlbFQoJHtpfSkiPgogICAgICAgIDxkaXYgY2xhc3M9InR1YmUtYm9keSIgZGF0YS1pZHg9IiR7aX0iPgogICAgICAgICAgPHN2ZyBjbGFzcz0ibWFya3Mtc3ZnIiB2aWV3Qm94PSIwIDAgNTYgJHtUVUJFX0lOTkVSX0h9IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj4ke21hcmtzfTwvc3ZnPgogICAgICAgICAgJHthYn0ke28yYn0ke2ZsYW1lfQogICAgICAgICAgPGRpdiBjbGFzcz0idC1saXEtaDJvMiAke2hvdGNsc30iIHN0eWxlPSJoZWlnaHQ6JHtoMkh9cHgiPjwvZGl2PgogICAgICAgICAgJHthZGRMYXllcn0KICAgICAgICAgIDxkaXYgY2xhc3M9InQtZXh0cmFjdCAke2dldEV4dENscyh0LmV4dHJhY3QpfSI+PC9kaXY+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJidWJibGVzIj4ke2J1YnN9PC9kaXY+CiAgICAgICAgICAke2Zyb3N0fQogICAgICAgIDwvZGl2PgogICAgICAgIDxkaXYgY2xhc3M9InR1YmUtbGJsIj4ke3QubGFiZWx9PC9kaXY+CiAgICAgICAgPGRpdiBjbGFzcz0idHViZS1zdWIiPiR7dC5leHRyYWN0fTwvZGl2PgogICAgICAgIDxkaXYgY2xhc3M9InR1YmUtY29uZCI+JHtjb25kfTwvZGl2PgogICAgICA8L2Rpdj5gOwogIH0pOwp9CgpmdW5jdGlvbiByZW5kZXJQYW5lbCgpewogIGNvbnN0IGM9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3R1YmVQYW5lbHMnKTsKICBpZighdHViZXMubGVuZ3RoKXsKICAgIGMuaW5uZXJIVE1MPSc8ZGl2IHN0eWxlPSJjb2xvcjojYWFhO2ZvbnQtc2l6ZToxMHB4O3RleHQtYWxpZ246Y2VudGVyO3BhZGRpbmc6MTBweCI+QmVsdW0gYWRhIHRhYnVuZzwvZGl2Pic7CiAgICByZXR1cm47CiAgfQogIGNvbnN0IHQ9dHViZXNbc2VsVHViZV07IGlmKCF0KSByZXR1cm47CgogIGNvbnN0IHRQICAgPSAoKHQudGVtcCsyMCkvMTIwKSoxMDA7CiAgY29uc3QgcGhQICA9ICh0LnBoLzE0KSoxMDA7CiAgY29uc3QgdkgyUCA9ICh0LnZvbEgyTzIvMTApKjEwMDsKICBjb25zdCB2QWRQID0gKHQudm9sQWRkLzEwKSoxMDA7CgogIC8vIFZvbHVtZSBsYWJlbCBmb3IgSDJPMiByb3cgYWx3YXlzIHNheXMgIlZvbHVtZSBIMk8yIiByZWdhcmRsZXNzIG9mIGFjdGl2ZSBjaGVtCiAgLy8gVm9sdW1lIGxhYmVsIGZvciBhZGRpdGl2ZSByb3cgc2hvd3MgdGhlIGFkZGl0aXZlIG5hbWUKICBjb25zdCBhZGRMYmwgID0gdC5hZGRpdGl2ZSA/IENWTEJMW3QuYWRkaXRpdmVdIDogJyc7CiAgY29uc3QgYWRkQ29sb3I9IHQuYWRkaXRpdmUgPyBDQ09MW3QuYWRkaXRpdmVdIDogJyM1NTUnOwoKICBjLmlubmVySFRNTD1gCiAgICA8ZGl2IGNsYXNzPSJ0cCI+CiAgICAgIDxkaXYgY2xhc3M9InRwLXR0bCI+JHt0LmxhYmVsfTwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJmciI+PHNwYW4gY2xhc3M9ImZsIj5Fa3N0cmFrPC9zcGFuPjwvZGl2PgogICAgICA8c2VsZWN0IGNsYXNzPSJzZWxiIiBvbmNoYW5nZT0ic2V0RXh0KHRoaXMudmFsdWUpIj4KICAgICAgICAke0VYVFJBQ1RTLm1hcChzPT5gPG9wdGlvbiAke3QuZXh0cmFjdD09PXM/J3NlbGVjdGVkJzonJ30+JHtzfTwvb3B0aW9uPmApLmpvaW4oJycpfQogICAgICA8L3NlbGVjdD4KCiAgICAgIDwhLS0gSDJPMiB2b2x1bWUgJiM4MjEyOyBhbHdheXMgc2hvd24gLS0+CiAgICAgIDxkaXYgY2xhc3M9ImZyIj4KICAgICAgICA8c3BhbiBjbGFzcz0iZmwiIHN0eWxlPSJmb250LXdlaWdodDo3MDA7Y29sb3I6IzFlM2E4YSI+Vm9sdW1lIEg8c3ViPjI8L3N1Yj5PPHN1Yj4yPC9zdWI+PC9zcGFuPgogICAgICAgIDxzcGFuIGNsYXNzPSJmdiI+JHt0LnZvbEgyTzIudG9GaXhlZCgxKX0gbWw8L3NwYW4+CiAgICAgIDwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJzciI+CiAgICAgICAgPHNwYW4gY2xhc3M9InNtIj4wPC9zcGFuPgogICAgICAgIDxpbnB1dCB0eXBlPSJyYW5nZSIgbWluPSIwIiBtYXg9IjEwIiBzdGVwPSIuNSIgdmFsdWU9IiR7dC52b2xIMk8yfSIKICAgICAgICAgIHN0eWxlPSItLXZhbDoke3ZIMlB9JSIgb25pbnB1dD0ic2V0Vm9sSDJPMih0aGlzLnZhbHVlLHRoaXMpIi8+CiAgICAgICAgPHNwYW4gY2xhc3M9InN4Ij4xMDwvc3Bhbj4KICAgICAgPC9kaXY+CgogICAgICA8IS0tIEFkZGl0aXZlIHZvbHVtZSAmIzgyMTI7IHNob3duIG9ubHkgd2hlbiB0dWJlIGhhcyBhZGRpdGl2ZSAtLT4KICAgICAgJHt0LmFkZGl0aXZlID8gYAogICAgICA8ZGl2IGNsYXNzPSJmciIgc3R5bGU9Im1hcmdpbi10b3A6NnB4Ij4KICAgICAgICA8c3BhbiBjbGFzcz0iZmwiIHN0eWxlPSJmb250LXdlaWdodDo4MDA7Y29sb3I6JHthZGRDb2xvcn0iPiR7YWRkTGJsfTwvc3Bhbj4KICAgICAgICA8c3BhbiBjbGFzcz0iZnYiPiR7dC52b2xBZGQudG9GaXhlZCgxKX0gbWw8L3NwYW4+CiAgICAgIDwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJzciI+CiAgICAgICAgPHNwYW4gY2xhc3M9InNtIj4wPC9zcGFuPgogICAgICAgIDxpbnB1dCB0eXBlPSJyYW5nZSIgbWluPSIwIiBtYXg9IjEwIiBzdGVwPSIuNSIgdmFsdWU9IiR7dC52b2xBZGR9IgogICAgICAgICAgc3R5bGU9Ii0tdmFsOiR7dkFkUH0lIiBvbmlucHV0PSJzZXRWb2xBZGQodGhpcy52YWx1ZSx0aGlzKSIvPgogICAgICAgIDxzcGFuIGNsYXNzPSJzeCI+MTA8L3NwYW4+CiAgICAgIDwvZGl2PmAgOiAnJ30KCiAgICAgIDxkaXYgY2xhc3M9ImZyIiBzdHlsZT0ibWFyZ2luLXRvcDo3cHgiPjxzcGFuIGNsYXNzPSJmbCI+cEg8L3NwYW4+PHNwYW4gY2xhc3M9ImZ2Ij4ke3QucGh9PC9zcGFuPjwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJzciI+CiAgICAgICAgPHNwYW4gY2xhc3M9InNtIj4xPC9zcGFuPgogICAgICAgIDxpbnB1dCB0eXBlPSJyYW5nZSIgbWluPSIxIiBtYXg9IjE0IiBzdGVwPSIxIiB2YWx1ZT0iJHt0LnBofSIKICAgICAgICAgIHN0eWxlPSItLXZhbDoke3BoUH0lIiBvbmlucHV0PSJzZXRQSCh0aGlzLnZhbHVlLHRoaXMpIi8+CiAgICAgICAgPHNwYW4gY2xhc3M9InN4Ij4xNDwvc3Bhbj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzPSJmciIgc3R5bGU9Im1hcmdpbi10b3A6N3B4Ij48c3BhbiBjbGFzcz0iZmwiPlN1aHU8L3NwYW4+PHNwYW4gY2xhc3M9ImZ2Ij4ke3QudGVtcH0mIzE3NjtDPC9zcGFuPjwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJzciI+CiAgICAgICAgPHNwYW4gY2xhc3M9InNtIj4tMjA8L3NwYW4+CiAgICAgICAgPGlucHV0IHR5cGU9InJhbmdlIiBjbGFzcz0idHMiIG1pbj0iLTIwIiBtYXg9IjEwMCIgc3RlcD0iNSIgdmFsdWU9IiR7dC50ZW1wfSIKICAgICAgICAgIHN0eWxlPSItLXZhbDoke3RQfSUiIG9uaW5wdXQ9InNldFRlbXAodGhpcy52YWx1ZSx0aGlzKSIvPgogICAgICAgIDxzcGFuIGNsYXNzPSJzeCI+MTAwPC9zcGFuPgogICAgICA8L2Rpdj4KCiAgICAgIDxidXR0b24gY2xhc3M9ImRiIiBvbmNsaWNrPSJkZWxUdWJlKCkiPiYjMTI4NDY1OyBIYXB1czwvYnV0dG9uPgogICAgPC9kaXY+YDsKfQoKZnVuY3Rpb24gcmVuZGVyVGFibGUoKXsKICBjb25zdCB0Yj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnb2JzVGJvZHknKTsKICB0Yi5pbm5lckhUTUw9Jyc7CiAgdHViZXMuZm9yRWFjaCh0PT57CiAgICBjb25zdCBvMj1jYWxjTzIodCksIGJsPWdldEJMKG8yKTsKICAgIGNvbnN0IGJsQz1ibD09PSdub25lJz8nYmktbm9uZSc6Ymw9PT0nZmV3Jz8nYmktZmV3JzonYmktbWFueSc7CiAgICBjb25zdCBibFQ9Ymw9PT0nbm9uZSc/J1RpZGFrIGFkYSc6Ymw9PT0nZmV3Jz8nU2VkaWtpdCc6Ymw9PT0nbW9kZXJhdGUnPydTZWRhbmcnOidCYW55YWsnOwogICAgY29uc3QgY29uZD10LmFkZGl0aXZlP0NMQkxbdC5hZGRpdGl2ZV06dC50ZW1wPj02MD8nU3VodSBUaW5nZ2knOnQudGVtcDwxMD8nU3VodSBSZW5kYWgnOidOb3JtYWwnOwogICAgdGIuaW5uZXJIVE1MKz1gPHRyPgogICAgICA8dGQ+PGI+JHt0LmxhYmVsfTwvYj48L3RkPjx0ZD4ke2NvbmR9PC90ZD48dGQ+JHt0LmV4dHJhY3R9PC90ZD4KICAgICAgPHRkPiR7dC5waH08L3RkPjx0ZD4ke3QudGVtcH0mIzE3NjtDPC90ZD4KICAgICAgPHRkPjxzcGFuIGNsYXNzPSJiaSAke2JsQ30iPjwvc3Bhbj4ke2JsVH08L3RkPgogICAgICA8dGQ+JHt0LmNoZWNrZWQ/Z2V0RmxhbWUobzIpOicmIzgyMTI7J308L3RkPgogICAgICA8dGQ+JHt0LmNoZWNrZWQ/bzI6JyYjODIxMjsnfTwvdGQ+CiAgICA8L3RyPmA7CiAgfSk7Cn0KCi8vICYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7IENIRU0gU0VMRUNUICYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7CmZ1bmN0aW9uIHNlbENoZW0oYyl7CiAgYWN0aXZlQ2hlbT1jOwogIFsnSDJPMicsJ05hT0gnLCdIQ0wnLCdIMk8nXS5mb3JFYWNoKGs9PmRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdidG4nK2spLmNsYXNzTGlzdC50b2dnbGUoJ2FjdGl2ZScsaz09PWMpKTsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncGlwZXRUaXAnKS5zZXRBdHRyaWJ1dGUoJ2ZpbGwnLENDT0xbY10pOwogIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdwaXBldExpcXVpZCcpLnNldEF0dHJpYnV0ZSgnZmlsbCcsQ0NPTFtjXSk7CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2FjdGl2ZUJhZGdlJykuaW5uZXJIVE1MPUNMQkxbY107CiAgY29uc3QgYmdtYXA9e0gyTzI6JyMyNTYzZWInLE5hT0g6JyMxNTM1YWEnLEhDTDonI2M2MjgyOCcsSDJPOicjMWQ0ZWQ4J307CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2FjdGl2ZUJhZGdlJykuc3R5bGUuYmFja2dyb3VuZD1iZ21hcFtjXTsKICAvLyBSZS1yZW5kZXIgcGFuZWwgc28gdm9sdW1lIGxhYmVsIHVwZGF0ZXMKICByZW5kZXJQYW5lbCgpOwp9CgovLyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyBQSVBFVCBEUkFHK1BSRVNTICYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7CihmdW5jdGlvbigpewogIGNvbnN0IHc9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3BpcGV0V3JhcCcpOwogIGNvbnN0IHN2Zz1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncGlwZXRXJyk7CiAgLy8gUG9zaXNpOiBzZWJlbGFoIGthbmFuIHRhYnVuZyByZWFrc2ksIGRla2F0LCB0ZW5nYWggdmVydGlrYWwKICBmdW5jdGlvbiBpbml0UG9zKCl7CiAgICBjb25zdCBweD13aW5kb3cuaW5uZXJXaWR0aC01ODAsIHB5PXdpbmRvdy5pbm5lckhlaWdodC8yLTgwOwogICAgdy5zdHlsZS5sZWZ0PXB4KydweCc7IHcuc3R5bGUudG9wPXB5KydweCc7CiAgICByZXR1cm4ge3B4LHB5fTsKICB9CiAgbGV0IHtweCxweX09aW5pdFBvcygpOwogIGxldCBkcmFnPWZhbHNlLG1vdmVkPWZhbHNlLHN4PTAsc3k9MCxzcHg9MCxzcHk9MCxvdmVySWR4PS0xOwoKICBmdW5jdGlvbiBwb3MoZSl7cmV0dXJuIGUudG91Y2hlcz97eDplLnRvdWNoZXNbMF0uY2xpZW50WCx5OmUudG91Y2hlc1swXS5jbGllbnRZfTp7eDplLmNsaWVudFgseTplLmNsaWVudFl9O30KICBmdW5jdGlvbiB0dWJlQXQoeCx5KXsKICAgIGZvcihjb25zdCBlbCBvZiBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcudHViZS1ib2R5JykpewogICAgICBjb25zdCByPWVsLmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpLG09MjQ7CiAgICAgIGlmKHg+PXIubGVmdC1tJiZ4PD1yLnJpZ2h0K20mJnk+PXIudG9wLTgwJiZ5PD1yLmJvdHRvbSsxMCkgcmV0dXJuIHBhcnNlSW50KGVsLmRhdGFzZXQuaWR4KTsKICAgIH0gcmV0dXJuIC0xOwogIH0KICBmdW5jdGlvbiBobChpZHgpe2RvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoJy50dWJlLXdyYXAnKS5mb3JFYWNoKHR3PT50dy5jbGFzc0xpc3QudG9nZ2xlKCdkcm9wLXRndCcscGFyc2VJbnQodHcuZGF0YXNldC5pZHgpPT09aWR4JiZpZHg+PTApKTt9CgogIGZ1bmN0aW9uIGdldFRpcFBvcygpewogICAgY29uc3Qgc3ZnUmVjdD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncGlwZXRXJykuZ2V0Qm91bmRpbmdDbGllbnRSZWN0KCk7CiAgICByZXR1cm4ge3g6IHN2Z1JlY3QubGVmdCsoMjUvNTApKnN2Z1JlY3Qud2lkdGgsIHk6IHN2Z1JlY3QudG9wKygxMDgvMTE1KSpzdmdSZWN0LmhlaWdodH07CiAgfQoKICB3LmFkZEV2ZW50TGlzdGVuZXIoJ3BvaW50ZXJkb3duJyxlPT57CiAgICBlLnByZXZlbnREZWZhdWx0KCk7IHcuc2V0UG9pbnRlckNhcHR1cmUoZS5wb2ludGVySWQpOwogICAgY29uc3QgcD1wb3MoZSk7IHN4PXAueDtzeT1wLnk7c3B4PXB4O3NweT1weTsgZHJhZz10cnVlOyBtb3ZlZD1mYWxzZTsKICAgIGNvbnN0IHRpcD1nZXRUaXBQb3MoKTsgb3ZlcklkeD10dWJlQXQodGlwLngsdGlwLnkpOyBobChvdmVySWR4KTsKICB9KTsKICB3LmFkZEV2ZW50TGlzdGVuZXIoJ3BvaW50ZXJtb3ZlJyxlPT57CiAgICBpZighZHJhZykgcmV0dXJuOyBlLnByZXZlbnREZWZhdWx0KCk7CiAgICBjb25zdCBwPXBvcyhlKSxkeD1wLngtc3gsZHk9cC55LXN5OwogICAgaWYoTWF0aC5hYnMoZHgpPjN8fE1hdGguYWJzKGR5KT4zKSBtb3ZlZD10cnVlOwogICAgcHg9TWF0aC5tYXgoMCxNYXRoLm1pbih3aW5kb3cuaW5uZXJXaWR0aC01MCxzcHgrZHgpKTsKICAgIHB5PU1hdGgubWF4KDAsTWF0aC5taW4od2luZG93LmlubmVySGVpZ2h0LTExNSxzcHkrZHkpKTsKICAgIHcuc3R5bGUubGVmdD1weCsncHgnOyB3LnN0eWxlLnRvcD1weSsncHgnOwogICAgY29uc3QgdGlwPWdldFRpcFBvcygpOyBvdmVySWR4PXR1YmVBdCh0aXAueCx0aXAueSk7CiAgICBobChvdmVySWR4KTsgc3ZnLmNsYXNzTGlzdC50b2dnbGUoJ292ZXItdHViZScsb3ZlcklkeD49MCk7CiAgfSk7CiAgdy5hZGRFdmVudExpc3RlbmVyKCdwb2ludGVydXAnLCgpPT57CiAgICBpZighZHJhZykgcmV0dXJuOyBkcmFnPWZhbHNlOwogICAgaWYoIW1vdmVkKSB0cmlnZ2VyRHJvcCgpOwogICAgc3ZnLmNsYXNzTGlzdC5yZW1vdmUoJ292ZXItdHViZScpOyBobCgtMSk7IG92ZXJJZHg9LTE7CiAgfSk7CgogIGZ1bmN0aW9uIHRyaWdnZXJEcm9wKCl7CiAgICAvLyBBbWJpbCBwb3Npc2kgdWp1bmcgcGlwZXQgZGFyaSBlbGVtZW4gU1ZHIGNpcmNsZSAjcGlwZXRUaXAKICAgIGNvbnN0IHRpcEVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3BpcGV0VGlwJyk7CiAgICBjb25zdCBzdmdFbCA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdwaXBldFcnKTsKICAgIGNvbnN0IHN2Z1JlY3QgPSBzdmdFbC5nZXRCb3VuZGluZ0NsaWVudFJlY3QoKTsKICAgIC8vIGN4PTI1IGRhcmkgdmlld0JveCA1MCwgY3k9MTA4IGRhcmkgdmlld0JveCAxMTUKICAgIGNvbnN0IHR4ID0gc3ZnUmVjdC5sZWZ0ICsgKDI1LzUwKSAqIHN2Z1JlY3Qud2lkdGg7CiAgICBjb25zdCB0eSA9IHN2Z1JlY3QudG9wICArICgxMDgvMTE1KSAqIHN2Z1JlY3QuaGVpZ2h0OwogICAgY29uc3QgaWR4PXR1YmVBdCh0eCx0eSk7CiAgICBpZihpZHg8MCl7c2hvd05vdGlmKCcmIzk4ODg7JiM2NTAzOTsgQXJhaGthbiBwaXBldCBrZSBhdGFzIHRhYnVuZyEnKTsgcmV0dXJuO30KICAgIHN2Zy5jbGFzc0xpc3QucmVtb3ZlKCdzcXVlZXppbmcnKTsgdm9pZCBzdmcub2Zmc2V0V2lkdGg7IHN2Zy5jbGFzc0xpc3QuYWRkKCdzcXVlZXppbmcnKTsKICAgIHNldFRpbWVvdXQoKCk9PnN2Zy5jbGFzc0xpc3QucmVtb3ZlKCdzcXVlZXppbmcnKSw0MDApOwogICAgc3Bhd25Ecm9wKHR4LHR5LGlkeCk7CiAgICBzZXRUaW1lb3V0KCgpPT5hcHBseUNoZW1Ub1R1YmUoaWR4KSw0MDApOwogIH0KCiAgZnVuY3Rpb24gc3Bhd25Ecm9wKHgseSxpZHgpewogICAgY29uc3QgZHJvcD1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTsKICAgIGRyb3AuY2xhc3NOYW1lPSdmYWxsaW5nLWRyb3AnOwogICAgZHJvcC5zdHlsZS5sZWZ0PSh4LTQuNSkrJ3B4JzsgZHJvcC5zdHlsZS50b3A9eSsncHgnOwogICAgZHJvcC5zdHlsZS5iYWNrZ3JvdW5kPUNDT0xbYWN0aXZlQ2hlbV07CiAgICBsZXQgZGlzdD0yMDA7CiAgICBjb25zdCBlbD1kb2N1bWVudC5xdWVyeVNlbGVjdG9yKGAudHViZS1ib2R5W2RhdGEtaWR4PSIke2lkeH0iXWApOwogICAgaWYoZWwpewogICAgICBjb25zdCByPWVsLmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOwogICAgICAvLyBKYXR1aCBrZSBkYXNhciB0YWJ1bmcgKGF0YXMgbGFwaXNhbiBla3N0cmFrID0gYm90dG9tIC0gNDhweCBwcm9wb3JzaW9uYWwpCiAgICAgIGNvbnN0IGV4dHJhY3RQeCA9IDQ4ICogKHIuaGVpZ2h0IC8gMjIwKTsgLy8gc2NhbGUgZXh0cmFjdCBoZWlnaHQgdG8gcmVuZGVyZWQgc2l6ZQogICAgICBkaXN0ID0gTWF0aC5tYXgoNDAsIHIuYm90dG9tIC0gZXh0cmFjdFB4IC0geSk7CiAgICB9CiAgICBkcm9wLnN0eWxlLnNldFByb3BlcnR5KCctLWRpc3QnLGRpc3QrJ3B4Jyk7CiAgICAvLyBEdXJhc2kgcHJvcG9yc2lvbmFsIGRlbmdhbiBqYXJhawogICAgY29uc3QgZHVyID0gTWF0aC5tYXgoMC41NSwgZGlzdC8zMDApLnRvRml4ZWQoMik7CiAgICBkcm9wLnN0eWxlLmFuaW1hdGlvbkR1cmF0aW9uID0gZHVyKydzJzsKICAgIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoZHJvcCk7CiAgICBzZXRUaW1lb3V0KCgpPT57CiAgICAgIGRyb3AucmVtb3ZlKCk7CiAgICAgIGNvbnN0IHRlbD1kb2N1bWVudC5xdWVyeVNlbGVjdG9yKGAudHViZS1ib2R5W2RhdGEtaWR4PSIke2lkeH0iXWApOwogICAgICBpZih0ZWwpewogICAgICAgIGNvbnN0IHJwPWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpOwogICAgICAgIHJwLmNsYXNzTmFtZT0ndHViZS1yaXBwbGUnOwogICAgICAgIHJwLnN0eWxlLmJhY2tncm91bmQ9Q0NPTFthY3RpdmVDaGVtXSsnOTknOwogICAgICAgIHRlbC5hcHBlbmRDaGlsZChycCk7CiAgICAgICAgc2V0VGltZW91dCgoKT0+cnAucmVtb3ZlKCksNTUwKTsKICAgICAgfQogICAgfSwgcGFyc2VGbG9hdChkdXIpKjEwMDArNjApOwogIH0KfSkoKTsKCi8vICYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7IExJREkgRFJBRytQUkVTUyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOwooZnVuY3Rpb24oKXsKICBjb25zdCB3PWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdsaWRpV3JhcCcpOwogIC8vIFBvc2lzaTogc2ViZWxhaCBrYW5hbiB0YWJ1bmcgcmVha3NpLCBkZWthdCwgdGVuZ2FoIHZlcnRpa2FsIChkaSBiYXdhaCBwaXBldCkKICBmdW5jdGlvbiBpbml0UG9zKCl7CiAgICBjb25zdCBweD13aW5kb3cuaW5uZXJXaWR0aC00NzAsIHB5PXdpbmRvdy5pbm5lckhlaWdodC8yLTgwOwogICAgdy5zdHlsZS5sZWZ0PXB4KydweCc7IHcuc3R5bGUudG9wPXB5KydweCc7CiAgICByZXR1cm4ge3B4LHB5fTsKICB9CiAgbGV0IHtweCxweX09aW5pdFBvcygpOwogIGxldCBkcmFnPWZhbHNlLG1vdmVkPWZhbHNlLHN4PTAsc3k9MCxzcHg9MCxzcHk9MCxvdmVySWR4PS0xOwoKICAvLyBTaG93IGVtYmVyIChueWFsYSkgYXRhdSBhc2FwIHRlcmdhbnR1bmcga29uZGlzaSB0YWJ1bmcKICBjb25zdCBlbWJlcj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbGlkaUVtYmVyJyk7CiAgY29uc3Qgc21va2U9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2xpZGlTbW9rZScpOwogIGZ1bmN0aW9uIHNob3dFbWJlcihtb2RlKXsKICAgIC8vIG1vZGU6ICdmbGFtZScgfCAnc21va2UnIHwgZmFsc2UKICAgIGVtYmVyLnN0eWxlLmRpc3BsYXkgPSBtb2RlPT09J2ZsYW1lJyA/ICcnIDogJ25vbmUnOwogICAgc21va2Uuc3R5bGUuZGlzcGxheSA9IG1vZGU9PT0nc21va2UnID8gJycgOiAnbm9uZSc7CiAgfQoKICBmdW5jdGlvbiBwb3MoZSl7cmV0dXJuIGUudG91Y2hlcz97eDplLnRvdWNoZXNbMF0uY2xpZW50WCx5OmUudG91Y2hlc1swXS5jbGllbnRZfTp7eDplLmNsaWVudFgseTplLmNsaWVudFl9O30KICBmdW5jdGlvbiB0dWJlQXQoeCx5KXsKICAgIGZvcihjb25zdCBlbCBvZiBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcudHViZS1ib2R5JykpewogICAgICBjb25zdCByPWVsLmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpLG09MjY7CiAgICAgIGlmKHg+PXIubGVmdC1tJiZ4PD1yLnJpZ2h0K20mJnk+PXIudG9wLTg1JiZ5PD1yLmJvdHRvbSsxMikgcmV0dXJuIHBhcnNlSW50KGVsLmRhdGFzZXQuaWR4KTsKICAgIH0gcmV0dXJuIC0xOwogIH0KICBmdW5jdGlvbiBobChpZHgpe2RvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoJy50dWJlLXdyYXAnKS5mb3JFYWNoKHR3PT50dy5jbGFzc0xpc3QudG9nZ2xlKCdkcm9wLXRndCcscGFyc2VJbnQodHcuZGF0YXNldC5pZHgpPT09aWR4JiZpZHg+PTApKTt9CgogIGZ1bmN0aW9uIGdldEVtYmVyTW9kZShpZHgpewogICAgaWYoaWR4PDApIHJldHVybiBmYWxzZTsKICAgIGNvbnN0IHQ9dHViZXNbaWR4XTsKICAgIGlmKCF0Lmhhc0gyTzIpIHJldHVybiBmYWxzZTsKICAgIGNvbnN0IG8yPWNhbGNPMih0KTsKICAgIHJldHVybiBvMj4wLjUgPyAnZmxhbWUnIDogJ3Ntb2tlJzsKICB9CgogIHcuYWRkRXZlbnRMaXN0ZW5lcigncG9pbnRlcmRvd24nLGU9PnsKICAgIGUucHJldmVudERlZmF1bHQoKTsgdy5zZXRQb2ludGVyQ2FwdHVyZShlLnBvaW50ZXJJZCk7CiAgICBjb25zdCBwPXBvcyhlKTsgc3g9cC54O3N5PXAueTtzcHg9cHg7c3B5PXB5OyBkcmFnPXRydWU7IG1vdmVkPWZhbHNlOwogICAgY29uc3Qgcj13LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOyBvdmVySWR4PXR1YmVBdChyLmxlZnQrci53aWR0aC8yLHIuYm90dG9tKTsgaGwob3ZlcklkeCk7CiAgICBzaG93RW1iZXIoZ2V0RW1iZXJNb2RlKG92ZXJJZHgpKTsKICB9KTsKICB3LmFkZEV2ZW50TGlzdGVuZXIoJ3BvaW50ZXJtb3ZlJyxlPT57CiAgICBpZighZHJhZykgcmV0dXJuOyBlLnByZXZlbnREZWZhdWx0KCk7CiAgICBjb25zdCBwPXBvcyhlKSxkeD1wLngtc3gsZHk9cC55LXN5OwogICAgaWYoTWF0aC5hYnMoZHgpPjN8fE1hdGguYWJzKGR5KT4zKSBtb3ZlZD10cnVlOwogICAgcHg9TWF0aC5tYXgoMCxNYXRoLm1pbih3aW5kb3cuaW5uZXJXaWR0aC0yNCxzcHgrZHgpKTsKICAgIHB5PU1hdGgubWF4KDAsTWF0aC5taW4od2luZG93LmlubmVySGVpZ2h0LTE2NSxzcHkrZHkpKTsKICAgIHcuc3R5bGUubGVmdD1weCsncHgnOyB3LnN0eWxlLnRvcD1weSsncHgnOwogICAgY29uc3Qgcj13LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOyBvdmVySWR4PXR1YmVBdChyLmxlZnQrci53aWR0aC8yLHIuYm90dG9tKTsKICAgIGhsKG92ZXJJZHgpOwogICAgY29uc3QgbGlkaVN2Zz1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbGlkaVcnKTsKICAgIGxpZGlTdmcuY2xhc3NMaXN0LnRvZ2dsZSgnb3Zlci10dWJlJyxvdmVySWR4Pj0wKTsKICAgIHNob3dFbWJlcihnZXRFbWJlck1vZGUob3ZlcklkeCkpOwogIH0pOwogIHcuYWRkRXZlbnRMaXN0ZW5lcigncG9pbnRlcnVwJywoKT0+ewogICAgaWYoIWRyYWcpIHJldHVybjsgZHJhZz1mYWxzZTsKICAgIC8vIEppa2EgbGlkaSBkaSBhcmVhIHRhYnVuZyBzYWF0IGRpbGVwYXMsIGNhdGF0IGhhc2lsIHVqaQogICAgaWYob3ZlcklkeD49MCl7CiAgICAgIGNvbnN0IHQ9dHViZXNbb3ZlcklkeF07CiAgICAgIGlmKHQmJnQuaGFzSDJPMil7CiAgICAgICAgdC5jaGVja2VkPXRydWU7IHQubzI9Y2FsY08yKHQpOwogICAgICAgIHJlbmRlcigpOwogICAgICAgIHNob3dOb3RpZihgJHt0LmxhYmVsfTogJHtnZXRGbGFtZSh0Lm8yKX1gKTsKICAgICAgfQogICAgfQogICAgc2hvd0VtYmVyKGZhbHNlKTsKICAgIGNvbnN0IGxpZGlTdmc9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2xpZGlXJyk7CiAgICBsaWRpU3ZnLmNsYXNzTGlzdC5yZW1vdmUoJ292ZXItdHViZScpOyBobCgtMSk7IG92ZXJJZHg9LTE7CiAgfSk7Cn0pKCk7CgovLyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyBBUFBMWSBDSEVNICYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7CmZ1bmN0aW9uIGFwcGx5Q2hlbVRvVHViZShpZHgpewogIGlmKGlkeDwwfHxpZHg+PXR1YmVzLmxlbmd0aCkgcmV0dXJuOwogIHNlbFQoaWR4KTsKICBjb25zdCB0PXR1YmVzW2lkeF07CiAgY29uc3QgQUREX1NURVA9MS4wOyAvLyBtbCBwZXIgZHJvcAoKICBzd2l0Y2goYWN0aXZlQ2hlbSl7CiAgICBjYXNlICdIMk8yJzoKICAgICAgdC5oYXNIMk8yPXRydWU7IHQucmVhY3Rpbmc9dHJ1ZTsgdC5jaGVja2VkPWZhbHNlOwogICAgICB0LnZvbEgyTzI9TWF0aC5taW4oMTAsIHQudm9sSDJPMiArIEFERF9TVEVQKTsKICAgICAgc2hvd05vdGlmKGAmIzEyODE2NzsgSDxzdWI+Mjwvc3ViPk88c3ViPjI8L3N1Yj4gJiM4NTk0OyAke3QubGFiZWx9ICgke3Qudm9sSDJPMi50b0ZpeGVkKDEpfW1sKWApOwogICAgICBicmVhazsKICAgIGNhc2UgJ05hT0gnOgogICAgICB0LmFkZGl0aXZlPSdOYU9IJzsgdC5waD0xMTsgdC5jaGVja2VkPWZhbHNlOwogICAgICB0LnZvbEFkZD1NYXRoLm1pbigxMCwgdC52b2xBZGQgKyBBRERfU1RFUCk7CiAgICAgIHNob3dOb3RpZihgJiMxMjgxNjc7IE5hT0ggJiM4NTk0OyAke3QubGFiZWx9IChwSCAxMSwgJHt0LnZvbEFkZC50b0ZpeGVkKDEpfW1sKWApOwogICAgICBicmVhazsKICAgIGNhc2UgJ0hDTCc6CiAgICAgIHQuYWRkaXRpdmU9J0hDTCc7IHQucGg9MjsgdC5jaGVja2VkPWZhbHNlOwogICAgICB0LnZvbEFkZD1NYXRoLm1pbigxMCwgdC52b2xBZGQgKyBBRERfU1RFUCk7CiAgICAgIHNob3dOb3RpZihgJiMxMjgxNjc7IEhDbCAmIzg1OTQ7ICR7dC5sYWJlbH0gKHBIIDIsICR7dC52b2xBZGQudG9GaXhlZCgxKX1tbClgKTsKICAgICAgYnJlYWs7CiAgICBjYXNlICdIMk8nOgogICAgICB0LmFkZGl0aXZlPSdIMk8nOyB0LmNoZWNrZWQ9ZmFsc2U7CiAgICAgIHQudm9sQWRkPU1hdGgubWluKDEwLCB0LnZvbEFkZCArIEFERF9TVEVQKTsKICAgICAgc2hvd05vdGlmKGAmIzEyODE2NzsgQWlyICYjODU5NDsgJHt0LmxhYmVsfSAoJHt0LnZvbEFkZC50b0ZpeGVkKDEpfW1sKSAmIzgyMTI7IGRpZW5jZXJrYW5gKTsKICAgICAgYnJlYWs7CiAgfQogIHJlbmRlcigpOwp9CgovLyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyBDT05UUk9MUyAmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOyYjOTU1MjsmIzk1NTI7JiM5NTUyOwpmdW5jdGlvbiBzZWxUKGkpe3NlbFR1YmU9aTtyZW5kZXIoKTt9CmZ1bmN0aW9uIGFkZFR1YmUoKXsKICBpZih0dWJlcy5sZW5ndGg+PTgpe3Nob3dOb3RpZignTWFrcyA4IHRhYnVuZyEnKTtyZXR1cm47fQogIHR1YmVzLnB1c2gobWtUdWJlKGBUYWJ1bmcgJHt0dWJlQ3RyKzF9YCkpOwogIHNlbFR1YmU9dHViZXMubGVuZ3RoLTE7IHJlbmRlcigpOwp9CmZ1bmN0aW9uIGRlbFR1YmUoKXsKICBpZih0dWJlcy5sZW5ndGg8PTEpe3Nob3dOb3RpZignTWluIDEgdGFidW5nIScpO3JldHVybjt9CiAgdHViZXMuc3BsaWNlKHNlbFR1YmUsMSk7CiAgc2VsVHViZT1NYXRoLm1pbihzZWxUdWJlLHR1YmVzLmxlbmd0aC0xKTsgcmVuZGVyKCk7Cn0KZnVuY3Rpb24gc2V0RXh0KHYpe3R1YmVzW3NlbFR1YmVdLmV4dHJhY3Q9djt0dWJlc1tzZWxUdWJlXS5jaGVja2VkPWZhbHNlO3JlbmRlcigpO30KZnVuY3Rpb24gc2V0Vm9sSDJPMih2LGVsKXsKICBjb25zdCBtbD1wYXJzZUZsb2F0KHYpOwogIHR1YmVzW3NlbFR1YmVdLnZvbEgyTzI9bWw7CiAgdHViZXNbc2VsVHViZV0uaGFzSDJPMj1tbD4wOwogIHR1YmVzW3NlbFR1YmVdLnJlYWN0aW5nPW1sPjA7CiAgdHViZXNbc2VsVHViZV0uY2hlY2tlZD1mYWxzZTsKICBlbC5zdHlsZS5zZXRQcm9wZXJ0eSgnLS12YWwnLChtbC8xMCoxMDApKyclJyk7CiAgcmVuZGVyKCk7Cn0KZnVuY3Rpb24gc2V0Vm9sQWRkKHYsZWwpewogIGNvbnN0IG1sPXBhcnNlRmxvYXQodik7CiAgdHViZXNbc2VsVHViZV0udm9sQWRkPW1sOwogIHR1YmVzW3NlbFR1YmVdLmNoZWNrZWQ9ZmFsc2U7CiAgZWwuc3R5bGUuc2V0UHJvcGVydHkoJy0tdmFsJywobWwvMTAqMTAwKSsnJScpOwogIHJlbmRlcigpOwp9CmZ1bmN0aW9uIHNldFBIKHYsZWwpewogIGNvbnN0IHBoPXBhcnNlSW50KHYpOyB0dWJlc1tzZWxUdWJlXS5waD1waDsgdHViZXNbc2VsVHViZV0uY2hlY2tlZD1mYWxzZTsKICBpZihwaDw9NCYmIXR1YmVzW3NlbFR1YmVdLmFkZGl0aXZlKXt0dWJlc1tzZWxUdWJlXS5hZGRpdGl2ZT0nSENMJzt0dWJlc1tzZWxUdWJlXS52b2xBZGQ9TWF0aC5tYXgoMSx0dWJlc1tzZWxUdWJlXS52b2xBZGQpO30KICBlbHNlIGlmKHBoPj0xMCYmIXR1YmVzW3NlbFR1YmVdLmFkZGl0aXZlKXt0dWJlc1tzZWxUdWJlXS5hZGRpdGl2ZT0nTmFPSCc7dHViZXNbc2VsVHViZV0udm9sQWRkPU1hdGgubWF4KDEsdHViZXNbc2VsVHViZV0udm9sQWRkKTt9CiAgZWxzZSBpZihwaD40JiZwaDwxMCYmWydIQ0wnLCdOYU9IJ10uaW5jbHVkZXModHViZXNbc2VsVHViZV0uYWRkaXRpdmUpKXt0dWJlc1tzZWxUdWJlXS5hZGRpdGl2ZT1udWxsO3R1YmVzW3NlbFR1YmVdLnZvbEFkZD0wO30KICBlbC5zdHlsZS5zZXRQcm9wZXJ0eSgnLS12YWwnLChwaC8xNCoxMDApKyclJyk7IHJlbmRlcigpOwp9CmZ1bmN0aW9uIHNldFRlbXAodixlbCl7CiAgdHViZXNbc2VsVHViZV0udGVtcD1wYXJzZUludCh2KTt0dWJlc1tzZWxUdWJlXS5jaGVja2VkPWZhbHNlOwogIGVsLnN0eWxlLnNldFByb3BlcnR5KCctLXZhbCcsKChwYXJzZUludCh2KSsyMCkvMTIwKjEwMCkrJyUnKTsgcmVuZGVyKCk7Cn0KZnVuY3Rpb24gcmVzZXRBbGwoKXtpbml0KCk7c2hvd05vdGlmKCcmIzEyODI2MDsgUmVzZXQgc2VsZXNhaScpO30KZnVuY3Rpb24gc2hvd05vdGlmKG1zZyl7CiAgY29uc3QgZWw9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ25vdGlmJyk7CiAgZWwuaW5uZXJIVE1MPW1zZzsgZWwuY2xhc3NMaXN0LmFkZCgnc2hvdycpOwogIHNldFRpbWVvdXQoKCk9PmVsLmNsYXNzTGlzdC5yZW1vdmUoJ3Nob3cnKSwyNjAwKTsKfQpmdW5jdGlvbiBzaG93SW5mbygpe2RvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdpbmZvTW9kYWwnKS5jbGFzc0xpc3QuYWRkKCdzaG93Jyk7fQpmdW5jdGlvbiBjbG9zZUluZm8oKXtkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnaW5mb01vZGFsJykuY2xhc3NMaXN0LnJlbW92ZSgnc2hvdycpO30KCnNlbENoZW0oJ0gyTzInKTsKaW5pdCgpOwo8L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+Cg==");
 </script>
 </body>
