@@ -109,7 +109,7 @@ nav::-webkit-scrollbar{display:none;}
 #page-teori .card h4{margin:6px 0 3px;}
 #page-teori .two-col{gap:5px;}
 #page-teori .card{margin-bottom:5px;padding:9px 12px;}
-#page-alatbahan .scroll{overflow:hidden;display:flex;flex-direction:column;}
+#page-alatbahan .scroll{overflow-y:auto;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 .fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
 .fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
@@ -614,18 +614,18 @@ function startPraktikum(){
 <div id="page-alatbahan" class="page">
   <div class="scroll" style="padding:10px 14px 14px;">
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;height:100%;min-height:0;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
 
       <!-- KIRI: Daftar Alat & Bahan -->
-      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;overflow:hidden;">
-        <div class="ch" style="flex-shrink:0;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch">
           <div class="ci b">&#x1F50D;</div>
           <div class="ct">Daftar Alat &amp; Bahan</div>
         </div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;flex-shrink:0;">Drag atau <strong style="color:var(--acc3)">tekan &amp; geser</strong> item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
 
         <!-- GABUNGAN ALAT + BAHAN -->
-        <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px;flex:1;overflow-y:auto;">
+        <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
           <div class="drag-card alat" draggable="true" data-id="tabung" data-type="alat" data-name="5 Tabung Reaksi" data-sub="Tabung A–E">
             <div class="drag-icon"><img src="https://denicendrianto41.github.io/tabung_reaksi.png" alt="Tabung Reaksi" style="height:40px;width:auto;object-fit:contain;"></div>
             <div class="drag-name">5 Tabung Reaksi</div>
@@ -676,39 +676,40 @@ function startPraktikum(){
             <div class="drag-name">Larutan HCl</div>
             <div class="drag-sub">Asam klorida &middot; asam</div>
           </div>
-        </div>
-      </div>
+      </div><!-- end sourceAlat -->
+      </div><!-- end card kiri -->
 
       <!-- KANAN: Meja Percobaan -->
-      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;overflow:hidden;">
-        <div class="ch" style="flex-shrink:0;">
+      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
+        <div class="ch">
           <div class="ci g">&#x1F9EA;</div>
           <div class="ct">Meja Percobaan</div>
         </div>
+        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
 
         <!-- Drop Zone Alat -->
-        <div style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;">&#x2699;&#xFE0F; Alat Percobaan</div>
-        <div id="dropAlat" class="drop-zone" data-accept="alat" style="flex:1;min-height:0;margin-bottom:10px;">
-          <div class="drop-hint">&#x2190; Drag alat ke sini</div>
+        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">&#x2699;&#xFE0F; Alat</div>
+        <div id="dropAlat" class="drop-zone" data-accept="alat" style="margin-bottom:10px;">
+          <span id="hint-dropAlat" class="drop-hint">&#x2190; Drag alat ke sini</span>
         </div>
 
         <!-- Drop Zone Bahan -->
-        <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;">&#x1F9EB; Bahan Percobaan</div>
-        <div id="dropBahan" class="drop-zone bahan-zone" data-accept="bahan" style="flex:1;min-height:0;">
-          <div class="drop-hint">&#x2190; Drag bahan ke sini</div>
+        <div style="font-size:10px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">&#x1F9EB; Bahan</div>
+        <div id="dropBahan" class="drop-zone bahan-zone" data-accept="bahan">
+          <span id="hint-dropBahan" class="drop-hint">&#x2190; Drag bahan ke sini</span>
         </div>
 
         <!-- Reset -->
-        <button onclick="resetMeja()" style="margin-top:10px;flex-shrink:0;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .17s;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">&#x21BA; Reset Meja</button>
+        <button onclick="resetMeja()" style="margin-top:10px;flex-shrink:0;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .17s;width:100%;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">&#x21BA; Reset Meja</button>
 
         <!-- Catatan -->
-        <div id="catatanMeja" style="display:none;margin-top:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;flex-shrink:0;">
+        <div id="catatanMeja" style="display:none;margin-top:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;">
           <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">&#x1F4A1; Catatan Penggunaan</div>
           <p id="catatanText" style="font-size:11.5px;color:#92400e;line-height:1.6;margin:0;"></p>
         </div>
-      </div>
+      </div><!-- end card kanan -->
 
-    </div>
+    </div><!-- end grid -->
   </div>
 </div>
 
@@ -778,27 +779,34 @@ function startPraktikum(){
 </style>
 
 <style>
+/* ── Drag card: ukuran disesuaikan dengan ragi.html ── */
 .drag-card{
-  background:#fff;border:1.5px solid var(--border);border-radius:10px;
-  padding:10px 8px;text-align:center;cursor:grab;
-  transition:transform .15s, box-shadow .15s, border-color .15s, opacity .2s;
-  user-select:none;position:relative;
-  /* Larger touch target */
-  min-height:80px;
+  background:#eff6ff;
+  border:1.5px dashed #93c5fd;
+  border-radius:10px;
+  padding:9px;
+  text-align:center;
+  cursor:grab;
+  transition:transform .15s, box-shadow .15s, border-color .15s, opacity .2s, background .15s;
+  user-select:none;
+  -webkit-user-select:none;
+  position:relative;
   touch-action:none;
   -webkit-tap-highlight-color:transparent;
 }
-.drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);border-color:var(--border2);}
+.drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);}
 .drag-card:active{cursor:grabbing;transform:scale(.96);}
-.drag-card.alat{background:#eff6ff;border-color:#93c5fd;}
+.drag-card.alat{background:#eff6ff;border:1.5px dashed #93c5fd;}
 .drag-card.alat:hover{border-color:#2563eb;}
-.drag-card.bahan{background:#f0fdf4;border-color:#86efac;}
+.drag-card.bahan{background:#f0fdf4;border:1.5px dashed #86efac;}
 .drag-card.bahan:hover{border-color:#059669;}
 .drag-card.dragging{opacity:.3;transform:scale(.95);filter:grayscale(.5);}
 .drag-card.placed{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
-.drag-icon{height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:5px;line-height:1;}
-.drag-icon img{max-height:44px;max-width:80px;width:auto;object-fit:contain;display:block;}
-.drag-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px;}
+/* Ikon gambar 30×30px seperti ragi.html */
+.drag-icon{margin-bottom:3px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.drag-icon img{width:30px;height:30px;object-fit:contain;vertical-align:middle;display:inline-block;}
+.drag-name{font-size:11px;font-weight:600;color:var(--acc3);line-height:1.3;margin-bottom:1px;}
+.drag-card.bahan .drag-name{color:#065f46;}
 .drag-sub{font-size:9.5px;color:var(--text3);}
 
 /* Touch active visual feedback */
@@ -809,20 +817,25 @@ function startPraktikum(){
   z-index:10;
 }
 
+/* ── Drop zone: min-height 110px seperti ragi.html ── */
 .drop-zone{
-  border:2px dashed var(--border2);border-radius:9px;
-  padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;
+  border:2px dashed var(--border2);border-radius:10px;
+  padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
   transition:background .2s, border-color .2s;
   position:relative;
   touch-action:none;
+  min-height:110px;
 }
-.drop-zone.drag-over-ok{background:#eff6ff;border-color:#3b82f6;}
-.drop-zone.bahan-zone.drag-over-ok{background:#fff7ed;border-color:#f97316;}
+.drop-zone#dropAlat{border-color:#93c5fd;background:#eff6ff;}
+.drop-zone.bahan-zone{border-color:#86efac;background:#f0fdf4;}
+.drop-zone.drag-over-ok{background:#dbeafe;border-color:#3b82f6;}
+.drop-zone.bahan-zone.drag-over-ok{background:#dcfce7;border-color:#059669;}
 .drop-zone.drag-over-wrong{background:#fff1f2;border-color:#f87171;}
 .drop-hint{
-  width:100%;text-align:center;font-size:11.5px;color:var(--text3);
-  padding:16px 0;pointer-events:none;
+  width:100%;text-align:center;font-size:12px;
+  color:#93c5fd;padding:8px 0;pointer-events:none;
 }
+.drop-zone.bahan-zone .drop-hint{color:#86efac;}
 .drop-card{
   background:#fff;border:1.5px solid #93c5fd;border-radius:8px;
   padding:7px 9px;display:flex;align-items:center;gap:7px;
@@ -871,25 +884,24 @@ function startPraktikum(){
     max-height: 46vh;
   }
 
-  /* Bigger drag cards on touch */
+  /* Drag cards on touch - slightly larger image only */
   #sourceAlat {
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important;
     gap: 8px !important;
   }
-  .drag-card { min-height: 90px; padding: 12px 8px; }
-  .drag-icon { height: 48px; }
-  .drag-icon img { max-height: 48px; }
-  .drag-name { font-size: 12px; }
-  .drag-sub  { font-size: 10px; }
+  .drag-card { padding: 9px; }
+  .drag-icon img { width: 36px; height: 36px; }
+  .drag-name { font-size: 11px; }
+  .drag-sub  { font-size: 9.5px; }
 
-  /* Drop zones: more space on mobile */
-  .drop-zone { min-height: 72px; }
-  .drop-hint { font-size: 12px; padding: 20px 0; }
+  /* Drop zones */
+  .drop-zone { min-height: 110px; }
+  .drop-hint { font-size: 12px; padding: 8px 0; }
 }
 
 @media (max-width: 400px) {
   #sourceAlat { grid-template-columns: repeat(3, 1fr) !important; }
-  .drag-card  { min-height: 80px; padding: 10px 6px; }
+  .drag-card  { padding: 8px 6px; }
 }
 </style>
 
