@@ -201,6 +201,9 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   gap:0;transition:opacity .6s ease;
 }
 #loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2.5vw,26px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
 .load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:24px;}
@@ -273,7 +276,14 @@ function startPraktikum(){
   try{const s=new Audio('https://denicendrianto41.github.io/tring.wav');s.play().catch(()=>{});}catch(e){}
   const ls=document.getElementById('loadScreen');
   ls.classList.add('hide');
-  setTimeout(()=>{ls.style.display='none';},650);
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn) tujuanBtn.classList.add('active');
+  },650);
 }
 </script>
 
@@ -304,6 +314,8 @@ document.addEventListener('click',function(e){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb" onclick="show('tujuan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
     <button class="nb active" onclick="show('teori',this);closeNav()">
       <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
     <button class="nb" onclick="show('alatbahan',this);closeNav()">
@@ -317,87 +329,276 @@ document.addEventListener('click',function(e){
   </nav>
 </header>
 
+<div id="dragGhost" style="display:none;position:fixed;pointer-events:none;z-index:9999;opacity:0.8;transform:scale(0.9) rotate(-4deg);border-radius:10px;padding:9px;text-align:center;"></div>
+
 <div id="app">
 
-<!-- ========================= TEORI ========================= -->
-<div id="page-teori" class="page active">
-  <div style="flex:1;overflow:hidden;padding:7px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+<!-- ========================= TUJUAN ========================= -->
+<div id="page-tujuan" class="page">
+  <div class="scroll" style="padding:14px 16px 20px;">
 
-    <!-- Row 1: Tujuan + Hasil Belajar -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0;">
-      <div class="card" style="margin-bottom:0;padding:8px 12px;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="width:20px;height:20px;font-size:11px;">🎯</div><div class="ct" style="font-size:12px;">Tujuan Percobaan</div></div>
-        <p style="font-size:11.5px;line-height:1.5;color:var(--text2);margin:0;">Mempelajari <strong style="color:var(--acc2)">frekuensi populasi tumbuhan</strong> menggunakan <strong style="color:var(--acc2)">metode kuadrat</strong> pada berbagai ekosistem untuk memahami distribusi spesies tumbuhan.</p>
+    <!-- Hero Banner -->
+    <div style="background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Keanekaragaman Hayati: Metode Kuadrat</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#34d399);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari cara menghitung <strong style="color:#93c5fd;">frekuensi populasi tumbuhan</strong> menggunakan <strong style="color:#93c5fd;">metode kuadrat</strong> — dari teori, simulasi, hingga analisis data di berbagai ekosistem.
+        </p>
       </div>
-      <div class="card" style="margin-bottom:0;padding:8px 12px;">
-        <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="width:20px;height:20px;font-size:11px;">🏆</div><div class="ct" style="font-size:12px;">Hasil Belajar</div></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;">
-          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Memahami konsep metode kuadrat</div>
-          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Menghitung frekuensi populasi</div>
-          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Menganalisis distribusi spesies</div>
-          <div style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:flex-start;"><span style="color:var(--acc);font-weight:700;flex-shrink:0;">›</span>Siap praktikum laboratorium nyata</div>
+    </div>
+
+    <!-- 2 Main Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#1d4ed8;">keanekaragaman hayati</strong> tumbuhan di berbagai ekosistem menggunakan pendekatan kuantitatif.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mempelajari <strong style="color:#059669;">frekuensi populasi tumbuhan</strong> menggunakan <strong style="color:#059669;">metode kuadrat</strong> (petak <em>1 m × 1 m</em>) pada berbagai ekosistem untuk memahami distribusi spesies.
+        </p>
+      </div>
+    </div>
+
+    <!-- Hasil Belajar Section -->
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;box-shadow:0 2px 12px rgba(30,41,59,0.07);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami konsep <strong style="color:#1d4ed8;">metode kuadrat</strong> dan penerapannya dalam ekologi tumbuhan</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menghitung <strong style="color:#059669;">frekuensi populasi</strong> tumbuhan menggunakan rumus %F = (N/Q) × 100</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menganalisis <strong style="color:#7c3aed;">distribusi spesies</strong> tumbuhan antar ekosistem yang berbeda</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Siap melakukan <strong style="color:#dc2626;">praktikum lapangan</strong> metode kuadrat secara mandiri dan sistematis</span>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Dasar Teori gabungan 4 kolom -->
-    <div class="card" style="margin-bottom:0;padding:8px 12px;flex:1;min-height:0;">
-      <div class="ch" style="margin-bottom:6px;"><div class="ci b" style="width:20px;height:20px;font-size:11px;">📚</div><div class="ct" style="font-size:12px;">Dasar Teori, Distribusi &amp; Tingkat Keanekaragaman Hayati</div></div>
-      <div style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:6px;height:calc(100% - 32px);">
+  </div>
+</div>
 
-        <!-- Metode Kuadrat -->
-        <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
-          <div style="font-size:9px;font-weight:700;color:var(--acc3);letter-spacing:.07em;text-transform:uppercase;">🔲 Metode Kuadrat</div>
-          <p style="font-size:11px;line-height:1.5;color:var(--text2);margin:0;"><strong style="color:var(--acc2)">Frekuensi</strong> = tingkat kemunculan spesies dalam komunitas tumbuhan. Metode <strong style="color:var(--acc2)">kuadrat</strong> (petak <strong>1 m × 1 m</strong>) mengukurnya secara objektif.</p>
-          <div style="display:flex;gap:3px;flex-wrap:wrap;">
-            <span class="chip chip-g" style="font-size:10px;padding:2px 6px;">Kepadatan</span>
-            <span class="chip chip-b" style="font-size:10px;padding:2px 6px;">Frekuensi</span>
-            <span class="chip chip-g" style="font-size:10px;padding:2px 6px;">Biomassa</span>
-          </div>
-          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:5px;padding:5px 7px;font-size:10.5px;color:var(--text2);line-height:1.5;">
-            Pilih area <strong>tidak terlalu besar/kecil</strong>, tempatkan kuadrat secara <strong>acak</strong> agar representatif dan bebas bias.
+<!-- ========================= TEORI ========================= -->
+<div id="page-teori" class="page">
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 10px;">
+
+    <!-- Teori Header -->
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);border-radius:12px;padding:12px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(15,36,96,0.22);position:relative;overflow:hidden;flex-shrink:0;">
+      <div style="position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
+      <div style="position:relative;z-index:1;flex:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.6vw,17px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(9px,1vw,11px);color:rgba(148,197,253,0.85);margin-top:1px;">Metode Kuadrat · Frekuensi Populasi · Keanekaragaman Hayati</div>
+      </div>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div id="teori-tabs" style="display:flex;gap:5px;flex-shrink:0;margin-bottom:8px;">
+      <button onclick="showTeoriTab('metode',this)" id="tab-btn-metode" style="flex:1;padding:8px 10px;border:none;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:clamp(10px,1.1vw,12.5px);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;box-shadow:0 2px 10px rgba(37,99,235,0.35);">🔲 Metode Kuadrat</button>
+      <button onclick="showTeoriTab('distribusi',this)" id="tab-btn-distribusi" style="flex:1;padding:8px 10px;border:none;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:clamp(10px,1.1vw,12.5px);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;background:var(--surf);color:var(--text2);border:1.5px solid var(--border);">🌱 Variasi Distribusi</button>
+      <button onclick="showTeoriTab('keanekaragaman',this)" id="tab-btn-keanekaragaman" style="flex:1;padding:8px 10px;border:none;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:clamp(10px,1.1vw,12.5px);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;background:var(--surf);color:var(--text2);border:1.5px solid var(--border);">🧬 Keanekaragaman Hayati</button>
+    </div>
+
+    <!-- Tab Panel: Metode Kuadrat -->
+    <div id="tab-metode" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;flex-shrink:0;">
+        <div class="ch" style="margin-bottom:8px;">
+          <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#1e3a5f,#2563eb);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔲</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.4vw,15px);font-weight:700;color:#1e293b;">Metode Kuadrat (Quadrat Method)</div>
+            <div style="font-size:10px;color:#2563eb;">Teknik sampling ekologi tumbuhan</div>
           </div>
         </div>
-
-        <!-- Rumus -->
-        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
-          <div style="font-size:9px;font-weight:700;color:var(--acc3);letter-spacing:.07em;text-transform:uppercase;">📐 Rumus Frekuensi</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#1d4ed8;text-align:center;background:rgba(255,255,255,.7);border-radius:5px;padding:7px;font-weight:700;">%F = (N/Q) × 100</div>
-          <div style="font-size:10.5px;color:var(--text2);line-height:1.7;">
-            <strong style="color:var(--acc)">N</strong> = Kuadrat berisi spesies<br>
-            <strong style="color:var(--acc)">Q</strong> = Total kuadrat
+        <p style="font-size:clamp(11.5px,1.2vw,13.5px);color:#475569;line-height:1.75;margin-bottom:12px;">
+          Metode kuadrat adalah teknik <strong style="color:#1d4ed8;">sampling</strong> ekologi yang digunakan untuk menghitung <strong style="color:#1d4ed8;">frekuensi</strong>, kepadatan, dan penutupan tumbuhan dalam suatu area. Menggunakan petak persegi berukuran standar <strong style="color:#1d4ed8;">1 m × 1 m</strong> yang ditempatkan secara <strong style="color:#1d4ed8;">acak</strong> di lokasi penelitian.
+        </p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+          <span class="chip chip-g">Kepadatan populasi</span>
+          <span class="chip chip-b">Frekuensi kemunculan</span>
+          <span class="chip chip-g">Penutupan lahan</span>
+          <span style="border-radius:5px;padding:3px 8px;font-size:clamp(11px,1.2vw,13px);font-weight:500;background:rgba(109,40,217,.08);border:1px solid rgba(109,40,217,.2);color:#6d28d9;">Biomassa tumbuhan</span>
+        </div>
+        <!-- Steps timeline -->
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;align-items:stretch;gap:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:30px;">
+              <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">1</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#60a5fa,#a5b4fc);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 10px 12px;"><p style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.65;margin:0;padding-top:2px;">Pilih area penelitian yang <strong style="color:#2563eb;">representatif</strong> — padang rumput, hutan sekunder, atau tepi jalan. Hindari area yang sudah diketahui padat/jarang.</p></div>
           </div>
-          <div style="background:rgba(255,255,255,.6);border-radius:5px;padding:5px 7px;font-size:10.5px;border:1px solid #bfdbfe;">
-            <span style="color:var(--text3);">Contoh:</span><br>
-            <span style="color:var(--green);font-weight:700;">5/7 × 100 = <strong>71,43%</strong></span>
+          <div style="display:flex;align-items:stretch;gap:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:30px;">
+              <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">2</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#2dd4bf,#a7f3d0);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 10px 12px;"><p style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.65;margin:0;padding-top:2px;">Pasang <strong style="color:#0d9488;">4 paku/pasak</strong> membentuk persegi 1 m × 1 m di lokasi acak, ikat tali ke setiap paku sebagai batas kuadrat.</p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:30px;">
+              <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">3</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#10b981,#86efac);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 10px 12px;"><p style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.65;margin:0;padding-top:2px;">Identifikasi dan catat <strong style="color:#059669;">semua spesies tumbuhan</strong> di dalam petak pada lembar data (Y = ada / N = tidak ada).</p></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:30px;">
+              <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">4</div>
+            </div>
+            <div style="flex:1;padding:0 0 0 12px;"><p style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.65;margin:0;padding-top:2px;">Ulangi minimal <strong style="color:#7c3aed;">7 kali</strong> di lokasi berbeda, lalu hitung <strong style="color:#7c3aed;">%Frekuensi</strong> tiap spesies.</p></div>
           </div>
         </div>
+      </div>
+      <!-- Formula card -->
+      <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:16px 18px;flex-shrink:0;">
+        <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">📐 Rumus Frekuensi</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(14px,1.8vw,20px);color:#1d4ed8;text-align:center;background:rgba(255,255,255,.75);border-radius:8px;padding:10px;font-weight:700;letter-spacing:.05em;margin-bottom:10px;">%F = (N / Q) × 100</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div style="background:rgba(255,255,255,.6);border-radius:7px;padding:8px 12px;font-size:12.5px;color:#1e293b;"><strong style="color:#2563eb;">N</strong> = Jumlah kuadrat yang mengandung spesies tersebut</div>
+          <div style="background:rgba(255,255,255,.6);border-radius:7px;padding:8px 12px;font-size:12.5px;color:#1e293b;"><strong style="color:#2563eb;">Q</strong> = Total kuadrat yang diamati (minimal 7)</div>
+        </div>
+        <div style="background:rgba(255,255,255,.7);border-radius:7px;padding:8px 12px;font-size:12.5px;color:#1e293b;">
+          <strong>Contoh:</strong> Spesies X ditemukan di 5 dari 7 kuadrat → <strong style="color:#059669;">5 ÷ 7 × 100 = 71,43%</strong>
+        </div>
+      </div>
+    </div>
 
-        <!-- Variasi Distribusi -->
-        <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
-          <div style="font-size:9px;font-weight:700;color:#065f46;letter-spacing:.07em;text-transform:uppercase;">🌱 Variasi Distribusi</div>
-          <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
-            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Kondisi tanah &amp; nutrisi</div>
-            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Perbanyakan vegetatif &amp; biji</div>
-            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Aktivitas biotik (penggembalaan)</div>
-            <div style="font-size:10.5px;color:var(--text2);display:flex;gap:5px;align-items:flex-start;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">›</span>Predasi serangga / penyakit</div>
-          </div>
-          <div style="border-top:1px solid var(--border);padding-top:5px;font-size:10.5px;color:var(--text2);">
-            <span style="color:var(--green);font-weight:700;">Tinggi</span> = persebaran luas &nbsp;|&nbsp; <span style="color:var(--red);font-weight:700;">Rendah</span> = sedikit kuadrat
+    <!-- Tab Panel: Variasi Distribusi (hidden) -->
+    <div id="tab-distribusi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;flex-shrink:0;">
+        <div class="ch" style="margin-bottom:10px;">
+          <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#064e3b,#059669);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🌱</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.4vw,15px);font-weight:700;color:#1e293b;">Variasi Distribusi Tumbuhan</div>
+            <div style="font-size:10px;color:#059669;">Faktor-faktor yang mempengaruhi persebaran spesies</div>
           </div>
         </div>
-
-        <!-- Tingkat Keanekaragaman -->
-        <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px;display:flex;flex-direction:column;gap:5px;">
-          <div style="font-size:9px;font-weight:700;color:#6d28d9;letter-spacing:.07em;text-transform:uppercase;">🧬 Tingkat Keanekaragaman</div>
-          <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
-            <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:5px;padding:5px 8px;"><strong style="font-size:11px;color:#5b21b6;">Alpha (α)</strong><div style="font-size:10px;color:var(--text2);">Dalam satu ekosistem/habitat</div></div>
-            <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;"><strong style="font-size:11px;color:#7e22ce;">Beta (β)</strong><div style="font-size:10px;color:var(--text2);">Antar ekosistem berbeda</div></div>
-            <div style="background:#faf5ff;border:1px solid #ddd6fe;border-radius:5px;padding:5px 8px;"><strong style="font-size:11px;color:#6d28d9;">Gamma (γ)</strong><div style="font-size:10px;color:var(--text2);">Total skala regional</div></div>
+        <p style="font-size:clamp(11.5px,1.2vw,13.5px);color:#475569;line-height:1.75;margin-bottom:14px;">
+          Distribusi tumbuhan di alam tidak merata karena dipengaruhi berbagai faktor <strong style="color:#059669;">abiotik</strong> dan <strong style="color:#059669;">biotik</strong>. Memahami variasi ini penting untuk menginterpretasikan data frekuensi yang diperoleh dari metode kuadrat.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+          <div style="display:flex;align-items:flex-start;gap:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:22px;flex-shrink:0;margin-top:2px;">🌍</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:700;color:#059669;margin-bottom:3px;">Kondisi Tanah &amp; Nutrisi</div>
+              <div style="font-size:11.5px;color:#334155;line-height:1.6;">Kesuburan tanah, kadar air, pH, dan kandungan mineral menentukan spesies apa yang dapat tumbuh dominan. Contoh: tumbuhan paku lebih sering di tanah lembab &amp; teduh.</div>
+            </div>
           </div>
-          <div style="border-top:1px solid var(--border);padding-top:5px;font-size:10px;color:var(--text3);">Metode kuadrat mengukur keanekaragaman <strong style="color:#6d28d9;">alpha (α)</strong>.</div>
+          <div style="display:flex;align-items:flex-start;gap:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:22px;flex-shrink:0;margin-top:2px;">🌿</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:700;color:#0d9488;margin-bottom:3px;">Perbanyakan Vegetatif &amp; Biji</div>
+              <div style="font-size:11.5px;color:#334155;line-height:1.6;">Tanaman yang berkembang biak secara vegetatif (stolon, rimpang) cenderung membentuk <strong>koloni padat lokal</strong>, sedangkan penyebaran biji oleh angin/hewan menghasilkan distribusi lebih luas.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:22px;flex-shrink:0;margin-top:2px;">🐄</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:700;color:#16a34a;margin-bottom:3px;">Aktivitas Biotik</div>
+              <div style="font-size:11.5px;color:#334155;line-height:1.6;">Penggembalaan, kompetisi antar spesies, dan aktivitas polinator memengaruhi kelimpahan. Rumput yang sering dimakan hewan ternak akan memiliki frekuensi lebih rendah.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:22px;flex-shrink:0;margin-top:2px;">⚠️</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:700;color:#d97706;margin-bottom:3px;">Gangguan Lingkungan</div>
+              <div style="font-size:11.5px;color:#334155;line-height:1.6;">Predasi serangga, penyakit tanaman, polusi udara (kawasan pabrik), dan aktivitas manusia seperti pemangkasan atau penggunaan herbisida dapat menurunkan frekuensi drastis.</div>
+            </div>
+          </div>
         </div>
+        <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;">🟢</span><span style="font-size:12px;color:#6ee7b7;"><strong>Frekuensi Tinggi</strong> = distribusi luas, kondisi ekosistem mendukung</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;">🔴</span><span style="font-size:12px;color:#fca5a5;"><strong>Frekuensi Rendah</strong> = hanya ada di sedikit kuadrat, spesies langka/terganggu</span></div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Tab Panel: Tingkat Keanekaragaman (hidden) -->
+    <div id="tab-keanekaragaman" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;flex-shrink:0;">
+        <div class="ch" style="margin-bottom:10px;">
+          <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#4c1d95,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🧬</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.4vw,15px);font-weight:700;color:#1e293b;">Tingkat Keanekaragaman Hayati</div>
+            <div style="font-size:10px;color:#7c3aed;">Alpha · Beta · Gamma</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11.5px,1.2vw,13.5px);color:#475569;line-height:1.75;margin-bottom:14px;">
+          Keanekaragaman hayati diukur pada tiga tingkatan ekologis. Metode kuadrat terutama digunakan untuk mengukur keanekaragaman <strong style="color:#7c3aed;">alpha (α)</strong> secara kuantitatif dalam satu habitat.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+          <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #c4b5fd;border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-10px;top:-10px;width:60px;height:60px;border-radius:50%;background:rgba(124,58,237,0.08);pointer-events:none;"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">α</div>
+              <strong style="font-size:clamp(12px,1.4vw,14px);color:#5b21b6;">Keanekaragaman Alpha (α) — Lokal</strong>
+            </div>
+            <div style="font-size:12.5px;color:#334155;line-height:1.65;margin-bottom:6px;">Jumlah spesies yang ditemukan <strong>dalam satu ekosistem/habitat</strong> tertentu. Diukur langsung menggunakan metode kuadrat. Nilai α tinggi menunjukkan ekosistem yang sehat dan produktif.</div>
+            <div style="background:rgba(124,58,237,0.08);border-radius:7px;padding:7px 10px;font-size:11.5px;color:#5b21b6;"><strong>Contoh:</strong> Halaman sekolah dengan 6 spesies tumbuhan berbeda memiliki α = 6</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border:2px solid #e9d5ff;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#9333ea,#c084fc);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#fff;">β</div>
+              <strong style="font-size:clamp(12px,1.4vw,14px);color:#7e22ce;">Keanekaragaman Beta (β) — Antar Habitat</strong>
+            </div>
+            <div style="font-size:12.5px;color:#334155;line-height:1.65;margin-bottom:6px;">Perubahan komposisi spesies <strong>antar dua atau lebih ekosistem berbeda</strong>. Dihitung dengan membandingkan data metode kuadrat dari lokasi yang berbeda.</div>
+            <div style="background:rgba(147,51,234,0.07);border-radius:7px;padding:7px 10px;font-size:11.5px;color:#7e22ce;"><strong>Contoh:</strong> Membandingkan spesies di halaman sekolah vs tepi sungai → perbedaan komposisinya = β</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:2px solid #ddd6fe;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#6d28d9,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#fff;">γ</div>
+              <strong style="font-size:clamp(12px,1.4vw,14px);color:#6d28d9;">Keanekaragaman Gamma (γ) — Regional</strong>
+            </div>
+            <div style="font-size:12.5px;color:#334155;line-height:1.65;margin-bottom:6px;">Total keanekaragaman spesies pada <strong>skala regional atau lanskap</strong>, mencakup semua habitat dan ekosistem di suatu wilayah geografis.</div>
+            <div style="background:rgba(109,40,217,0.07);border-radius:7px;padding:7px 10px;font-size:11.5px;color:#6d28d9;"><strong>Contoh:</strong> Total spesies tumbuhan di seluruh wilayah Kabupaten = γ</div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,#0f172a,#2e1065);border-radius:9px;padding:10px 14px;">
+          <div style="font-size:11.5px;color:#c4b5fd;line-height:1.6;">💡 Dalam simulasi ini, kamu mengukur keanekaragaman <strong style="color:#a78bfa;">alpha (α)</strong> pada 5 tipe ekosistem: halaman sekolah, halaman rumah, tepi jalan, tepi sungai, dan kawasan pabrik — kemudian dapat membandingkannya sebagai analisis <strong style="color:#a78bfa;">beta (β)</strong>.</div>
+        </div>
       </div>
     </div>
 
@@ -418,71 +619,71 @@ document.addEventListener('click',function(e){
 
         <!-- Alat -->
         <div style="font-size:9.5px;font-weight:700;color:var(--acc);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">⚙️ Alat</div>
-        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:8px;flex-shrink:0;">
-          <div class="drag-item" draggable="true" data-id="tali" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🪢</div>
-            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Tali</div>
-            <div style="font-size:9px;color:var(--text3);">Batas kuadrat</div>
+        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;margin-bottom:8px;flex-shrink:0;">
+          <div class="drag-item" draggable="true" data-id="tali" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🪢</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tali</div>
+            <div style="font-size:9.5px;color:var(--text3);">Batas kuadrat</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="paku" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">📌</div>
-            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Paku/Pasak</div>
-            <div style="font-size:9px;color:var(--text3);">Penanda sudut</div>
+          <div class="drag-item" draggable="true" data-id="paku" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">📌</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Paku/Pasak</div>
+            <div style="font-size:9.5px;color:var(--text3);">Penanda sudut</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="palu" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🔨</div>
-            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Palu</div>
-            <div style="font-size:9px;color:var(--text3);">Pasang paku</div>
+          <div class="drag-item" draggable="true" data-id="palu" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🔨</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Palu</div>
+            <div style="font-size:9.5px;color:var(--text3);">Pasang paku</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="meteran" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">📏</div>
-            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Meteran</div>
-            <div style="font-size:9px;color:var(--text3);">1 m × 1 m</div>
+          <div class="drag-item" draggable="true" data-id="meteran" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">📏</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Meteran</div>
+            <div style="font-size:9.5px;color:var(--text3);">1 m × 1 m</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="clipboard" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">📋</div>
-            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Lembar Data</div>
-            <div style="font-size:9px;color:var(--text3);">Tabel pengamatan</div>
+          <div class="drag-item" draggable="true" data-id="clipboard" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">📋</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Lembar Data</div>
+            <div style="font-size:9.5px;color:var(--text3);">Tabel pengamatan</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="pensil" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">✏️</div>
-            <div style="font-size:10px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
-            <div style="font-size:9px;color:var(--text3);">Pencatat data</div>
+          <div class="drag-item" draggable="true" data-id="pensil" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">✏️</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
+            <div style="font-size:9.5px;color:var(--text3);">Pencatat data</div>
           </div>
         </div>
 
         <!-- Bahan: Tumbuhan + 5 Lokasi -->
         <div style="font-size:9.5px;font-weight:700;color:#059669;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">🌿 Bahan &amp; Lokasi</div>
-        <div id="drag-bahan-src" style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;flex-shrink:0;">
-          <div class="drag-item" draggable="true" data-id="tumbuhan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🌿</div>
-            <div style="font-size:10px;font-weight:600;color:#065f46;">Tumbuhan</div>
-            <div style="font-size:9px;color:var(--text3);">Objek penelitian</div>
+        <div id="drag-bahan-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;flex-shrink:0;">
+          <div class="drag-item" draggable="true" data-id="tumbuhan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🌿</div>
+            <div style="font-size:11px;font-weight:600;color:#065f46;">Tumbuhan</div>
+            <div style="font-size:9.5px;color:var(--text3);">Objek penelitian</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-sekolah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🏫</div>
-            <div style="font-size:10px;font-weight:600;color:#065f46;">Halaman Sekolah</div>
-            <div style="font-size:9px;color:var(--text3);">Lokasi 1</div>
+          <div class="drag-item" draggable="true" data-id="lok-sekolah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🏫</div>
+            <div style="font-size:11px;font-weight:600;color:#065f46;">Halaman Sekolah</div>
+            <div style="font-size:9.5px;color:var(--text3);">Lokasi 1</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-rumah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🏠</div>
-            <div style="font-size:10px;font-weight:600;color:#065f46;">Halaman Rumah</div>
-            <div style="font-size:9px;color:var(--text3);">Lokasi 2</div>
+          <div class="drag-item" draggable="true" data-id="lok-rumah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🏠</div>
+            <div style="font-size:11px;font-weight:600;color:#065f46;">Halaman Rumah</div>
+            <div style="font-size:9.5px;color:var(--text3);">Lokasi 2</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-jalanan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🛣️</div>
-            <div style="font-size:10px;font-weight:600;color:#065f46;">Tepi Jalan</div>
-            <div style="font-size:9px;color:var(--text3);">Lokasi 3</div>
+          <div class="drag-item" draggable="true" data-id="lok-jalanan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🛣️</div>
+            <div style="font-size:11px;font-weight:600;color:#065f46;">Tepi Jalan</div>
+            <div style="font-size:9.5px;color:var(--text3);">Lokasi 3</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-sungai" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🌊</div>
-            <div style="font-size:10px;font-weight:600;color:#065f46;">Tepi Sungai</div>
-            <div style="font-size:9px;color:var(--text3);">Lokasi 4</div>
+          <div class="drag-item" draggable="true" data-id="lok-sungai" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🌊</div>
+            <div style="font-size:11px;font-weight:600;color:#065f46;">Tepi Sungai</div>
+            <div style="font-size:9.5px;color:var(--text3);">Lokasi 4</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-pabrik" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:8px;padding:7px 4px;text-align:center;cursor:grab;">
-            <div style="font-size:22px;margin-bottom:2px;">🏭</div>
-            <div style="font-size:10px;font-weight:600;color:#065f46;">Kaw. Pabrik</div>
-            <div style="font-size:9px;color:var(--text3);">Lokasi 5</div>
+          <div class="drag-item" draggable="true" data-id="lok-pabrik" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:3px;">🏭</div>
+            <div style="font-size:11px;font-weight:600;color:#065f46;">Kaw. Pabrik</div>
+            <div style="font-size:9.5px;color:var(--text3);">Lokasi 5</div>
           </div>
         </div>
 
@@ -510,14 +711,14 @@ document.addEventListener('click',function(e){
 
         <!-- Drop zone alat -->
         <div style="font-size:9.5px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;flex-shrink:0;">⚙️ Alat Percobaan</div>
-        <div id="drop-alat" data-zone="alat" style="flex:1;min-height:0;border:2px dashed #93c5fd;border-radius:8px;background:#eff6ff;padding:7px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;margin-bottom:8px;position:relative;transition:border-color .3s,background .3s;">
-          <span id="drop-alat-hint" style="color:#93c5fd;font-size:11px;width:100%;text-align:center;padding:8px 0;">← Drag alat ke sini</span>
+        <div id="drop-alat" data-zone="alat" style="min-height:110px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-bottom:10px;position:relative;transition:background .2s;">
+          <span id="drop-alat-hint" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag alat ke sini</span>
         </div>
 
         <!-- Drop zone bahan -->
         <div style="font-size:9.5px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;flex-shrink:0;">🌿 Bahan &amp; Lokasi Penelitian</div>
-        <div id="drop-bahan" data-zone="bahan" style="flex:1;min-height:0;border:2px dashed #86efac;border-radius:8px;background:#f0fdf4;padding:7px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;position:relative;transition:border-color .3s,background .3s;">
-          <span id="drop-bahan-hint" style="color:#86efac;font-size:11px;width:100%;text-align:center;padding:8px 0;">← Drag bahan &amp; lokasi ke sini</span>
+        <div id="drop-bahan" data-zone="bahan" style="min-height:110px;border:2px dashed #86efac;border-radius:10px;background:#f0fdf4;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;position:relative;transition:background .2s;">
+          <span id="drop-bahan-hint" style="color:#86efac;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag bahan &amp; lokasi ke sini</span>
         </div>
       </div>
     </div>
@@ -672,7 +873,10 @@ document.addEventListener('click',function(e){
         <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,2vw,18px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
       </div>
-      <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+        <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(37,99,235,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(37,99,235,0.25)'">🖨️ Cetak / Download PDF</button>
+      </div>
     </div>
     <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
@@ -702,6 +906,40 @@ document.addEventListener('click',function(e){
 </div><!-- #app -->
 
 <script>
+// ===================== TEORI TABS =====================
+function showTeoriTab(name, btn) {
+  // Hide all tab panels
+  ['metode','distribusi','keanekaragaman'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) { el.style.display = 'none'; el.style.flexDirection = ''; }
+  });
+  // Reset all tab buttons
+  ['metode','distribusi','keanekaragaman'].forEach(t => {
+    const b = document.getElementById('tab-btn-'+t);
+    if (b) {
+      b.style.background = 'var(--surf)';
+      b.style.color = 'var(--text2)';
+      b.style.border = '1.5px solid var(--border)';
+      b.style.boxShadow = 'none';
+    }
+  });
+  // Show selected panel
+  const panel = document.getElementById('tab-'+name);
+  if (panel) { panel.style.display = 'flex'; panel.style.flexDirection = 'column'; }
+  // Activate selected button
+  const colors = {metode:'#2563eb,#3b82f6', distribusi:'#059669,#10b981', keanekaragaman:'#7c3aed,#a78bfa'};
+  const shadows = {metode:'rgba(37,99,235,0.35)', distribusi:'rgba(5,150,105,0.35)', keanekaragaman:'rgba(124,58,237,0.35)'};
+  if (btn) {
+    btn.style.background = 'linear-gradient(135deg,'+colors[name]+')';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.boxShadow = '0 2px 10px '+shadows[name];
+  }
+  // Play click sound
+  const sfx = document.getElementById('clickSfx');
+  if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); }
+}
+
 // ===================== NAV =====================
 function toggleNav(){document.getElementById('mainNav').classList.toggle('open');}
 function closeNav(){document.getElementById('mainNav').classList.remove('open');}
@@ -718,58 +956,57 @@ function show(id,btn){
 
 // ===================== PROSEDUR STEPS =====================
 const simSteps=[
-  {icon:"📍",text:"Pilih <strong>lokasi penelitian</strong> dari menu dropdown di panel kontrol simulasi."},
-  {icon:"🔲",text:"Klik <strong>pin bernomor</strong> pada peta untuk membuka tampilan closeup kuadrat tersebut."},
-  {icon:"👁️",text:"Amati <strong>spesies tumbuhan</strong> yang hadir dalam petak kuadrat tersebut."},
-  {icon:"📊",text:"Klik <strong>Lembar Kerja</strong>, masukkan <strong>Y</strong> (hadir) atau <strong>N</strong> (tidak hadir)."},
-  {icon:"🔄",text:"Ulangi untuk semua <strong>7 kuadrat</strong> yang tersedia di area penelitian."},
-  {icon:"📈",text:"Lembar kerja <strong>menghitung otomatis</strong> nilai N, Q, dan %Frekuensi setiap spesies."},
-  {icon:"🌍",text:"Ganti lingkungan dan <strong>bandingkan</strong> pola distribusi spesies antar ekosistem."},
+  {icon:'https://denicendrianto41.github.io/alat-bahan.png',text:'Pilih <strong>lokasi penelitian</strong> dari menu dropdown di panel kontrol simulasi (Halaman Sekolah, Halaman Rumah, Tepi Jalan, Tepi Sungai, atau Kawasan Pabrik).'},
+  {icon:'https://denicendrianto41.github.io/simulasi.png',text:'Klik <strong>pin bernomor</strong> pada peta untuk membuka tampilan closeup kuadrat tersebut dan melihat spesies di dalamnya.'},
+  {icon:'https://denicendrianto41.github.io/teori.png',text:'Amati <strong>spesies tumbuhan</strong> yang hadir dalam petak kuadrat — perhatikan warna dan bentuk ikonnya pada legenda.'},
+  {icon:'https://denicendrianto41.github.io/diskusi.png',text:'Klik <strong>Lembar Kerja</strong>, masukkan <strong>Y</strong> (hadir) atau <strong>N</strong> (tidak hadir) untuk setiap spesies di kuadrat tersebut.'},
+  {icon:'https://denicendrianto41.github.io/prosedur.png',text:'Ulangi langkah 2–4 untuk semua <strong>7 kuadrat</strong> yang tersedia hingga semua data terisi.'},
+  {icon:'https://denicendrianto41.github.io/simulasi.png',text:'Lembar kerja <strong>menghitung otomatis</strong> nilai N (jumlah kuadrat berisi spesies), Q (total kuadrat), dan %Frekuensi.'},
+  {icon:'https://denicendrianto41.github.io/tujuan.png',text:'Ganti lingkungan dan <strong>bandingkan</strong> pola distribusi spesies antar ekosistem untuk analisis keanekaragaman.'},
 ];
 (function buildSteps(){
   const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea'];
-  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">
-    ${simSteps.map((s,i)=>{
-      const clr=colors[i%colors.length];
-      const nclr=colors[(i+1)%colors.length];
-      const isLast=i===simSteps.length-1;
-      return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;" class="map-step">
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
-          <div class="step-icon-btn" data-step="${i}" style="width:36px;height:36px;border-radius:50%;background:${clr};display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;font-size:16px;cursor:pointer;transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s;">${s.icon}</div>
-          ${!isLast?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nclr}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
-        </div>
-        <div id="step-box-${i}" style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:8px;padding:6px 10px;margin-bottom:${isLast?'0':'0px'};transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,background .25s;">
-          <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-          <p style="font-size:clamp(11px,1.2vw,12.5px);color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>`;
-
-  // Attach click zoom effect to each icon
-  const stepSfx=new Audio('https://denicendrianto41.github.io/jump.wav');
-  document.querySelectorAll('.step-icon-btn').forEach(btn=>{
-    btn.addEventListener('click',function(){
-      const idx=+this.dataset.step;
-      const box=document.getElementById('step-box-'+idx);
-      // Sound
-      stepSfx.currentTime=0;stepSfx.play().catch(()=>{});
-      // Icon pop
-      this.style.transform='scale(1.35)';
-      this.style.boxShadow='0 6px 20px '+this.style.background+'88';
-      setTimeout(()=>{this.style.transform='scale(1)';},300);
-      // Box zoom
-      box.style.transform='scale(1.04)';
-      box.style.boxShadow='0 4px 18px rgba(0,0,0,0.12)';
-      box.style.background=box.style.background.replace('10','25');
-      setTimeout(()=>{
-        box.style.transform='scale(1)';
-        box.style.boxShadow='none';
-        box.style.background='';
-      },400);
-    });
-  });
+  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
+    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===simSteps.length-1,right=i%2===0;
+    return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
+      ${right?`
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
+        <button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+          <img src="${s.icon}" style="width:24px;height:24px;object-fit:contain;pointer-events:none;filter:brightness(0) invert(1);">
+        </button>
+        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+      </div>
+      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
+        <div style="position:absolute;left:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${c}40;"></div>
+        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>`:`
+      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
+        <div style="position:absolute;right:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${c}40;"></div>
+        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
+        <button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+          <img src="${s.icon}" style="width:24px;height:24px;object-fit:contain;pointer-events:none;filter:brightness(0) invert(1);">
+        </button>
+        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+      </div>`}
+    </div>`;
+  }).join('')}</div>`;
 })();
+function zoomStep(btn){
+  const sfx=document.getElementById('clickSfx');
+  if(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
+  const row=btn.closest('.map-step');
+  if(!row)return;
+  const box=row.querySelector('.step-box');
+  if(!box)return;
+  box.classList.remove('step-box-zoom');
+  void box.offsetWidth;
+  box.classList.add('step-box-zoom');
+  box.addEventListener('animationend',()=>box.classList.remove('step-box-zoom'),{once:true});
+}
 
 // ===================== SIMULATION DATA =====================
 const SPECIES=[
@@ -1230,154 +1467,242 @@ function clearDQ(){
   document.querySelectorAll('.disc-area').forEach(t=>t.value='');
 }
 
-// ===================== DRAG & DROP =====================
-(function(){
-  const CORRECT_ALAT=new Set(['tali','paku','palu','meteran','clipboard','pensil']);
-  const CORRECT_BAHAN=new Set(['tumbuhan','lok-sekolah','lok-rumah','lok-jalanan','lok-sungai','lok-pabrik']);
-  const TOTAL_ITEMS=CORRECT_ALAT.size+CORRECT_BAHAN.size; // 12
-  let selected=null,ghost=null;
-
-  const sfxBenar={play:()=>{}};const sfxSalah={play:()=>{}};
-  try{
-    const b=new Audio('https://denicendrianto41.github.io/benar.wav');const s=new Audio('https://denicendrianto41.github.io/salah.wav');
-    sfxBenar.play=()=>{b.currentTime=0;b.play().catch(()=>{});};
-    sfxSalah.play=()=>{s.currentTime=0;s.play().catch(()=>{});};
-  }catch(e){}
-
-  function updateProgress(){
-    const alatCount=document.getElementById('drop-alat').querySelectorAll('[data-id]').length;
-    const bahanCount=document.getElementById('drop-bahan').querySelectorAll('[data-id]').length;
-    const total=alatCount+bahanCount;
-    document.getElementById('ab-progress-label').textContent=total+' / '+TOTAL_ITEMS+' item';
-    document.getElementById('ab-progress-bar').style.width=((total/TOTAL_ITEMS)*100)+'%';
-    if(total>=TOTAL_ITEMS) setTimeout(showSelamat,500);
+function printDiskusi(){
+  const questions=[
+    'Apa yang dimaksud dengan frekuensi populasi tumbuhan?',
+    'Bagaimana cara menghitung frekuensi dengan metode kuadrat?',
+    'Spesies mana yang memiliki frekuensi tertinggi di lingkungan yang kamu amati?',
+    'Mengapa distribusi spesies berbeda-beda antar lingkungan?',
+    'Apa hubungan antara frekuensi populasi tumbuhan dengan tingkat keanekaragaman hayati suatu ekosistem?'
+  ];
+  const answers=[];
+  for(let i=1;i<=5;i++){
+    const el=document.querySelector('.disc-area[oninput*="saveDQ('+i+',"]');
+    answers.push(el?el.value.trim():'');
   }
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt">${answers[i]||'<em style="color:#94a3b8;">Belum diisi</em>'}</div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Keanekaragaman Hayati: Metode Kuadrat</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #2563eb;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1d4ed8;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{
+    body{padding:20px 28px;}
+    @page{margin:1.5cm;size:A4 portrait;}
+  }
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">&#x1F331; Lab Virtual – Keanekaragaman Hayati: Metode Kuadrat</div>
+  <div class="lab-sub">Biologi · Ekologi Tumbuhan · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">&#x1F4C5; Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Jawaban Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · Dicetak dari aplikasi Lab Virtual Keanekaragaman Hayati</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+}
 
-  // ── Confetti ──
-  function showSelamat(){
-    const ov=document.getElementById('selamatOverlay');
-    const card=document.getElementById('selamatCard');
+// ===================== DRAG & DROP =====================
+// Audio feedback persis seperti ragi.html
+const CORRECT_ALAT=new Set(['tali','paku','palu','meteran','clipboard','pensil']);
+const CORRECT_BAHAN=new Set(['tumbuhan','lok-sekolah','lok-rumah','lok-jalanan','lok-sungai','lok-pabrik']);
+const TOTAL_ITEMS=CORRECT_ALAT.size+CORRECT_BAHAN.size;
+let abSelected=null,abGOffX=0,abGOffY=0;
+
+function abGetGhost(){return document.getElementById('dragGhost');}
+function abCreateGhost(el,cx,cy){
+  const g=abGetGhost();
+  g.innerHTML=el.innerHTML;
+  g.style.cssText=`position:fixed;pointer-events:none;z-index:9999;opacity:0.8;transform:scale(0.9) rotate(-4deg);width:${el.offsetWidth}px;display:block;background:${el.style.background||'#eff6ff'};border:${el.style.border||'1.5px dashed #93c5fd'};border-radius:10px;padding:9px;text-align:center;`;
+  abGOffX=el.offsetWidth/2;abGOffY=el.offsetHeight/2;
+  abMoveGhost(cx,cy);
+}
+function abMoveGhost(cx,cy){const g=abGetGhost();g.style.left=(cx-abGOffX)+'px';g.style.top=(cy-abGOffY)+'px';}
+function abRemoveGhost(){const g=abGetGhost();g.style.display='none';}
+function abHitTest(el,cx,cy){const r=el.getBoundingClientRect();return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom;}
+function abHighlight(on){
+  ['drop-alat','drop-bahan'].forEach(id=>{
+    const z=document.getElementById(id);
+    if(z) z.style.transform=on?'scale(1.01)':'';
+  });
+}
+
+/* ── Audio feedback identik ragi.html ── */
+const _sfxBenar=new Audio('https://denicendrianto41.github.io/benar.wav');
+const _sfxSalah=new Audio('https://denicendrianto41.github.io/salah.wav');
+function _playSfx(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
+
+function abShowBenar(zone){
+  _playSfx(_sfxBenar);
+  const toast=document.createElement('div');
+  toast.innerHTML='✅ Kamu Benar!';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(5,150,105,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
+  zone.style.borderColor='#10b981';zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
+  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},1800);
+}
+function abShowSalah(zone){
+  _playSfx(_sfxSalah);
+  zone.style.borderColor='#ef4444';zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+  zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},800);
+  const toast=document.createElement('div');
+  toast.innerHTML='❌ Salah! Coba lagi.';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
+}
+
+function abPlace(zone,srcEl){
+  const id=srcEl.dataset.id;
+  if(zone.querySelector('[data-id="'+id+'"]'))return;
+  const zt=zone.dataset.zone;
+  const isAlat=CORRECT_ALAT.has(id),isBahan=CORRECT_BAHAN.has(id);
+  if((zt==='alat'&&!isAlat)||(zt==='bahan'&&!isBahan)){abShowSalah(zone);return;}
+  const hint=document.getElementById(zt==='alat'?'drop-alat-hint':'drop-bahan-hint');
+  if(hint)hint.style.display='none';
+  const clone=srcEl.cloneNode(true);
+  clone.removeAttribute('draggable');clone.style.cursor='default';clone.style.position='relative';
+  clone.style.transform='scale(0.85)';clone.style.transition='transform .2s cubic-bezier(.34,1.56,.64,1)';
+  requestAnimationFrame(()=>{clone.style.transform='scale(1)';});
+  const rm=document.createElement('button');rm.textContent='✕';rm.title='Hapus';
+  rm.style.cssText='position:absolute;top:2px;right:2px;background:rgba(220,38,38,0.2);border:none;border-radius:50%;width:20px;height:20px;font-size:10px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;padding:0;touch-action:manipulation;';
+  rm.addEventListener('pointerdown',e=>e.stopPropagation());
+  rm.addEventListener('click',e=>{
+    e.stopPropagation();clone.remove();
+    const hint2=document.getElementById(zt==='alat'?'drop-alat-hint':'drop-bahan-hint');
+    if(hint2&&!zone.querySelector('[data-id]'))hint2.style.display='';
+    abUpdateProgress();
+  });
+  clone.appendChild(rm);zone.appendChild(clone);
+  abShowBenar(zone);
+  abUpdateProgress();
+}
+
+function abUpdateProgress(){
+  const alatCount=document.querySelectorAll('#drop-alat [data-id]').length;
+  const bahanCount=document.querySelectorAll('#drop-bahan [data-id]').length;
+  const total=alatCount+bahanCount;
+  const lbl=document.getElementById('ab-progress-label');
+  const bar=document.getElementById('ab-progress-bar');
+  if(lbl)lbl.textContent=total+' / '+TOTAL_ITEMS+' item';
+  if(bar)bar.style.width=((total/TOTAL_ITEMS)*100)+'%';
+  if(total>=TOTAL_ITEMS)setTimeout(abShowSelamat,400);
+}
+
+function abShowSelamat(){
+  new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
+  const ov=document.getElementById('selamatOverlay');
+  const card=document.getElementById('selamatCard');
+  if(ov&&card){
     ov.style.display='block';
     requestAnimationFrame(()=>{card.style.transform='translate(-50%,-50%) scale(1)';});
-    try{const sfxT=new Audio('https://denicendrianto41.github.io/tring.wav');sfxT.play().catch(()=>{});}catch(e){}
     startConfetti();
   }
-  window.tutupSelamat=function(){
-    const ov=document.getElementById('selamatOverlay');
-    const card=document.getElementById('selamatCard');
-    card.style.transform='translate(-50%,-50%) scale(0)';
-    setTimeout(()=>{ov.style.display='none';stopConfetti();},400);
-  };
+}
+window.tutupSelamat=function(){
+  const ov=document.getElementById('selamatOverlay');
+  const card=document.getElementById('selamatCard');
+  if(card)card.style.transform='translate(-50%,-50%) scale(0)';
+  setTimeout(()=>{if(ov)ov.style.display='none';stopConfetti();},400);
+};
 
-  let confettiAnim=null;
-  const confColors=['#2563eb','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#f97316'];
-  function startConfetti(){
-    const cv=document.getElementById('confettiCanvas');
-    cv.width=window.innerWidth;cv.height=window.innerHeight;
-    const ctx=cv.getContext('2d');
-    const pieces=Array.from({length:120},()=>({
-      x:Math.random()*cv.width,y:-10-Math.random()*200,
-      w:6+Math.random()*8,h:4+Math.random()*6,
-      color:confColors[Math.floor(Math.random()*confColors.length)],
-      rot:Math.random()*360,spin:(Math.random()-.5)*8,
-      vx:(Math.random()-.5)*3,vy:2+Math.random()*3
-    }));
-    function draw(){
-      ctx.clearRect(0,0,cv.width,cv.height);
-      pieces.forEach(p=>{
-        p.x+=p.vx;p.y+=p.vy;p.rot+=p.spin;
-        if(p.y>cv.height){p.y=-10;p.x=Math.random()*cv.width;}
-        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
-        ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
-      });
-      confettiAnim=requestAnimationFrame(draw);
-    }
-    draw();
-  }
-  function stopConfetti(){
-    if(confettiAnim)cancelAnimationFrame(confettiAnim);
-    const cv=document.getElementById('confettiCanvas');
-    cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
-  }
-
-  function showToast(msg,ok){
-    const t=document.createElement('div');
-    t.textContent=msg;
-    t.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.7);
-      background:${ok?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)'};
-      color:#fff;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;
-      padding:14px 28px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.3);
-      z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);`;
-    document.body.appendChild(t);
-    requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translate(-50%,-50%) scale(1)';});
-    setTimeout(()=>{t.style.opacity='0';t.style.transform='translate(-50%,-50%) scale(0.85)';setTimeout(()=>t.remove(),300);},1400);
-  }
-
-  function createGhost(el,cx,cy){
-    if(ghost)ghost.remove();
-    ghost=el.cloneNode(true);
-    ghost.style.cssText=`position:fixed;pointer-events:none;z-index:8000;opacity:.85;transform:scale(1.08);border-radius:10px;width:${el.offsetWidth}px;box-shadow:0 8px 24px rgba(0,0,0,0.22);`;
-    ghost.style.left=(cx-el.offsetWidth/2)+'px';ghost.style.top=(cy-el.offsetHeight/2)+'px';
-    document.body.appendChild(ghost);
-  }
-  function moveGhost(cx,cy){if(!ghost)return;ghost.style.left=(cx-parseFloat(ghost.style.width)/2)+'px';ghost.style.top=(cy-ghost.offsetHeight/2)+'px';}
-  function removeGhost(){if(ghost){ghost.remove();ghost=null;}}
-  function hitTest(el,cx,cy){const r=el.getBoundingClientRect();return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom;}
-
-  function placeInZone(zone,srcEl){
-    const zId=zone.id;
-    const hintId=zId==='drop-alat'?'drop-alat-hint':'drop-bahan-hint';
-    const cs=zId==='drop-alat'?CORRECT_ALAT:CORRECT_BAHAN;
-    const id=srcEl.dataset.id;
-    if(zone.querySelector(`[data-id="${id}"]`))return;
-    if(!cs.has(id)){
-      sfxSalah.play();showToast('❌ Salah! Coba lagi.',false);
-      zone.style.borderColor='#ef4444';zone.style.background='#fef2f2';
-      setTimeout(()=>{zone.style.borderColor='';zone.style.background='';},800);
-      return;
-    }
-    const h=document.getElementById(hintId);if(h)h.style.display='none';
-    const cl=srcEl.cloneNode(true);cl.style.cursor='default';cl.removeAttribute('draggable');
-    cl.style.transform='scale(0.8)';cl.style.transition='transform .25s cubic-bezier(.34,1.56,.64,1)';
-    requestAnimationFrame(()=>{cl.style.transform='scale(1)';});
-    const rm=document.createElement('button');rm.textContent='✕';
-    rm.style.cssText='position:absolute;top:2px;right:2px;background:rgba(220,38,38,.18);border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;';
-    rm.addEventListener('click',e=>{
-      e.stopPropagation();cl.remove();
-      if(!zone.querySelector('[data-id]')){const h2=document.getElementById(hintId);if(h2)h2.style.display='';}
-      updateProgress();
+let confettiAnim=null;
+const confColors=['#2563eb','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#f97316'];
+function startConfetti(){
+  const cv=document.getElementById('confettiCanvas');
+  if(!cv)return;
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const pieces=Array.from({length:120},()=>({
+    x:Math.random()*cv.width,y:-10-Math.random()*200,
+    w:6+Math.random()*8,h:4+Math.random()*6,
+    color:confColors[Math.floor(Math.random()*confColors.length)],
+    rot:Math.random()*360,spin:(Math.random()-.5)*8,
+    vx:(Math.random()-.5)*3,vy:2+Math.random()*3
+  }));
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.spin;
+      if(p.y>cv.height){p.y=-10;p.x=Math.random()*cv.width;}
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
     });
-    cl.appendChild(rm);zone.appendChild(cl);
-    // Flash zone green
-    zone.style.borderColor='#10b981';zone.style.background=zId==='drop-alat'?'#dbeafe':'#dcfce7';
-    setTimeout(()=>{zone.style.borderColor='';zone.style.background='';},900);
-    sfxBenar.play();showToast('✅ Benar!',true);
-    updateProgress();
+    confettiAnim=requestAnimationFrame(draw);
   }
+  draw();
+}
+function stopConfetti(){
+  if(confettiAnim)cancelAnimationFrame(confettiAnim);
+  const cv=document.getElementById('confettiCanvas');
+  if(cv)cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+}
 
-  function attachItem(el){
-    el.addEventListener('pointerdown',e=>{
-      if(e.target.tagName==='BUTTON')return;
-      e.preventDefault();el.setPointerCapture(e.pointerId);
-      selected=el;el.style.opacity='.45';
-      createGhost(el,e.clientX,e.clientY);
-    });
-    el.addEventListener('pointermove',e=>{
-      if(!selected||selected!==el)return;e.preventDefault();moveGhost(e.clientX,e.clientY);
-    });
-    el.addEventListener('pointerup',e=>{
-      if(!selected||selected!==el)return;e.preventDefault();
-      el.style.opacity='1';removeGhost();
-      ['drop-alat','drop-bahan'].forEach(id=>{const z=document.getElementById(id);if(z&&hitTest(z,e.clientX,e.clientY))placeInZone(z,el);});
-      selected=null;
-    });
-    el.addEventListener('pointercancel',()=>{if(selected===el)el.style.opacity='1';removeGhost();selected=null;});
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    document.querySelectorAll('.drag-item').forEach(attachItem);
+function abAttach(el){
+  el.addEventListener('pointerdown',e=>{
+    if(e.target.tagName==='BUTTON')return;
+    e.preventDefault();el.setPointerCapture(e.pointerId);
+    abSelected=el;el.style.opacity='0.45';el.style.transform='scale(0.93)';
+    abCreateGhost(el,e.clientX,e.clientY);abHighlight(true);
   });
-})();
+  el.addEventListener('pointermove',e=>{
+    if(!abSelected||abSelected!==el)return;
+    e.preventDefault();abMoveGhost(e.clientX,e.clientY);
+    ['drop-alat','drop-bahan'].forEach(id=>{
+      const z=document.getElementById(id);if(!z)return;
+      z.style.background=abHitTest(z,e.clientX,e.clientY)?(z.dataset.zone==='alat'?'#dbeafe':'#dcfce7'):'';
+    });
+  });
+  el.addEventListener('pointerup',e=>{
+    if(!abSelected||abSelected!==el)return;
+    e.preventDefault();el.style.opacity='1';el.style.transform='';abRemoveGhost();abHighlight(false);
+    ['drop-alat','drop-bahan'].forEach(id=>{
+      const z=document.getElementById(id);if(!z)return;
+      z.style.background='';z.style.transform='';
+      if(abHitTest(z,e.clientX,e.clientY))abPlace(z,el);
+    });
+    abSelected=null;
+  });
+  el.addEventListener('pointercancel',()=>{
+    if(abSelected===el){el.style.opacity='1';el.style.transform='';}
+    abRemoveGhost();abSelected=null;abHighlight(false);
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.drag-item').forEach(abAttach);
+});
 
 // ===================== START =====================
 window.addEventListener('load',initSim);
