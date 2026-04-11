@@ -158,19 +158,17 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
 .disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 /* DRAG CARDS */
-.drag-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;cursor:grab;transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s;user-select:none;position:relative;min-height:80px;touch-action:none;-webkit-tap-highlight-color:transparent;}
-.drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);border-color:var(--border2);}
+.drag-card{border-radius:10px;padding:9px;text-align:center;cursor:grab;transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s;user-select:none;position:relative;touch-action:none;-webkit-tap-highlight-color:transparent;}
+.drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);}
 .drag-card:active{cursor:grabbing;transform:scale(.96);}
-.drag-card.alat{background:#fff7ed;border-color:#fed7aa;}
-.drag-card.alat:hover{border-color:#f97316;}
-.drag-card.bahan{background:#fff7ed;border-color:#fed7aa;}
-.drag-card.bahan:hover{border-color:#f97316;}
+.drag-card.alat:hover{border-color:#93c5fd !important;}
+.drag-card.bahan:hover{border-color:#4ade80 !important;}
 .drag-card.dragging{opacity:.3;transform:scale(.95);filter:grayscale(.5);}
 .drag-card.placed{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
-.drag-icon{height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:5px;font-size:28px;line-height:1;}
-.drag-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px;}
-.drag-sub{font-size:9.5px;color:var(--text3);}
-.drag-card.touch-grabbing{transform:scale(1.06);box-shadow:0 8px 24px rgba(37,99,235,.22);border-color:var(--acc2);z-index:10;}
+.drag-icon{display:flex;align-items:center;justify-content:center;line-height:1;}
+.drag-name{font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px;}
+.drag-sub{color:var(--text3);}
+.drag-card.touch-grabbing{transform:scale(1.06);box-shadow:0 8px 24px rgba(37,99,235,.22);z-index:10;}
 .drop-zone{border:2px dashed var(--border2);border-radius:9px;padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;transition:background .2s,border-color .2s;position:relative;touch-action:none;}
 .drop-zone.drag-over-ok{background:#eff6ff;border-color:#3b82f6;}
 .drop-zone.bahan-zone.drag-over-ok{background:#fff7ed;border-color:#f97316;}
@@ -237,6 +235,9 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
 .load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
@@ -261,8 +262,8 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   #page-alatbahan .scroll > div[style*="grid-template-columns:1fr 1fr"]{display:flex!important;flex-direction:column!important;height:auto!important;gap:10px!important;}
   #page-alatbahan .card:first-child{max-height:46vh;}
   #sourceAlat{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))!important;gap:8px!important;}
-  .drag-card{min-height:90px;padding:12px 8px;}
-  .drag-icon{height:48px;font-size:32px;}
+  .drag-card{padding:8px 6px !important;}
+  .drag-icon{font-size:20px;}
 }
 </style>
 </head>
@@ -304,7 +305,14 @@ function startPraktikum(){
   sfx.play().catch(()=>{});
   const ls=document.getElementById('loadScreen');
   ls.classList.add('hide');
-  setTimeout(()=>{ls.style.display='none';},650);
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn) tujuanBtn.classList.add('active');
+  },650);
 }</script>
 
 <audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
@@ -341,7 +349,9 @@ function startPraktikum(){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
-    <button class="nb active" onclick="show('teori',this);closeNav()">
+    <button class="nb active" onclick="show('tujuan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()">
       <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
     <button class="nb" onclick="show('alatbahan',this);closeNav()">
       <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
@@ -356,96 +366,254 @@ function startPraktikum(){
 
 <div id="app">
 
-<!-- ===== TEORI ===== -->
-<div id="page-teori" class="page active">
-  <div class="scroll" style="overflow-y:auto;padding:10px 14px 14px;">
-    <div class="two-col" style="margin-bottom:5px;">
-      <div class="card">
-        <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Percobaan</div></div>
-        <ul class="olist">
-          <li>Membuktikan bahwa fermentasi alkohol menghasilkan gas CO₂</li>
-          <li>Membuktikan bahwa fermentasi alkohol menghasilkan energi (panas)</li>
-          <li>Membandingkan perangkat dengan ragi dan tanpa ragi sebagai kontrol</li>
-          <li>Memahami peranan <em>Saccharomyces cerevisiae</em> dalam proses fermentasi</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
-        <ul class="olist">
-          <li>Menjelaskan konsep respirasi anaerob dan fermentasi alkohol</li>
-          <li>Menuliskan reaksi kimia fermentasi alkohol dengan benar</li>
-          <li>Mengidentifikasi produk fermentasi alkohol (CO₂, etanol, energi)</li>
-          <li>Menghubungkan fermentasi dengan kehidupan sehari-hari</li>
-        </ul>
+<!-- ===== TUJUAN ===== -->
+<div id="page-tujuan" class="page active">
+  <div class="scroll" style="padding:14px 16px 20px;">
+
+    <!-- Hero Banner -->
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Fermentasi Alkohol</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari proses <strong style="color:#93c5fd;">fermentasi alkohol</strong> secara interaktif — dari teori, simulasi, hingga diskusi dan evaluasi hasil percobaan.
+        </p>
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:0;">
-      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
+    <!-- 2 Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
 
-      <!-- Image zoom overlay -->
-      <div id="imgZoomOverlay" onclick="closeImgZoom()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;cursor:zoom-out;">
-        <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:10px;">
-          <img id="imgZoomSrc" src="" alt="" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:14px;border:2px solid rgba(255,255,255,0.2);box-shadow:0 24px 80px rgba(0,0,0,0.6);transform:scale(0.8);opacity:0;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),opacity 0.25s;">
-          <span style="font-size:12px;color:rgba(255,255,255,0.7);">Klik di mana saja untuk menutup</span>
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#1d4ed8;">peranan ragi</strong> (<em>Saccharomyces cerevisiae</em>) dalam proses fermentasi alkohol dan kaitannya dengan kehidupan sehari-hari.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Membuktikan bahwa <strong style="color:#059669;">fermentasi alkohol</strong> menghasilkan gas CO₂ dan energi panas, serta membandingkan perangkat dengan ragi dan tanpa ragi sebagai kontrol.
+        </p>
+      </div>
+    </div>
+
+    <!-- Hasil Belajar Section -->
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;box-shadow:0 2px 12px rgba(30,41,59,0.07);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan konsep <strong style="color:#1d4ed8;">respirasi anaerob</strong> dan fermentasi alkohol</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menuliskan <strong style="color:#059669;">reaksi kimia</strong> fermentasi alkohol dengan benar</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Mengidentifikasi <strong style="color:#7c3aed;">produk fermentasi</strong>: CO₂, etanol, dan energi (ATP)</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menghubungkan fermentasi dengan <strong style="color:#dc2626;">kehidupan sehari-hari</strong></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== TEORI ===== -->
+<div id="page-teori" class="page">
+  <div class="scroll" style="padding:14px 16px 20px;">
+
+    <!-- Teori Header -->
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f172a 60%,#1d4ed8 100%);border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(15,36,96,0.22);position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,19px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.85);margin-top:2px;">Fermentasi Alkohol · <em>Saccharomyces cerevisiae</em></div>
+      </div>
+    </div>
+
+    <!-- 2-column theory grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Respirasi Anaerob -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(37,99,235,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">⚗️</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#1d4ed8;">Respirasi Anaerob</div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Reaksi pemecahan karbohidrat untuk mendapatkan energi <strong style="color:#b91c1c;">tanpa menggunakan oksigen (O₂)</strong>. Ketika oksigen tidak tersedia, organisme melakukan fermentasi.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🌬️</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#1d4ed8;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Aerob</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Menggunakan O₂ → menghasilkan CO₂, H₂O, dan banyak ATP</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🍺</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#c2410c;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Anaerob (Fermentasi)</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Tanpa O₂ → menghasilkan etanol, CO₂, dan sedikit ATP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saccharomyces cerevisiae -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;flex:1;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(124,58,237,0.1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🦠</div>
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#6d28d9;">Ragi (Yeast)</div>
+              <div style="font-size:10px;color:#8b5cf6;font-style:italic;">Saccharomyces cerevisiae</div>
+            </div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Mikroorganisme <strong style="color:#6d28d9;">eukariotik bersel tunggal</strong> dari Kingdom Fungi. Memiliki inti bermembran, organel lengkap, dan dinding sel berbahan kitin.
+          </p>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin:0;">
+            Bekerja optimal pada suhu <strong style="color:#6d28d9;">25–30°C</strong>. Dimanfaatkan dalam pembuatan roti, tape, bir, dan produk fermentasi lainnya.
+          </p>
         </div>
       </div>
 
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <!-- IMAGE ON LEFT -->
-        <div style="flex-shrink:0;width:clamp(110px,20%,165px);display:flex;flex-direction:column;align-items:center;gap:6px;">
-          <div style="position:relative;width:100%;cursor:zoom-in;" onclick="openImgZoom(this.querySelector('img'))">
+      <!-- Right column: Tahapan Fermentasi -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🔄</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#059669;">Tahapan Fermentasi Alkohol</div>
+            <div style="font-size:10px;color:#10b981;">Mekanisme reaksi anaerob</div>
+          </div>
+        </div>
+
+        <!-- Reaksi -->
+        <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:0.03em;">C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP</code>
+        </div>
+
+        <!-- Steps -->
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">1</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#10b981,#a7f3d0);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#059669;">Glikolisis:</strong> Glukosa (C₆H₁₂O₆) dipecah menjadi 2 asam piruvat + 2 ATP di sitoplasma</p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">2</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#2dd4bf,#99f6e4);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#0d9488;">Dekarboksilasi:</strong> Asam piruvat diubah menjadi asetaldehida, melepaskan CO₂</p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">3</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#38bdf8,#bae6fd);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#0891b2;">Reduksi:</strong> Asetaldehida direduksi oleh NADH menjadi <strong>etanol (C₂H₅OH)</strong></p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">4</div>
+            </div>
+            <div style="flex:1;padding:0 0 0 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#2563eb;">Regenerasi NAD⁺</strong> memungkinkan glikolisis terus berlanjut menghasilkan ATP</p></div>
+          </div>
+        </div>
+
+        <p style="font-size:clamp(10.5px,1.1vw,12px);color:#475569;line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;">
+          💡 CO₂ yang dihasilkan terdeteksi saat air kapur Ca(OH)₂ berubah menjadi <strong>keruh (CaCO₃)</strong> dan warna PP memudar.
+        </p>
+
+        <!-- Image -->
+        <div style="margin-top:10px;display:flex;justify-content:center;">
+          <div style="position:relative;cursor:zoom-in;" onclick="openImgZoom(this.querySelector('img'))">
             <img src="https://denicendrianto41.github.io/elenmeyer_fermentasi.png" alt="Perangkat Fermentasi Alkohol"
-              style="width:100%;height:auto;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);background:var(--surf2);padding:7px;transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s;display:block;"
+              style="height:clamp(80px,12vw,120px);width:auto;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);background:var(--surf2);padding:7px;transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s;display:block;"
               onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 20px rgba(37,99,235,0.18)'"
               onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
             <div style="position:absolute;bottom:10px;right:10px;background:rgba(37,99,235,0.75);border-radius:5px;padding:3px 6px;font-size:9px;color:#fff;pointer-events:none;backdrop-filter:blur(3px);">🔍 Zoom</div>
           </div>
-          <span style="font-size:9.5px;color:var(--text3);text-align:center;line-height:1.4;">Perangkat uji<br>fermentasi alkohol</span>
-        </div>
-
-        <!-- TEXT ON RIGHT -->
-        <div style="flex:1;min-width:0;">
-          <p><strong style="color:var(--acc3)">Respirasi Anaerob</strong> merupakan reaksi pemecahan karbohidrat untuk mendapatkan energi <strong style="color:#b91c1c">tanpa menggunakan oksigen (O₂)</strong>. Ketika oksigen tidak tersedia atau tidak mencukupi untuk respirasi aerob, beberapa organisme melakukan respirasi secara anaerob yang juga dikenal sebagai <strong style="color:var(--acc2)">fermentasi</strong>.</p>
-
-          <p><strong style="color:var(--acc3)">Fermentasi Alkohol</strong> adalah salah satu bentuk respirasi anaerob yang dilakukan oleh <strong><em>Saccharomyces cerevisiae</em></strong> (ragi/yeast). Dalam proses ini, glukosa (gula) dipecah menjadi <strong>etanol (alkohol)</strong>, <strong>gas CO₂</strong>, dan <strong>energi (ATP)</strong> dalam kondisi tanpa oksigen.</p>
-
-          <p style="font-family:'JetBrains Mono',monospace;font-size:11px;background:#eff6ff;border-left:3px solid var(--acc);padding:7px 12px;border-radius:0 6px 6px 0;color:var(--acc3);margin:8px 0;">C₆H₁₂O₆ &nbsp;→&nbsp; 2C₂H₅OH &nbsp;+&nbsp; 2CO₂ &nbsp;+&nbsp; 2ATP &nbsp;&nbsp;(dikatalis oleh Ragi)</p>
-
-          <h4>Tahapan Fermentasi Alkohol</h4>
-          <div class="chips">
-            <span class="chip chip-b">① Glikolisis</span>
-            <span class="chip chip-p">② Dekarboksilasi piruvat</span>
-            <span class="chip chip-g">③ Reduksi asetaldehida → Etanol</span>
-          </div>
-
-          <p>Proses dimulai dengan <strong>glikolisis</strong> di sitoplasma: 1 molekul glukosa (C₆H₁₂O₆) diubah menjadi 2 molekul asam piruvat (C₃H₄O₃) menghasilkan 2 ATP. Karena kondisi anaerob, asam piruvat kemudian mengalami <strong>dekarboksilasi</strong> menjadi asetaldehida sambil melepaskan CO₂. Selanjutnya asetaldehida direduksi oleh NADH menjadi <strong>etanol (C₂H₅OH)</strong>. NAD⁺ yang diregenerasi memungkinkan glikolisis terus berlanjut.</p>
-
-          <h4>Peranan Ragi dalam Kehidupan</h4>
-          <p><em>Saccharomyces cerevisiae</em> dimanfaatkan secara luas dalam industri makanan: pembuatan roti (CO₂ membuat adonan mengembang), tape, tempe, bir, dan berbagai produk fermentasi lainnya. Pada suhu optimal 25–30°C, ragi bekerja paling aktif memfermentasi gula.</p>
         </div>
       </div>
-      <script>
-      function openImgZoom(imgEl){
-        const overlay=document.getElementById('imgZoomOverlay');
-        const zoomImg=document.getElementById('imgZoomSrc');
-        zoomImg.src=imgEl.src; zoomImg.alt=imgEl.alt;
-        overlay.style.display='flex';
-        requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
-          zoomImg.style.transform='scale(1)';
-          zoomImg.style.opacity='1';
-        });});
-      }
-      function closeImgZoom(){
-        const overlay=document.getElementById('imgZoomOverlay');
-        const zoomImg=document.getElementById('imgZoomSrc');
-        zoomImg.style.transform='scale(0.8)';
-        zoomImg.style.opacity='0';
-        setTimeout(()=>{ overlay.style.display='none'; },280);
-      }
-      document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeImgZoom(); });
-      </script>
+
     </div>
+
+    <!-- Image zoom overlay -->
+    <div id="imgZoomOverlay" onclick="closeImgZoom()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;cursor:zoom-out;">
+      <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <img id="imgZoomSrc" src="" alt="" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:14px;border:2px solid rgba(255,255,255,0.2);box-shadow:0 24px 80px rgba(0,0,0,0.6);transform:scale(0.8);opacity:0;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),opacity 0.25s;">
+        <span style="font-size:12px;color:rgba(255,255,255,0.7);">Klik di mana saja untuk menutup</span>
+      </div>
+    </div>
+    <script>
+    function openImgZoom(imgEl){
+      const overlay=document.getElementById('imgZoomOverlay');
+      const zoomImg=document.getElementById('imgZoomSrc');
+      zoomImg.src=imgEl.src; zoomImg.alt=imgEl.alt;
+      overlay.style.display='flex';
+      requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+        zoomImg.style.transform='scale(1)';
+        zoomImg.style.opacity='1';
+      });});
+    }
+    function closeImgZoom(){
+      const overlay=document.getElementById('imgZoomOverlay');
+      const zoomImg=document.getElementById('imgZoomSrc');
+      zoomImg.style.transform='scale(0.8)';
+      zoomImg.style.opacity='0';
+      setTimeout(()=>{ overlay.style.display='none'; },280);
+    }
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeImgZoom(); });
+    </script>
+
   </div>
 </div>
 
@@ -462,53 +630,53 @@ function startPraktikum(){
         </div>
         <p style="font-size:11px;color:var(--text3);margin-bottom:8px;flex-shrink:0;">Drag atau <strong style="color:var(--acc3)">tekan &amp; geser</strong> item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
 
-        <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:7px;flex:1;overflow-y:auto;">
+        <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;flex:1;overflow-y:auto;">
           <!-- ALAT -->
-          <div class="drag-card alat" draggable="true" data-id="erlenmeyer" data-type="alat" data-name="2 Tabung Erlenmeyer" data-sub="Tabung A &amp; B (kontrol)">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/elenmeyer.png" alt="Erlenmeyer" style="height:40px;width:auto;object-fit:contain;"></div>
-            <div class="drag-name">2 Erlenmeyer</div>
-            <div class="drag-sub">Tabung A &amp; B</div>
+          <div class="drag-card alat" draggable="true" data-id="erlenmeyer" data-type="alat" data-name="2 Tabung Erlenmeyer" data-sub="Tabung A &amp; B (kontrol)" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/elenmeyer.png" alt="Erlenmeyer" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
+            <div class="drag-name" style="font-size:11px;">2 Erlenmeyer</div>
+            <div class="drag-sub" style="font-size:9.5px;">Tabung A &amp; B</div>
           </div>
-          <div class="drag-card alat" draggable="true" data-id="selang" data-type="alat" data-name="Selang Penghubung" data-sub="Mengalirkan gas CO₂">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/selang.png" alt="Selang" style="height:40px;width:auto;object-fit:contain;"></div>
-            <div class="drag-name">Selang</div>
-            <div class="drag-sub">Alirkan gas CO₂</div>
+          <div class="drag-card alat" draggable="true" data-id="selang" data-type="alat" data-name="Selang Penghubung" data-sub="Mengalirkan gas CO₂" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/selang.png" alt="Selang" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
+            <div class="drag-name" style="font-size:11px;">Selang</div>
+            <div class="drag-sub" style="font-size:9.5px;">Alirkan gas CO₂</div>
           </div>
-          <div class="drag-card alat" draggable="true" data-id="termometer" data-type="alat" data-name="Termometer" data-sub="Mengukur suhu">
-            <div class="drag-icon">🌡️</div>
-            <div class="drag-name">Termometer</div>
-            <div class="drag-sub">Mengukur suhu</div>
+          <div class="drag-card alat" draggable="true" data-id="termometer" data-type="alat" data-name="Termometer" data-sub="Mengukur suhu" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;font-size:22px;">🌡️</div>
+            <div class="drag-name" style="font-size:11px;">Termometer</div>
+            <div class="drag-sub" style="font-size:9.5px;">Mengukur suhu</div>
           </div>
-          <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Ukur" data-sub="Mengukur volume">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/beker_glass.png" alt="Gelas Ukur" style="height:40px;width:auto;object-fit:contain;"></div>
-            <div class="drag-name">Gelas Ukur</div>
-            <div class="drag-sub">Mengukur volume</div>
+          <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Ukur" data-sub="Mengukur volume" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/beker_glass.png" alt="Gelas Ukur" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
+            <div class="drag-name" style="font-size:11px;">Gelas Ukur</div>
+            <div class="drag-sub" style="font-size:9.5px;">Mengukur volume</div>
           </div>
           <!-- BAHAN -->
-          <div class="drag-card bahan" draggable="true" data-id="gula" data-type="bahan" data-name="Larutan Gula 30%" data-sub="Substrat fermentasi · 100cc">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/hcl.png" alt="Larutan Gula" style="height:40px;width:auto;object-fit:contain;"></div>
-            <div class="drag-name">Larutan Gula 30%</div>
-            <div class="drag-sub">Substrat · 100cc</div>
+          <div class="drag-card bahan" draggable="true" data-id="gula" data-type="bahan" data-name="Larutan Gula 30%" data-sub="Substrat fermentasi · 100cc" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/hcl.png" alt="Larutan Gula" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
+            <div class="drag-name" style="font-size:11px;color:#065f46;">Larutan Gula 30%</div>
+            <div class="drag-sub" style="font-size:9.5px;">Substrat · 100cc</div>
           </div>
-          <div class="drag-card bahan" draggable="true" data-id="ragi" data-type="bahan" data-name="Ragi Saccharomyces" data-sub="4 gram · agen fermentasi">
-            <div class="drag-icon">🦠</div>
-            <div class="drag-name">Ragi Yeast</div>
-            <div class="drag-sub">4 gram · agen</div>
+          <div class="drag-card bahan" draggable="true" data-id="ragi" data-type="bahan" data-name="Ragi Saccharomyces" data-sub="4 gram · agen fermentasi" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;font-size:22px;">🦠</div>
+            <div class="drag-name" style="font-size:11px;color:#065f46;">Ragi Yeast</div>
+            <div class="drag-sub" style="font-size:9.5px;">4 gram · agen</div>
           </div>
-          <div class="drag-card bahan" draggable="true" data-id="airkapur" data-type="bahan" data-name="Air Kapur Ca(OH)₂" data-sub="Indikator CO₂ · 100cc">
-            <div class="drag-icon">🥛</div>
-            <div class="drag-name">Air Kapur</div>
-            <div class="drag-sub">Ca(OH)₂ · 100cc</div>
+          <div class="drag-card bahan" draggable="true" data-id="airkapur" data-type="bahan" data-name="Air Kapur Ca(OH)₂" data-sub="Indikator CO₂ · 100cc" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;font-size:22px;">🥛</div>
+            <div class="drag-name" style="font-size:11px;color:#065f46;">Air Kapur</div>
+            <div class="drag-sub" style="font-size:9.5px;">Ca(OH)₂ · 100cc</div>
           </div>
-          <div class="drag-card bahan" draggable="true" data-id="pp" data-type="bahan" data-name="Indikator PP" data-sub="Fenolftalein · 1 tetes">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/naoh.png" alt="Indikator PP" style="height:40px;width:auto;object-fit:contain;"></div>
-            <div class="drag-name">Indikator PP</div>
-            <div class="drag-sub">Fenolftalein · 1 tetes</div>
+          <div class="drag-card bahan" draggable="true" data-id="pp" data-type="bahan" data-name="Indikator PP" data-sub="Fenolftalein · 1 tetes" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/naoh.png" alt="Indikator PP" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
+            <div class="drag-name" style="font-size:11px;color:#065f46;">Indikator PP</div>
+            <div class="drag-sub" style="font-size:9.5px;">Fenolftalein · 1 tetes</div>
           </div>
-          <div class="drag-card bahan" draggable="true" data-id="air" data-type="bahan" data-name="Air (H₂O)" data-sub="Kontrol tanpa ragi">
-            <div class="drag-icon">💧</div>
-            <div class="drag-name">Air (H₂O)</div>
-            <div class="drag-sub">Kontrol tanpa ragi</div>
+          <div class="drag-card bahan" draggable="true" data-id="air" data-type="bahan" data-name="Air (H₂O)" data-sub="Kontrol tanpa ragi" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;min-height:unset;">
+            <div class="drag-icon" style="height:unset;margin-bottom:3px;font-size:22px;">💧</div>
+            <div class="drag-name" style="font-size:11px;color:#065f46;">Air (H₂O)</div>
+            <div class="drag-sub" style="font-size:9.5px;">Kontrol tanpa ragi</div>
           </div>
         </div>
       </div>
@@ -539,16 +707,6 @@ function startPraktikum(){
       </div>
 
     </div>
-  </div>
-</div>
-
-<!-- Popup Modal -->
-<div id="dragPopup" style="display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(15,23,42,.45);backdrop-filter:blur(3px);">
-  <div id="dragPopupBox" style="background:#fff;border-radius:18px;padding:32px 36px;text-align:center;max-width:300px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);transform:scale(.7);opacity:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s;">
-    <div id="dragPopupIcon" style="font-size:56px;line-height:1;margin-bottom:12px;"></div>
-    <div id="dragPopupTitle" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:6px;"></div>
-    <div id="dragPopupMsg" style="font-size:13px;color:#64748b;line-height:1.5;margin-bottom:20px;"></div>
-    <button onclick="closeDragPopup()" style="background:linear-gradient(135deg,var(--acc),var(--acc3));color:#fff;border:none;border-radius:9px;padding:9px 28px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">OK</button>
   </div>
 </div>
 
@@ -804,10 +962,6 @@ function startPraktikum(){
     }
     </script>
 
-    <div class="notebox">
-      <div class="nt">⚠️ Keselamatan Lab</div>
-      <p>Lakukan percobaan di tempat berventilasi baik. Hindari menghirup gas CO₂ berlebih. Gunakan sarung tangan saat memegang larutan kimia. Jangan minum larutan hasil fermentasi. Jauhkan dari api terbuka karena etanol mudah terbakar.</p>
-    </div>
   </div>
 </div>
 
@@ -966,26 +1120,28 @@ let touchLongTimer=null,touchStartX=0,touchStartY=0,touchDragging=false;
 const LONG_PRESS_MS=120;
 
 function playSound(id){try{const a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(()=>{});}}catch(e){}}
-function showPopup(icon,title,msg,type){
-  const overlay=document.getElementById('dragPopup');
-  const box=document.getElementById('dragPopupBox');
-  const accent=type==='ok'?'#059669':'#dc2626';
-  document.getElementById('dragPopupIcon').textContent=icon;
-  document.getElementById('dragPopupTitle').textContent=title;
-  document.getElementById('dragPopupTitle').style.color=accent;
-  document.getElementById('dragPopupMsg').textContent=msg;
-  overlay.style.display='flex';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{box.style.transform='scale(1)';box.style.opacity='1';}));
-  clearTimeout(popupTimer);
-  popupTimer=setTimeout(closeDragPopup,2800);
+function showToast(text,type){
+  const toast=document.createElement('div');
+  toast.textContent=text;
+  const bg=type==='ok'?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:'+bg+';color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
 }
-window.closeDragPopup=function(){
-  clearTimeout(popupTimer);
-  const overlay=document.getElementById('dragPopup');
-  const box=document.getElementById('dragPopupBox');
-  box.style.transform='scale(.7)';box.style.opacity='0';
-  setTimeout(()=>{overlay.style.display='none';},280);
-};
+function showDropBenar(zone){
+  playSound('sndBenar');
+  showToast('✅ Kamu Benar!','ok');
+  zone.style.borderColor='#10b981';zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
+  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},1800);
+}
+function showDropSalah(zone){
+  playSound('sndSalah');
+  showToast('❌ Salah! Coba lagi.','err');
+  zone.style.borderColor='#ef4444';zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+  zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},800);
+}
 function highlightZones(type){
   document.querySelectorAll('.drop-zone').forEach(z=>{z.style.opacity=z.dataset.accept===type?'1':'0.45';});
 }
@@ -1074,13 +1230,12 @@ function drop(zone){
     dc.classList.add('anim-correct');
     const hint=zone.querySelector('.drop-hint');if(hint) hint.style.display='none';
     zone.appendChild(dc);
-    playSound('sndBenar');
+    showDropBenar(zone);
     const note=NOTES[dragId];
     if(note){
       document.getElementById('catatanMeja').style.display='block';
       document.getElementById('catatanText').textContent=note;
     }
-    showPopup('✅',card.dataset.name,'Berhasil ditempatkan!','ok');
     checkAllPlaced();
   } else {
     const clone=document.createElement('div');
@@ -1090,8 +1245,7 @@ function drop(zone){
     clone.classList.add('anim-wrong');
     const hint=zone.querySelector('.drop-hint');if(hint) hint.style.display='none';
     zone.appendChild(clone);
-    playSound('sndSalah');
-    showPopup('❌','Zona Salah!',`"${card.dataset.name}" harus diletakkan di zona ${dragType==='alat'?'bahan':'alat'}!`,'err');
+    showDropSalah(zone);
     setTimeout(()=>{clone.remove();const h=zone.querySelector('.drop-hint');if(h&&zone.querySelectorAll('.drop-card').length===0) h.style.display='';},1200);
   }
   dragId=null;dragType=null;clearZoneHighlights();
@@ -1816,6 +1970,60 @@ window.resetQuiz=function(){
   buildQuiz();
 };
 buildQuiz();
+
+window.printDiskusi=function(){
+  const questions=[
+    'Apa yang dimaksud dengan fermentasi alkohol?',
+    'Mengapa air kapur Ca(OH)₂ pada tabung B menjadi keruh saat percobaan berlangsung?',
+    'Apa perbedaan hasil antara Perangkat I (dengan ragi) dan Perangkat II (kontrol tanpa ragi)?',
+    'Mengapa tabung fermentasi harus ditutup rapat agar fermentasi berlangsung?',
+    'Sebutkan produk-produk yang dihasilkan dalam fermentasi alkohol dan jelaskan kegunaannya!'
+  ];
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt"><em style="color:#94a3b8;">Jawaban siswa...</em></div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Fermentasi Alkohol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #2563eb;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1d4ed8;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{body{padding:20px 28px;}@page{margin:1.5cm;size:A4 portrait;}}
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">🧪 Lab Virtual – Fermentasi Alkohol</div>
+  <div class="lab-sub">Kelas XII · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">📅 Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Pertanyaan Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · Dicetak dari aplikasi Lab Virtual Fermentasi Alkohol</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+};
 </script>
 </body>
 </html>
