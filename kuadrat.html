@@ -617,8 +617,7 @@ document.addEventListener('click',function(e){
         <div class="ch" style="margin-bottom:5px;flex-shrink:0;"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
         <p style="font-size:11px;color:var(--text3);margin-bottom:6px;flex-shrink:0;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
 
-        <!-- Alat -->
-        <div style="font-size:9.5px;font-weight:700;color:var(--acc);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">⚙️ Alat</div>
+        <!-- Alat & Bahan (digabung) -->
         <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;margin-bottom:8px;flex-shrink:0;">
           <div class="drag-item" draggable="true" data-id="tali" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🪢</div>
@@ -650,42 +649,38 @@ document.addEventListener('click',function(e){
             <div style="font-size:11px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
             <div style="font-size:9.5px;color:var(--text3);">Pencatat data</div>
           </div>
-        </div>
-
-        <!-- Bahan: Tumbuhan + 5 Lokasi -->
-        <div style="font-size:9.5px;font-weight:700;color:#059669;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;flex-shrink:0;">🌿 Bahan &amp; Lokasi</div>
-        <div id="drag-bahan-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;flex-shrink:0;">
-          <div class="drag-item" draggable="true" data-id="tumbuhan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+          <div class="drag-item" draggable="true" data-id="tumbuhan" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🌿</div>
-            <div style="font-size:11px;font-weight:600;color:#065f46;">Tumbuhan</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tumbuhan</div>
             <div style="font-size:9.5px;color:var(--text3);">Objek penelitian</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-sekolah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+          <div class="drag-item" draggable="true" data-id="lok-sekolah" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🏫</div>
-            <div style="font-size:11px;font-weight:600;color:#065f46;">Halaman Sekolah</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Halaman Sekolah</div>
             <div style="font-size:9.5px;color:var(--text3);">Lokasi 1</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-rumah" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+          <div class="drag-item" draggable="true" data-id="lok-rumah" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🏠</div>
-            <div style="font-size:11px;font-weight:600;color:#065f46;">Halaman Rumah</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Halaman Rumah</div>
             <div style="font-size:9.5px;color:var(--text3);">Lokasi 2</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-jalanan" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+          <div class="drag-item" draggable="true" data-id="lok-jalanan" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🛣️</div>
-            <div style="font-size:11px;font-weight:600;color:#065f46;">Tepi Jalan</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tepi Jalan</div>
             <div style="font-size:9.5px;color:var(--text3);">Lokasi 3</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-sungai" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+          <div class="drag-item" draggable="true" data-id="lok-sungai" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🌊</div>
-            <div style="font-size:11px;font-weight:600;color:#065f46;">Tepi Sungai</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tepi Sungai</div>
             <div style="font-size:9.5px;color:var(--text3);">Lokasi 4</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="lok-pabrik" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+          <div class="drag-item" draggable="true" data-id="lok-pabrik" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="font-size:24px;margin-bottom:3px;">🏭</div>
-            <div style="font-size:11px;font-weight:600;color:#065f46;">Kaw. Pabrik</div>
+            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Kaw. Pabrik</div>
             <div style="font-size:9.5px;color:var(--text3);">Lokasi 5</div>
           </div>
         </div>
+        <div id="drag-bahan-src" style="display:none;"></div>
 
         <!-- Catatan Penting ringkas -->
         <div class="notebox" style="margin-top:6px;flex-shrink:0;">
