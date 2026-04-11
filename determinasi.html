@@ -203,6 +203,9 @@ nav::-webkit-scrollbar{display:none;}
   gap:0;transition:opacity .6s ease;
 }
 #loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
 .load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
@@ -262,7 +265,14 @@ function startPraktikum(){
   sfx.play().catch(()=>{});
   const ls=document.getElementById('loadScreen');
   ls.classList.add('hide');
-  setTimeout(()=>{ls.style.display='none';},650);
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn) tujuanBtn.classList.add('active');
+  },650);
 }
 </script>
 
@@ -297,7 +307,9 @@ function startPraktikum(){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
-    <button class="nb active" onclick="show('teori',this);closeNav()">
+    <button class="nb active" onclick="show('tujuan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()">
       <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
     <button class="nb" onclick="show('alatbahan',this);closeNav()">
       <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
@@ -312,84 +324,281 @@ function startPraktikum(){
 
 <div id="app">
 
-<!-- ═══════════ TEORI ═══════════ -->
-<div id="page-teori" class="page active">
-  <div class="scroll">
+<!-- ═══════════ TUJUAN ═══════════ -->
+<div id="page-tujuan" class="page active">
+  <div class="scroll" style="padding:14px 16px 20px;">
 
-    <div class="two-col">
-      <div class="card">
-        <div class="ch"><div class="ci b">🎯</div><div class="ct">Tujuan Praktikum</div></div>
-        <ul class="olist">
-          <li>Mampu menggunakan kunci determinasi sederhana untuk mengidentifikasi makhluk hidup</li>
-          <li>Mengelompokkan tumbuhan berdasarkan ciri morfologi (batang, akar, biji, bunga)</li>
-          <li>Membedakan kelompok Monokotil, Dikotil, Fungi, dan Algae</li>
-          <li>Menyusun diagram klasifikasi berdasarkan hasil determinasi</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="ch"><div class="ci g">🏆</div><div class="ct">Hasil Belajar</div></div>
-        <ul class="olist">
-          <li>Memahami konsep dan fungsi kunci determinasi dalam biologi</li>
-          <li>Menguasai langkah-langkah penggunaan kunci kuplet/dikotom</li>
-          <li>Mampu membuat klasifikasi sederhana makhluk hidup</li>
-          <li>Menerapkan identifikasi untuk kegiatan praktikum nyata</li>
-        </ul>
+    <!-- Hero Banner -->
+    <div style="
+      background: linear-gradient(135deg, #0f2460 0%, #1a3a8f 45%, #2563eb 100%);
+      border-radius: 16px;
+      padding: 22px 24px 18px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(15,36,96,0.28);
+    ">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Kunci Determinasi Makhluk Hidup</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari cara menggunakan <strong style="color:#93c5fd;">kunci determinasi dikotom</strong> untuk mengidentifikasi dan mengklasifikasikan makhluk hidup secara interaktif.
+        </p>
       </div>
     </div>
 
-    <div class="card">
-      <div class="ch"><div class="ci b">📚</div><div class="ct">Dasar Teori</div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div>
-          <p><strong style="color:var(--acc2)">Klasifikasi makhluk hidup</strong> adalah proses pengelompokan organisme berdasarkan persamaan dan perbedaan ciri-cirinya. Ilmu yang mempelajari klasifikasi disebut <em>taksonomi</em>.</p>
-          <p><strong style="color:var(--acc2)">Kunci determinasi</strong> (kunci dikotom atau kunci kuplet) adalah panduan bercabang yang digunakan untuk mengidentifikasi makhluk hidup secara sistematis. Setiap langkah memberikan dua pilihan (kuplet) berdasarkan ciri yang berlawanan.</p>
-          <h4>Cara Penggunaan</h4>
-          <p>Dimulai dari kuplet nomor 1. Setiap kuplet berisi dua pernyataan (a dan b) yang berlawanan. Pilih pernyataan yang sesuai dengan ciri organisme yang diamati, lalu ikuti petunjuk yang diberikan (lanjut ke nomor berikutnya atau sudah teridentifikasi).</p>
+    <!-- 2 Main Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 14px;
+        padding: 16px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+        transition: box-shadow .2s, transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
         </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#1d4ed8;">ciri-ciri dan peranan berbagai kingdom</strong> makhluk hidup berdasarkan hasil pengamatan morfologi menggunakan kunci determinasi.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 14px;
+        padding: 16px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+        transition: box-shadow .2s, transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mempelajari cara penggunaan <strong style="color:#059669;">kunci determinasi dikotom/kuplet</strong> untuk mengidentifikasi dan mengelompokkan berbagai organisme berdasarkan ciri morfologinya secara sistematis.
+        </p>
+      </div>
+    </div>
+
+    <!-- Hasil Belajar Section -->
+    <div style="
+      background: #fff;
+      border: 1px solid #dde3ec;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 12px rgba(30,41,59,0.07);
+    ">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
         <div>
-          <h4>Kunci Determinasi Tumbuhan (Sederhana)</h4>
-          <div style="background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:10px;font-size:12px;">
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">1a.</span>
-              <span style="color:var(--text2);">Tidak mempunyai batang</span>
-              <span style="color:var(--acc3);font-weight:600;margin-left:auto;">→ 2</span>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami konsep dan tujuan <strong style="color:#1d4ed8;">klasifikasi makhluk hidup</strong> dalam biologi</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menggunakan <strong style="color:#059669;">kunci determinasi dikotom</strong> secara langkah demi langkah</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Membedakan kelompok <strong style="color:#7c3aed;">Monokotil, Dikotil, Fungi, dan Algae</strong> berdasarkan ciri morfologi</span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menyusun <strong style="color:#dc2626;">diagram klasifikasi</strong> berdasarkan hasil determinasi organisme</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ TEORI ═══════════ -->
+<div id="page-teori" class="page">
+  <div class="scroll" style="padding:14px 16px 20px;">
+
+    <!-- Teori Header -->
+    <div style="
+      background: linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 6px 24px rgba(15,36,96,0.22);
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,19px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.85);margin-top:2px;">Klasifikasi Makhluk Hidup · Kunci Determinasi Dikotom</div>
+      </div>
+    </div>
+
+    <!-- 2-column theory grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Left: Klasifikasi -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div style="
+          background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+          padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+          position:relative;overflow:hidden;
+          transition:box-shadow .2s,transform .2s;
+        " onmouseover="this.style.boxShadow='0 6px 20px rgba(37,99,235,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🌍</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#1d4ed8;">Klasifikasi Makhluk Hidup</div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Klasifikasi adalah proses pengelompokan organisme berdasarkan persamaan dan perbedaan ciri-cirinya. Ilmu yang mempelajarinya disebut <strong style="color:#1d4ed8;">taksonomi</strong>.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🌿</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#1d4ed8;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Tumbuhan Rendah</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Tidak punya batang/akar/daun sejati → Fungi, Algae</div>
+              </div>
             </div>
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">1b.</span>
-              <span style="color:var(--text2);">Mempunyai batang</span>
-              <span style="color:var(--acc3);font-weight:600;margin-left:auto;">→ 3</span>
-            </div>
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">2a.</span>
-              <span style="color:var(--text2);">Tidak mengandung klorofil</span>
-              <span style="color:var(--green);font-weight:700;margin-left:auto;">Fungi</span>
-            </div>
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">2b.</span>
-              <span style="color:var(--text2);">Mengandung klorofil</span>
-              <span style="color:var(--green);font-weight:700;margin-left:auto;">Algae</span>
-            </div>
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">3a.</span>
-              <span style="color:var(--text2);">Tidak berbunga</span>
-              <span style="color:var(--green);font-weight:700;margin-left:auto;">Lumut/Paku</span>
-            </div>
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">3b.</span>
-              <span style="color:var(--text2);">Tumbuhan berbunga</span>
-              <span style="color:var(--acc3);font-weight:600;margin-left:auto;">→ 4</span>
-            </div>
-            <div style="display:flex;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">4a.</span>
-              <span style="color:var(--text2);">Biji 1 keping / akar serabut</span>
-              <span style="color:var(--green);font-weight:700;margin-left:auto;">Monokotil</span>
-            </div>
-            <div style="display:flex;gap:6px;padding:3px 0;align-items:baseline;">
-              <span style="color:var(--acc);font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;">4b.</span>
-              <span style="color:var(--text2);">Biji 2 keping / akar tunggang</span>
-              <span style="color:var(--green);font-weight:700;margin-left:auto;">Dikotil</span>
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🌳</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#059669;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Tumbuhan Tinggi</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Punya batang, akar, daun sejati → Lumut, Paku, Biji</div>
+              </div>
             </div>
           </div>
+        </div>
+
+        <!-- Kunci Determinasi Card -->
+        <div style="
+          background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+          padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+          position:relative;overflow:hidden;flex:1;
+          transition:box-shadow .2s,transform .2s;
+        " onmouseover="this.style.boxShadow='0 6px 20px rgba(124,58,237,0.1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🔑</div>
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#6d28d9;">Kunci Determinasi</div>
+              <div style="font-size:10px;color:#8b5cf6;">Kunci Dikotom / Kunci Kuplet</div>
+            </div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Panduan bercabang yang digunakan untuk mengidentifikasi makhluk hidup secara sistematis. Setiap langkah menyediakan <strong style="color:#6d28d9;">dua pernyataan berlawanan (kuplet)</strong>.
+          </p>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin:0;">
+            Dimulai dari kuplet ke-1: pilih pernyataan yang sesuai → ikuti petunjuk ke nomor berikutnya hingga organisme teridentifikasi.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Kunci Determinasi Tabel -->
+      <div style="
+        background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+        padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+        position:relative;overflow:hidden;
+        transition:box-shadow .2s,transform .2s;
+      " onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📋</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#059669;">Kunci Determinasi Tumbuhan</div>
+            <div style="font-size:10px;color:#10b981;">Contoh Kunci Sederhana (4 Kuplet)</div>
+          </div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;font-size:12px;">
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">1a.</span>
+              <span style="color:#475569;flex:1;">Tidak mempunyai batang</span>
+              <span style="color:#1d4ed8;font-weight:700;">→ 2</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">1b.</span>
+              <span style="color:#475569;flex:1;">Mempunyai batang</span>
+              <span style="color:#1d4ed8;font-weight:700;">→ 3</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">2a.</span>
+              <span style="color:#475569;flex:1;">Tidak mengandung klorofil</span>
+              <span style="color:#059669;font-weight:700;">Fungi</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">2b.</span>
+              <span style="color:#475569;flex:1;">Mengandung klorofil</span>
+              <span style="color:#059669;font-weight:700;">Algae</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">3a.</span>
+              <span style="color:#475569;flex:1;">Tidak berbunga</span>
+              <span style="color:#059669;font-weight:700;">Lumut/Paku</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">3b.</span>
+              <span style="color:#475569;flex:1;">Tumbuhan berbunga</span>
+              <span style="color:#1d4ed8;font-weight:700;">→ 4</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid #e2e8f0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">4a.</span>
+              <span style="color:#475569;flex:1;">Biji 1 keping / akar serabut</span>
+              <span style="color:#059669;font-weight:700;">Monokotil</span>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px 0;align-items:baseline;">
+              <span style="color:#2563eb;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:28px;">4b.</span>
+              <span style="color:#475569;flex:1;">Biji 2 keping / akar tunggang</span>
+              <span style="color:#059669;font-weight:700;">Dikotil</span>
+            </div>
+          </div>
+        </div>
+        <!-- Cara penggunaan note -->
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;margin-top:10px;">
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">💡 Cara Penggunaan</div>
+          <p style="font-size:clamp(10px,1.1vw,11.5px);color:#92400e;line-height:1.6;margin:0;">Mulai dari kuplet 1. Pilih pernyataan (a atau b) yang cocok dengan ciri organisme, lalu ikuti petunjuk hingga mendapat hasil identifikasi.</p>
         </div>
       </div>
     </div>
@@ -406,70 +615,70 @@ function startPraktikum(){
       <div class="card" style="margin-bottom:0;">
         <div class="ch"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
         <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke area <strong>Meja Kerja</strong> di sebelah kanan.</p>
-        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;">
+        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
 
           <!-- ALAT -->
-          <div class="drag-item" draggable="true" data-id="luv" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🔍</div>
+          <div class="drag-item" draggable="true" data-id="luv" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🔍</div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Kaca Pembesar</div>
             <div style="font-size:10px;color:var(--text3);">Amati ciri</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="pinset" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🥢</div>
+          <div class="drag-item" draggable="true" data-id="pinset" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🥢</div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Pinset</div>
             <div style="font-size:10px;color:var(--text3);">Ambil spesimen</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="buku" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">📖</div>
+          <div class="drag-item" draggable="true" data-id="buku" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">📖</div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Buku Kunci</div>
             <div style="font-size:10px;color:var(--text3);">Panduan identifikasi</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="penggaris" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
+          <div class="drag-item" draggable="true" data-id="penggaris" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
             <div style="display:flex;justify-content:center;margin-bottom:4px;">
-              <img src="https://denicendrianto41.github.io/penggaris.png" width="40" height="40" style="object-fit:contain;" alt="Penggaris">
+              <img src="https://denicendrianto41.github.io/penggaris.png" width="36" height="36" style="object-fit:contain;" alt="Penggaris">
             </div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Penggaris</div>
             <div style="font-size:10px;color:var(--text3);">Ukur panjang</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="alatlv" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">📋</div>
+          <div class="drag-item" draggable="true" data-id="alatlv" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">📋</div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Lembar Kerja</div>
             <div style="font-size:10px;color:var(--text3);">Catat hasil</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="alatalat" data-type="alat" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">✏️</div>
+          <div class="drag-item" draggable="true" data-id="alatalat" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">✏️</div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
             <div style="font-size:10px;color:var(--text3);">Pulpen/pensil</div>
           </div>
 
           <!-- BAHAN -->
-          <div class="drag-item" draggable="true" data-id="rumput" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🌾</div>
+          <div class="drag-item" draggable="true" data-id="rumput" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🌾</div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Rumput</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Poaceae</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="jagung" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🌽</div>
+          <div class="drag-item" draggable="true" data-id="jagung" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🌽</div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Jagung</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Zea mays</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="kacang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🥜</div>
+          <div class="drag-item" draggable="true" data-id="kacang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🥜</div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Kacang Tanah</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">A. hypogaea</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="mangga" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🥭</div>
+          <div class="drag-item" draggable="true" data-id="mangga" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🥭</div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Daun Mangga</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Mangifera indica</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="jamur" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🍄</div>
+          <div class="drag-item" draggable="true" data-id="jamur" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🍄</div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Jamur</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Fungi</div>
           </div>
-          <div class="drag-item" draggable="true" data-id="ganggang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:32px;">🌿</div>
+          <div class="drag-item" draggable="true" data-id="ganggang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🌿</div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Ganggang Hijau</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Chlorophyta</div>
           </div>
@@ -678,33 +887,37 @@ function startPraktikum(){
     <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,18px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
       </div>
-      <button class="btn btn-ghost" onclick="clearDQ()" style="font-size:11px;">↺ Hapus Jawaban</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn btn-ghost" onclick="clearDQ()" style="font-size:11px;border:1px solid var(--border);">↺ Hapus Jawaban</button>
+        <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(37,99,235,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(37,99,235,0.25)'">🖨️ Cetak / Download PDF</button>
+      </div>
     </div>
     <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Dari semua organisme yang diamati, apakah ada yang memiliki ciri-ciri yang sama?</div></div>
-        <textarea class="disc-area" oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+        <textarea id="dq1" class="disc-area" oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Organisme apa saja yang memiliki ciri-ciri yang sama? Jelaskan!</div></div>
-        <textarea class="disc-area" oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+        <textarea id="dq2" class="disc-area" oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Ada berapa kelompok organisme yang kamu dapatkan? Sebutkan!</div></div>
-        <textarea class="disc-area" oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+        <textarea id="dq3" class="disc-area" oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah kamu mengalami kesulitan mengenali ciri-ciri organisme? Jelaskan!</div></div>
-        <textarea class="disc-area" oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
+        <textarea id="dq4" class="disc-area" oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Jawaban..."></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="min-width:22px;font-size:12px;">💡</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah yang dimaksud dengan kunci determinasi?</div></div>
-        <textarea class="disc-area" oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Definisi kunci determinasi..."></textarea>
+        <textarea id="dq5" class="disc-area" oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Definisi kunci determinasi..."></textarea>
       </div>
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="min-width:22px;font-size:12px;">💡</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apakah kegunaan kunci determinasi dalam biologi?</div></div>
-        <textarea class="disc-area" oninput="saveDQ(6,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Kegunaan kunci determinasi..."></textarea>
+        <textarea id="dq6" class="disc-area" oninput="saveDQ(6,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;" placeholder="Kegunaan kunci determinasi..."></textarea>
       </div>
     </div>
   </div>
@@ -737,56 +950,45 @@ function showSimTab(id,btn){
 
 // ─── PROSEDUR STEPS (roadmap) ───
 const simSteps=[
-  {icon:'👀',text:'Ambil spesimen tumbuhan dan amati ciri morfologinya.'},
-  {icon:'📝',text:'Catat semua ciri yang ditemukan.'},
-  {icon:'🔑',text:'Buka halaman <strong>Simulasi</strong> dan pilih organisme yang ingin dideterminasi.'},
-  {icon:'❓',text:'Jawab <strong>Pertanyaan 1</strong> kunci determinasi: apakah organisme memiliki batang?'},
-  {icon:'➡️',text:'Ikuti petunjuk (kuplet) berikutnya sampai dapat hasil determinasi.'},
-  {icon:'📋',text:'Catat <strong>jalur kunci</strong> yang dilalui (mis: 1b → 3b → 4a = Monokotil).'},
-  {icon:'🗺️',text:'Buka tab <strong>Diagram</strong> dan lengkapi kotak isian berdasarkan hasil determinasi.'},
-  {icon:'💬',text:'Buka halaman <strong>Diskusi</strong> dan jawab semua pertanyaan berdasarkan pengamatanmu.'}
+  {icon:'https://denicendrianto41.github.io/luv.png',text:'Ambil spesimen tumbuhan dan amati ciri morfologinya menggunakan <strong>kaca pembesar</strong>.'},
+  {icon:'https://denicendrianto41.github.io/penggaris.png',text:'Ukur dan <strong>catat semua ciri</strong> yang ditemukan: ada tidaknya batang, jenis akar, bentuk tulang daun, ada tidaknya bunga.'},
+  {icon:'https://denicendrianto41.github.io/simulasi.png',text:'Buka halaman <strong>Simulasi</strong> dan pilih organisme yang ingin dideterminasi.'},
+  {icon:'https://denicendrianto41.github.io/teori.png',text:'Jawab <strong>Kuplet ke-1</strong>: apakah organisme memiliki batang atau tidak?'},
+  {icon:'https://denicendrianto41.github.io/prosedur.png',text:'Ikuti petunjuk kuplet berikutnya sampai diperoleh <strong>hasil determinasi</strong> organisme.'},
+  {icon:'https://denicendrianto41.github.io/alat-bahan.png',text:'Catat <strong>jalur kunci</strong> yang dilalui pada lembar kerja (mis: 1b → 3b → 4a = Monokotil).'},
+  {icon:'https://denicendrianto41.github.io/simulasi.png',text:'Buka tab <strong>Diagram</strong> pada halaman Simulasi dan lengkapi kotak isian berdasarkan hasil determinasi.'},
+  {icon:'https://denicendrianto41.github.io/diskusi.png',text:'Buka halaman <strong>Diskusi</strong> dan jawab semua pertanyaan berdasarkan hasil pengamatanmu.'}
 ];
-function buildSteps(data,id){
+(function(){
   const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea','#0284c7'];
-  document.getElementById(id).innerHTML=`
-    <div style="position:relative;padding:4px 0;">
-      ${data.map((s,i)=>{
-        const isRight=i%2===0;
-        const clr=colors[i%colors.length];
-        const nextClr=colors[(i+1)%colors.length];
-        const isLast=i===data.length-1;
-        return `
-        <div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
-          ${isRight?`
-          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
-            <button onclick="zoomStep(this)" style="width:44px;height:44px;border-radius:50%;background:${clr};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
-              <span style="font-size:20px;pointer-events:none;">${s.icon}</span>
-            </button>
-            ${!isLast?`<div style="width:0;flex:1;min-height:16px;border-left:3px dashed ${nextClr}88;margin-top:4px;margin-bottom:4px;"></div>`:''}
-          </div>
-          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:0;" class="step-box">
-            <div style="position:absolute;left:-8px;top:13px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${clr}40;"></div>
-            <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-            <p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p>
-          </div>
-          `:`
-          <div style="flex:1;background:${clr}10;border:1.5px solid ${clr}40;border-radius:10px;padding:7px 10px;position:relative;margin-bottom:0;" class="step-box">
-            <div style="position:absolute;right:-8px;top:13px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${clr}40;"></div>
-            <div style="font-size:9px;font-weight:700;color:${clr};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-            <p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
-            <button onclick="zoomStep(this)" style="width:44px;height:44px;border-radius:50%;background:${clr};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${clr}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
-              <span style="font-size:20px;pointer-events:none;">${s.icon}</span>
-            </button>
-            ${!isLast?`<div style="width:0;flex:1;min-height:16px;border-left:3px dashed ${nextClr}88;margin-top:4px;margin-bottom:4px;"></div>`:''}
-          </div>
-          `}
-        </div>`;
-      }).join('')}
+  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
+    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===simSteps.length-1,right=i%2===0;
+    const iconHtml=s.icon.startsWith('http')
+      ? `<img src="${s.icon}" style="width:22px;height:22px;object-fit:contain;pointer-events:none;filter:brightness(0) invert(1);">`
+      : `<span style="font-size:18px;pointer-events:none;">${s.icon}</span>`;
+    return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
+      ${right?`
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
+        <button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">${iconHtml}</button>
+        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+      </div>
+      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
+        <div style="position:absolute;left:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${c}40;"></div>
+        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>`:`
+      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
+        <div style="position:absolute;right:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${c}40;"></div>
+        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
+        <button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">${iconHtml}</button>
+        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
+      </div>`}
     </div>`;
-}
-buildSteps(simSteps,'simSteps');
+  }).join('')}</div>`;
+})();
 
 function zoomStep(iconEl){
   const sfx=document.getElementById('clickSfx');
@@ -935,6 +1137,69 @@ function saveDQ(n,v){dqData[n]=v;}
 function clearDQ(){
   document.querySelectorAll('.disc-area').forEach(t=>{t.value='';});
   Object.keys(dqData).forEach(k=>delete dqData[k]);
+}
+
+function printDiskusi(){
+  const questions=[
+    'Dari semua organisme yang diamati, apakah ada yang memiliki ciri-ciri yang sama?',
+    'Organisme apa saja yang memiliki ciri-ciri yang sama? Jelaskan!',
+    'Ada berapa kelompok organisme yang kamu dapatkan? Sebutkan!',
+    'Apakah kamu mengalami kesulitan mengenali ciri-ciri organisme? Jelaskan!',
+    'Apakah yang dimaksud dengan kunci determinasi?',
+    'Apakah kegunaan kunci determinasi dalam biologi?'
+  ];
+  const answers=[];
+  for(let i=1;i<=6;i++){
+    const el=document.getElementById('dq'+i);
+    answers.push(el?el.value.trim():'');
+  }
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt">${answers[i]||'<em style="color:#94a3b8;">Belum diisi</em>'}</div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Kunci Determinasi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #2563eb;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1d4ed8;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{
+    body{padding:20px 28px;}
+    @page{margin:1.5cm;size:A4 portrait;}
+  }
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">&#x1F9EC; Lab Virtual – Kunci Determinasi Makhluk Hidup</div>
+  <div class="lab-sub">Klasifikasi &amp; Kunci Determinasi · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">&#x1F4C5; Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Jawaban Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · Kunci Determinasi Makhluk Hidup · Dicetak dari aplikasi Lab Virtual</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
 }
 
 // ─── DRAG & DROP – Alat & Bahan ───
