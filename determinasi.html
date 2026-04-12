@@ -130,7 +130,7 @@ nav::-webkit-scrollbar{display:none;}
 .pcard .pn{font-size:0.55rem;font-weight:700;color:var(--text2);line-height:1.2;margin-top:2px;}
 .pcard .chk{position:absolute;top:2px;right:2px;width:12px;height:12px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.5rem;color:#fff;font-weight:900;}
 .pcard.selected .chk{display:flex;}
-.selected-display{background:#eff6ff;border:1.5px dashed rgba(37,99,235,.35);border-radius:8px;padding:8px;display:flex;align-items:flex-start;gap:8px;min-height:55px;flex-shrink:0;}
+.selected-display{background:#eff6ff;border:1.5px dashed rgba(37,99,235,.35);border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:160px;flex-shrink:0;}
 .sd-emoji{font-size:2rem;flex-shrink:0;}
 .sd-name{font-weight:700;font-size:0.85rem;color:var(--text);}
 .sd-latin{font-style:italic;font-size:0.68rem;color:var(--acc);}
@@ -238,7 +238,7 @@ nav::-webkit-scrollbar{display:none;}
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
   <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
-  <button id="btnMulaiPraktikum" onclick="startPraktikum()">🔬 Mulai Praktikum</button>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 
 <script>
@@ -624,7 +624,9 @@ function startPraktikum(){
             <div style="font-size:10px;color:var(--text3);">Amati ciri</div>
           </div>
           <div class="drag-item" draggable="true" data-id="pinset" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🥢</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/pinset.png" width="36" height="36" style="object-fit:contain;" alt="Pinset">
+            </div>
             <div style="font-size:12px;font-weight:600;color:var(--acc3);">Pinset</div>
             <div style="font-size:10px;color:var(--text3);">Ambil spesimen</div>
           </div>
@@ -653,32 +655,44 @@ function startPraktikum(){
 
           <!-- BAHAN -->
           <div class="drag-item" draggable="true" data-id="rumput" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🌾</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/rumput.png" width="36" height="36" style="object-fit:contain;" alt="Rumput">
+            </div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Rumput</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Poaceae</div>
           </div>
           <div class="drag-item" draggable="true" data-id="jagung" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🌽</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/jagung.png" width="36" height="36" style="object-fit:contain;" alt="Jagung">
+            </div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Jagung</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Zea mays</div>
           </div>
           <div class="drag-item" draggable="true" data-id="kacang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🥜</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/kacang.png" width="36" height="36" style="object-fit:contain;" alt="Kacang Tanah">
+            </div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Kacang Tanah</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">A. hypogaea</div>
           </div>
           <div class="drag-item" draggable="true" data-id="mangga" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🥭</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/mangga.png" width="36" height="36" style="object-fit:contain;" alt="Daun Mangga">
+            </div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Daun Mangga</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Mangifera indica</div>
           </div>
           <div class="drag-item" draggable="true" data-id="jamur" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🍄</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/jamur.png" width="36" height="36" style="object-fit:contain;" alt="Jamur">
+            </div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Jamur</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Fungi</div>
           </div>
           <div class="drag-item" draggable="true" data-id="ganggang" data-type="bahan" style="background:#f0fdf4;border:1.5px dashed #86efac;border-radius:10px;padding:9px;text-align:center;">
-            <div style="display:flex;justify-content:center;margin-bottom:4px;font-size:28px;">🌿</div>
+            <div style="display:flex;justify-content:center;margin-bottom:4px;">
+              <img src="https://denicendrianto41.github.io/hidrila.png" width="36" height="36" style="object-fit:contain;" alt="Ganggang Hijau">
+            </div>
             <div style="font-size:12px;font-weight:600;color:#065f46;">Ganggang Hijau</div>
             <div style="font-size:10px;color:var(--text3);font-style:italic;">Chlorophyta</div>
           </div>
@@ -950,22 +964,20 @@ function showSimTab(id,btn){
 
 // ─── PROSEDUR STEPS (roadmap) ───
 const simSteps=[
-  {icon:'https://denicendrianto41.github.io/luv.png',text:'Ambil spesimen tumbuhan dan amati ciri morfologinya menggunakan <strong>kaca pembesar</strong>.'},
-  {icon:'https://denicendrianto41.github.io/penggaris.png',text:'Ukur dan <strong>catat semua ciri</strong> yang ditemukan: ada tidaknya batang, jenis akar, bentuk tulang daun, ada tidaknya bunga.'},
-  {icon:'https://denicendrianto41.github.io/simulasi.png',text:'Buka halaman <strong>Simulasi</strong> dan pilih organisme yang ingin dideterminasi.'},
-  {icon:'https://denicendrianto41.github.io/teori.png',text:'Jawab <strong>Kuplet ke-1</strong>: apakah organisme memiliki batang atau tidak?'},
-  {icon:'https://denicendrianto41.github.io/prosedur.png',text:'Ikuti petunjuk kuplet berikutnya sampai diperoleh <strong>hasil determinasi</strong> organisme.'},
-  {icon:'https://denicendrianto41.github.io/alat-bahan.png',text:'Catat <strong>jalur kunci</strong> yang dilalui pada lembar kerja (mis: 1b → 3b → 4a = Monokotil).'},
-  {icon:'https://denicendrianto41.github.io/simulasi.png',text:'Buka tab <strong>Diagram</strong> pada halaman Simulasi dan lengkapi kotak isian berdasarkan hasil determinasi.'},
-  {icon:'https://denicendrianto41.github.io/diskusi.png',text:'Buka halaman <strong>Diskusi</strong> dan jawab semua pertanyaan berdasarkan hasil pengamatanmu.'}
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><circle cx="11" cy="11" r="3" stroke-width="1.5"/><line x1="11" y1="4" x2="11" y2="6"/><line x1="11" y1="16" x2="11" y2="18"/><line x1="4" y1="11" x2="6" y2="11"/><line x1="16" y1="11" x2="18" y2="11"/></svg>`,text:'Ambil spesimen tumbuhan, amati ciri morfologinya dengan <strong>kaca pembesar</strong>.'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="5" y1="8" x2="8" y2="8"/></svg>`,text:'Catat ciri yang ditemukan: ada/tidak batang, jenis akar, bentuk tulang daun, ada/tidak bunga.'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,text:'Buka halaman <strong>Simulasi</strong>, pilih organisme yang akan dideterminasi.'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/><path d="M9 12l2 2 4-4" stroke-width="2"/></svg>`,text:'Mulai dari <strong>Kuplet 1</strong>: pilih pernyataan yang sesuai ciri organisme (a atau b).'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="9 18 15 12 9 6"/><line x1="4" y1="12" x2="15" y2="12"/><circle cx="19" cy="12" r="2"/></svg>`,text:'Ikuti petunjuk kuplet berikutnya hingga diperoleh <strong>hasil determinasi</strong>.'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/><line x1="9" y1="9" x2="11" y2="9"/></svg>`,text:'Catat <strong>jalur kunci</strong> di lembar kerja (contoh: 1b → 3b → 4a = Monokotil).'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><rect x="12" y="12" width="3" height="3" fill="white" stroke="none" rx="0.5"/><rect x="16" y="12" width="3" height="3" fill="white" stroke="none" rx="0.5"/><rect x="12" y="16" width="3" height="3" fill="white" stroke="none" rx="0.5"/></svg>`,text:'Buka tab <strong>Diagram</strong> di halaman Simulasi, lengkapi kotak isian klasifikasi.'},
+  {icon:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="13" y2="14"/></svg>`,text:'Buka halaman <strong>Diskusi</strong> dan jawab pertanyaan berdasarkan hasil pengamatan.'}
 ];
 (function(){
   const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea','#0284c7'];
   document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
     const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===simSteps.length-1,right=i%2===0;
-    const iconHtml=s.icon.startsWith('http')
-      ? `<img src="${s.icon}" style="width:22px;height:22px;object-fit:contain;pointer-events:none;filter:brightness(0) invert(1);">`
-      : `<span style="font-size:18px;pointer-events:none;">${s.icon}</span>`;
+    const iconHtml=`<span style="display:flex;align-items:center;justify-content:center;pointer-events:none;">${s.icon}</span>`;
     return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
       ${right?`
       <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
@@ -1005,16 +1017,16 @@ function zoomStep(iconEl){
 
 // ─── DATA ───
 const plants=[
-  {id:'rumput',name:'Rumput',emoji:'🌾',latin:'Poaceae',ciri:['Punya batang, akar, daun','Berbunga (malai)','Biji 1 keping','Akar serabut','Tulang daun sejajar'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
-  {id:'jagung',name:'Jagung',emoji:'🌽',latin:'Zea mays',ciri:['Punya batang, akar, daun','Berbunga (jantan/betina)','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
-  {id:'kacang',name:'Kacang Tanah',emoji:'🥜',latin:'Arachis hypogaea',ciri:['Punya batang, akar, daun','Berbunga (kuning)','Biji 2 keping','Akar tunggang','Tulang daun menyirip'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
-  {id:'ketela',name:'Ketela',emoji:'🪴',latin:'Manihot esculenta',ciri:['Punya batang, akar, daun','Berbunga','Biji 2 keping','Akar tunggang (umbi)','Tulang daun menjari'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
-  {id:'padi',name:'Padi',emoji:'🌾',latin:'Oryza sativa',ciri:['Punya batang, akar, daun','Berbunga (malai)','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
-  {id:'kelapa',name:'Kelapa',emoji:'🥥',latin:'Cocos nucifera',ciri:['Punya batang, akar, daun','Berbunga','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
-  {id:'palem',name:'Palem',emoji:'🌴',latin:'Arecaceae',ciri:['Punya batang, akar, daun','Berbunga','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
-  {id:'mangga',name:'Pohon Mangga',emoji:'🥭',latin:'Mangifera indica',ciri:['Punya batang, akar, daun','Berbunga (malai kecil)','Biji 2 keping','Akar tunggang','Tulang daun menyirip'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
-  {id:'jamur',name:'Jamur',emoji:'🍄',latin:'Fungi',ciri:['Tidak punya batang/akar/daun sejati','Tidak berklorofil','Tubuh berupa talus','Heterotrof'],kunci:['1a','2a'],kelompok:'Jamur (Fungi)',alasan:'Tidak punya batang · tidak berklorofil'},
-  {id:'ganggang',name:'Ganggang Hijau',emoji:'🌿',latin:'Chlorophyta',ciri:['Tidak punya batang/akar/daun sejati','Berklorofil (hijau)','Tubuh berupa talus','Autotrof'],kunci:['1a','2b'],kelompok:'Ganggang (Algae)',alasan:'Tidak punya batang · memiliki klorofil'},
+  {id:'rumput',name:'Rumput',emoji:'🌾',img:'https://denicendrianto41.github.io/rumput.png',latin:'Poaceae',ciri:['Punya batang, akar, daun','Berbunga (malai)','Biji 1 keping','Akar serabut','Tulang daun sejajar'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'jagung',name:'Jagung',emoji:'🌽',img:'https://denicendrianto41.github.io/jagung.png',latin:'Zea mays',ciri:['Punya batang, akar, daun','Berbunga (jantan/betina)','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'kacang',name:'Kacang Tanah',emoji:'🥜',img:'https://denicendrianto41.github.io/kacang.png',latin:'Arachis hypogaea',ciri:['Punya batang, akar, daun','Berbunga (kuning)','Biji 2 keping','Akar tunggang','Tulang daun menyirip'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
+  {id:'ketela',name:'Ketela',emoji:'🪴',img:'https://denicendrianto41.github.io/singkong.png',latin:'Manihot esculenta',ciri:['Punya batang, akar, daun','Berbunga','Biji 2 keping','Akar tunggang (umbi)','Tulang daun menjari'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
+  {id:'padi',name:'Padi',emoji:'🌾',img:'https://denicendrianto41.github.io/padi.png',latin:'Oryza sativa',ciri:['Punya batang, akar, daun','Berbunga (malai)','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'kelapa',name:'Kelapa',emoji:'🥥',img:'https://denicendrianto41.github.io/kelapa.png',latin:'Cocos nucifera',ciri:['Punya batang, akar, daun','Berbunga','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'palem',name:'Palem',emoji:'🌴',img:'https://denicendrianto41.github.io/palem.png',latin:'Arecaceae',ciri:['Punya batang, akar, daun','Berbunga','Biji 1 keping','Akar serabut'],kunci:['1b','3b','4a'],kelompok:'Monokotil',alasan:'Batang ada · berbunga · biji 1 keping · akar serabut'},
+  {id:'mangga',name:'Pohon Mangga',emoji:'🥭',img:'https://denicendrianto41.github.io/mangga.png',latin:'Mangifera indica',ciri:['Punya batang, akar, daun','Berbunga (malai kecil)','Biji 2 keping','Akar tunggang','Tulang daun menyirip'],kunci:['1b','3b','4b'],kelompok:'Dikotil',alasan:'Batang ada · berbunga · biji 2 keping · akar tunggang'},
+  {id:'jamur',name:'Jamur',emoji:'🍄',img:'https://denicendrianto41.github.io/jamur.png',latin:'Fungi',ciri:['Tidak punya batang/akar/daun sejati','Tidak berklorofil','Tubuh berupa talus','Heterotrof'],kunci:['1a','2a'],kelompok:'Jamur (Fungi)',alasan:'Tidak punya batang · tidak berklorofil'},
+  {id:'ganggang',name:'Ganggang Hijau',emoji:'🌿',img:'https://denicendrianto41.github.io/hidrila.png',latin:'Chlorophyta',ciri:['Tidak punya batang/akar/daun sejati','Berklorofil (hijau)','Tubuh berupa talus','Autotrof'],kunci:['1a','2b'],kelompok:'Ganggang (Algae)',alasan:'Tidak punya batang · memiliki klorofil'},
 ];
 
 const kunciDef=[
@@ -1029,7 +1041,10 @@ function buildDetGrid(){
   const g=document.getElementById('det-grid');g.innerHTML='';
   plants.forEach(p=>{
     const d=document.createElement('div');d.className='pcard';d.id='pc-'+p.id;
-    d.innerHTML=`<div class="chk">✓</div><span class="pe">${p.emoji}</span><div class="pn">${p.name}</div>`;
+    const iconHtml=p.img
+      ? `<span class="pe" style="display:flex;justify-content:center;"><img src="${p.img}" alt="${p.name}" style="width:36px;height:36px;object-fit:contain;" onerror="this.style.display='none';this.nextSibling.style.display='inline';"><span style="display:none;font-size:1.4rem;">${p.emoji}</span></span>`
+      : `<span class="pe">${p.emoji}</span>`;
+    d.innerHTML=`<div class="chk">✓</div>${iconHtml}<div class="pn">${p.name}</div>`;
     d.onclick=()=>selPlantFn(p);g.appendChild(d);
   });
 }
@@ -1040,9 +1055,16 @@ function selPlantFn(p){
   document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('selected'));
   document.getElementById('pc-'+p.id).classList.add('selected');
   selPlant=p;curStep=0;kPath=[];
+  const imgHtml=p.img
+    ? `<img src="${p.img}" alt="${p.name}" style="width:130px;height:130px;object-fit:contain;border-radius:14px;background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:2px solid #86efac;padding:8px;box-shadow:0 4px 16px rgba(5,150,105,0.18);" onerror="this.outerHTML='<span style=\\'font-size:4rem;\\'>${p.emoji}</span>'">`
+    : `<span style="font-size:4rem;">${p.emoji}</span>`;
   document.getElementById('selected-display').innerHTML=`
-    <span class="sd-emoji">${p.emoji}</span>
-    <div><div class="sd-name">${p.name}</div><div class="sd-latin">${p.latin}</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;">
+      ${imgHtml}
+      <div>
+        <div class="sd-name" style="font-size:1.05rem;">${p.name}</div>
+        <div class="sd-latin">${p.latin}</div>
+      </div>
     </div>`;
   renderKunci();
 }
