@@ -664,6 +664,7 @@ document.addEventListener('click',function(e){
         <div class="petri-stage" id="petriStage">
           <div class="petri-item"><div class="petri-label">Anti-A (biru)</div><canvas id="cvA" width="110" height="110" style="border-radius:50%;border:3px solid var(--border2);background:#f9f9f9;display:block;"></canvas><div class="petri-result" id="resA">—</div></div>
           <div class="petri-item"><div class="petri-label">Anti-B (oranye)</div><canvas id="cvB" width="110" height="110" style="border-radius:50%;border:3px solid var(--border2);background:#f9f9f9;display:block;"></canvas><div class="petri-result" id="resB">—</div></div>
+          <div class="petri-item"><div class="petri-label">Anti-AB (ungu)</div><canvas id="cvAB" width="110" height="110" style="border-radius:50%;border:3px solid #c4b5fd;background:#f9f9f9;display:block;"></canvas><div class="petri-result" id="resAB">—</div></div>
           <div class="petri-item"><div class="petri-label">Anti-Rh</div><canvas id="cvRh" width="110" height="110" style="border-radius:50%;border:3px solid var(--border2);background:#f9f9f9;display:block;"></canvas><div class="petri-result" id="resRh">—</div></div>
         </div>
       </div>
@@ -678,6 +679,7 @@ document.addEventListener('click',function(e){
           <tr><th>Antisera</th><th>Campuran</th><th>Penggumpalan?</th><th>Kesimpulan</th></tr>
           <tr><td>Anti-A (biru)</td><td id="oa-mix">—</td><td id="oa-res">—</td><td id="oa-conc">—</td></tr>
           <tr><td>Anti-B (oranye)</td><td id="ob-mix">—</td><td id="ob-res">—</td><td id="ob-conc">—</td></tr>
+          <tr><td>Anti-AB (ungu)</td><td id="oab-mix">—</td><td id="oab-res">—</td><td id="oab-conc">—</td></tr>
           <tr><td>Anti-Rh</td><td id="or-mix">—</td><td id="or-res">—</td><td id="or-conc">—</td></tr>
         </table>
       </div>
@@ -1008,10 +1010,10 @@ window.closeCelebration=function(){
 
 // ===== SIMULASI =====
 let simRunning=false;
-const AGG_MAP={A:{a:true,b:false},B:{a:false,b:true},AB:{a:true,b:true},O:{a:false,b:false}};
+const AGG_MAP={A:{a:true,b:false,ab:true},B:{a:false,b:true,ab:true},AB:{a:true,b:true,ab:true},O:{a:false,b:false,ab:false}};
 
 function initSim(){
-  ['cvA','cvB','cvRh'].forEach(id=>{
+  ['cvA','cvB','cvAB','cvRh'].forEach(id=>{
     const cv=document.getElementById(id);if(!cv) return;
     const ctx=cv.getContext('2d');
     drawBloodDrop(ctx,cv.width,cv.height,false);
@@ -1085,7 +1087,7 @@ function runSimulation(){
   if(simRunning) return;
   simRunning=true;document.getElementById('btnSim').disabled=true;
   document.getElementById('resCard').style.display='none';
-  ['resA','resB','resRh'].forEach(id=>{document.getElementById(id).textContent='—';document.getElementById(id).className='petri-result';});
+  ['resA','resB','resAB','resRh'].forEach(id=>{document.getElementById(id).textContent='—';document.getElementById(id).className='petri-result';});
   const aAgg=AGG_MAP[gol].a,bAgg=AGG_MAP[gol].b,rhAgg=rh==='+';
   const delay=document.getElementById('selSpeed').value==='fast'?300:650;
   animateDrop('cvA',aAgg,()=>{
@@ -1096,11 +1098,18 @@ function runSimulation(){
         const el=document.getElementById('resB');el.textContent=bAgg?'(+) Aglutinasi':'(−) Tidak aglutinasi';el.className='petri-result '+(bAgg?'agglutinate':'no-agglutinate');
         setObs('b','Darah+Anti-B',bAgg,'b',gol);
         setTimeout(()=>{
-          animateDrop('cvRh',rhAgg,()=>{
-            const el=document.getElementById('resRh');el.textContent=rhAgg?'(+) Aglutinasi':'(−) Tidak aglutinasi';el.className='petri-result '+(rhAgg?'agglutinate':'no-agglutinate');
-            setObs('r','Darah+Anti-Rh',rhAgg,'rh',null,rh);
-            showResult(gol,rh,aAgg,bAgg,rhAgg);
-            simRunning=false;document.getElementById('btnSim').disabled=false;
+          const abAgg=AGG_MAP[gol].ab;
+          animateDrop('cvAB',abAgg,()=>{
+            const el=document.getElementById('resAB');el.textContent=abAgg?'(+) Aglutinasi':'(−) Tidak aglutinasi';el.className='petri-result '+(abAgg?'agglutinate':'no-agglutinate');
+            setObs('ab','Darah+Anti-AB',abAgg,'ab',gol);
+            setTimeout(()=>{
+              animateDrop('cvRh',rhAgg,()=>{
+                const el=document.getElementById('resRh');el.textContent=rhAgg?'(+) Aglutinasi':'(−) Tidak aglutinasi';el.className='petri-result '+(rhAgg?'agglutinate':'no-agglutinate');
+                setObs('r','Darah+Anti-Rh',rhAgg,'rh',null,rh);
+                showResult(gol,rh,aAgg,bAgg,abAgg,rhAgg);
+                simRunning=false;document.getElementById('btnSim').disabled=false;
+              });
+            },delay);
           });
         },delay);
       });
@@ -1114,12 +1123,13 @@ function setObs(t,mix,agg,prefix,gol,rh){
   const concMap={
     a:{true:'Ada aglutinogen A',false:'Tidak ada aglutinogen A'},
     b:{true:'Ada aglutinogen B',false:'Tidak ada aglutinogen B'},
+    ab:{true:'Ada aglutinogen A dan/atau B',false:'Tidak ada aglutinogen A maupun B'},
     rh:{true:'Rh positif (+)',false:'Rh negatif (−)'}
   };
   document.getElementById('o'+prefix+'-conc').textContent=concMap[t][agg+''];
 }
 
-function showResult(gol,rh,aAgg,bAgg,rhAgg){
+function showResult(gol,rh,aAgg,bAgg,abAgg,rhAgg){
   document.getElementById('resCard').style.display='block';
   document.getElementById('golResult').textContent='Golongan '+gol;
   document.getElementById('rhResult').textContent='Rhesus '+(rh==='+' ? 'Positif (Rh+)':'Negatif (Rh−)');
@@ -1129,15 +1139,15 @@ function showResult(gol,rh,aAgg,bAgg,rhAgg){
     AB:'Baik Anti-A maupun Anti-B menyebabkan aglutinasi → ada aglutinogen A dan B → Golongan AB (Resipien Universal).',
     O:'Tidak ada aglutinasi pada Anti-A maupun Anti-B → tidak ada aglutinogen → Golongan O (Donor Universal).'
   };
-  document.getElementById('resExplain').textContent=exp[gol]+' Anti-Rh '+(rhAgg?'menyebabkan aglutinasi → Rh Positif.':'tidak menyebabkan aglutinasi → Rh Negatif.');
+  document.getElementById('resExplain').textContent=exp[gol]+' Anti-AB '+(abAgg?'menyebabkan aglutinasi (ada aglutinogen A dan/atau B).':' tidak menyebabkan aglutinasi (tidak ada aglutinogen A maupun B).')+' Anti-Rh '+(rhAgg?'menyebabkan aglutinasi → Rh Positif.':'tidak menyebabkan aglutinasi → Rh Negatif.');
 }
 
 function resetSim(){
   simRunning=false;document.getElementById('btnSim').disabled=false;
   document.getElementById('selGol').value='';document.getElementById('selRh').value='';
   document.getElementById('resCard').style.display='none';
-  ['resA','resB','resRh'].forEach(id=>{document.getElementById(id).textContent='—';document.getElementById(id).className='petri-result';});
-  ['oa','ob','or'].forEach(p=>['mix','res','conc'].forEach(s=>{const el=document.getElementById(p+'-'+s);if(el) el.textContent='—';}));
+  ['resA','resB','resAB','resRh'].forEach(id=>{document.getElementById(id).textContent='—';document.getElementById(id).className='petri-result';});
+  ['oa','ob','oab','or'].forEach(p=>['mix','res','conc'].forEach(s=>{const el=document.getElementById(p+'-'+s);if(el) el.textContent='—';}));
   initSim();
 }
 
