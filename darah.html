@@ -110,15 +110,15 @@ nav::-webkit-scrollbar{display:none;}
 .drag-card{background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;cursor:grab;transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s,background .15s;user-select:none;-webkit-user-select:none;position:relative;touch-action:none;-webkit-tap-highlight-color:transparent;}
 .drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);}
 .drag-card:active{cursor:grabbing;transform:scale(.96);}
-.drag-card.bahan{background:#f0fdf4;border:1.5px dashed #86efac;}
-.drag-card.bahan:hover{border-color:#059669;}
+.drag-card.bahan{background:#eff6ff;border:1.5px dashed #93c5fd;}
+.drag-card.bahan:hover{border-color:#2563eb;}
 .drag-card.alat:hover{border-color:#2563eb;}
 .drag-card.dragging{opacity:.3;transform:scale(.95);filter:grayscale(.5);}
 .drag-card.placed{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
 .drag-card.touch-grabbing{transform:scale(1.06);box-shadow:0 8px 24px rgba(37,99,235,.22);border-color:var(--acc2);z-index:10;}
 .drag-icon{margin-bottom:3px;display:flex;align-items:center;justify-content:center;line-height:1;font-size:28px;}
 .drag-name{font-size:11px;font-weight:600;color:var(--acc3);line-height:1.3;margin-bottom:1px;}
-.drag-card.bahan .drag-name{color:#065f46;}
+.drag-card.bahan .drag-name{color:var(--acc3);}
 .drag-sub{font-size:9.5px;color:var(--text3);}
 .drop-zone{border:2px dashed var(--border2);border-radius:10px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;transition:background .2s,border-color .2s;position:relative;touch-action:none;min-height:110px;}
 .drop-zone#dropAlat{border-color:#93c5fd;background:#eff6ff;}
@@ -516,13 +516,13 @@ document.addEventListener('click',function(e){
       <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
       <div id="sourceItems" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
         <!-- ALAT -->
-        <div class="drag-card alat" draggable="true" data-id="lancet" data-type="alat" data-name="Blood Lancet" data-sub="Menusuk ujung jari"><div class="drag-icon">💉</div><div class="drag-name">Blood Lancet</div><div class="drag-sub">Steril, sekali pakai</div></div>
-        <div class="drag-card alat" draggable="true" data-id="tusuk" data-type="alat" data-name="Tusuk Gigi" data-sub="Mengaduk campuran"><div class="drag-icon">🦷</div><div class="drag-name">Tusuk Gigi</div><div class="drag-sub">Mengaduk campuran</div></div>
-        <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Objek" data-sub="Tempat tetesan darah"><div class="drag-icon">🔲</div><div class="drag-name">Gelas Objek</div><div class="drag-sub">Tempat tetesan</div></div>
-        <div class="drag-card alat" draggable="true" data-id="pipet" data-type="alat" data-name="Pipet Tetes" data-sub="Meneteskan antisera"><div class="drag-icon">🧪</div><div class="drag-name">Pipet Tetes</div><div class="drag-sub">Meneteskan serum</div></div>
+        <div class="drag-card alat" draggable="true" data-id="lancet" data-type="alat" data-name="Blood Lancet" data-sub="Menusuk ujung jari"><div class="drag-icon"><img src="https://denicendrianto41.github.io/blood_lancet.png" alt="Blood Lancet" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Blood Lancet</div><div class="drag-sub">Steril, sekali pakai</div></div>
+        <div class="drag-card alat" draggable="true" data-id="tusuk" data-type="alat" data-name="Tusuk Gigi" data-sub="Mengaduk campuran"><div class="drag-icon"><img src="https://denicendrianto41.github.io/tusuk_gigi.png" alt="Tusuk Gigi" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Tusuk Gigi</div><div class="drag-sub">Mengaduk campuran</div></div>
+        <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Objek" data-sub="Tempat tetesan darah"><div class="drag-icon"><img src="https://denicendrianto41.github.io/kaca_objek.png" alt="Gelas Objek" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Gelas Objek</div><div class="drag-sub">Tempat tetesan</div></div>
+        <div class="drag-card alat" draggable="true" data-id="pipet" data-type="alat" data-name="Pipet Tetes" data-sub="Meneteskan antisera"><div class="drag-icon"><img src="https://denicendrianto41.github.io/pipet.png" alt="Pipet Tetes" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Pipet Tetes</div><div class="drag-sub">Meneteskan serum</div></div>
         <!-- BAHAN -->
-        <div class="drag-card bahan" draggable="true" data-id="alkohol" data-type="bahan" data-name="Alkohol 70%" data-sub="Sterilisasi jari"><div class="drag-icon">🧴</div><div class="drag-name">Alkohol 70%</div><div class="drag-sub">Sterilisasi jari</div></div>
-        <div class="drag-card bahan" draggable="true" data-id="kapas" data-type="bahan" data-name="Kapas" data-sub="Pembersih luka"><div class="drag-icon">🤍</div><div class="drag-name">Kapas</div><div class="drag-sub">Pembersih luka</div></div>
+        <div class="drag-card bahan" draggable="true" data-id="alkohol" data-type="bahan" data-name="Alkohol 70%" data-sub="Sterilisasi jari"><div class="drag-icon"><img src="https://denicendrianto41.github.io/alkohol.png" alt="Alkohol 70%" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Alkohol 70%</div><div class="drag-sub">Sterilisasi jari</div></div>
+        <div class="drag-card bahan" draggable="true" data-id="kapas" data-type="bahan" data-name="Kapas" data-sub="Pembersih luka"><div class="drag-icon"><img src="https://denicendrianto41.github.io/kapas.png" alt="Kapas" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Kapas</div><div class="drag-sub">Pembersih luka</div></div>
         <div class="drag-card bahan" draggable="true" data-id="antia" data-type="bahan" data-name="Anti-A Serum" data-sub="Biru · antisera A"><div class="drag-icon">🔵</div><div class="drag-name">Anti-A Serum</div><div class="drag-sub">Biru · antisera A</div></div>
         <div class="drag-card bahan" draggable="true" data-id="antib" data-type="bahan" data-name="Anti-B Serum" data-sub="Oranye · antisera B"><div class="drag-icon">🟠</div><div class="drag-name">Anti-B Serum</div><div class="drag-sub">Oranye · antisera B</div></div>
         <div class="drag-card bahan" draggable="true" data-id="antirh" data-type="bahan" data-name="Anti-Rh Serum" data-sub="Penentu faktor Rh"><div class="drag-icon">🔴</div><div class="drag-name">Anti-Rh Serum</div><div class="drag-sub">Penentu Rh</div></div>
@@ -762,14 +762,14 @@ function switchTeori(idx,btn){
 
 // ===== PROSEDUR ANIMATED ROADMAP =====
 const stepsData=[
-  {icon:'🧤',color:'#2563eb',text:'Kenakan <strong>sarung tangan lateks</strong>. Hapus ujung jari dengan kapas beralkohol 70% hingga kering.'},
-  {icon:'💉',color:'#7c3aed',text:'Tusuklah jari dengan <strong>blood lancet steril</strong>. Hapus tetesan darah pertama dengan kapas alkohol.'},
-  {icon:'🩸',color:'#dc2626',text:'Pijit jari perlahan hingga keluar darah. Teteskan di <strong>dua tempat berbeda</strong> di gelas objek (untuk Anti-A dan Anti-B).'},
-  {icon:'🔵',color:'#0891b2',text:'Teteskan satu tetes <strong>antisera A (biru)</strong> pada tetesan darah sisi pertama.'},
-  {icon:'🟠',color:'#d97706',text:'Teteskan satu tetes <strong>antisera B (oranye)</strong> pada tetesan darah sisi kedua.'},
-  {icon:'🦷',color:'#059669',text:'Aduk masing-masing campuran dengan <strong>tusuk gigi terpisah</strong>. Jangan mencampur tusuk gigi!'},
+  {icon:'<img src="https://denicendrianto41.github.io/kapas.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#2563eb',text:'Kenakan <strong>sarung tangan lateks</strong>. Hapus ujung jari dengan kapas beralkohol 70% hingga kering.'},
+  {icon:'<img src="https://denicendrianto41.github.io/blood_lancet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#7c3aed',text:'Tusuklah jari dengan <strong>blood lancet steril</strong>. Hapus tetesan darah pertama dengan kapas alkohol.'},
+  {icon:'<img src="https://denicendrianto41.github.io/kaca_objek.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#dc2626',text:'Pijit jari perlahan hingga keluar darah. Teteskan di <strong>dua tempat berbeda</strong> di gelas objek (untuk Anti-A dan Anti-B).'},
+  {icon:'<img src="https://denicendrianto41.github.io/pipet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#0891b2',text:'Teteskan satu tetes <strong>antisera A (biru)</strong> pada tetesan darah sisi pertama.'},
+  {icon:'<img src="https://denicendrianto41.github.io/pipet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#d97706',text:'Teteskan satu tetes <strong>antisera B (oranye)</strong> pada tetesan darah sisi kedua.'},
+  {icon:'<img src="https://denicendrianto41.github.io/tusuk_gigi.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#059669',text:'Aduk masing-masing campuran dengan <strong>tusuk gigi terpisah</strong>. Jangan mencampur tusuk gigi!'},
   {icon:'🔍',color:'#9333ea',text:'Diamkan beberapa saat. Amati apakah terjadi <strong>penggumpalan (aglutinasi)</strong> pada salah satu atau kedua campuran.'},
-  {icon:'💧',color:'#0284c7',text:'Untuk uji Rh: teteskan darah segar, tambahkan <strong>Anti-Rh serum</strong>, aduk, dan amati hasilnya.'},
+  {icon:'<img src="https://denicendrianto41.github.io/pipet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#0284c7',text:'Untuk uji Rh: teteskan darah segar, tambahkan <strong>Anti-Rh serum</strong>, aduk, dan amati hasilnya.'},
   {icon:'📝',color:'#15803d',text:'Catat hasil pengamatan: golongan darah ABO dan status Rh (+ atau −) di tabel laporan.'},
 ];
 
@@ -885,7 +885,7 @@ function zoomStep(btn){
     const dc=document.createElement('div');
     dc.className='drop-card'+(isBahan?' bahan-card':'')+(isCorrect?' anim-correct':' anim-wrong-card wrong-card');
     dc.dataset.id=dragId;
-    const icons={lancet:'💉',tusuk:'🦷',gelas:'🔲',pipet:'🧪',alkohol:'🧴',kapas:'🤍',antia:'🔵',antib:'🟠',antirh:'🔴'};
+    const icons={lancet:'<img src="https://denicendrianto41.github.io/blood_lancet.png" alt="Blood Lancet" style="width:22px;height:22px;object-fit:contain;">',tusuk:'<img src="https://denicendrianto41.github.io/tusuk_gigi.png" alt="Tusuk Gigi" style="width:22px;height:22px;object-fit:contain;">',gelas:'<img src="https://denicendrianto41.github.io/kaca_objek.png" alt="Gelas Objek" style="width:22px;height:22px;object-fit:contain;">',pipet:'<img src="https://denicendrianto41.github.io/pipet.png" alt="Pipet Tetes" style="width:22px;height:22px;object-fit:contain;">',alkohol:'<img src="https://denicendrianto41.github.io/alkohol.png" alt="Alkohol 70%" style="width:22px;height:22px;object-fit:contain;">',kapas:'<img src="https://denicendrianto41.github.io/kapas.png" alt="Kapas" style="width:22px;height:22px;object-fit:contain;">',antia:'🔵',antib:'🟠',antirh:'🔴'};
     const names={lancet:'Blood Lancet',tusuk:'Tusuk Gigi',gelas:'Gelas Objek',pipet:'Pipet Tetes',alkohol:'Alkohol 70%',kapas:'Kapas',antia:'Anti-A Serum',antib:'Anti-B Serum',antirh:'Anti-Rh Serum'};
     dc.innerHTML=`<span class="drop-card-icon">${icons[dragId]||'📦'}</span><span>${names[dragId]||dragId}</span>${!isCorrect?'<span style="margin-left:3px;font-size:11px;">⚠️</span>':''}<button class="drop-card-remove" title="Hapus">✕</button>`;
     const zoneId=zone.id;
