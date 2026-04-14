@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Virtual – Ekosistem: Interaksi Komponen Ekosistem</title>
+<style>
+/* ── Font Stacks ── */
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.logo-text,.ct,.h-title,.score-big,.score-pct,.ctrl-panel h3,.aquarium h3,.load-title,
+#btnMulaiPraktikum,[style*="Space Grotesk"] { font-family: 'Space Grotesk','Trebuchet MS','Segoe UI Semibold',system-ui,sans-serif; }
+.snum,.qnum,.sv,.sl,.sim-tip-val,.sim-tip-lbl,.sep span,.h-label,.load-sub,.load-percent,
+code,[style*="JetBrains Mono"] { font-family: 'JetBrains Mono','Courier New',Courier,monospace; }
+</style>
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;
+  --h:56px;
+  --fbase:14px;
+}
+@media (max-width:768px){:root{--fbase:13px;--h:46px;}}
+@media (min-width:1200px){:root{--fbase:15px;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{
+  position:relative;z-index:10;height:var(--h);flex-shrink:0;
+  background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;padding:0 14px;gap:12px;
+  box-shadow:0 2px 10px rgba(10,30,80,0.45);
+}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.15);overflow:hidden;padding:2px;}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,22px);font-weight:700;color:#ffffff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(11px,1.2vw,13px);font-weight:500;padding:0 11px;height:var(--h);white-space:nowrap;transition:color .2s;display:flex;align-items:center;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,0.95);}
+.nb.active{color:#fff;}
+.nb.active::after{transform:scaleX(1);}
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}
+  .nb.active{background:rgba(255,255,255,.08);}
+}
+/* APP */
+#app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(37,99,235,.1);}
+.ci.y{background:rgba(217,119,6,.1);}
+.ci.g{background:rgba(5,150,105,.1);}
+.ci.r{background:rgba(220,38,38,.1);}
+.ci.p{background:rgba(124,58,237,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:clamp(11px,1.2vw,13px);color:var(--text2);line-height:1.5;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
+.chips{display:flex;gap:5px;margin:6px 0;flex-wrap:wrap;}
+.chip{border-radius:5px;padding:3px 8px;font-size:clamp(11px,1.2vw,13px);font-weight:500;}
+.chip-b{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:#1d4ed8;}
+.chip-r{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#b91c1c;}
+.chip-g{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#047857;}
+.chip-p{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#5b21b6;}
+.chip-y{background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.2);color:#92400e;}
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:5px;}
+.step{display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;}
+.step:hover{border-color:var(--acc2);background:#eff6ff;}
+.snum{min-width:20px;height:20px;border-radius:50%;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);flex-shrink:0;}
+.step p{font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;margin:0;}
+.notebox{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:7px;}
+.notebox .nt{font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.notebox p{font-size:clamp(12px,1.2vw,13px);color:#92400e;line-height:1.6;margin:0;}
+.sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
+.sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
+.formula-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.2vw,13px);color:#1d4ed8;text-align:center;}
+/* STATS ROW */
+.statsrow{display:flex;gap:6px;margin-top:6px;flex-shrink:0;}
+.sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;color:var(--acc);display:block;}
+.sl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+/* TABLE */
+.wstable{width:100%;border-collapse:collapse;font-size:11px;}
+.wstable th{background:#eff6ff;color:var(--acc3);padding:5px 7px;text-align:left;border:1px solid var(--border);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.wstable td{padding:4px 7px;border:1px solid var(--border);color:var(--text2);}
+.wstable tr:nth-child(even) td{background:#f8fafc;}
+.wstable tr:hover td{background:#eff6ff;}
+/* DISKUSI */
+.disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.btn-qnav{padding:6px 14px;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;border:none;}
+.btn-reset-q{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset-q:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+.step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+/* LOADING SCREEN */
+#loadScreen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;transition:opacity .6s ease;
+}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2.5vw,26px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:24px;}
+.load-bar-wrap{width:clamp(200px,28vw,320px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#34d399,#a78bfa);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:12px;text-align:center;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:28px;min-height:16px;text-align:center;}
+#btnMulaiPraktikum{
+  display:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;
+  padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;
+  cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(5,150,105,.4);
+  animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;
+}
+#btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
+@keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* DRAG */
+.drag-item{touch-action:none;-webkit-user-select:none;user-select:none;cursor:grab;}
+.drag-item:active{cursor:grabbing;}
+/* TEORI TABS */
+.tab-btn{padding:6px 13px;border-radius:7px;font-family:'Inter',sans-serif;font-size:clamp(11px,1.2vw,12.5px);font-weight:600;cursor:pointer;transition:all .18s;background:var(--surf);color:var(--text2);border:1.5px solid var(--border);}
+/* SIM CTRL */
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.btn{width:100%;border:none;border-radius:6px;padding:8px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-start{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-ws{background:linear-gradient(135deg,#065f46,#10b981);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.3);}
+.btn-ws:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(16,185,129,.35);}
+.aquarium{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;flex:1;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;flex-shrink:0;}
+/* Sim overlay */
+.sim-overlay{position:absolute;inset:0;background:var(--surf);border-radius:9px;display:none;flex-direction:column;z-index:20;padding:10px;}
+.sim-overlay.active{display:flex;}
+.sim-overlay-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0;}
+.btn-back-sim{background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:4px;}
+.btn-back-sim:hover{border-color:var(--acc);color:var(--acc);}
+/* Chain node */
+.chain-node{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:var(--surf2);border:2px solid var(--border);border-radius:10px;padding:7px 10px;font-size:11px;cursor:pointer;transition:all .2s;user-select:none;}
+.chain-node:hover{border-color:var(--acc2);background:#eff6ff;}
+.chain-node.selected{border-color:var(--acc);background:#dbeafe;box-shadow:0 0 0 3px rgba(37,99,235,.2);}
+.chain-display{display:flex;align-items:center;flex-wrap:wrap;gap:4px;min-height:52px;background:var(--surf2);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;}
+.chain-arrow{font-size:18px;color:var(--acc);align-self:center;margin:0 2px;flex-shrink:0;}
+/* Energy bar */
+.energy-bar{border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.energy-bar:hover{transform:scaleY(1.05);box-shadow:0 4px 12px rgba(0,0,0,.15);}
+/* Selamat overlay */
+#selamatOverlay{display:none;position:fixed;inset:0;z-index:5000;pointer-events:none;}
+#selamatCard{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
+  background:linear-gradient(135deg,#0f2460,#1a3a8f);border-radius:20px;padding:28px 36px;text-align:center;
+  box-shadow:0 20px 60px rgba(10,30,80,.5);border:2px solid rgba(255,255,255,.2);
+  pointer-events:all;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+#confettiCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadScreen">
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Ekosistem · Interaksi Komponen Ekosistem</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+</div>
+
+<script>
+(function(){
+  const bar=document.getElementById('loadBar');
+  const pct=document.getElementById('loadPercent');
+  const status=document.getElementById('loadStatus');
+  const msgs=['Memuat komponen ekosistem…','Menyiapkan rantai makanan…','Mengkalibrasi aliran energi…','Laboratorium siap digunakan!'];
+  let current=0;
+  const total=3000;const step=20;const inc=100/(total/step);
+  let mi=0;
+  const iv=setInterval(()=>{
+    current=Math.min(100,current+inc);
+    const v=Math.floor(current);
+    bar.style.width=v+'%';pct.textContent=v+'%';
+    const si=Math.floor(v/25);
+    if(si!==mi){mi=si;status.textContent=msgs[Math.min(si,msgs.length-1)];}
+    if(current>=100){
+      clearInterval(iv);pct.textContent='100%';
+      status.textContent='✅ Laboratorium siap digunakan!';
+      document.getElementById('btnMulaiPraktikum').style.display='block';
+    }
+  },step);
+})();
+function startPraktikum(){
+  try{const s=new Audio('https://denicendrianto41.github.io/tring.wav');s.play().catch(()=>{});}catch(e){}
+  const ls=document.getElementById('loadScreen');
+  ls.classList.add('hide');
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn)tujuanBtn.classList.add('active');
+  },650);
+}
+</script>
+
+<!-- AUDIO -->
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<script>
+document.addEventListener('click',function(e){
+  const el=e.target.closest('button,.nb,.btn,select,input[type="range"]');
+  if(!el)return;
+  if(el.id==='btnMulaiPraktikum')return;
+  const sfx=document.getElementById('clickSfx');
+  if(!sfx)return;sfx.currentTime=0;sfx.play().catch(()=>{});
+});
+</script>
+
+<!-- HEADER -->
+<header style="justify-content:space-between;">
+  <div class="logo">
+    <div class="logo-icon">
+      <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+    </div>
+    <div>
+      <div class="logo-text">Lab Maya Biologi</div>
+      <div class="logo-sub">Ekosistem – Interaksi Komponen Ekosistem</div>
+    </div>
+  </div>
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('tujuan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('evaluasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+  </nav>
+</header>
+
+<div id="dragGhost" style="display:none;position:fixed;pointer-events:none;z-index:9999;opacity:0.8;transform:scale(0.9) rotate(-4deg);border-radius:10px;padding:9px;text-align:center;"></div>
+
+<div id="app">
+
+<!-- ========================= TUJUAN ========================= -->
+<div id="page-tujuan" class="page active">
+  <div class="scroll" style="padding:14px 16px 20px;">
+
+    <div style="background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;margin-bottom:8px;">Lab Virtual – Ekosistem: Interaksi Komponen Ekosistem</div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#34d399);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari <strong style="color:#93c5fd;">rantai makanan</strong>, <strong style="color:#93c5fd;">aliran energi</strong>, <strong style="color:#93c5fd;">daur biogeokimia</strong>, dan <strong style="color:#93c5fd;">interaksi antar komponen ekosistem</strong> secara interaktif.
+        </p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+          <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;margin-top:1px;">›</span>Menjelaskan aliran energi dalam suatu ekosistem</li>
+          <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;margin-top:1px;">›</span>Mendeskripsikan macam-macam daur biogeokimia</li>
+          <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;margin-top:1px;">›</span>Mengidentifikasi jenis-jenis interaksi antar komponen ekosistem</li>
+        </ul>
+      </div>
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mempelajari <strong style="color:#059669;">interaksi komponen ekosistem</strong> melalui analisis rantai dan jaring-jaring makanan, simulasi piramida energi, eksplorasi daur biogeokimia, serta identifikasi jenis-jenis interaksi biotik.
+        </p>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;box-shadow:0 2px 12px rgba(30,41,59,0.07);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menyusun <strong style="color:#1d4ed8;">rantai dan jaring-jaring makanan</strong> serta menjelaskan perbedaannya</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menganalisis <strong style="color:#059669;">aliran energi</strong> menggunakan Hukum 10% piramida ekologi</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan 5 <strong style="color:#7c3aed;">daur biogeokimia</strong> dalam ekosistem</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Mengidentifikasi <strong style="color:#dc2626;">interaksi biotik</strong> di lingkungan sekitar sekolah</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= TEORI ========================= -->
+<div id="page-teori" class="page">
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 10px;">
+
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);border-radius:12px;padding:12px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(15,36,96,0.22);position:relative;overflow:hidden;flex-shrink:0;">
+      <div style="position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:#93c5fd;text-transform:uppercase;margin-bottom:3px;">Materi Teori</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.6vw,17px);font-weight:700;color:#fff;">Ekosistem &amp; Interaksi Komponen</div>
+      </div>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;margin-bottom:8px;">
+      <button id="tab-btn-rantai" class="tab-btn" onclick="showTeoriTab('rantai',this)" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;box-shadow:0 2px 10px rgba(37,99,235,0.35);">🔗 Rantai Makanan</button>
+      <button id="tab-btn-energi" class="tab-btn" onclick="showTeoriTab('energi',this)">⚡ Aliran Energi</button>
+      <button id="tab-btn-daur" class="tab-btn" onclick="showTeoriTab('daur',this)">🔄 Daur Biogeokimia</button>
+      <button id="tab-btn-interaksi" class="tab-btn" onclick="showTeoriTab('interaksi',this)">🤝 Interaksi</button>
+    </div>
+
+    <!-- Tab: Rantai Makanan -->
+    <div id="tab-rantai" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci b">🔗</div><div class="ct">Rantai Makanan &amp; Jaring-Jaring Makanan</div></div>
+        <p><strong>Rantai makanan</strong> adalah rangkaian proses makan dan dimakan antara makhluk hidup dalam suatu ekosistem berdasarkan urutan tertentu yang linear, dimulai dari produsen (tumbuhan hijau) sebagai organisme autotrof.</p>
+        <div class="formula-box">🌿 Tumbuhan → 🦗 Belalang → 🐸 Katak → 🐍 Ular → 🦅 Elang → 🍄 Dekomposer</div>
+        <p><strong>Jaring-jaring makanan</strong> adalah gabungan dari beberapa rantai makanan yang saling berhubungan. Lebih realistis karena satu organisme dapat memiliki lebih dari satu sumber makanan.</p>
+        <div class="sep"><span>Perbedaan Rantai vs Jaring</span></div>
+        <div class="two-col">
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px;">
+            <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:6px;">🔗 Rantai Makanan</div>
+            <ul style="font-size:11.5px;color:#475569;line-height:1.8;padding-left:14px;">
+              <li>Aliran energi linear/satu arah</li>
+              <li>Sederhana, mudah dianalisis</li>
+              <li>Satu jalur makan-dimakan</li>
+              <li>Jumlah organisme terbatas</li>
+            </ul>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px;">
+            <div style="font-size:12px;font-weight:700;color:#059669;margin-bottom:6px;">🕸️ Jaring-Jaring Makanan</div>
+            <ul style="font-size:11.5px;color:#475569;line-height:1.8;padding-left:14px;">
+              <li>Aliran energi kompleks/banyak jalur</li>
+              <li>Lebih realistis menggambarkan ekosistem</li>
+              <li>Gabungan beberapa rantai makanan</li>
+              <li>Lebih stabil terhadap gangguan</li>
+            </ul>
+          </div>
+        </div>
+        <div class="notebox" style="margin-top:8px;">
+          <div class="nt">⚠️ Hukum 10%</div>
+          <p>Perpindahan energi antar tingkat trofik hanya sekitar <strong>10%</strong>. Jika produksi tumbuhan 1000 kkal, maka herbivora hanya mendapat ~100 kkal, karnivora ~10 kkal, dan seterusnya.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Aliran Energi -->
+    <div id="tab-energi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci y">⚡</div><div class="ct">Aliran Energi dalam Ekosistem</div></div>
+        <p>Energi mengalir <strong>satu arah</strong> dalam ekosistem, dimulai dari matahari. Berbeda dengan materi yang dapat didaur ulang, <strong>energi tidak dapat didaur ulang</strong> — setiap perpindahan tingkat trofik selalu disertai hilangnya ~90% energi sebagai panas.</p>
+        <div class="formula-box">Efisiensi Ekologis = (Energi Tingkat n+1 ÷ Energi Tingkat n) × 100% ≈ 10%</div>
+        <div class="sep"><span>Tiga Jenis Piramida Ekologi</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:700;color:#d97706;margin-bottom:4px;">🔺 Piramida Jumlah</div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Jumlah individu per tingkat trofik. Biasanya produsen terbanyak. <em>Pengecualian: 1 pohon besar menopang ribuan serangga.</em></div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:700;color:#ea580c;margin-bottom:4px;">🔺 Piramida Biomassa</div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Total massa organisme per tingkat trofik. Lebih akurat dari piramida jumlah karena mempertimbangkan ukuran organisme.</div>
+          </div>
+          <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:10px;padding:10px 14px;">
+            <div style="font-size:12px;font-weight:700;color:#7c3aed;margin-bottom:4px;">🔺 Piramida Energi</div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;"><strong>Selalu berbentuk piramida</strong> — tidak pernah terbalik. Paling akurat menggambarkan efisiensi aliran energi di ekosistem.</div>
+          </div>
+        </div>
+        <div class="notebox" style="margin-top:8px;">
+          <div class="nt">💡 Makan Daging Tidak Efisien?</div>
+          <p>Pernyataan <em>"Makan daging merupakan cara yang relatif tidak efisien memanfaatkan produksi fotosintesis"</em> — <strong>benar!</strong> Untuk menghasilkan 1 kg daging, diperlukan ~10 kg pakan tumbuhan (dua kali kehilangan 90% → hanya 1% energi tersisa).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Daur Biogeokimia -->
+    <div id="tab-daur" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci b">🔄</div><div class="ct">Daur Biogeokimia</div></div>
+        <p><strong>Daur biogeokimia</strong> adalah siklus perpindahan unsur kimia dari lingkungan abiotik ke makhluk hidup (biotik) dan kembali ke lingkungan. Materi dapat <strong>didaur ulang</strong> terus-menerus.</p>
+        <div class="fgrid" style="margin-top:8px;">
+          <div class="fi"><strong>🌧️ Daur Air (Hidrologis)</strong><span>Evaporasi → Kondensasi → Presipitasi → Run-off/Infiltrasi. Pohon sekolah berperan dalam evapotranspirasi.</span></div>
+          <div class="fi"><strong>🌫️ Daur Karbon</strong><span>CO₂ difiksasi tanaman (fotosintesis), dikembalikan melalui respirasi, dekomposisi, dan pembakaran bahan bakar fosil.</span></div>
+          <div class="fi"><strong>⚡ Daur Nitrogen</strong><span>N₂ → fiksasi bakteri (Rhizobium, Azotobacter) → nitrifikasi → diserap tumbuhan → denitrifikasi → N₂.</span></div>
+          <div class="fi"><strong>🔥 Daur Fosfor</strong><span>Tidak melalui atmosfer. Dari batuan → tanah → organisme → dekomposer → tanah kembali.</span></div>
+          <div class="fi"><strong>☁️ Daur Sulfur</strong><span>SO₂ di atmosfer → hujan asam → tanah → diserap tumbuhan → dikembalikan melalui dekomposisi dan vulkanik.</span></div>
+        </div>
+        <div class="notebox" style="margin-top:10px;">
+          <div class="nt">🌳 Peran Pohon di Sekolah</div>
+          <p>Pepohonan di SMA Negeri 1 berperan dalam <strong>daur air</strong> (evapotranspirasi, resapan hujan) dan <strong>daur karbon</strong> (menyerap CO₂ fotosintesis) — mendukung kenyamanan belajar dan keseimbangan ekosistem lokal.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Interaksi -->
+    <div id="tab-interaksi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci p">🤝</div><div class="ct">Interaksi Antar Komponen Ekosistem</div></div>
+        <p>Interaksi antar organisme dapat bersifat positif (+), negatif (–), atau netral (0) bagi masing-masing pihak.</p>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:7px;">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:9px 12px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="background:#22c55e;color:#fff;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;">+/+</span><strong style="font-size:12.5px;color:#14532d;">Mutualisme</strong></div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Kedua pihak saling menguntungkan. Contoh: lebah &amp; bunga (polinasi), bakteri Rhizobium &amp; akar legum, lumut kerak (ganggang + jamur).</div>
+          </div>
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:9px 12px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="background:#d97706;color:#fff;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;">+/0</span><strong style="font-size:12.5px;color:#92400e;">Komensalisme</strong></div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Satu pihak untung, pihak lain tidak terpengaruh. Contoh: anggrek &amp; pohon inang, ikan remora &amp; hiu, burung jalak &amp; kerbau.</div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;padding:9px 12px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="background:#ea580c;color:#fff;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;">+/–</span><strong style="font-size:12.5px;color:#c2410c;">Parasitisme</strong></div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Parasit untung, inang dirugikan. Contoh: cacing pita &amp; manusia, benalu &amp; pohon, nyamuk &amp; manusia.</div>
+          </div>
+          <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:9px;padding:9px 12px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="background:#7c3aed;color:#fff;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;">–/–</span><strong style="font-size:12.5px;color:#5b21b6;">Kompetisi</strong></div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Keduanya dirugikan karena memperebutkan sumber daya yang sama. Contoh: singa &amp; macan tutul (mangsa), tanaman bersaing cahaya/air.</div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:9px 12px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="background:#dc2626;color:#fff;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;">+/–</span><strong style="font-size:12.5px;color:#991b1b;">Predasi</strong></div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Predator memangsa dan membunuh prey. Mengontrol populasi mangsa dalam ekosistem. Contoh: elang &amp; tikus, ular &amp; katak.</div>
+          </div>
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:9px;padding:9px 12px;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="background:#0284c7;color:#fff;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;">0/–</span><strong style="font-size:12.5px;color:#075985;">Amensalisme</strong></div>
+            <div style="font-size:12px;color:#475569;line-height:1.7;">Satu pihak dirugikan, pihak lain tidak terpengaruh. Contoh: alelopati pada pohon pinus yang menghambat tumbuhan di bawahnya.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================= ALAT & BAHAN ========================= -->
+<style>
+.ab-item {
+  width: 115px;
+  height: 115px;
+  border-radius: 12px;
+  padding: 10px 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s, border-color .18s;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+  background: #eff6ff;
+  border: 2px solid #93c5fd;
+}
+.ab-item:hover {
+  transform: scale(1.08) translateY(-3px);
+  box-shadow: 0 8px 22px rgba(37,99,235,0.18);
+  border-color: #2563eb;
+}
+.ab-item:active {
+  transform: scale(0.94);
+}
+.ab-item.clicked {
+  animation: abPop .32s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes abPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  70%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+.ab-emoji { font-size: 30px; margin-bottom: 5px; line-height: 1; }
+.ab-name { font-size: 11px; font-weight: 700; line-height: 1.3; color: var(--acc3); }
+.ab-desc { font-size: 9px; color: var(--text3); margin-top: 2px; line-height: 1.3; }
+.ab-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--acc);
+}
+</style>
+
+<div id="page-alatbahan" class="page">
+  <div style="flex:1;overflow-y:auto;padding:8px 14px 14px;display:flex;flex-direction:column;gap:8px;">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);border-radius:12px;padding:11px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 18px rgba(15,36,96,0.22);flex-shrink:0;">
+      <div style="font-size:26px;">🧪</div>
+      <div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,17px);font-weight:700;color:#fff;">Alat &amp; Bahan</div>
+        <div style="font-size:10px;color:#93c5fd;margin-top:2px;">Klik item untuk mengenal fungsinya</div>
+      </div>
+    </div>
+
+    <!-- ALAT & BAHAN (gabungan) -->
+    <div class="card" style="margin-bottom:0;padding:14px 16px;">
+      <div class="ab-section-title">🔬 Alat &amp; Bahan</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+
+        <!-- Alat -->
+        <div class="ab-item" onclick="abClick(this,'Buku Catatan','Digunakan untuk mencatat hasil pengamatan dan data selama kegiatan laboratorium.')">
+          <div class="ab-emoji">📓</div>
+          <div class="ab-name">Buku Catatan</div>
+          <div class="ab-desc">Lembar kerja</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Alat Tulis','Pensil dan bolpoin untuk mencatat, menggambar diagram, dan mengisi LKPD.')">
+          <div class="ab-emoji">✏️</div>
+          <div class="ab-name">Alat Tulis</div>
+          <div class="ab-desc">Pencatat data</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Laptop / HP','Perangkat digital untuk mengakses lab virtual, referensi online, dan mengolah data.')">
+          <div class="ab-emoji">💻</div>
+          <div class="ab-name">Laptop/HP</div>
+          <div class="ab-desc">Referensi digital</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Kamera','Untuk mendokumentasikan hasil pengamatan ekosistem di lingkungan sekolah.')">
+          <div class="ab-emoji">📷</div>
+          <div class="ab-name">Kamera</div>
+          <div class="ab-desc">Dokumentasi</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Lembar LKPD','Panduan kerja siswa yang berisi pertanyaan dan tabel pengamatan yang harus diisi.')">
+          <div class="ab-emoji">📋</div>
+          <div class="ab-name">Lembar LKPD</div>
+          <div class="ab-desc">Panduan kerja</div>
+        </div>
+
+        <!-- Bahan -->
+        <div class="ab-item" onclick="abClick(this,'Ekosistem Sekolah','Lingkungan sekitar sekolah sebagai objek pengamatan langsung: taman, kolam, area terbuka.')">
+          <div class="ab-emoji">🏫</div>
+          <div class="ab-name">Ekos. Sekolah</div>
+          <div class="ab-desc">Objek pengamatan</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Gambar Ekosistem','Foto atau ilustrasi berbagai tipe ekosistem sebagai media analisis rantai makanan.')">
+          <div class="ab-emoji">🖼️</div>
+          <div class="ab-name">Gambar Ekosistem</div>
+          <div class="ab-desc">Media analisis</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Buku Teks Biologi','Sumber referensi materi ekosistem, interaksi antarorganisme, dan daur biogeokimia.')">
+          <div class="ab-emoji">📚</div>
+          <div class="ab-name">Buku Teks</div>
+          <div class="ab-desc">Referensi materi</div>
+        </div>
+
+        <div class="ab-item" onclick="abClick(this,'Internet','Sumber informasi digital untuk mencari data terkini dan gambar pendukung ekosistem.')">
+          <div class="ab-emoji">🌐</div>
+          <div class="ab-name">Internet</div>
+          <div class="ab-desc">Sumber informasi</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Catatan -->
+    <div class="notebox" style="flex-shrink:0;">
+      <div class="nt">💡 Catatan</div>
+      <p style="font-size:10.5px;">Amati langsung lingkungan sekitar sekolah untuk mengidentifikasi komponen biotik dan abiotik serta interaksinya.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Info popup alat/bahan -->
+<div id="ab-info-popup" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:2000;
+  background:linear-gradient(135deg,#0f2460,#1a3a8f);color:#fff;border-radius:12px;padding:10px 20px;
+  box-shadow:0 8px 28px rgba(10,30,80,.45);font-size:12.5px;line-height:1.6;max-width:320px;text-align:center;
+  border:1px solid rgba(255,255,255,.15);pointer-events:none;">
+  <span id="ab-info-name" style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;display:block;margin-bottom:3px;"></span>
+  <span id="ab-info-desc" style="color:#bfdbfe;font-size:11.5px;"></span>
+</div>
+
+<script>
+(function(){
+  let abPopupTimer=null;
+  window.abClick=function(el,name,desc){
+    // Sound
+    try{const s=new Audio('https://denicendrianto41.github.io/jump.wav');s.currentTime=0;s.play().catch(()=>{});}catch(e){}
+    // Animation
+    el.classList.remove('clicked');
+    void el.offsetWidth;
+    el.classList.add('clicked');
+    setTimeout(()=>el.classList.remove('clicked'),400);
+    // Popup
+    document.getElementById('ab-info-name').textContent=name;
+    document.getElementById('ab-info-desc').textContent=desc;
+    const popup=document.getElementById('ab-info-popup');
+    popup.style.display='block';
+    popup.style.opacity='1';
+    if(abPopupTimer)clearTimeout(abPopupTimer);
+    abPopupTimer=setTimeout(()=>{popup.style.opacity='0';setTimeout(()=>popup.style.display='none',300);},2800);
+  };
+})();
+</script>
+
+<!-- ===== SELAMAT OVERLAY ===== -->
+<div id="selamatOverlay" style="display:none;position:fixed;inset:0;z-index:5000;pointer-events:none;">
+  <canvas id="confettiCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+  <div id="selamatCard" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
+    background:linear-gradient(135deg,#0f2460,#1a3a8f);border-radius:20px;padding:28px 36px;text-align:center;
+    box-shadow:0 20px 60px rgba(10,30,80,.5);border:2px solid rgba(255,255,255,.2);
+    pointer-events:all;transition:transform .5s cubic-bezier(.34,1.56,.64,1);">
+    <div style="font-size:52px;margin-bottom:8px;">🎉</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">Luar Biasa!</div>
+    <div id="selamatMsg" style="font-family:'Inter',sans-serif;font-size:13px;color:#bfdbfe;margin-bottom:16px;line-height:1.6;">Kamu berhasil menyelesaikan aktivitas ini! 🌿</div>
+    <button onclick="tutupSelamat()" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(5,150,105,.4);">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ========================= PROSEDUR ========================= -->
+<div id="page-prosedur" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:7px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
+      <div class="card" style="margin-bottom:0;overflow:auto;">
+        <div class="ch"><div class="ci b">📋</div><div class="ct">Langkah Kegiatan</div></div>
+        <div id="simSteps" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div class="notebox" style="margin-top:8px;">
+          <div class="nt">Rumus Penting</div>
+          <p>Efisiensi Ekologis = (Energi TK-n+1 / Energi TK-n) × 100%<br>Rata-rata ≈ 10% energi diteruskan per tingkat trofik</p>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
+        <div class="ch"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
+        <ul class="olist" style="font-size:11px;">
+          <li>Amati ekosistem sekitar sekolah dengan <strong>teliti dan objektif</strong></li>
+          <li>Identifikasi komponen biotik <strong>(produsen, konsumen, dekomposer)</strong> dan abiotik</li>
+          <li>Catat setiap jenis interaksi yang ditemukan beserta <strong>contoh nyata</strong></li>
+          <li>Susun rantai makanan minimal <strong>4 tingkat trofik</strong></li>
+          <li>Diskusikan <strong>peran pohon sekolah</strong> dalam daur biogeokimia</li>
+          <li>Kerjakan semua pertanyaan diskusi berdasarkan hasil eksplorasi</li>
+        </ul>
+        <div class="notebox" style="margin-top:8px;">
+          <div class="nt">Prosedur Kegiatan Lab Virtual</div>
+          <p>1. Baca Teori ekosistem. 2. Siapkan alat &amp; bahan. 3. Susun rantai makanan di Simulasi. 4. Amati piramida energi &amp; daur biogeokimia. 5. Selesaikan kuis interaksi. 6. Jawab pertanyaan Diskusi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= SIMULASI ========================= -->
+<div id="page-simulasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:7px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+
+    <!-- Sub-tab bar -->
+    <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;">
+      <button id="simtab-btn-rantai" class="tab-btn" onclick="showSimTab('rantai',this)" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;box-shadow:0 2px 8px rgba(37,99,235,.3);">🔗 Rantai Makanan</button>
+      <button id="simtab-btn-energi" class="tab-btn" onclick="showSimTab('energi',this)">⚡ Piramida Energi</button>
+      <button id="simtab-btn-daur" class="tab-btn" onclick="showSimTab('daur',this)">🔄 Daur Biogeokimia</button>
+      <button id="simtab-btn-interaksi" class="tab-btn" onclick="showSimTab('interaksi',this)">🤝 Kuis Interaksi</button>
+    </div>
+
+    <!-- Sim: Rantai Makanan -->
+    <div id="simtab-rantai" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0;">
+        <div class="card" style="margin-bottom:0;">
+          <div class="ch" style="margin-bottom:6px;"><div class="ci b">🔗</div><div class="ct">Builder Rantai Makanan</div></div>
+          <p style="font-size:11px;color:var(--text2);margin-bottom:8px;">Klik organisme sesuai urutan tingkat trofik untuk menyusun rantai makanan yang benar!</p>
+          <div id="chainNodes" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;"></div>
+          <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🔗 Rantai Makananmu:</div>
+          <div id="chainDisplay" class="chain-display"></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+            <button onclick="checkChain()" style="padding:6px 14px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;">✅ Periksa</button>
+            <button onclick="resetChain()" style="padding:6px 14px;background:var(--surf2);border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;color:var(--text2);cursor:pointer;">↺ Reset</button>
+            <button onclick="showHint()" style="padding:6px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;color:#d97706;cursor:pointer;">💡 Hint</button>
+          </div>
+          <div id="chainFeedback" style="display:none;"></div>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <div class="ch" style="margin-bottom:6px;"><div class="ci g">🕸️</div><div class="ct">Jaring-Jaring Makanan</div></div>
+          <canvas id="webCanvas" style="width:100%;border-radius:6px;border:1px solid var(--border);display:block;" height="200"></canvas>
+          <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center;">Klik node untuk menyoroti jalur makan-dimakan</div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0;flex-shrink:0;">
+        <div class="ch" style="margin-bottom:6px;"><div class="ci y">📊</div><div class="ct">Statistik Ekosistem</div></div>
+        <div class="statsrow" style="margin-top:0;">
+          <div class="sbox"><span class="sv" id="statProdusen">3</span><span class="sl">Produsen</span></div>
+          <div class="sbox"><span class="sv" id="statHerbivora">4</span><span class="sl">Herbivora</span></div>
+          <div class="sbox"><span class="sv" id="statKarnivora">4</span><span class="sl">Karnivora</span></div>
+          <div class="sbox"><span class="sv" id="statRantai">0</span><span class="sl">Rantai Dibuat</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sim: Piramida Energi -->
+    <div id="simtab-energi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="card" style="margin-bottom:0;">
+          <div class="ch" style="margin-bottom:6px;"><div class="ci y">⚡</div><div class="ct">Simulasi Piramida Energi</div></div>
+          <div class="cg" style="margin-bottom:8px;">
+            <label>Energi Produsen (kkal/m²/tahun)</label>
+            <input type="range" id="energySlider" min="100" max="10000" step="100" value="1000" style="width:100%;accent-color:var(--acc);" oninput="updatePyramid()">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);"><span>100</span><span id="energyVal" style="font-weight:700;color:var(--acc);">1000 kkal</span><span>10000</span></div>
+          </div>
+          <div id="pyramidVis" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;"></div>
+          <div class="formula-box" style="margin-top:8px;font-size:10px;">
+            Hukum 10%: Setiap tingkat trofik meneruskan ~10% energi ke tingkat berikutnya
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <div class="ch" style="margin-bottom:6px;"><div class="ci r">📊</div><div class="ct">Tabel Aliran Energi</div></div>
+          <table class="wstable" id="energyTable">
+            <thead><tr><th>Tingkat Trofik</th><th>Organisme</th><th>Energi (kkal)</th><th>% Sisa</th></tr></thead>
+            <tbody id="energyTbody"></tbody>
+          </table>
+          <div class="notebox" style="margin-top:8px;">
+            <div class="nt">🤔 Pertanyaan Kritis</div>
+            <p style="font-size:11px;">Mengapa "makan daging relatif tidak efisien"? Untuk mendapat 1 kkal dari daging, dibutuhkan ~100 kkal dari tumbuhan (dua tingkat × kehilangan 90%).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sim: Daur Biogeokimia -->
+    <div id="simtab-daur" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div style="display:grid;grid-template-columns:180px 1fr;gap:8px;flex-shrink:0;">
+        <div class="card" style="margin-bottom:0;padding:10px;">
+          <div style="font-size:11px;font-weight:700;color:var(--acc3);margin-bottom:8px;">Pilih Daur:</div>
+          <div style="display:flex;flex-direction:column;gap:6px;" id="cycleButtons"></div>
+        </div>
+        <div class="card" style="margin-bottom:0;padding:10px;display:flex;flex-direction:column;" id="cycleDisplay">
+          <div style="font-size:12px;color:var(--text3);">Pilih salah satu daur biogeokimia untuk melihat simulasinya →</div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0;flex-shrink:0;">
+        <div class="ch"><div class="ci g">🌳</div><div class="ct">Peran Pohon di Lingkungan Sekolah</div></div>
+        <p style="font-size:12px;color:var(--text2);">Pepohonan di SMA Negeri 1 berperan dalam <strong>minimal 3 daur biogeokimia</strong> sekaligus — klik setiap daur untuk memahami perannya!</p>
+      </div>
+    </div>
+
+    <!-- Sim: Kuis Interaksi -->
+    <div id="simtab-interaksi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
+      <div class="card" style="margin-bottom:0;flex-shrink:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="ch" style="margin-bottom:0;"><div class="ci p">🤝</div><div class="ct">Kuis Identifikasi Interaksi</div></div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="font-size:11px;color:var(--text3);">Skor: <strong id="quizScore" style="color:var(--acc);">0</strong> / <strong id="quizTotal">0</strong></div>
+            <button onclick="resetQuiz()" class="btn-reset-q btn-qnav" style="font-size:11px;padding:4px 10px;">↺ Ulang</button>
+          </div>
+        </div>
+        <div id="quizArea" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================= DISKUSI ========================= -->
+<div id="page-evaluasi" class="page">
+  <div style="flex:1;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,2vw,18px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2);">Hasil Kegiatan</span></div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn-qnav btn-reset-q" onclick="clearDQ()" style="border:1px solid var(--border);font-size:11px;padding:5px 12px;">↺ Hapus Jawaban</button>
+        <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(37,99,235,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(37,99,235,0.25)'">🖨️ Cetak / Download PDF</button>
+      </div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Susunlah 1 rantai makanan yang mungkin terbentuk dari ekosistem yang kamu amati!</div></div>
+        <textarea class="disc-area" placeholder="Contoh: Rumput → Belalang → Katak → Ular → Elang → Dekomposer" oninput="saveDQ(1,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci g" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">2</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Apa perbedaan rantai makanan dengan jaring-jaring makanan? Jelaskan!</div></div>
+        <textarea class="disc-area" placeholder="Jawaban Anda..." oninput="saveDQ(2,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci y" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">3</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Mengapa makan daging relatif tidak efisien memanfaatkan produksi fotosintesis? Jelaskan!</div></div>
+        <textarea class="disc-area" placeholder="Kaitkan dengan aliran energi dan Hukum 10%..." oninput="saveDQ(3,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci p" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">4</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Jelaskan 5 daur biogeokimia yang terjadi dalam suatu komunitas atau ekosistem!</div></div>
+        <textarea class="disc-area" placeholder="Air, Karbon, Nitrogen, Fosfor, Sulfur..." oninput="saveDQ(4,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
+      </div>
+      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;grid-column:span 2;">
+        <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">5</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Identifikasi interaksi antar komponen ekosistem di lingkungan sekolah! Sebutkan jenisnya dan berikan contoh!</div></div>
+        <textarea class="disc-area" placeholder="Contoh: Pohon mangga dan anggrek yang menempel = Komensalisme (+/0)..." oninput="saveDQ(5,this.value)" style="flex:1;resize:none;margin-top:0;min-height:0;min-height:50px;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ===================== NAV =====================
+function toggleNav(){document.getElementById('mainNav').classList.toggle('open');}
+function closeNav(){document.getElementById('mainNav').classList.remove('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('nav')&&!e.target.closest('#menuToggle'))closeNav();},true);
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='simulasi')setTimeout(()=>initSimTabs(),80);
+}
+
+// ===================== TEORI TABS =====================
+function showTeoriTab(name,btn){
+  ['rantai','energi','daur','interaksi'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);if(el)el.style.display='none';
+    const b=document.getElementById('tab-btn-'+t);
+    if(b){b.style.background='var(--surf)';b.style.color='var(--text2)';b.style.border='1.5px solid var(--border)';b.style.boxShadow='none';}
+  });
+  const panel=document.getElementById('tab-'+name);if(panel){panel.style.display='flex';panel.style.flexDirection='column';}
+  const cols={rantai:'#1d4ed8,#3b82f6',energi:'#d97706,#f59e0b',daur:'#1d4ed8,#3b82f6',interaksi:'#7c3aed,#a78bfa'};
+  const shds={rantai:'rgba(37,99,235,0.35)',energi:'rgba(217,119,6,0.35)',daur:'rgba(37,99,235,0.35)',interaksi:'rgba(124,58,237,0.35)'};
+  if(btn){btn.style.background='linear-gradient(135deg,'+cols[name]+')';btn.style.color='#fff';btn.style.border='none';btn.style.boxShadow='0 2px 10px '+shds[name];}
+}
+
+// ===================== PROSEDUR STEPS =====================
+const STEPS=[
+  {emoji:'📖',text:'Baca <strong>Teori</strong> tentang komponen ekosistem, rantai makanan, aliran energi, dan daur biogeokimia.'},
+  {emoji:'🧰',text:'Siapkan <strong>Alat &amp; Bahan</strong> — drag item ke Meja Percobaan.'},
+  {emoji:'🔗',text:'Susun <strong>rantai makanan</strong> yang benar dari organisme yang tersedia.'},
+  {emoji:'⚡',text:'Atur slider untuk melihat <strong>piramida energi</strong> dan hitung efisiensi ekologis (Hukum 10%).'},
+  {emoji:'🔄',text:'Klik setiap <strong>daur biogeokimia</strong> untuk melihat siklus materi dalam ekosistem.'},
+  {emoji:'🤝',text:'Selesaikan <strong>kuis interaksi</strong> — identifikasi jenis hubungan antar organisme.'},
+  {emoji:'📝',text:'Jawab semua <strong>pertanyaan diskusi</strong> berdasarkan hasil eksplorasi virtual lab.'},
+];
+(function buildSteps(){
+  const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea'];
+  document.getElementById('simSteps').innerHTML=STEPS.map((s,i)=>{
+    return `<div style="display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;" onmouseover="this.style.borderColor='${colors[i%colors.length]}40'" onmouseout="this.style.borderColor=''">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:${colors[i%colors.length]}15;border:1px solid ${colors[i%colors.length]}30;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">${s.emoji}</div>
+      <div>
+        <div style="font-size:8.5px;font-weight:700;color:${colors[i%colors.length]};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
+        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
+      </div>
+    </div>`;
+  }).join('');
+})();
+
+// ===================== ALAT & BAHAN DRAG =====================
+const CORRECT_ALAT=new Set(['buku-catatan','alat-tulis','laptop','kamera','lkpd']);
+const CORRECT_BAHAN=new Set(['ekosistem-sekolah','gambar-ekosistem','buku-teks','internet']);
+const TOTAL_AB=9;
+let abSelected=null,abGhost=null;
+function abCreateGhost(el,x,y){
+  abGhost=el.cloneNode(true);
+  abGhost.style.cssText=`position:fixed;left:${x-40}px;top:${y-40}px;width:80px;opacity:0.8;pointer-events:none;z-index:9999;transform:scale(1.1) rotate(3deg);border-radius:10px;`;
+  document.body.appendChild(abGhost);
+}
+function abMoveGhost(x,y){if(abGhost){abGhost.style.left=(x-40)+'px';abGhost.style.top=(y-40)+'px';}}
+function abRemoveGhost(){if(abGhost){abGhost.remove();abGhost=null;}}
+function abHitTest(zone,x,y){const r=zone.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;}
+function abHighlight(on){
+  ['drop-alat','drop-bahan'].forEach(id=>{const z=document.getElementById(id);if(z)z.style.borderColor=on?'var(--acc2)':'';});
+}
+function abShowBenar(zone){
+  try{const s=new Audio('https://denicendrianto41.github.io/benar.wav');s.play().catch(()=>{});}catch(e){}
+  zone.style.borderColor='#22c55e';zone.style.boxShadow='0 0 0 4px rgba(34,197,94,0.3)';
+  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},700);
+}
+function abShowSalah(zone){
+  try{const s=new Audio('https://denicendrianto41.github.io/salah.wav');s.play().catch(()=>{});}catch(e){}
+  zone.style.borderColor='#ef4444';zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
+  zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},800);
+  const toast=document.createElement('div');
+  toast.innerHTML='❌ Salah zona! Coba lagi.';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-family:Space Grotesk,sans-serif;font-size:18px;font-weight:700;padding:14px 28px;border-radius:14px;box-shadow:0 8px 32px rgba(220,38,38,0.4);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
+}
+function abPlace(zone,srcEl){
+  const id=srcEl.dataset.id;
+  if(zone.querySelector('[data-id="'+id+'"]'))return;
+  const zt=zone.dataset.zone;
+  const isAlat=CORRECT_ALAT.has(id),isBahan=CORRECT_BAHAN.has(id);
+  if((zt==='alat'&&!isAlat)||(zt==='bahan'&&!isBahan)){abShowSalah(zone);return;}
+  const hint=document.getElementById(zt==='alat'?'drop-alat-hint':'drop-bahan-hint');
+  if(hint)hint.style.display='none';
+  const clone=srcEl.cloneNode(true);
+  clone.removeAttribute('draggable');clone.style.cursor='default';clone.style.position='relative';
+  clone.style.transform='scale(0.85)';clone.style.transition='transform .2s cubic-bezier(.34,1.56,.64,1)';
+  requestAnimationFrame(()=>{clone.style.transform='scale(1)';});
+  const rm=document.createElement('button');rm.textContent='✕';rm.title='Hapus';
+  rm.style.cssText='position:absolute;top:2px;right:2px;background:rgba(220,38,38,0.2);border:none;border-radius:50%;width:20px;height:20px;font-size:10px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;padding:0;touch-action:manipulation;';
+  rm.addEventListener('pointerdown',e=>e.stopPropagation());
+  rm.addEventListener('click',e=>{
+    e.stopPropagation();clone.remove();
+    const h2=document.getElementById(zt==='alat'?'drop-alat-hint':'drop-bahan-hint');
+    if(h2&&!zone.querySelector('[data-id]'))h2.style.display='';
+    abUpdateProgress();
+  });
+  clone.appendChild(rm);zone.appendChild(clone);
+  abShowBenar(zone);abUpdateProgress();
+}
+function abUpdateProgress(){
+  const a=document.querySelectorAll('#drop-alat [data-id]').length;
+  const b=document.querySelectorAll('#drop-bahan [data-id]').length;
+  const total=a+b;
+  const lbl=document.getElementById('ab-progress-label');
+  const bar=document.getElementById('ab-progress-bar');
+  if(lbl)lbl.textContent=total+' / '+TOTAL_AB+' item';
+  if(bar)bar.style.width=((total/TOTAL_AB)*100)+'%';
+  if(total>=TOTAL_AB)setTimeout(()=>{showSelamat('Semua alat & bahan sudah disiapkan! Lanjutkan ke Prosedur. 🌿');},400);
+}
+function abAttach(el){
+  el.addEventListener('pointerdown',e=>{
+    if(e.target.tagName==='BUTTON')return;
+    e.preventDefault();el.setPointerCapture(e.pointerId);
+    abSelected=el;el.style.opacity='0.45';el.style.transform='scale(0.93)';
+    abCreateGhost(el,e.clientX,e.clientY);abHighlight(true);
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!abSelected||abSelected!==el)return;
+    e.preventDefault();abMoveGhost(e.clientX,e.clientY);
+    ['drop-alat','drop-bahan'].forEach(id=>{
+      const z=document.getElementById(id);if(!z)return;
+      z.style.background=abHitTest(z,e.clientX,e.clientY)?(z.dataset.zone==='alat'?'#dbeafe':'#dcfce7'):'';
+    });
+  });
+  el.addEventListener('pointerup',e=>{
+    if(!abSelected||abSelected!==el)return;
+    e.preventDefault();el.style.opacity='1';el.style.transform='';abRemoveGhost();abHighlight(false);
+    ['drop-alat','drop-bahan'].forEach(id=>{
+      const z=document.getElementById(id);if(!z)return;z.style.background='';
+      if(abHitTest(z,e.clientX,e.clientY))abPlace(z,el);
+    });
+    abSelected=null;
+  });
+  el.addEventListener('pointercancel',()=>{
+    if(abSelected===el){el.style.opacity='1';el.style.transform='';}
+    abRemoveGhost();abSelected=null;abHighlight(false);
+  });
+}
+document.querySelectorAll('.drag-item').forEach(abAttach);
+
+// ===================== SIM TABS =====================
+function showSimTab(name,btn){
+  ['rantai','energi','daur','interaksi'].forEach(t=>{
+    const el=document.getElementById('simtab-'+t);if(el)el.style.display='none';
+    const b=document.getElementById('simtab-btn-'+t);
+    if(b){b.style.background='var(--surf)';b.style.color='var(--text2)';b.style.border='1.5px solid var(--border)';b.style.boxShadow='none';}
+  });
+  const panel=document.getElementById('simtab-'+name);if(panel){panel.style.display='flex';panel.style.flexDirection='column';}
+  const cols={rantai:'#1d4ed8,#3b82f6',energi:'#d97706,#f59e0b',daur:'#1d4ed8,#3b82f6',interaksi:'#7c3aed,#a78bfa'};
+  const shds={rantai:'rgba(37,99,235,.3)',energi:'rgba(217,119,6,.3)',daur:'rgba(37,99,235,.3)',interaksi:'rgba(124,58,237,.3)'};
+  if(btn){btn.style.background='linear-gradient(135deg,'+cols[name]+')';btn.style.color='#fff';btn.style.border='none';btn.style.boxShadow='0 2px 8px '+shds[name];}
+  if(name==='rantai'){initFoodChainBuilder();initFoodWebCanvas();}
+  if(name==='energi')updatePyramid();
+  if(name==='daur')initCycleButtons();
+  if(name==='interaksi')initQuiz();
+}
+let simInitDone=false;
+function initSimTabs(){
+  if(!simInitDone){simInitDone=true;}
+  showSimTab('rantai',document.getElementById('simtab-btn-rantai'));
+}
+
+// ===================== FOOD CHAIN BUILDER =====================
+const ORGANISMS=[
+  {id:'rumput',name:'Rumput',emoji:'🌾',role:'produsen',trophic:0},
+  {id:'padi',name:'Padi',emoji:'🌿',role:'produsen',trophic:0},
+  {id:'alga',name:'Alga',emoji:'🌱',role:'produsen',trophic:0},
+  {id:'belalang',name:'Belalang',emoji:'🦗',role:'herbivora',trophic:1},
+  {id:'tikus',name:'Tikus',emoji:'🐭',role:'herbivora',trophic:1},
+  {id:'ulat',name:'Ulat',emoji:'🐛',role:'herbivora',trophic:1},
+  {id:'itik',name:'Itik',emoji:'🦆',role:'herbivora',trophic:1},
+  {id:'katak',name:'Katak',emoji:'🐸',role:'karnivora',trophic:2},
+  {id:'ular',name:'Ular',emoji:'🐍',role:'karnivora',trophic:2},
+  {id:'musang',name:'Musang',emoji:'🦊',role:'karnivora',trophic:2},
+  {id:'elang',name:'Elang',emoji:'🦅',role:'karnivora',trophic:3},
+  {id:'dekomposer',name:'Decomposer',emoji:'🍄',role:'dekomposer',trophic:4},
+];
+let selectedChain=[],chainCount=0,chainInitDone=false;
+function initFoodChainBuilder(){
+  if(chainInitDone)return;chainInitDone=true;
+  const container=document.getElementById('chainNodes');
+  container.innerHTML='';
+  ORGANISMS.forEach(org=>{
+    const btn=document.createElement('div');
+    btn.className='chain-node';btn.dataset.id=org.id;
+    const rc={produsen:'#059669',herbivora:'#d97706',karnivora:'#dc2626',dekomposer:'#7c3aed'};
+    btn.innerHTML=`<span style="font-size:22px;">${org.emoji}</span><span style="font-size:10px;font-weight:600;color:${rc[org.role]};">${org.name}</span><span style="font-size:9px;color:var(--text3);">${org.role}</span>`;
+    btn.onclick=()=>addToChain(org,btn);
+    container.appendChild(btn);
+  });
+  updateChainDisplay();
+}
+function addToChain(org,btn){
+  if(selectedChain.find(o=>o.id===org.id))return;
+  selectedChain.push(org);btn.classList.add('selected');
+  updateChainDisplay();
+}
+function updateChainDisplay(){
+  const display=document.getElementById('chainDisplay');
+  if(selectedChain.length===0){display.innerHTML='<span style="font-size:11px;color:var(--text3);">Klik organisme di atas untuk menyusun rantai makanan...</span>';return;}
+  display.innerHTML=selectedChain.map((org,i)=>`
+    <span style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:4px 7px;background:var(--surf2);border:1px solid var(--border);border-radius:7px;font-size:11px;">
+      <span style="font-size:18px;">${org.emoji}</span>
+      <span style="font-size:9.5px;font-weight:600;color:var(--acc3);">${org.name}</span>
+    </span>
+    ${i<selectedChain.length-1?'<span class="chain-arrow">→</span>':''}
+  `).join('');
+}
+function validateOrder(chain){
+  const hasProducer=chain.some(o=>o.role==='produsen');
+  if(!hasProducer)return false;
+  for(let i=0;i<chain.length-1;i++){
+    if(chain[i].trophic>chain[i+1].trophic&&chain[i+1].role!=='dekomposer')return false;
+    if(chain[i].role==='dekomposer'&&i<chain.length-1)return false;
+  }
+  return true;
+}
+function checkChain(){
+  if(selectedChain.length<3){showFeedback('⚠️ Rantai makanan minimal 3 organisme!','#d97706');return;}
+  if(validateOrder(selectedChain)){
+    try{const s=new Audio('https://denicendrianto41.github.io/tring.wav');s.play().catch(()=>{});}catch(e){}
+    chainCount++;document.getElementById('statRantai').textContent=chainCount;
+    showFeedback('✅ Benar! Rantai makanan valid. Energi mengalir dari produsen ke konsumen!','#059669');
+    if(chainCount>=3)showSelamat('Hebat! Kamu berhasil menyusun '+chainCount+' rantai makanan yang valid! 🎉');
+  }else{
+    try{const s=new Audio('https://denicendrianto41.github.io/salah.wav');s.play().catch(()=>{});}catch(e){}
+    showFeedback('❌ Kurang tepat. Urutan trofik: Produsen → Herbivora → Karnivora → Dekomposer','#dc2626');
+  }
+}
+function showFeedback(msg,color){
+  const fb=document.getElementById('chainFeedback');
+  fb.style.cssText=`display:block;background:${color}12;border:1px solid ${color}35;border-radius:7px;padding:8px 12px;font-size:12px;font-weight:600;color:${color};line-height:1.5;margin-top:8px;`;
+  fb.textContent=msg;
+}
+function resetChain(){
+  selectedChain=[];
+  document.querySelectorAll('.chain-node').forEach(n=>n.classList.remove('selected'));
+  document.getElementById('chainFeedback').style.display='none';
+  updateChainDisplay();
+}
+function showHint(){showFeedback('💡 Mulai dari Produsen 🌾, lalu Herbivora 🦗/🐭, lalu Karnivora 🐸/🐍/🦅, akhiri Dekomposer 🍄','#1d4ed8');}
+
+// ===================== FOOD WEB =====================
+const WEB_NODES=[
+  {id:'rumput',name:'Rumput',emoji:'🌾',x:.12,y:.85,color:'#059669'},
+  {id:'padi',name:'Padi',emoji:'🌿',x:.47,y:.88,color:'#22c55e'},
+  {id:'alga',name:'Alga',emoji:'🌱',x:.82,y:.85,color:'#4ade80'},
+  {id:'belalang',name:'Belalang',emoji:'🦗',x:.08,y:.58,color:'#d97706'},
+  {id:'tikus',name:'Tikus',emoji:'🐭',x:.38,y:.60,color:'#f59e0b'},
+  {id:'ulat',name:'Ulat',emoji:'🐛',x:.62,y:.58,color:'#ea580c'},
+  {id:'itik',name:'Itik',emoji:'🦆',x:.86,y:.60,color:'#f97316'},
+  {id:'katak',name:'Katak',emoji:'🐸',x:.20,y:.34,color:'#0891b2'},
+  {id:'ular',name:'Ular',emoji:'🐍',x:.50,y:.32,color:'#7c3aed'},
+  {id:'musang',name:'Musang',emoji:'🦊',x:.76,y:.34,color:'#dc2626'},
+  {id:'elang',name:'Elang',emoji:'🦅',x:.48,y:.09,color:'#b91c1c'},
+  {id:'decomposer',name:'Decomposer',emoji:'🍄',x:.90,y:.10,color:'#92400e'},
+];
+const WEB_EDGES=[
+  ['rumput','belalang'],['rumput','tikus'],['rumput','ulat'],
+  ['padi','tikus'],['padi','itik'],['padi','belalang'],
+  ['alga','itik'],['alga','ulat'],
+  ['belalang','katak'],['ulat','katak'],['ulat','musang'],
+  ['tikus','ular'],['tikus','musang'],['tikus','elang'],
+  ['itik','musang'],['itik','elang'],
+  ['katak','ular'],['katak','elang'],
+  ['ular','elang'],['musang','elang'],
+  ['elang','decomposer'],['ular','decomposer'],['musang','decomposer'],['katak','decomposer'],['tikus','decomposer'],
+];
+let webHighlight=null,webInit=false;
+function initFoodWebCanvas(){
+  if(webInit)return;webInit=true;
+  const canvas=document.getElementById('webCanvas');
+  const wrap=canvas.parentElement;
+  canvas.width=wrap.clientWidth||380;canvas.height=200;
+  drawWeb(null);
+  canvas.onclick=function(e){
+    const rect=canvas.getBoundingClientRect();
+    const mx=(e.clientX-rect.left)*(canvas.width/rect.width);
+    const my=(e.clientY-rect.top)*(canvas.height/rect.height);
+    let hit=null;
+    WEB_NODES.forEach(n=>{if(Math.hypot(mx-n.x*canvas.width,my-n.y*canvas.height)<16)hit=n.id;});
+    webHighlight=hit===webHighlight?null:hit;drawWeb(webHighlight);
+  };
+}
+function drawWeb(highlight){
+  const canvas=document.getElementById('webCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#f8fafc');bg.addColorStop(1,'#f0f4f8');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  WEB_EDGES.forEach(([from,to])=>{
+    const fn=WEB_NODES.find(n=>n.id===from),tn=WEB_NODES.find(n=>n.id===to);if(!fn||!tn)return;
+    const isH=highlight&&(fn.id===highlight||tn.id===highlight);
+    ctx.beginPath();ctx.moveTo(fn.x*W,fn.y*H);ctx.lineTo(tn.x*W,tn.y*H);
+    ctx.strokeStyle=isH?fn.color:'#c5cfe0';ctx.lineWidth=isH?2:1;ctx.globalAlpha=isH?.9:.45;ctx.stroke();ctx.globalAlpha=1;
+    if(isH){
+      const angle=Math.atan2((tn.y-fn.y)*H,(tn.x-fn.x)*W);
+      const aX=tn.x*W-Math.cos(angle)*14,aY=tn.y*H-Math.sin(angle)*14;
+      ctx.beginPath();ctx.moveTo(aX,aY);ctx.lineTo(aX-7*Math.cos(angle-.4),aY-7*Math.sin(angle-.4));ctx.lineTo(aX-7*Math.cos(angle+.4),aY-7*Math.sin(angle+.4));ctx.closePath();ctx.fillStyle=fn.color;ctx.fill();
+    }
+  });
+  WEB_NODES.forEach(n=>{
+    const nx=n.x*W,ny=n.y*H,isH=highlight===n.id;
+    ctx.beginPath();ctx.arc(nx,ny,isH?16:12,0,Math.PI*2);
+    ctx.fillStyle=isH?n.color:n.color+'33';ctx.fill();
+    ctx.strokeStyle=n.color;ctx.lineWidth=isH?2.5:1.5;ctx.stroke();
+    ctx.font=`${isH?16:13}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.emoji,nx,ny);
+    if(isH){ctx.font='bold 9px Inter,sans-serif';ctx.fillStyle='#1e293b';ctx.fillText(n.name,nx,ny+22);}
+  });
+}
+
+// ===================== ENERGY PYRAMID =====================
+const TROPHIC=[
+  {label:'Produsen',emoji:'🌾',color:'#059669',pct:100},
+  {label:'Herbivora (TK I)',emoji:'🦗',color:'#d97706',pct:10},
+  {label:'Karnivora (TK II)',emoji:'🐸',color:'#2563eb',pct:1},
+  {label:'Karnivora (TK III)',emoji:'🦅',color:'#dc2626',pct:0.1},
+];
+function updatePyramid(){
+  const base=parseInt(document.getElementById('energySlider')?.value||1000);
+  if(document.getElementById('energyVal'))document.getElementById('energyVal').textContent=base.toLocaleString()+' kkal';
+  const pyr=document.getElementById('pyramidVis'),tbl=document.getElementById('energyTbody');
+  if(!pyr||!tbl)return;
+  const maxW=260;pyr.innerHTML='';tbl.innerHTML='';
+  TROPHIC.forEach((t,i)=>{
+    const energy=base*(t.pct/100);
+    const w=Math.max(maxW*Math.pow(t.pct/100,0.32),55);
+    const row=document.createElement('div');row.style.cssText='display:flex;flex-direction:column;align-items:center;margin-bottom:2px;';
+    const bar=document.createElement('div');bar.className='energy-bar';
+    bar.style.cssText=`width:${w}px;height:30px;background:${t.color};padding:0 8px;`;
+    bar.innerHTML=`<span style="font-size:13px;margin-right:4px;">${t.emoji}</span><span>${energy>=1?Math.round(energy).toLocaleString():energy.toFixed(2)} kkal</span>`;
+    bar.onclick=()=>bar.animate([{transform:'scaleX(1.05)'},{transform:'scaleX(1)'}],{duration:200});
+    const lbl=document.createElement('div');lbl.style.cssText='font-size:9.5px;color:var(--text3);margin-top:2px;text-align:center;';
+    lbl.textContent=t.label;row.appendChild(bar);row.appendChild(lbl);pyr.appendChild(row);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${t.emoji} ${t.label}</td><td>${t.label.split(' ')[0]}</td><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${t.color};">${energy>=1?Math.round(energy).toLocaleString():energy.toFixed(2)}</td><td style="font-weight:600;color:var(--green);">${t.pct}%</td>`;
+    tbl.appendChild(tr);
+  });
+}
+
+// ===================== DAUR BIOGEOKIMIA =====================
+const CYCLES=[
+  {id:'air',name:'Daur Air',emoji:'🌧️',color:'#0284c7',steps:[
+    {icon:'☀️',label:'Evaporasi',desc:'Panas matahari menguapkan air dari laut, danau, sungai menjadi uap air (H₂O gas).'},
+    {icon:'🌿',label:'Transpirasi',desc:'Tumbuhan (termasuk pohon di sekolah) melepaskan uap air melalui stomata daun — evapotranspirasi.'},
+    {icon:'☁️',label:'Kondensasi',desc:'Uap air naik, mendingin di atmosfer, dan berkondensasi membentuk awan.'},
+    {icon:'🌧️',label:'Presipitasi',desc:'Air jatuh sebagai hujan atau embun ke permukaan bumi.'},
+    {icon:'🏞️',label:'Run-off & Infiltrasi',desc:'Air mengalir di permukaan (run-off) atau meresap ke tanah (infiltrasi) mengisi air tanah.'},
+  ],schoolRole:'Pohon di sekolah melakukan transpirasi, membantu menjaga kelembaban udara. Akar pohon juga membantu infiltrasi air hujan ke dalam tanah.'},
+  {id:'karbon',name:'Daur Karbon',emoji:'🌫️',color:'#059669',steps:[
+    {icon:'☀️',label:'Fotosintesis',desc:'Tumbuhan menyerap CO₂ dari udara dan mengubahnya menjadi glukosa (senyawa organik).'},
+    {icon:'💨',label:'Respirasi',desc:'Semua organisme melepaskan CO₂ ke udara melalui respirasi seluler.'},
+    {icon:'🍂',label:'Dekomposisi',desc:'Bakteri dan jamur mengurai bahan organik mati, melepaskan CO₂ kembali ke lingkungan.'},
+    {icon:'🏭',label:'Pembakaran',desc:'Bahan bakar fosil dan biomassa yang terbakar melepaskan CO₂ tersimpan ke atmosfer.'},
+    {icon:'🌊',label:'Lautan',desc:'Lautan menyerap dan melepaskan CO₂ — bertindak sebagai penyangga karbon global.'},
+  ],schoolRole:'Pohon di sekolah menyerap CO₂ melalui fotosintesis, mengurangi gas rumah kaca dan menciptakan udara lebih segar untuk belajar.'},
+  {id:'nitrogen',name:'Daur Nitrogen',emoji:'⚡',color:'#7c3aed',steps:[
+    {icon:'🌬️',label:'N₂ Bebas',desc:'78% atmosfer adalah gas nitrogen (N₂) yang tidak dapat langsung digunakan sebagian besar organisme.'},
+    {icon:'🦠',label:'Fiksasi',desc:'Bakteri Rhizobium (akar legum) dan Azotobacter mengubah N₂ → amonia (NH₃). Petir juga memfiksasi N.'},
+    {icon:'🔄',label:'Nitrifikasi',desc:'Nitrosomonas: NH₃ → nitrit (NO₂⁻); Nitrobacter: NO₂⁻ → nitrat (NO₃⁻) yang diserap tumbuhan.'},
+    {icon:'🌱',label:'Asimilasi',desc:'Tumbuhan menyerap nitrat (NO₃⁻) untuk membuat protein, asam nukleat, dan molekul organik.'},
+    {icon:'💨',label:'Denitrifikasi',desc:'Bakteri denitrifikasi mengubah nitrat → N₂ gas yang dikembalikan ke atmosfer.'},
+  ],schoolRole:'Tanah sekitar sekolah mengandung bakteri pengikat nitrogen yang menyuburkan tanah dan mendukung pertumbuhan tanaman di kebun sekolah.'},
+  {id:'fosfor',name:'Daur Fosfor',emoji:'🔥',color:'#d97706',steps:[
+    {icon:'⛰️',label:'Batuan',desc:'Fosfor tersimpan dalam batuan fosfat. Pelapukan secara perlahan melepaskan ion fosfat (PO₄³⁻) ke tanah.'},
+    {icon:'🌱',label:'Penyerapan',desc:'Tumbuhan menyerap fosfat dari tanah untuk membentuk ATP, DNA, RNA, dan membran sel.'},
+    {icon:'🦗',label:'Rantai Makanan',desc:'Fosfor berpindah melalui rantai makanan saat herbivora memakan tumbuhan, karnivora memakan herbivora.'},
+    {icon:'💀',label:'Dekomposisi',desc:'Dekomposer mengurai organisme mati, mengembalikan fosfat organik menjadi fosfat anorganik ke tanah.'},
+    {icon:'🌊',label:'Sedimentasi',desc:'Fosfat terbawa air ke laut, mengendap di dasar — siklus sangat lambat (jutaan tahun).'},
+  ],schoolRole:'Daur fosfor tidak melalui atmosfer. Pemupukan berlebihan dapat menyebabkan eutrofikasi. Penting menjaga keseimbangan fosfat di sekitar sekolah.'},
+  {id:'sulfur',name:'Daur Sulfur',emoji:'☁️',color:'#dc2626',steps:[
+    {icon:'🌋',label:'Degassing',desc:'Gunung berapi dan mata air panas melepaskan H₂S dan SO₂ ke atmosfer.'},
+    {icon:'🏭',label:'Aktivitas Manusia',desc:'Pembakaran bahan bakar fosil melepaskan SO₂ yang berkontribusi pada hujan asam.'},
+    {icon:'💧',label:'Hujan Asam',desc:'SO₂ bereaksi dengan uap air membentuk asam sulfat (H₂SO₄) → hujan asam (pH < 5.6).'},
+    {icon:'🌱',label:'Penyerapan',desc:'Tumbuhan menyerap sulfat (SO₄²⁻) dari tanah untuk sintesis asam amino sistein dan metionin.'},
+    {icon:'🦠',label:'Reduksi',desc:'Bakteri pereduksi sulfat (Desulfovibrio) dalam kondisi anaerob mengubah sulfat kembali menjadi H₂S.'},
+  ],schoolRole:'Kawasan industri dapat melepaskan SO₂ yang menyebabkan hujan asam. Pohon-pohon di sekolah membantu menyerap polutan ini.'},
+];
+let activeCycle=null,cycleInit=false;
+function initCycleButtons(){
+  const container=document.getElementById('cycleButtons');if(!container||cycleInit)return;cycleInit=true;
+  CYCLES.forEach(c=>{
+    const btn=document.createElement('div');
+    btn.id='cyclebtn-'+c.id;
+    btn.style.cssText=`background:var(--surf2);border:2px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;transition:all .2s;text-align:center;`;
+    btn.innerHTML=`<div style="font-size:20px;margin-bottom:3px;">${c.emoji}</div><div style="font-size:10.5px;font-weight:700;color:var(--acc3);">${c.name}</div>`;
+    btn.onmouseover=()=>{if(activeCycle!==c.id){btn.style.borderColor=c.color+'80';btn.style.background=c.color+'08';}};
+    btn.onmouseout=()=>{if(activeCycle!==c.id){btn.style.borderColor='var(--border)';btn.style.background='var(--surf2)';}};
+    btn.onclick=()=>showCycle(c);
+    container.appendChild(btn);
+  });
+  showCycle(CYCLES[0]);
+}
+function showCycle(cycle){
+  document.querySelectorAll('[id^="cyclebtn-"]').forEach(b=>{b.style.borderColor='var(--border)';b.style.background='var(--surf2)';b.style.boxShadow='none';});
+  const activeBtn=document.getElementById('cyclebtn-'+cycle.id);
+  if(activeBtn){activeBtn.style.borderColor=cycle.color;activeBtn.style.background=cycle.color+'10';activeBtn.style.boxShadow='0 2px 8px '+cycle.color+'30';}
+  activeCycle=cycle.id;
+  const display=document.getElementById('cycleDisplay');if(!display)return;
+  display.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-shrink:0;">
+      <div style="font-size:24px;">${cycle.emoji}</div>
+      <div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:${cycle.color};">${cycle.name}</div>
+        <div style="font-size:10px;color:var(--text3);">Klik setiap tahap untuk detail</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto;">
+      ${cycle.steps.map((s,i)=>`
+        <div onclick="this.classList.toggle('open');this.querySelector('.sd').style.display=this.classList.contains('open')?'block':'none';" style="background:${cycle.color}10;border:1.5px solid ${cycle.color}35;border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .2s;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;">${s.icon}</span>
+            <span style="font-size:12px;font-weight:700;color:${cycle.color};">${i+1}. ${s.label}</span>
+            <span style="margin-left:auto;font-size:13px;color:${cycle.color};">▶</span>
+          </div>
+          <div class="sd" style="display:none;font-size:11.5px;color:var(--text2);line-height:1.65;margin-top:6px;padding-top:6px;border-top:1px solid ${cycle.color}20;">${s.desc}</div>
+        </div>
+      `).join('')}
+      <div class="notebox" style="flex-shrink:0;">
+        <div class="nt">🌳 Peran di Lingkungan Sekolah</div>
+        <p style="font-size:11.5px;">${cycle.schoolRole}</p>
+      </div>
+    </div>
+  `;
+}
+
+// ===================== KUIS INTERAKSI =====================
+const IQ=[
+  {scenario:'🐝 Lebah mengambil nektar dari bunga 🌺, sedangkan bunga mendapat bantuan penyerbukan dari lebah.',answer:'mutualisme',hint:'Keduanya sama-sama untung!'},
+  {scenario:'🌸 Anggrek menempel di pohon besar 🌳 untuk mendapat cahaya matahari. Pohon tidak terganggu.',answer:'komensalisme',hint:'Satu untung, satu tidak rugi/untung.'},
+  {scenario:'🪱 Cacing pita hidup di usus 🧍 manusia, menyerap nutrisi sehingga inang kekurangan gizi.',answer:'parasitisme',hint:'Satu untung (parasit), satu rugi (inang).'},
+  {scenario:'🦁 Singa dan 🐆 macan tutul bersaing memperebutkan rusa di wilayah yang sama.',answer:'kompetisi',hint:'Keduanya sama-sama dirugikan.'},
+  {scenario:'🦅 Elang menangkap dan memakan 🐭 tikus untuk kebutuhan energinya.',answer:'predasi',hint:'Predator (+) memangsa prey (–).'},
+];
+const ITYPES=['mutualisme','komensalisme','parasitisme','kompetisi','predasi','amensalisme'];
+const ISYMBOLS={mutualisme:'+/+',komensalisme:'+/0',parasitisme:'+/–',kompetisi:'–/–',predasi:'+/–',amensalisme:'0/–'};
+const ICOLORS={mutualisme:'#059669',komensalisme:'#0284c7',parasitisme:'#d97706',kompetisi:'#7c3aed',predasi:'#dc2626',amensalisme:'#64748b'};
+let quizScore=0,quizState=[],quizInit=false;
+function initQuiz(){
+  const area=document.getElementById('quizArea');if(!area||quizInit)return;quizInit=true;
+  quizScore=0;quizState=IQ.map(()=>null);updateQuizScore();
+  IQ.forEach((q,qi)=>{
+    const qDiv=document.createElement('div');
+    qDiv.style.cssText='background:var(--surf2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;';
+    qDiv.innerHTML=`<div style="font-size:12.5px;color:var(--text);line-height:1.65;margin-bottom:8px;"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--acc);font-weight:700;background:var(--surf2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;margin-right:6px;">Q${qi+1}</span>${q.scenario}</div><div id="qopts-${qi}" style="display:flex;flex-wrap:wrap;gap:6px;"></div><div id="qfb-${qi}" style="display:none;font-size:11px;margin-top:6px;"></div>`;
+    const optsDiv=qDiv.querySelector('#qopts-'+qi);
+    [...ITYPES].sort(()=>Math.random()-.5).forEach(type=>{
+      const c=ICOLORS[type],s=ISYMBOLS[type];
+      const btn=document.createElement('button');
+      btn.style.cssText=`padding:5px 11px;border-radius:6px;border:1.5px solid ${c}40;background:${c}10;color:${c};font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .17s;`;
+      btn.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:9px;background:${c};color:#fff;border-radius:3px;padding:1px 4px;margin-right:4px;">${s}</span>${type}`;
+      btn.onmouseover=()=>{if(!quizState[qi])btn.style.background=c+'22';};
+      btn.onmouseout=()=>{if(!quizState[qi])btn.style.background=c+'10';};
+      btn.onclick=()=>{
+        if(quizState[qi])return;
+        quizState[qi]=type;
+        const isCorrect=type===q.answer;
+        if(isCorrect){quizScore++;try{const s=new Audio('https://denicendrianto41.github.io/benar.wav');s.play().catch(()=>{});}catch(e){}}
+        else{try{const s=new Audio('https://denicendrianto41.github.io/salah.wav');s.play().catch(()=>{});}catch(e){}}
+        updateQuizScore();
+        optsDiv.querySelectorAll('button').forEach(b=>b.style.pointerEvents='none');
+        btn.style.background=isCorrect?'#dcfce7':'#fee2e2';btn.style.borderColor=isCorrect?'#22c55e':'#ef4444';btn.style.color=isCorrect?'#14532d':'#991b1b';
+        if(!isCorrect){optsDiv.querySelectorAll('button').forEach(b=>{if(b.textContent.toLowerCase().includes(q.answer)){b.style.background='#dcfce7';b.style.borderColor='#22c55e';b.style.color='#14532d';}});}
+        const fb=document.getElementById('qfb-'+qi);
+        fb.style.cssText=`display:block;padding:7px 10px;border-radius:7px;font-size:11.5px;line-height:1.6;background:${isCorrect?'#f0fdf4':'#fff5f5'};border:1px solid ${isCorrect?'#bbf7d0':'#fecaca'};color:${isCorrect?'#14532d':'#991b1b'};margin-top:6px;`;
+        fb.textContent=isCorrect?`✅ Benar! ${q.answer.charAt(0).toUpperCase()+q.answer.slice(1)} (${ISYMBOLS[q.answer]}): ${q.hint}`:`❌ Jawaban benar: ${q.answer.charAt(0).toUpperCase()+q.answer.slice(1)}. ${q.hint}`;
+        if(quizState.every(s=>s!==null)&&quizScore>=4)setTimeout(()=>showSelamat(`Luar biasa! Skor kamu ${quizScore}/${IQ.length} dalam kuis interaksi ekosistem! 🏆`),500);
+      };
+      optsDiv.appendChild(btn);
+    });
+    area.appendChild(qDiv);
+  });
+}
+function updateQuizScore(){document.getElementById('quizScore').textContent=quizScore;document.getElementById('quizTotal').textContent=IQ.length;}
+function resetQuiz(){const area=document.getElementById('quizArea');if(area)area.innerHTML='';quizInit=false;initQuiz();}
+
+// ===================== DISKUSI =====================
+const DQ_KEY='ekosistem_dq_v2';
+function saveDQ(n,v){const d=JSON.parse(localStorage.getItem(DQ_KEY)||'{}');d[n]=v;localStorage.setItem(DQ_KEY,JSON.stringify(d));}
+function clearDQ(){if(confirm('Hapus semua jawaban diskusi?')){localStorage.removeItem(DQ_KEY);document.querySelectorAll('.disc-area').forEach(t=>t.value='');}}
+(function loadDQ(){
+  const d=JSON.parse(localStorage.getItem(DQ_KEY)||'{}');
+  Object.keys(d).forEach(k=>{const ta=document.querySelectorAll('.disc-area')[k-1];if(ta)ta.value=d[k];});
+})();
+function printDiskusi(){
+  const areas=document.querySelectorAll('.disc-area');
+  const qs=['Susunlah 1 rantai makanan yang mungkin terbentuk dari ekosistem yang kamu amati!',
+    'Apa perbedaan rantai makanan dengan jaring-jaring makanan? Jelaskan!',
+    'Mengapa makan daging relatif tidak efisien memanfaatkan produksi fotosintesis? Jelaskan!',
+    'Jelaskan 5 daur biogeokimia yang terjadi dalam suatu komunitas atau ekosistem!',
+    'Identifikasi interaksi antar komponen ekosistem di lingkungan sekolah! Sebutkan jenisnya dan berikan contoh!'];
+  let html=`<html><head><title>Diskusi Ekosistem</title>
+  <style>body{font-family:Arial,sans-serif;max-width:700px;margin:30px auto;padding:20px;color:#1e293b;}
+  h1{color:#1d4ed8;font-size:18px;margin-bottom:4px;}
+  .sub{font-size:12px;color:#666;margin-bottom:20px;}
+  .q{background:#eff6ff;border-left:4px solid #2563eb;padding:10px 14px;margin:12px 0 4px;border-radius:0 6px 6px 0;font-size:13px;font-weight:600;color:#1d4ed8;}
+  .a{border:1px solid #dde3ec;border-radius:6px;padding:10px 14px;min-height:60px;font-size:13px;color:#475569;background:#fff;white-space:pre-wrap;line-height:1.7;}
+  .footer{margin-top:30px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}
+  </style></head><body>
+  <h1>🌿 Lembar Diskusi – Interaksi Komponen Ekosistem</h1>
+  <div class="sub">LKPD 10.6.2 · Biologi SMA Kelas X · ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>`;
+  qs.forEach((q,i)=>{html+=`<div class="q">${i+1}. ${q}</div><div class="a">${(areas[i]?.value||'').replace(/</g,'&lt;')||'(belum dijawab)'}</div>`;});
+  html+=`<div class="footer">Lab Maya Biologi · SMA Negeri 1 Batujajar · Dicetak: ${new Date().toLocaleString('id-ID')}</div></body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();w.print();
+}
+
+// ===================== SELAMAT =====================
+function showSelamat(msg){
+  try{const s=new Audio('https://denicendrianto41.github.io/tring.wav');s.play().catch(()=>{});}catch(e){}
+  document.getElementById('selamatMsg').textContent=msg||'Kamu berhasil!';
+  const ov=document.getElementById('selamatOverlay'),card=document.getElementById('selamatCard');
+  ov.style.display='block';ov.style.pointerEvents='all';
+  requestAnimationFrame(()=>{card.style.transform='translate(-50%,-50%) scale(1)';});
+  startConfetti();
+}
+function tutupSelamat(){
+  const ov=document.getElementById('selamatOverlay'),card=document.getElementById('selamatCard');
+  card.style.transform='translate(-50%,-50%) scale(0)';
+  setTimeout(()=>{ov.style.display='none';ov.style.pointerEvents='none';stopConfetti();},400);
+}
+let confettiAnim=null;
+const confColors=['#2563eb','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#f97316'];
+function startConfetti(){
+  const cv=document.getElementById('confettiCanvas');if(!cv)return;
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const pieces=Array.from({length:120},()=>({x:Math.random()*cv.width,y:-10-Math.random()*200,w:6+Math.random()*8,h:4+Math.random()*6,color:confColors[Math.floor(Math.random()*confColors.length)],rot:Math.random()*360,spin:(Math.random()-.5)*8,vx:(Math.random()-.5)*3,vy:2+Math.random()*3}));
+  function draw(){ctx.clearRect(0,0,cv.width,cv.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.spin;if(p.y>cv.height){p.y=-10;p.x=Math.random()*cv.width;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});confettiAnim=requestAnimationFrame(draw);}
+  draw();
+}
+function stopConfetti(){if(confettiAnim)cancelAnimationFrame(confettiAnim);const cv=document.getElementById('confettiCanvas');if(cv)cv.getContext('2d').clearRect(0,0,cv.width,cv.height);}
+
+window.addEventListener('load',()=>{updatePyramid();});
+</script>
+</body>
+</html>
