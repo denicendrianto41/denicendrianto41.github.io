@@ -1347,17 +1347,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 <!-- ════════════ GAME PAGE ════════════ -->
 <div class="pg" id="pg-game" style="position:relative">
-  <div style="position:absolute;top:10px;right:14px;z-index:10;display:flex;gap:8px">
+  <div style="position:absolute;bottom:14px;left:14px;z-index:10">
     <button onclick="toggleGameFullscreen()" id="btn-fullscreen"
-      style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(15,23,42,.6);border:1px solid rgba(255,255,255,.2);border-radius:9px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;backdrop-filter:blur(6px)"
-      onmouseover="this.style.background='rgba(15,23,42,.85)'" onmouseout="this.style.background='rgba(15,23,42,.6)'">
+      style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)"
+      onmouseover="this.style.background='rgba(15,23,42,.9)'" onmouseout="this.style.background='rgba(15,23,42,.65)'">
       <i class="fa-solid fa-expand"></i> Layar Penuh
     </button>
-    <a href="https://denicendrianto41.github.io/biodiversitas.html" target="_blank" rel="noopener"
-      style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(15,23,42,.6);border:1px solid rgba(255,255,255,.2);border-radius:9px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;backdrop-filter:blur(6px)"
-      onmouseover="this.style.background='rgba(15,23,42,.85)'" onmouseout="this.style.background='rgba(15,23,42,.6)'">
-      <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Tab Baru
-    </a>
   </div>
   <div id="game-frame-wrap" style="position:relative;width:100%;height:calc(100vh - 64px);background:#0f172a">
     <iframe id="game-iframe"
@@ -1370,13 +1365,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div><!-- end game -->
 
 
-<div class="pg" id="pg-spesies">
-  <div class="sec">
-    <div class="sec-inner">
-      <div id="spesies-grid" class="grid-3">
-        <!-- filled by JS -->
-      </div>
+<div class="pg" id="pg-spesies" style="display:flex;flex-direction:column">
+  <div style="position:relative;width:100%;flex:1;min-height:calc(100vh - 64px)">
+    <div id="karya-spinner" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--mu);background:var(--bg);z-index:2;pointer-events:none">
+      <div style="width:44px;height:44px;border:4px solid var(--bdr);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite"></div>
+      <div style="font-size:14px;font-weight:600">Memuat Karya Siswa…</div>
     </div>
+    <iframe id="karya-iframe"
+      src="https://script.google.com/a/macros/sman1batujajar.sch.id/s/AKfycbx9Hh9MMqwzuSuXRJH-A5Hx6I_XyYvwDhnU-rP0QN5xDDP0JT3OgRwF7OKEucFy2H8Y/exec"
+      style="width:100%;height:calc(100vh - 64px);border:none;display:block"
+      onload="document.getElementById('karya-spinner').style.display='none'"
+      title="Karya Siswa">
+    </iframe>
   </div>
 </div><!-- end spesies -->
 
@@ -1525,7 +1525,7 @@ function goPage(id) {
   window.scrollTo(0,0);
   if(id === 'peta' && !_bio2MapInit) initBio2Map();
   if(id === 'peta' && bio2Map) setTimeout(() => bio2Map.invalidateSize(), 150);
-  if(id === 'spesies') renderSpesiesGrid();
+  if(id === 'spesies') { /* iframe loads automatically */ }
   // sub-nav
   document.querySelectorAll('.subnav').forEach(s=>s.classList.remove('show'));
   const sn = document.getElementById('subnav-'+id);
@@ -1832,27 +1832,101 @@ const BIO_SPECIES = [
 
 function getZone(lng){ if(lng<117) return 'asiatis'; if(lng<129) return 'wallacea'; return 'australis'; }
 
-function renderSpesiesGrid(){
-  const grid = document.getElementById('spesies-grid');
-  if(!grid || grid.children.length>0) return;
-  BIO_SPECIES.forEach(s=>{
-    const isFlora=s.type==='flora';
-    const color=isFlora?'#2563eb':'#f59e0b';
-    const zone=getZone(s.lng);
-    const card=document.createElement('div');
-    card.className='card '+(isFlora?'card-g':'card-a');
-    card.style.cursor='default';
-    card.innerHTML=`
-      <img src="${s.image}" alt="${s.name}" style="width:100%;height:130px;object-fit:cover;border-radius:9px;margin-bottom:12px" onerror="this.style.display='none'">
-      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${color};margin-bottom:3px">${s.type} &bull; ${s.region}</div>
-      <div class="c-title" style="margin-bottom:4px">${s.name}</div>
-      <div style="font-style:italic;font-size:11.5px;color:var(--mu);margin-bottom:8px">${s.sc}</div>
-      <div class="c-desc">${s.desc}</div>
-      <div style="margin-top:10px;font-size:10.5px;font-weight:700;color:#6b7280;text-transform:uppercase">Zona: <span style="color:${color}">${zone.charAt(0).toUpperCase()+zone.slice(1)}</span></div>
+/* ── KARYA SISWA — fetch from Google Apps Script ── */
+const KARYA_URL = 'https://script.google.com/a/macros/sman1batujajar.sch.id/s/AKfycbx9Hh9MMqwzuSuXRJH-A5Hx6I_XyYvwDhnU-rP0QN5xDDP0JT3OgRwF7OKEucFy2H8Y/exec';
+let karyaLoaded = false;
+
+function loadKarya(){
+  const loading = document.getElementById('karya-loading');
+  const errBox  = document.getElementById('karya-error');
+  const errMsg  = document.getElementById('karya-error-msg');
+  const grid    = document.getElementById('karya-grid');
+  const raw     = document.getElementById('karya-raw');
+
+  loading.style.display = 'flex';
+  errBox.style.display  = 'none';
+  grid.style.display    = 'none';
+  raw.style.display     = 'none';
+
+  fetch(KARYA_URL)
+    .then(r => {
+      const ct = r.headers.get('content-type') || '';
+      if(ct.includes('json')) return r.json().then(data => ({type:'json', data}));
+      return r.text().then(text => ({type:'text', data: text}));
+    })
+    .then(({type, data}) => {
+      loading.style.display = 'none';
+      karyaLoaded = true;
+
+      if(type === 'json'){
+        const items = Array.isArray(data) ? data : (data.data || data.karya || data.items || []);
+        if(items.length === 0){ showKaryaEmpty(); return; }
+        renderKaryaCards(items, grid);
+      } else {
+        // If HTML or plain text returned, embed directly
+        const trimmed = (data||'').trim();
+        if(!trimmed){ showKaryaEmpty(); return; }
+        // Check if it looks like HTML
+        if(trimmed.startsWith('<') || trimmed.includes('<div') || trimmed.includes('<table')){
+          raw.style.display = 'block';
+          raw.innerHTML = trimmed;
+        } else {
+          // Try JSON parse
+          try{
+            const parsed = JSON.parse(trimmed);
+            const items = Array.isArray(parsed) ? parsed : (parsed.data || parsed.karya || parsed.items || []);
+            if(items.length === 0){ showKaryaEmpty(); return; }
+            renderKaryaCards(items, grid);
+          } catch(e){
+            // Plain text: display as is
+            raw.style.display = 'block';
+            raw.innerHTML = `<pre style="white-space:pre-wrap;font-size:13px;color:var(--txt)">${trimmed}</pre>`;
+          }
+        }
+      }
+    })
+    .catch(err => {
+      loading.style.display = 'none';
+      errBox.style.display  = 'block';
+      errMsg.textContent    = err.message || 'Tidak dapat terhubung ke sumber data.';
+    });
+}
+
+function showKaryaEmpty(){
+  const errBox = document.getElementById('karya-error');
+  const errMsg = document.getElementById('karya-error-msg');
+  errBox.style.display = 'block';
+  errMsg.textContent   = 'Belum ada data karya siswa yang tersedia.';
+}
+
+function renderKaryaCards(items, grid){
+  grid.innerHTML = '';
+  grid.style.display = '';
+  items.forEach(item => {
+    const title = item.judul || item.title || item.nama || item.name || '(Tanpa Judul)';
+    const siswa = item.siswa || item.penulis || item.author || item.kelas || '';
+    const desc  = item.deskripsi || item.description || item.isi || item.konten || '';
+    const img   = item.gambar || item.image || item.foto || item.thumbnail || '';
+    const link  = item.link || item.url || item.file || '';
+    const tag   = item.kategori || item.kategory || item.type || item.jenis || '';
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cursor = link ? 'pointer' : 'default';
+    if(link) card.onclick = () => window.open(link, '_blank');
+
+    card.innerHTML = `
+      ${img ? `<img src="${img}" alt="${title}" style="width:100%;height:140px;object-fit:cover;border-radius:9px;margin-bottom:12px" onerror="this.style.display='none'">` : ''}
+      ${tag ? `<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:4px">${tag}</div>` : ''}
+      <div class="c-title" style="margin-bottom:4px">${title}</div>
+      ${siswa ? `<div style="font-size:11.5px;color:var(--mu);margin-bottom:7px"><i class="fa-solid fa-user" style="font-size:10px"></i> ${siswa}</div>` : ''}
+      ${desc ? `<div class="c-desc">${desc}</div>` : ''}
+      ${link ? `<div style="margin-top:10px;font-size:11.5px;font-weight:700;color:var(--green)"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px"></i> Lihat Karya</div>` : ''}
     `;
     grid.appendChild(card);
   });
 }
+
 </script>
 </body>
 </html>
