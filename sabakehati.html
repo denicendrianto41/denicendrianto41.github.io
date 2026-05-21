@@ -14,7 +14,7 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --green:#1e3a5f;--green2:#1e40af;--glight:#3b82f6;--gpale:#dbeafe;--gdark:#0f172a;
+  --green:#2563eb;--green2:#1e40af;--glight:#3b82f6;--gpale:#dbeafe;--gdark:#0f172a;
   --amber:#f59e0b;--em:#2563eb;--bg:#f0f4ff;--card:#fff;--bdr:#bfdbfe;
   --txt:#0f172a;--mu:#6b7280;--rad:14px;
 }
@@ -26,7 +26,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .topbar b{color:var(--amber)}
 
 /* ── NAVBAR ── */
-.navbar{background:linear-gradient(135deg,#0f172a,#1e3a5f,#1e40af);padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:999;min-height:64px;box-shadow:0 4px 20px rgba(0,0,0,.3);gap:12px}
+.navbar{background:linear-gradient(135deg,#0f172a,#2563eb,#1e40af);padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:999;min-height:64px;box-shadow:0 4px 20px rgba(0,0,0,.3);gap:12px}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;text-decoration:none}
 .brand-icon{width:44px;height:44px;background:linear-gradient(135deg,#3b82f6,#1e40af);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 10px rgba(59,130,246,.4);flex-shrink:0}
 .brand-name{font-family:'Outfit',sans-serif;font-size:17px;font-weight:900;color:#fff;letter-spacing:.3px}
@@ -60,7 +60,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .drawer-bg.open{display:block}
 .drawer{position:fixed;top:0;left:-280px;width:268px;height:100vh;background:#0f172a;z-index:1500;transition:left .32s cubic-bezier(.25,.46,.45,.94);overflow-y:auto}
 .drawer.open{left:0}
-.drawer-head{background:linear-gradient(135deg,#1e3a5f,#1e40af);padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.drawer-head{background:linear-gradient(135deg,#2563eb,#1e40af);padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
 .drawer-head .bn{font-family:'Outfit',sans-serif;font-weight:900;color:#fff;font-size:15px}
 .drawer-head .bn em{color:var(--amber);font-style:normal}
 .drawer-body{padding:10px 8px}
@@ -150,12 +150,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .z-tags{display:flex;flex-wrap:wrap;gap:5px}
 .z-tag{background:rgba(255,255,255,.18);color:#fff;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px}
 .z-body{background:#fff;padding:12px 20px;font-size:12.5px;color:var(--mu);line-height:1.65}
-.z-asiatis{background:linear-gradient(135deg,#1e3a5f,#2563eb)}
+.z-asiatis{background:linear-gradient(135deg,#2563eb,#3b82f6)}
 .z-peralihan{background:linear-gradient(135deg,#7c3aed,#6d28d9)}
 .z-australis{background:linear-gradient(135deg,#0369a1,#0284c7)}
 
 /* ── DARK SECTION ── */
-.dark-sec{background:linear-gradient(135deg,#0f172a,#1e3a5f,#1e40af);padding:56px 24px;position:relative;overflow:hidden}
+.dark-sec{background:linear-gradient(135deg,#0f172a,#2563eb,#1e40af);padding:56px 24px;position:relative;overflow:hidden}
 .dark-sec::before{content:'';position:absolute;bottom:-80px;right:-80px;width:380px;height:380px;background:radial-gradient(circle,rgba(245,158,11,.1),transparent 65%);pointer-events:none}
 .dark-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;position:relative;z-index:1}
 .dark-lbl{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
@@ -173,7 +173,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 /* ── TABLE ── */
 .bio-table{width:100%;border-collapse:collapse;font-size:13px}
-.bio-table th{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-weight:700;padding:11px 14px;text-align:left}
+.bio-table th{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;font-weight:700;padding:11px 14px;text-align:left}
 .bio-table td{padding:11px 14px;border-bottom:1px solid var(--bdr);vertical-align:top;line-height:1.6}
 .bio-table tr:nth-child(even) td{background:#f8faff}
 .bio-table tr:hover td{background:var(--gpale)}
@@ -189,7 +189,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .tp-txt{font-size:13.5px;line-height:1.75}
 
 /* ── INFO BOX ── */
-.info-box{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:var(--rad);padding:24px 28px;color:#fff;position:relative;overflow:hidden;margin-bottom:20px}
+.info-box{background:linear-gradient(135deg,#0f172a,#2563eb);border-radius:var(--rad);padding:24px 28px;color:#fff;position:relative;overflow:hidden;margin-bottom:20px}
 .info-box::before{content:'🌿';position:absolute;font-size:110px;opacity:.07;bottom:-20px;right:-10px;transform:rotate(-15deg)}
 .ib-title{font-family:'Outfit',sans-serif;font-size:17px;font-weight:900;margin-bottom:8px}
 .ib-title em{color:#93c5fd;font-style:normal}
@@ -207,25 +207,31 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dli{flex-shrink:0;font-size:13px;margin-top:2px}
 
 /* ── CONTENT HEADER ── */
-.pg-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:32px 24px}
+.pg-header{background:linear-gradient(135deg,#0f172a,#2563eb);padding:32px 24px}
 .pg-title{font-family:'Outfit',sans-serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:4px}
 .pg-title em{color:#93c5fd;font-style:normal}
 .pg-desc{font-size:13px;color:rgba(255,255,255,.65)}
 
-/* ── MATERI PAGE TABS ── */
-.materi-tabs{background:#fff;border-bottom:2px solid var(--bdr);padding:0 24px;display:flex;gap:0;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
-.materi-tabs::-webkit-scrollbar{display:none}
-.mtab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:13px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--mu);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .2s}
-.mtab:hover{color:var(--green)}
-.mtab.active{color:var(--green);border-bottom-color:var(--glight)}
+/* ── MATERI PAGE TABS (floating left sidebar) ── */
+.materi-tabs{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:6px;width:52px;transition:width .25s ease}
+.materi-tabs:hover{width:210px}
+.materi-tabs .mtab-label{display:none;white-space:nowrap;overflow:hidden}
+.materi-tabs:hover .mtab-label{display:inline}
+.mtab{background:rgba(255,255,255,.95);border:1px solid var(--bdr);border-radius:12px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--mu);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 3px 12px rgba(0,0,0,.1);overflow:hidden}
+.mtab:hover{color:var(--green);background:#fff;border-color:var(--glight);box-shadow:0 4px 16px rgba(59,130,246,.2)}
+.mtab.active{background:var(--glight);color:#fff;border-color:var(--glight);box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.mtab i{flex-shrink:0;font-size:14px}
 .msub{display:none}.msub.active{display:block}
 
-/* ── AKTIVITAS PAGE TABS ── */
-.aktiv-tabs{background:#fff;border-bottom:2px solid var(--bdr);padding:0 24px;display:flex;gap:0;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
-.aktiv-tabs::-webkit-scrollbar{display:none}
-.atab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:13px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--mu);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .2s}
-.atab:hover{color:var(--green)}
-.atab.active{color:var(--green);border-bottom-color:var(--glight)}
+/* ── AKTIVITAS PAGE TABS (floating left sidebar) ── */
+.aktiv-tabs{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:6px;width:52px;transition:width .25s ease}
+.aktiv-tabs:hover{width:230px}
+.aktiv-tabs .atab-label{display:none;white-space:nowrap;overflow:hidden}
+.aktiv-tabs:hover .atab-label{display:inline}
+.atab{background:rgba(255,255,255,.95);border:1px solid var(--bdr);border-radius:12px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--mu);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 3px 12px rgba(0,0,0,.1);overflow:hidden}
+.atab:hover{color:var(--green);background:#fff;border-color:var(--glight);box-shadow:0 4px 16px rgba(59,130,246,.2)}
+.atab.active{background:var(--glight);color:#fff;border-color:var(--glight);box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.atab i{flex-shrink:0;font-size:14px}
 .asub{display:none}.asub.active{display:block}
 
 /* ── KEGIATAN BODY STYLES ── */
@@ -235,7 +241,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .kg-step-list li:last-child{border-bottom:none}
 .kg-step-list li::before{content:counter(s);width:22px;height:22px;border-radius:50%;background:var(--gpale);color:var(--green);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .obs-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:14px}
-.obs-table th{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:9px 10px;text-align:left;font-weight:700}
+.obs-table th{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;padding:9px 10px;text-align:left;font-weight:700}
 .obs-table td{border:1px solid var(--bdr);padding:7px 9px}
 .obs-inp{width:100%;border:none;outline:none;font-size:12.5px;font-family:'Plus Jakarta Sans',sans-serif;background:transparent}
 .obs-ta{width:100%;border:none;outline:none;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;background:transparent;resize:none;min-height:40px}
@@ -264,7 +270,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .guide-item{display:flex;gap:8px;font-size:13px;margin-bottom:5px}
 
 /* ── PETA ── */
-.peta-hdr{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:24px 24px}
+.peta-hdr{background:linear-gradient(135deg,#0f172a,#2563eb);padding:24px 24px}
 .peta-title{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
 .peta-title em{color:#93c5fd;font-style:normal}
 .peta-desc{font-size:13px;color:rgba(255,255,255,.65)}
@@ -279,7 +285,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .map-search input::placeholder{color:#9ca3af}
 .map-stats{position:absolute;top:12px;right:52px;z-index:900;background:rgba(255,255,255,.96);border-radius:10px;padding:9px 12px;box-shadow:0 4px 12px rgba(0,0,0,.1);display:flex;gap:14px}
 .ms-i{text-align:center}
-.ms-n{font-family:'Outfit',sans-serif;font-size:17px;font-weight:900;color:#1e3a5f;line-height:1}
+.ms-n{font-family:'Outfit',sans-serif;font-size:17px;font-weight:900;color:#2563eb;line-height:1}
 .ms-l{font-size:9.5px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .map-legend{position:absolute;bottom:18px;right:18px;background:rgba(255,255,255,.96);border-radius:12px;padding:12px 14px;box-shadow:0 4px 14px rgba(0,0,0,.12);z-index:900;font-size:11.5px}
 .legend-title{font-weight:800;margin-bottom:8px;color:var(--txt);font-size:11.5px}
@@ -291,7 +297,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .modal-bg.show{display:flex}
 .modal-box{background:#fff;border-radius:18px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:mIn .3s ease}
 @keyframes mIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:none}}
-.mhead{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:26px 30px;text-align:center;position:relative}
+.mhead{background:linear-gradient(135deg,#0f172a,#2563eb);padding:26px 30px;text-align:center;position:relative}
 .mhead-title{font-family:'Outfit',sans-serif;font-size:21px;font-weight:900;color:#fff}
 .mhead-sub{font-size:10.5px;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
 .mclose{position:absolute;top:11px;right:12px;background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
@@ -354,13 +360,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   #print-area { display:block!important; visibility:visible!important; }
   @page { margin:1.5cm; size:A4; }
   #print-area { font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; color:#111; }
-  #print-area .print-header { border-bottom:2px solid #1e3a5f; padding-bottom:10px; margin-bottom:18px; }
-  #print-area .print-title { font-size:18px; font-weight:900; color:#1e3a5f; margin-bottom:2px; }
+  #print-area .print-header { border-bottom:2px solid #2563eb; padding-bottom:10px; margin-bottom:18px; }
+  #print-area .print-title { font-size:18px; font-weight:900; color:#2563eb; margin-bottom:2px; }
   #print-area .print-sub { font-size:11px; color:#6b7280; }
   #print-area .print-identitas { background:#f0f4ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 16px; margin-bottom:18px; }
-  #print-area .print-identitas h3 { font-size:11px; font-weight:700; color:#1e3a5f; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+  #print-area .print-identitas h3 { font-size:11px; font-weight:700; color:#2563eb; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
   #print-area table { width:100%; border-collapse:collapse; margin-top:10px; }
-  #print-area th { background:#1e3a5f!important; color:#fff!important; padding:8px 10px; text-align:left; font-size:12px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  #print-area th { background:#2563eb!important; color:#fff!important; padding:8px 10px; text-align:left; font-size:12px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   #print-area td { border:1px solid #bfdbfe; padding:7px 10px; font-size:12px; vertical-align:top; }
   #print-area .lkpd-block { margin-bottom:14px; }
   #print-area .lkpd-block label { font-size:11px; font-weight:700; color:#374151; letter-spacing:.5px; display:block; margin-bottom:4px; }
@@ -387,7 +393,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <button class="ntab" id="ntab-peta" onclick="goPage('peta')"><i class="fa-solid fa-map"></i> Peta Hayati</button>
     <button class="ntab" id="ntab-game" onclick="goPage('game')"><i class="fa-solid fa-gamepad"></i> Game</button>
     <button class="ntab" id="ntab-spesies" onclick="goPage('spesies')"><i class="fa-solid fa-star"></i> Karya Siswa</button>
-    <button class="ntab" style="background:linear-gradient(135deg,#3b82f6,#1e40af);color:#fff;" onclick="showModal()"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
+    <button class="ntab" style="background:linear-gradient(135deg,#3b82f6,#1e40af);color:#fff;padding:7px 12px;border-radius:8px;" onclick="showModal()" title="Masuk"><i class="fa-solid fa-right-to-bracket"></i></button>
   </div>
   <button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
 </nav>
@@ -444,8 +450,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="stats-inner">
       <div class="si"><div class="si-num">3</div><div class="si-lbl">Tingkatan Keanekaragaman</div></div>
       <div class="si"><div class="si-num">3</div><div class="si-lbl">Zona Biogeografi</div></div>
-      <div class="si"><div class="si-num">60+</div><div class="si-lbl">Spesies Flora Indonesia</div></div>
-      <div class="si"><div class="si-num">100+</div><div class="si-lbl">Spesies Fauna Indonesia</div></div>
+      <div class="si"><div class="si-num">37.500+</div><div class="si-lbl">Spesies Flora Indonesia</div></div>
+      <div class="si"><div class="si-num">12.000+</div><div class="si-lbl">Spesies Fauna Indonesia</div></div>
       <div class="si"><div class="si-num">6</div><div class="si-lbl">Kegiatan Belajar</div></div>
     </div>
   </div>
@@ -458,7 +464,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <p class="sec-desc" style="margin-bottom:24px">Indonesia pernah—dan masih—menjadi salah satu negara dengan kekayaan hayati tertinggi di planet ini. Hutan tropis Nusantara tumbuh selama jutaan tahun tanpa gangguan, menjadikannya laboratorium evolusi alami yang luar biasa.</p>
 
       <!-- Infografis Angka Kejayaan -->
-      <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f,#1e40af);border-radius:16px;padding:28px 24px;margin-bottom:24px;position:relative;overflow:hidden">
+      <div style="background:linear-gradient(135deg,#0f172a,#2563eb,#1e40af);border-radius:16px;padding:28px 24px;margin-bottom:24px;position:relative;overflow:hidden">
         <div style="position:absolute;top:-30px;right:-30px;font-size:120px;opacity:.06">🌿</div>
         <div style="text-align:center;margin-bottom:20px">
           <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);color:#f59e0b;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:10px">🌏 Posisi Indonesia di Dunia</div>
@@ -587,13 +593,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
       <!-- Infografis Perbandingan: Hutan Indonesia Dulu vs Sekarang -->
       <div style="background:var(--card);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;margin-bottom:8px">
-        <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);padding:14px 20px">
+        <div style="background:linear-gradient(135deg,#2563eb,#2563eb);padding:14px 20px">
           <div style="font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:#fff">📉 Perubahan Tutupan Hutan Indonesia</div>
         </div>
         <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div style="text-align:center;padding:16px;background:#f0fdf4;border-radius:12px">
             <div style="font-size:36px;margin-bottom:6px">🌳</div>
-            <div style="font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#1e3a5f">143 Juta ha</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#2563eb">143 Juta ha</div>
             <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Tahun 1980-an</div>
             <div style="height:18px;background:linear-gradient(90deg,#3b82f6,#93c5fd);border-radius:6px;margin-top:10px;width:100%"></div>
           </div>
@@ -643,7 +649,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
 
       <!-- Target & Harapan -->
-      <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:16px;padding:24px;margin-bottom:8px">
+      <div style="background:linear-gradient(135deg,#0f172a,#2563eb);border-radius:16px;padding:24px;margin-bottom:8px">
         <div style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">🌱 Agenda &amp; Target Pemulihan</div>
         <div style="font-size:12.5px;color:rgba(255,255,255,.65);margin-bottom:18px">Komitmen Indonesia dan komunitas global untuk melindungi keanekaragaman hayati</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
@@ -736,10 +742,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
   <!-- SUB MENU TABS MATERI -->
   <div class="materi-tabs" id="materiTabs">
-    <button class="mtab active" data-tab="tp"          onclick="setMateriTab('tp')"><i class="fa-solid fa-bullseye"></i> Tujuan Pembelajaran</button>
-    <button class="mtab"        data-tab="tingkatan"   onclick="setMateriTab('tingkatan')"><i class="fa-solid fa-layer-group"></i> Tingkatan Keanekaragaman</button>
-    <button class="mtab"        data-tab="persebaran"  onclick="setMateriTab('persebaran')"><i class="fa-solid fa-map-location-dot"></i> Persebaran Flora &amp; Fauna</button>
-    <button class="mtab"        data-tab="ancaman"     onclick="setMateriTab('ancaman')"><i class="fa-solid fa-triangle-exclamation"></i> Ancaman &amp; Pelestarian</button>
+    <button class="mtab active" data-tab="tp"          onclick="setMateriTab('tp')"><i class="fa-solid fa-bullseye"></i><span class="mtab-label"> Tujuan Pembelajaran</span></button>
+    <button class="mtab"        data-tab="tingkatan"   onclick="setMateriTab('tingkatan')"><i class="fa-solid fa-layer-group"></i><span class="mtab-label"> Tingkatan Keanekaragaman</span></button>
+    <button class="mtab"        data-tab="persebaran"  onclick="setMateriTab('persebaran')"><i class="fa-solid fa-map-location-dot"></i><span class="mtab-label"> Persebaran Flora &amp; Fauna</span></button>
+    <button class="mtab"        data-tab="ancaman"     onclick="setMateriTab('ancaman')"><i class="fa-solid fa-triangle-exclamation"></i><span class="mtab-label"> Ancaman &amp; Pelestarian</span></button>
   </div>
 
   <!-- TAB: TUJUAN PEMBELAJARAN -->
@@ -796,7 +802,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <div class="grid-3" style="margin-bottom:24px">
           <div class="tingkat-card">
             <div class="tk-head">
-              <div class="tk-badge" style="background:#dbeafe;color:#1e3a5f">&#129514; Tingkat Gen</div>
+              <div class="tk-badge" style="background:#dbeafe;color:#2563eb">&#129514; Tingkat Gen</div>
               <div class="tk-title">Keanekaragaman Tingkat Gen</div>
               <div class="tk-desc">Variasi susunan gen dalam <strong>satu spesies</strong> yang sama. Terjadi karena perbedaan susunan atau ekspresi gen antar individu. Merupakan tingkatan paling mendasar.</div>
             </div>
@@ -846,7 +852,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         </div>
         <!-- TABEL -->
         <div class="tbl-wrap">
-          <div class="tbl-head" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">
+          <div class="tbl-head" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">
             <div class="tbl-head-txt">&#128202; Tabel Perbandingan Tingkatan Keanekaragaman Hayati</div>
           </div>
           <div style="overflow-x:auto">
@@ -974,7 +980,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           </div>
         </div>
         <div class="tbl-wrap">
-          <div class="tbl-head" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">
+          <div class="tbl-head" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">
             <div class="tbl-head-txt">&#128737; Tabel Perbandingan Pelestarian In Situ vs Ex Situ</div>
           </div>
           <div style="overflow-x:auto">
@@ -999,12 +1005,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
   <!-- SUB MENU TABS AKTIVITAS -->
   <div class="aktiv-tabs" id="aktivTabs">
-    <button class="atab active" data-tab="k1" onclick="setAktivTab('k1')"><i class="fa-solid fa-1"></i> Karakteristik Teman</button>
-    <button class="atab"        data-tab="k2" onclick="setAktivTab('k2')"><i class="fa-solid fa-2"></i> Jenis Pisang</button>
-    <button class="atab"        data-tab="k3" onclick="setAktivTab('k3')"><i class="fa-solid fa-3"></i> Beragam Ekosistem</button>
-    <button class="atab"        data-tab="k4" onclick="setAktivTab('k4')"><i class="fa-solid fa-4"></i> LKPD Peta Hayati</button>
-    <button class="atab"        data-tab="k5" onclick="setAktivTab('k5')"><i class="fa-solid fa-5"></i> Pola Persebaran</button>
-    <button class="atab"        data-tab="k6" onclick="setAktivTab('k6')"><i class="fa-solid fa-6"></i> Tugas Proyek</button>
+    <button class="atab active" data-tab="k1" onclick="setAktivTab('k1')"><i class="fa-solid fa-1"></i><span class="atab-label"> Karakteristik Teman</span></button>
+    <button class="atab"        data-tab="k2" onclick="setAktivTab('k2')"><i class="fa-solid fa-2"></i><span class="atab-label"> Jenis Pisang</span></button>
+    <button class="atab"        data-tab="k3" onclick="setAktivTab('k3')"><i class="fa-solid fa-3"></i><span class="atab-label"> Beragam Ekosistem</span></button>
+    <button class="atab"        data-tab="k4" onclick="setAktivTab('k4')"><i class="fa-solid fa-4"></i><span class="atab-label"> LKPD Peta Hayati</span></button>
+    <button class="atab"        data-tab="k5" onclick="setAktivTab('k5')"><i class="fa-solid fa-5"></i><span class="atab-label"> Pola Persebaran</span></button>
+    <button class="atab"        data-tab="k6" onclick="setAktivTab('k6')"><i class="fa-solid fa-6"></i><span class="atab-label"> Tugas Proyek</span></button>
   </div>
 
   <!-- KEGIATAN 1 -->
@@ -1012,7 +1018,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="sec">
       <div class="sec-inner">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">1</div>
+          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">1</div>
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Keanekaragaman Tingkat Gen</div>
             <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Mengamati Karakteristik Teman</div>
@@ -1068,7 +1074,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="sec">
       <div class="sec-inner">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">2</div>
+          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">2</div>
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Keanekaragaman Tingkat Spesies</div>
             <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Pengamatan Jenis-Jenis Pisang</div>
@@ -1123,7 +1129,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="sec">
       <div class="sec-inner">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">3</div>
+          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">3</div>
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Keanekaragaman Tingkat Ekosistem</div>
             <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Pengamatan Beragam Ekosistem</div>
@@ -1176,7 +1182,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="sec">
       <div class="sec-inner">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">4</div>
+          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">4</div>
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Peta Keanekaragaman Hayati</div>
             <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Keanekaragaman Hayati Indonesia &mdash; LKPD</div>
@@ -1231,7 +1237,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="sec">
       <div class="sec-inner">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">5</div>
+          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">5</div>
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Pola Persebaran</div>
             <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Pola Sebaran Keanekaragaman Hayati Indonesia</div>
@@ -1258,7 +1264,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <div class="sec">
       <div class="sec-inner">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">6</div>
+          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">6</div>
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Tugas Proyek</div>
             <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Tugas Proyek &mdash; Poster Keanekaragaman Hayati</div>
@@ -1288,7 +1294,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <button class="kg-btn kb-r" onclick="submitProyek()" style="width:100%;justify-content:center;margin-top:4px"><i class="fa-solid fa-paper-plane"></i> Kumpulkan Tugas</button>
         </div>
         <div id="dashWrap" style="margin-top:20px;background:#fff;border:1px solid var(--bdr);border-radius:var(--rad);overflow:hidden">
-          <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:#fff">&#128202; Dashboard Pengumpulan Tugas</div>
+          <div style="background:linear-gradient(135deg,#2563eb,#2563eb);padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:#fff">&#128202; Dashboard Pengumpulan Tugas</div>
           <div id="dashList" style="padding:16px;text-align:center;color:var(--mu);font-size:13px">Belum ada tugas yang dikumpulkan. Jadilah yang pertama! &#128640;</div>
         </div>
       </div>
@@ -1317,7 +1323,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <!-- Loading overlay (hanya tampil saat data loading, transparan agar peta terlihat) -->
     <div id="bio2-loading" style="position:absolute;inset:0;background:rgba(30,58,95,0.5);backdrop-filter:blur(2px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2rem;transition:opacity .8s ease;">
       <div style="background:rgba(255,255,255,.97);border-radius:16px;padding:14px 24px;min-width:220px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.18);">
-        <div style="font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;color:#1e3a5f;margin-bottom:8px;">Memuat Peta Biodiversitas</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;color:#2563eb;margin-bottom:8px;">Memuat Peta Biodiversitas</div>
         <div style="background:#dbeafe;border-radius:999px;height:5px;overflow:hidden;">
           <div id="bio2-bar" style="height:100%;background:linear-gradient(to right,#3b82f6,#1e40af);border-radius:999px;width:0%;transition:width .4s ease;"></div>
         </div>
@@ -1341,7 +1347,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 <!-- ════════════ GAME PAGE ════════════ -->
 <div class="pg" id="pg-game">
-  <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+  <div style="background:linear-gradient(135deg,#0f172a,#2563eb);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
     <div style="display:flex;align-items:center;gap:10px">
       <div style="width:38px;height:38px;background:linear-gradient(135deg,#3b82f6,#1e40af);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
         <i class="fa-solid fa-gamepad" style="color:#fff;font-size:16px"></i>
