@@ -273,7 +273,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .flt-btn:hover{border-color:var(--em);color:var(--em)}
 .flt-btn.active{background:var(--em);color:#fff;border-color:var(--em)}
 .peta-wrap{flex:1;position:relative;min-height:calc(100vh - 200px)}
-#biomap{position:absolute;inset:0;width:100%;height:100%}
+#bio2map{position:absolute;inset:0;width:100%;height:100%}
 .map-search{position:absolute;top:12px;left:12px;z-index:900}
 .map-search input{background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.4);border-radius:10px;padding:9px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;color:#0f172a;outline:none;width:210px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
 .map-search input::placeholder{color:#9ca3af}
@@ -312,8 +312,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 /* ── LEAFLET POPUP ── */
 .leaflet-popup-content-wrapper{padding:0!important;border-radius:14px!important;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.18)!important}
-.leaflet-popup-content{margin:0!important}
+.leaflet-popup-content{margin:0!important;width:auto!important;}
 .leaflet-popup-tip-container{display:none}
+
+/* ── BALLOON MARKER ANIMATION ── */
+@keyframes bio2Pop{
+  0%{transform:scale(0) translateY(10px);opacity:0}
+  60%{transform:scale(1.22) translateY(-3px);opacity:1}
+  80%{transform:scale(0.92) translateY(1px)}
+  100%{transform:scale(1) translateY(0);opacity:1}
+}
 
 /* ── FOOTER ── */
 .footer{background:#0f172a;padding:40px 24px 20px;color:rgba(255,255,255,.55)}
@@ -1290,28 +1298,43 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 <!-- ════════════ PETA HAYATI PAGE ════════════ -->
 <div class="pg peta-pg" id="pg-peta">
-  <div class="peta-ctrl">
-    <button class="flt-btn active" id="flt-all"    onclick="filterBioMap('all')"><i class="fa-solid fa-globe"></i> Semua</button>
-    <button class="flt-btn"       id="flt-flora"   onclick="filterBioMap('flora')"><i class="fa-solid fa-leaf"></i> Flora</button>
-    <button class="flt-btn"       id="flt-fauna"   onclick="filterBioMap('fauna')"><i class="fa-solid fa-paw"></i> Fauna</button>
-    <button class="flt-btn"       id="flt-asiatis" onclick="filterBioMap('asiatis')"><i class="fa-solid fa-earth-asia"></i> Asiatis</button>
-    <button class="flt-btn"       id="flt-wallacea"onclick="filterBioMap('wallacea')"><i class="fa-solid fa-arrows-left-right"></i> Wallacea</button>
-    <button class="flt-btn"       id="flt-australis"onclick="filterBioMap('australis')"><i class="fa-solid fa-earth-oceania"></i> Australis</button>
-  </div>
-  <div class="peta-wrap">
-    <div id="biomap"></div>
-    <div class="map-search"><input id="mapSearch" type="text" placeholder="Cari spesies..." oninput="searchBioMap(this.value)"></div>
-    <div class="map-stats">
-      <div class="ms-i"><div class="ms-n" id="ms-total">20</div><div class="ms-l">Total</div></div>
-      <div class="ms-i"><div class="ms-n" id="ms-flora" style="color:#2563eb">8</div><div class="ms-l">Flora</div></div>
-      <div class="ms-i"><div class="ms-n" id="ms-fauna" style="color:#f59e0b">12</div><div class="ms-l">Fauna</div></div>
+  <!-- Filter bar (menggunakan style peta-ctrl lama agar konsisten) -->
+  <div class="peta-ctrl" style="gap:6px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="flt-btn active" id="bio2-all"   onclick="bio2Filter('all')"><i class="fa-solid fa-globe"></i> Semua</button>
+      <button class="flt-btn"       id="bio2-flora"  onclick="bio2Filter('flora')"><i class="fa-solid fa-seedling"></i> Flora</button>
+      <button class="flt-btn"       id="bio2-fauna"  onclick="bio2Filter('fauna')"><i class="fa-solid fa-paw"></i> Fauna</button>
     </div>
-    <div class="map-legend">
+    <div style="font-size:12px;color:var(--mu);font-weight:600;display:flex;gap:10px;align-items:center;">
+      Total: <strong id="bio2-cnt-total" style="color:var(--txt)">-</strong>
+      &nbsp;|&nbsp; Flora: <strong id="bio2-cnt-flora" style="color:#2563eb">-</strong>
+      &nbsp;|&nbsp; Fauna: <strong id="bio2-cnt-fauna" style="color:#f59e0b">-</strong>
+    </div>
+  </div>
+
+  <!-- Map container -->
+  <div class="peta-wrap" style="position:relative;flex:1;min-height:calc(100vh - 130px);">
+    <!-- Loading overlay (hanya tampil saat data loading, transparan agar peta terlihat) -->
+    <div id="bio2-loading" style="position:absolute;inset:0;background:rgba(30,58,95,0.5);backdrop-filter:blur(2px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2rem;transition:opacity .8s ease;">
+      <div style="background:rgba(255,255,255,.97);border-radius:16px;padding:14px 24px;min-width:220px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.18);">
+        <div style="font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;color:#1e3a5f;margin-bottom:8px;">Memuat Peta Biodiversitas</div>
+        <div style="background:#dbeafe;border-radius:999px;height:5px;overflow:hidden;">
+          <div id="bio2-bar" style="height:100%;background:linear-gradient(to right,#3b82f6,#1e40af);border-radius:999px;width:0%;transition:width .4s ease;"></div>
+        </div>
+        <div id="bio2-loading-txt" style="font-size:11px;color:#6b7280;font-weight:600;margin-top:6px;">Menghubungkan ke database...</div>
+      </div>
+    </div>
+
+    <!-- Leaflet map -->
+    <div id="bio2map" style="position:absolute;inset:0;width:100%;height:100%;"></div>
+
+    <!-- Legenda -->
+    <div class="map-legend" style="z-index:900;">
       <div class="legend-title"><i class="fa-solid fa-map-pin"></i> Legenda</div>
-      <div class="li"><div class="ld" style="background:#2563eb"></div>Flora</div>
-      <div class="li"><div class="ld" style="background:#f59e0b"></div>Fauna</div>
-      <div class="li"><div class="ld" style="background:#ef4444;width:24px;height:2px;border-radius:0"></div>Garis Wallace</div>
-      <div class="li"><div class="ld" style="background:#3b82f6;width:24px;height:2px;border-radius:0"></div>Garis Weber</div>
+      <div class="li"><div style="width:16px;height:16px;border-radius:50%;background:#fff;border:1.5px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:8px;color:#16a34a;flex-shrink:0;"><i class="fa-solid fa-seedling"></i></div>Flora</div>
+      <div class="li"><div style="width:16px;height:16px;border-radius:50%;background:#fff;border:1.5px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ea580c;flex-shrink:0;"><i class="fa-solid fa-paw"></i></div>Fauna</div>
+      <div class="li"><div style="width:22px;height:2px;border-top:2px dashed #ef4444;flex-shrink:0;"></div>Garis Wallace</div>
+      <div class="li"><div style="width:22px;height:2px;border-top:2px dashed #3b82f6;flex-shrink:0;"></div>Garis Weber</div>
     </div>
   </div>
 </div><!-- end peta -->
@@ -1505,7 +1528,8 @@ function goPage(id) {
   if(target) target.classList.add('active');
   if(tab) tab.classList.add('active');
   window.scrollTo(0,0);
-  if(id === 'peta' && !window._bioMapInit) initBioMap();
+  if(id === 'peta' && !_bio2MapInit) initBio2Map();
+  if(id === 'peta' && bio2Map) setTimeout(() => bio2Map.invalidateSize(), 150);
   if(id === 'spesies') renderSpesiesGrid();
   // sub-nav
   document.querySelectorAll('.subnav').forEach(s=>s.classList.remove('show'));
@@ -1597,6 +1621,197 @@ function toggleGameFullscreen() {
   }
 }
 
+// ════════════ PETA BIODIVERSITAS (NEW) ════════════
+const BIO2_API = "https://script.google.com/macros/s/AKfycbx7axI1BI7B79H6XEIWbUPJSa8TmLsivdx6feh5avUzxBVplrykEdNvo71YFVOe5Wkp/exec";
+
+let bio2Map = null, bio2Cluster = null, bio2Data = [], bio2CurrentFilter = 'all';
+let _bio2MapInit = false;
+
+function bio2GetZone(lng) {
+  if (lng < 117) return { name:'Asiatis',  cls:'#1d4ed8', bg:'#dbeafe' };
+  if (lng < 129) return { name:'Wallacea', cls:'#b45309', bg:'#fef9c3' };
+  return               { name:'Australis',cls:'#7e22ce', bg:'#f3e8ff' };
+}
+
+function bio2DefaultImg(type) {
+  return type === 'flora'
+    ? 'https://images.unsplash.com/photo-1516048015719-fb6a4c7c71f1?q=80&w=800&auto=format&fit=crop'
+    : 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop';
+}
+
+function bio2SetProgress(pct, txt) {
+  const bar = document.getElementById('bio2-bar');
+  const label = document.getElementById('bio2-loading-txt');
+  if (bar) bar.style.width = pct + '%';
+  if (label) label.textContent = txt;
+}
+
+function bio2UpdateCounts(data) {
+  const flora = data.filter(d => d.type === 'flora').length;
+  const fauna = data.filter(d => d.type === 'fauna').length;
+  const el = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+  el('bio2-cnt-total', data.length);
+  el('bio2-cnt-flora', flora);
+  el('bio2-cnt-fauna', fauna);
+}
+
+function bio2CreateMarker(item, delayMs) {
+  const isFlora = item.type === 'flora';
+  const zone = bio2GetZone(item.lng);
+  const iconClass = isFlora ? 'fa-seedling' : 'fa-paw';
+  const colorClass = isFlora
+    ? 'background:#fff;color:#16a34a;border:1.5px solid #bbf7d0;'
+    : 'background:#fff;color:#ea580c;border:1.5px solid #fed7aa;';
+
+  const delay = typeof delayMs === 'number' ? `animation-delay:${delayMs}ms;` : '';
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="width:30px;height:30px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;${colorClass}animation:bio2Pop .45s cubic-bezier(.34,1.56,.64,1) both;${delay}opacity:0;">
+             <i class="fa-solid ${iconClass}"></i>
+           </div>`,
+    iconSize: [30, 30], iconAnchor: [15, 15]
+  });
+
+  const marker = L.marker([item.lat, item.lng], { icon });
+
+  // Popup — horizontal layout: image left, info right
+  const imgSrc = item.image_url || bio2DefaultImg(item.type);
+  const traitsBlock = item.traits
+    ? `<div style="background:${zone.bg};border:1px solid ${zone.cls}33;border-radius:8px;padding:8px 10px;margin-top:8px;">
+         <div style="font-size:9px;font-weight:800;color:${zone.cls};text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Ciri Khas</div>
+         <div style="font-size:11px;color:#374151;line-height:1.5;">${item.traits}</div>
+       </div>` : '';
+
+  marker.bindPopup(`
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;width:420px;">
+      <div style="background:linear-gradient(to right,${isFlora?'#22c55e,#059669':'#f97316,#ef4444'});padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <div style="min-width:0;">
+          <div style="font-weight:800;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+          <div style="font-size:10px;font-style:italic;color:rgba(255,255,255,.8);margin-top:1px;">${item.sc}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;flex-shrink:0;">
+          <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;text-transform:uppercase;border:1px solid rgba(255,255,255,.35);">${item.type}</span>
+          <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:${zone.bg};color:${zone.cls};border:1px solid ${zone.cls}55;">${zone.name}</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:130px 1fr;">
+        <div style="position:relative;overflow:hidden;">
+          <img src="${imgSrc}" alt="${item.name}" style="width:130px;height:100%;min-height:140px;object-fit:cover;display:block;"
+               onerror="this.onerror=null;this.src='${bio2DefaultImg(item.type)}';">
+          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent);color:rgba(255,255,255,.9);font-size:9px;padding:14px 6px 4px;text-align:center;font-weight:600;">${item.region}</div>
+        </div>
+        <div style="padding:10px 12px;background:#fff;">
+          <p style="font-size:11.5px;color:#374151;line-height:1.55;margin:0;">${item.desc}</p>
+          ${traitsBlock}
+        </div>
+      </div>
+    </div>`, { maxWidth: 440, minWidth: 420 });
+
+  return marker;
+}
+
+window.bio2Filter = function(type) {
+  bio2CurrentFilter = type;
+  ['all','flora','fauna'].forEach(t => {
+    const btn = document.getElementById('bio2-' + t);
+    if (btn) btn.classList.toggle('active', t === type);
+  });
+  if (!bio2Cluster) return;
+  bio2Cluster.clearLayers();
+  const filtered = type === 'all' ? bio2Data : bio2Data.filter(d => d.type === type);
+  filtered.forEach((item, i) => setTimeout(() => bio2Cluster.addLayer(bio2CreateMarker(item, i * 16)), i * 16));
+  bio2Map.addLayer(bio2Cluster);
+};
+
+async function initBio2Map() {
+  if (_bio2MapInit) return;
+  _bio2MapInit = true;
+
+  // Init map
+  bio2Map = L.map('bio2map', { center: [-2.5, 118], zoom: 5, zoomControl: false, minZoom: 4, maxBounds: [[12,88],[-16,147]] });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(bio2Map);
+  L.control.zoom({ position: 'topright' }).addTo(bio2Map);
+
+  // Garis Wallace & Weber
+  const w1 = L.polyline([[4.5,118.5],[0.5,118.5],[-1.5,117.5],[-8.5,115.5],[-11,116]], { color:'#ef4444', dashArray:'10,8', weight:2.5, opacity:.8 }).addTo(bio2Map);
+  w1.bindTooltip('Garis Wallace', { permanent:true, direction:'right', className:'leaflet-tooltip' });
+  const w2 = L.polyline([[2.5,129.5],[-3.5,126.5],[-5.5,128.5],[-8.5,131.5]], { color:'#3b82f6', dashArray:'10,8', weight:2.5, opacity:.8 }).addTo(bio2Map);
+  w2.bindTooltip('Garis Weber', { permanent:true, direction:'right', className:'leaflet-tooltip' });
+
+  bio2SetProgress(20, 'Menghubungkan ke database...');
+
+  // Fetch data
+  try {
+    const testRes = await fetch(`${BIO2_API}?action=test&t=${Date.now()}`, { method:'GET', mode:'cors', cache:'no-cache' });
+    if (!testRes.ok) throw new Error('koneksi gagal');
+
+    bio2SetProgress(50, 'Mengambil data spesies...');
+    const dataRes = await fetch(`${BIO2_API}?action=getSpecies&t=${Date.now()}`, { method:'GET', mode:'cors', cache:'no-cache' });
+    if (!dataRes.ok) throw new Error('gagal mengambil data');
+
+    const result = await dataRes.json();
+    let arr = result.data || result;
+    if (!Array.isArray(arr) || arr.length === 0) throw new Error('data kosong');
+
+    bio2SetProgress(80, 'Memproses data...');
+    bio2Data = arr.map((item, i) => ({
+      id: `s${i}`,
+      name:      item.nama       || item.Nama       || item.name       || `Spesies ${i+1}`,
+      sc:        item.nama_ilmiah|| item.Nama_Ilmiah || item.scientific_name || item.sc || '—',
+      type:      (item.jenis     || item.Jenis      || item.type       || 'fauna').toString().toLowerCase(),
+      region:    item.region     || item.Region     || item.pulau      || item.Pulau    || 'Indonesia',
+      desc:      item.deskripsi  || item.Deskripsi  || item.description|| item.desc     || 'Deskripsi tidak tersedia.',
+      lat:       parseFloat(item.latitude  || item.Latitude  || item.lat || -2.5) || -2.5,
+      lng:       parseFloat(item.longitude || item.Longitude || item.lng || 118)  || 118,
+      traits:    item.ciri_khas  || item.Ciri_Khas  || item.traits     || '',
+      image_url: item.gambar     || item.Gambar     || item.image_url  || item.Image_URL || bio2DefaultImg(item.jenis || 'fauna'),
+    }));
+
+  } catch(err) {
+    console.warn('Bio2 online fetch failed, using fallback:', err);
+    bio2Data = [
+      { id:'f0', name:'Orangutan Sumatera', sc:'Pongo abelii', type:'fauna', region:'Sumatera', lat:3.5, lng:97.5, desc:'Primata cerdas penghuni hutan Leuser.', traits:'<ul><li>Bulu berwarna oranye kemerahan terang</li><li>Lengan panjang untuk bergelantungan</li></ul>', image_url:'https://images.unsplash.com/photo-1559253664-ca249d4608c6?q=80&w=800&auto=format&fit=crop' },
+      { id:'f1', name:'Komodo', sc:'Varanus komodoensis', type:'fauna', region:'Nusa Tenggara', lat:-8.6, lng:119.5, desc:'Kadal purba terbesar di dunia.', traits:'<ul><li>Tubuh besar hingga 3 meter</li><li>Lidah panjang bercabang</li></ul>', image_url:'https://images.unsplash.com/photo-1578774632741-8559c7a52e53?q=80&w=800&auto=format&fit=crop' },
+      { id:'f2', name:'Cendrawasih Botak', sc:'Cicinnurus respublica', type:'fauna', region:'Papua', lat:-0.5, lng:130.8, desc:'Burung surga cantik dari Raja Ampat.', traits:'<ul><li>Kepala botak dengan kulit biru cerah</li><li>Dua bulu ekor melengkung spiral</li></ul>', image_url:'https://images.unsplash.com/photo-1551085254-e96b210db58a?q=80&w=800&auto=format&fit=crop' },
+      { id:'f3', name:'Badak Jawa', sc:'Rhinoceros sondaicus', type:'fauna', region:'Jawa', lat:-6.75, lng:105.35, desc:'Mamalia paling langka di dunia, hanya ada di Ujung Kulon.', traits:'<ul><li>Satu cula kecil</li><li>Kulit berlipat seperti baju zirah</li></ul>', image_url:'https://images.unsplash.com/photo-1589656966895-2f33e7653819?q=80&w=800&auto=format&fit=crop' },
+      { id:'f4', name:'Bekantan', sc:'Nasalis larvatus', type:'fauna', region:'Kalimantan', lat:-3.3, lng:114.6, desc:'Monyet hidung panjang penghuni hutan bakau.', traits:'<ul><li>Hidung jantan sangat besar</li><li>Bulu oranye kemerahan</li></ul>', image_url:'https://images.unsplash.com/photo-1559253664-ca249d4608c6?q=80&w=800&auto=format&fit=crop' },
+      { id:'f5', name:'Harimau Sumatera', sc:'Panthera tigris sumatrae', type:'fauna', region:'Sumatera', lat:2.0, lng:99.0, desc:'Subspesies harimau terkecil yang tersisa.', traits:'<ul><li>Loreng lebih rapat</li><li>Perenang handal</li></ul>', image_url:'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?q=80&w=800&auto=format&fit=crop' },
+      { id:'f6', name:'Bunga Bangkai', sc:'Amorphophallus titanum', type:'flora', region:'Sumatera', lat:-0.1, lng:100.6, desc:'Bunga majemuk tertinggi di dunia, baunya memikat serangga.', traits:'<ul><li>Kelopak merah hati</li><li>Bau menyengat seperti daging busuk</li></ul>', image_url:'https://images.unsplash.com/photo-1597076881087-8b96c6dcf8e9?q=80&w=800&auto=format&fit=crop' },
+      { id:'f7', name:'Rafflesia Arnoldii', sc:'Rafflesia arnoldii', type:'flora', region:'Sumatera', lat:-3.8, lng:102.3, desc:'Bunga tunggal terbesar di dunia.', traits:'<ul><li>Diameter hingga 1 meter</li><li>Tidak punya daun atau akar</li></ul>', image_url:'https://images.unsplash.com/photo-1516048015719-fb6a4c7c71f1?q=80&w=800&auto=format&fit=crop' },
+      { id:'f8', name:'Anggrek Hitam', sc:'Coelogyne pandurata', type:'flora', region:'Kalimantan', lat:0.5, lng:113.0, desc:'Anggrek langka dengan bibir bunga berwarna hitam.', traits:'<ul><li>Bibir bunga hitam berbulu</li><li>Aroma harum khas</li></ul>', image_url:'https://images.unsplash.com/photo-1516048015719-fb6a4c7c71f1?q=80&w=800&auto=format&fit=crop' },
+      { id:'f9', name:'Gajah Kalimantan', sc:'Elephas maximus borneensis', type:'fauna', region:'Kalimantan', lat:5.0, lng:117.5, desc:'Subspesies gajah Asia terkecil yang hidup di Borneo.', traits:'<ul><li>Telinga lebih besar</li><li>Ekor lebih panjang</li></ul>', image_url:'https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop' },
+    ];
+  }
+
+  bio2SetProgress(100, `${bio2Data.length} spesies siap!`);
+  bio2UpdateCounts(bio2Data);
+
+  // Init cluster
+  bio2Cluster = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    maxClusterRadius: 45,
+    iconCreateFunction: cl => L.divIcon({
+      html: `<div style="width:36px;height:36px;background:#1e40af;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);">${cl.getChildCount()}</div>`,
+      className: '', iconSize: [36, 36]
+    })
+  });
+
+  // Animate balloons in
+  setTimeout(() => {
+    bio2Data.forEach((item, i) => setTimeout(() => bio2Cluster.addLayer(bio2CreateMarker(item, i * 16)), i * 16));
+    bio2Map.addLayer(bio2Cluster);
+  }, 200);
+
+  // Fade out loading overlay
+  setTimeout(() => {
+    const ov = document.getElementById('bio2-loading');
+    if (ov) { ov.style.opacity = '0'; setTimeout(() => ov.style.display = 'none', 800); }
+  }, 600);
+
+  setTimeout(() => bio2Map.invalidateSize(), 250);
+}
+
+// ── SPESIES GRID ──
 const BIO_SPECIES = [
   { name:"Harimau Sumatera", sc:"Panthera tigris sumatrae", type:"fauna", region:"Sumatera", lat:-0.5, lng:101.5, desc:"Predator puncak yang kritis terancam punah. Hanya tersisa di Pulau Sumatera.", image:"https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=400&auto=format&fit=crop" },
   { name:"Rafflesia Arnoldii", sc:"Rafflesia arnoldii", type:"flora", region:"Sumatera", lat:-3.8, lng:102.3, desc:"Bunga tunggal terbesar di dunia, ikon Bengkulu.", image:"https://images.unsplash.com/photo-1516048015719-fb6a4c7c71f1?q=80&w=400&auto=format&fit=crop" },
@@ -1620,99 +1835,8 @@ const BIO_SPECIES = [
   { name:"Rotan", sc:"Calamus rotang", type:"flora", region:"Kalimantan", lat:1.2, lng:113.5, desc:"Tanaman unggulan hutan tropis, bahan baku kerajinan andalan.", image:"https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=400&auto=format&fit=crop" },
 ];
 
-let bioMap=null, bioMarkers=[], bioCluster=null;
-let _bioFilter='all';
-
 function getZone(lng){ if(lng<117) return 'asiatis'; if(lng<129) return 'wallacea'; return 'australis'; }
 
-function initBioMap(){
-  if(window._bioMapInit) return;
-  window._bioMapInit=true;
-  bioMap = L.map('biomap',{ center:[-2.5,118], zoom:5, zoomControl:false, minZoom:4 });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap'}).addTo(bioMap);
-  L.control.zoom({position:'topright'}).addTo(bioMap);
-  // Wallace & Weber lines
-  L.polyline([[4.5,118.5],[0.5,118.5],[-1.5,117.5],[-8.5,115.5],[-11,116]],{color:'#ef4444',dashArray:'10,10',weight:2.5}).addTo(bioMap)
-   .bindTooltip('Garis Wallace',{permanent:true,direction:'right',className:'leaflet-tooltip'});
-  L.polyline([[2.5,129.5],[-3.5,126.5],[-5.5,128.5],[-8.5,131.5]],{color:'#3b82f6',dashArray:'10,10',weight:2.5}).addTo(bioMap)
-   .bindTooltip('Garis Weber',{permanent:true,direction:'right',className:'leaflet-tooltip'});
-  bioCluster = L.markerClusterGroup();
-  BIO_SPECIES.forEach(s => { const m = createBioMarker(s); bioMarkers.push({marker:m, data:s}); bioCluster.addLayer(m); });
-  bioMap.addLayer(bioCluster);
-  updateMapStats();
-  setTimeout(()=>bioMap.invalidateSize(),200);
-}
-
-function createBioMarker(s){
-  const isFlora = s.type==='flora';
-  const color = isFlora ? '#2563eb' : '#f59e0b';
-  const icon = isFlora ? '&#127807;' : '&#128062;';
-  const zone = getZone(s.lng);
-  const zoneColor = zone==='asiatis'?'#1e3a5f':zone==='wallacea'?'#7c3aed':'#0369a1';
-  const divIcon = L.divIcon({
-    html:`<div style="background:${color};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)">${icon}</div>`,
-    className:'', iconSize:[28,28], iconAnchor:[14,14]
-  });
-  const marker = L.marker([s.lat,s.lng],{icon:divIcon});
-  marker.bindPopup(`
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;min-width:220px">
-      <div style="background:linear-gradient(135deg,${zoneColor},${color});padding:12px;color:#fff">
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.75;margin-bottom:4px">${s.type.toUpperCase()} &bull; ${s.region}</div>
-        <div style="font-weight:800;font-size:15px">${s.name}</div>
-        <div style="font-style:italic;font-size:11px;opacity:.75">${s.sc}</div>
-      </div>
-      <div style="padding:12px">
-        <img src="${s.image}" alt="${s.name}" style="width:100%;height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px" onerror="this.style.display='none'">
-        <p style="font-size:12.5px;color:#374151;line-height:1.6">${s.desc}</p>
-        <div style="margin-top:8px;font-size:10.5px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.8px">Zona Biogeografi</div>
-        <div style="margin-top:3px;display:inline-flex;align-items:center;gap:5px;background:${zoneColor}18;color:${zoneColor};border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:700;text-transform:capitalize">${zone}</div>
-      </div>
-    </div>
-  `,{maxWidth:280});
-  return marker;
-}
-
-function filterBioMap(type){
-  _bioFilter=type;
-  document.querySelectorAll('.flt-btn').forEach(b=>b.classList.remove('active'));
-  const id = type==='flora'?'flt-flora':type==='fauna'?'flt-fauna':type==='asiatis'?'flt-asiatis':type==='wallacea'?'flt-wallacea':type==='australis'?'flt-australis':'flt-all';
-  const btn = document.getElementById(id);
-  if(btn) btn.classList.add('active');
-  bioCluster.clearLayers();
-  let shown=0;
-  bioMarkers.forEach(({marker,data})=>{
-    const zone = getZone(data.lng);
-    let match = false;
-    if(type==='all') match=true;
-    else if(type==='flora'||type==='fauna') match=data.type===type;
-    else match=zone===type;
-    if(match){ bioCluster.addLayer(marker); shown++; }
-  });
-  bioMap.addLayer(bioCluster);
-  updateMapStats(type);
-}
-
-function searchBioMap(q){
-  if(!q){ filterBioMap(_bioFilter); return; }
-  q=q.toLowerCase();
-  bioCluster.clearLayers();
-  bioMarkers.forEach(({marker,data})=>{
-    if(data.name.toLowerCase().includes(q)||data.sc.toLowerCase().includes(q)||data.region.toLowerCase().includes(q)){
-      bioCluster.addLayer(marker);
-    }
-  });
-  bioMap.addLayer(bioCluster);
-}
-
-function updateMapStats(type='all'){
-  const flora = BIO_SPECIES.filter(s=>s.type==='flora').length;
-  const fauna = BIO_SPECIES.filter(s=>s.type==='fauna').length;
-  document.getElementById('ms-total').textContent = BIO_SPECIES.length;
-  document.getElementById('ms-flora').textContent = flora;
-  document.getElementById('ms-fauna').textContent = fauna;
-}
-
-// ── SPESIES GRID ──
 function renderSpesiesGrid(){
   const grid = document.getElementById('spesies-grid');
   if(!grid || grid.children.length>0) return;
