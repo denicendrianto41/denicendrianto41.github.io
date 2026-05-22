@@ -379,6 +379,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   #print-area .lkpd-block label { font-size:11px; font-weight:700; color:#374151; letter-spacing:.5px; display:block; margin-bottom:4px; }
   #print-area .lkpd-block .answer-box { border:1px solid #bfdbfe; border-radius:6px; min-height:48px; padding:8px 10px; font-size:12px; white-space:pre-wrap; }
 }
+
+/* Hide outer page scrollbar when activity iframe sections are shown */
+.asub > iframe { display:block; }
+body:has(#pg-aktivitas.active) { overflow:hidden; }
+#pg-aktivitas { overflow:hidden; }
+#pg-aktivitas .asub.active { overflow:hidden; }
 /* ── FA ICONS ── */
 .ico{font-style:normal;font-size:1em;display:inline-block;width:1.2em;text-align:center}
 </style>
@@ -1025,248 +1031,27 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
   <!-- KEGIATAN 1 -->
   <div class="asub active" id="asub-k1">
-    <div class="sec">
-      <div class="sec-inner">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">1</div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Keanekaragaman Tingkat Gen</div>
-            <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Mengamati Karakteristik Teman</div>
-          </div>
-        </div>
-        <div class="kg-intro">
-          Amati karakteristik fisik teman anggota kelompok kalian. Pengamatan yang dilakukan berdasarkan ciri-ciri fisik berikut. Tuliskan hasil pengamatan pada buku catatan dan kotak isian di halaman hasil pengamatan.
-        </div>
-        <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:10px"><i class="fa-solid fa-magnifying-glass"></i> Pengamatan berdasarkan:</div>
-        <ol class="kg-step-list">
-          <li>Bentuk rambut (lurus, kriting atau ikal)</li>
-          <li>Warna bola mata</li>
-          <li>Bentuk telinga (Menggantung atau menempel)</li>
-          <li>Lidah dapat menggulung atau tidak</li>
-          <li>Warna kulit (Gelap atau terang)</li>
-        </ol>
-        <div style="background:var(--gpale);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;margin-bottom:16px" id="k1-identitas">
-          <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px"><i class="fa-solid fa-users"></i> Identitas Kelompok</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Nama Kelompok</label>
-              <input id="k1-kelompok" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: Kelompok 1 / Mawar...">
-            </div>
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Kelas</label>
-              <input id="k1-kelas" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: X IPA 1">
-            </div>
-          </div>
-          <div>
-            <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Anggota Kelompok</label>
-            <textarea id="k1-anggota" style="width:100%;border:1px solid var(--bdr);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;resize:vertical;min-height:56px;outline:none;background:#fff" placeholder="1. Nama Anggota&#10;2. Nama Anggota&#10;3. Nama Anggota&#10;..."></textarea>
-          </div>
-        </div>
-        <div style="overflow-x:auto;margin-top:16px">
-          <table class="obs-table">
-            <thead><tr><th>No</th><th>Nama Teman</th><th>Bentuk Rambut</th><th>Warna Mata</th><th>Bentuk Telinga</th><th>Lidah Menggulung</th><th>Warna Kulit</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td><input class="obs-inp" placeholder="Nama..."></td><td><input class="obs-inp" placeholder="lurus/keriting/ikal"></td><td><input class="obs-inp" placeholder="cokelat/hitam..."></td><td><input class="obs-inp" placeholder="menggantung/menempel"></td><td><input class="obs-inp" placeholder="ya/tidak"></td><td><input class="obs-inp" placeholder="gelap/terang"></td></tr>
-              <tr><td>2</td><td><input class="obs-inp" placeholder="Nama..."></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>3</td><td><input class="obs-inp" placeholder="Nama..."></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>4</td><td><input class="obs-inp" placeholder="Nama..."></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>5</td><td><input class="obs-inp" placeholder="Nama..."></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <button class="kg-btn kb-a" onclick="printAktivitas(1)"><i class="fa-solid fa-print"></i> Cetak PDF</button>
-      </div>
-    </div>
+    <iframe src="https://denicendrianto41.github.io/Keanekaragaman_Karakteristik_Teman.html" style="width:100%;height:100vh;border:none;display:block;" scrolling="no" allowfullscreen loading="lazy" title="Aktivitas Teman"></iframe>
   </div>
 
   <!-- KEGIATAN 2 -->
   <div class="asub" id="asub-k2">
-    <div class="sec">
-      <div class="sec-inner">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">2</div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Keanekaragaman Tingkat Spesies</div>
-            <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Pengamatan Jenis-Jenis Pisang</div>
-          </div>
-        </div>
-        <div class="kg-intro">
-          Amati ciri-ciri morfologi lima jenis pisang (Pisang ambon, pisang raja bulu, pisang raja cere, pisang nangka, pisang tanduk) berdasarkan: Warna, Ukuran, Bentuk, Rasa. Tuliskan hasil pengamatan pada buku catatan dan kotak isian di halaman hasil pengamatan.
-        </div>
-        <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:10px"><i class="fa-solid fa-magnifying-glass"></i> Pengamatan berdasarkan:</div>
-        <ol class="kg-step-list">
-          <li>Warna kulit buah</li>
-          <li>Ukuran buah (panjang dan diameter)</li>
-          <li>Bentuk buah (lurus, melengkung, bersegi)</li>
-          <li>Rasa buah (manis, asam, sepat)</li>
-        </ol>
-        <div style="background:var(--gpale);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;margin-bottom:16px" id="k2-identitas">
-          <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px"><i class="fa-solid fa-users"></i> Identitas Kelompok</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Nama Kelompok</label>
-              <input id="k2-kelompok" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: Kelompok 1 / Mawar...">
-            </div>
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Kelas</label>
-              <input id="k2-kelas" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: X IPA 1">
-            </div>
-          </div>
-          <div>
-            <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Anggota Kelompok</label>
-            <textarea id="k2-anggota" style="width:100%;border:1px solid var(--bdr);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;resize:vertical;min-height:56px;outline:none;background:#fff" placeholder="1. Nama Anggota&#10;2. Nama Anggota&#10;3. Nama Anggota&#10;..."></textarea>
-          </div>
-        </div>
-        <div style="overflow-x:auto;margin-top:16px">
-          <table class="obs-table">
-            <thead><tr><th>No</th><th>Jenis Pisang</th><th>Warna</th><th>Ukuran</th><th>Bentuk</th><th>Rasa</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td style="font-weight:700;white-space:nowrap">Pisang Ambon</td><td><input class="obs-inp" placeholder="..."></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>2</td><td style="font-weight:700;white-space:nowrap">Pisang Raja Bulu</td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>3</td><td style="font-weight:700;white-space:nowrap">Pisang Raja Cere</td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>4</td><td style="font-weight:700;white-space:nowrap">Pisang Nangka</td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-              <tr><td>5</td><td style="font-weight:700;white-space:nowrap">Pisang Tanduk</td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td><td><input class="obs-inp"></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <button class="kg-btn kb-g" onclick="printAktivitas(2)"><i class="fa-solid fa-print"></i> Cetak PDF</button>
-      </div>
-    </div>
+    <iframe src="https://denicendrianto41.github.io/Keanekaragaman_Pisang.html" style="width:100%;height:100vh;border:none;display:block;" scrolling="no" allowfullscreen loading="lazy" title="Jenis Pisang"></iframe>
   </div>
 
   <!-- KEGIATAN 3 -->
   <div class="asub" id="asub-k3">
-    <div class="sec">
-      <div class="sec-inner">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">3</div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Keanekaragaman Tingkat Ekosistem</div>
-            <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Pengamatan Beragam Ekosistem</div>
-          </div>
-        </div>
-        <div class="kg-intro">
-          Perhatikan video berikut, amati ciri-ciri ekosistem pada tayangan video (Gletser kutub, gurun, danau, padang rumput, hutan hujan tropis, pantai/laut). Tuliskan hasil pengamatan pada buku catatan dan kotak isian di halaman hasil pengamatan.
-        </div>
-        <div style="margin-bottom:12px"><a href="https://www.youtubeeducation.com/watch?v=hIy0ZlyPPDg" target="_blank" style="color:var(--em);font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px;text-decoration:none">&#127909; Tonton Video Ekosistem &rarr;</a></div>
-        <div class="video-box">
-          <iframe src="https://www.youtube.com/embed/hIy0ZlyPPDg" allowfullscreen loading="lazy" title="Beragam Ekosistem"></iframe>
-        </div>
-        <div style="background:var(--gpale);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;margin-top:18px;margin-bottom:4px" id="k3-identitas">
-          <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px"><i class="fa-solid fa-users"></i> Identitas Kelompok</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Nama Kelompok</label>
-              <input id="k3-kelompok" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: Kelompok 1 / Mawar...">
-            </div>
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Kelas</label>
-              <input id="k3-kelas" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: X IPA 1">
-            </div>
-          </div>
-          <div>
-            <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Anggota Kelompok</label>
-            <textarea id="k3-anggota" style="width:100%;border:1px solid var(--bdr);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;resize:vertical;min-height:56px;outline:none;background:#fff" placeholder="1. Nama Anggota&#10;2. Nama Anggota&#10;3. Nama Anggota&#10;..."></textarea>
-          </div>
-        </div>
-        <div style="overflow-x:auto;margin-top:18px">
-          <table class="obs-table">
-            <thead><tr><th>No</th><th>Jenis Ekosistem</th><th>Ciri Khas</th><th>Organisme Khas</th><th>Kondisi Lingkungan</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td style="font-weight:700;white-space:nowrap">Gletser Kutub</td><td><textarea class="obs-ta" placeholder="..."></textarea></td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td></tr>
-              <tr><td>2</td><td style="font-weight:700">Gurun</td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td></tr>
-              <tr><td>3</td><td style="font-weight:700">Danau</td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td></tr>
-              <tr><td>4</td><td style="font-weight:700;white-space:nowrap">Padang Rumput</td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td></tr>
-              <tr><td>5</td><td style="font-weight:700;white-space:nowrap">Hutan Hujan Tropis</td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td></tr>
-              <tr><td>6</td><td style="font-weight:700;white-space:nowrap">Pantai / Laut</td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td><td><textarea class="obs-ta"></textarea></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <button class="kg-btn kb-b" onclick="printAktivitas(3)"><i class="fa-solid fa-print"></i> Cetak PDF</button>
-      </div>
-    </div>
+    <iframe src="https://denicendrianto41.github.io/Keanekaragaman_Ekosistem.html" style="width:100%;height:100vh;border:none;display:block;" scrolling="no" allowfullscreen loading="lazy" title="Beragam Ekosistem"></iframe>
   </div>
 
   <!-- KEGIATAN 4 -->
   <div class="asub" id="asub-k4">
-    <div class="sec">
-      <div class="sec-inner">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">4</div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Peta Keanekaragaman Hayati</div>
-            <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Keanekaragaman Hayati Indonesia &mdash; LKPD</div>
-          </div>
-        </div>
-        <div class="kg-intro">
-          Mengamati Peta Keanekaragaman Hayati kemudian menjawab pertanyaan LKPD di bawah ini berdasarkan hasil pengamatanmu!
-        </div>
-        <button class="kg-btn kb-g" onclick="goPage('peta')"><i class="fa-solid fa-map"></i> Buka Peta Hayati Interaktif</button>
-        <div style="background:var(--gpale);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;margin-top:18px;margin-bottom:4px" id="k4-identitas">
-          <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px"><i class="fa-solid fa-users"></i> Identitas Kelompok</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Nama Kelompok</label>
-              <input id="k4-kelompok" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: Kelompok 1 / Mawar...">
-            </div>
-            <div>
-              <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Kelas</label>
-              <input id="k4-kelas" class="pf-inp" style="margin-bottom:0" type="text" placeholder="Contoh: X IPA 1">
-            </div>
-          </div>
-          <div>
-            <label style="display:block;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Anggota Kelompok</label>
-            <textarea id="k4-anggota" style="width:100%;border:1px solid var(--bdr);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;resize:vertical;min-height:56px;outline:none;background:#fff" placeholder="1. Nama Anggota&#10;2. Nama Anggota&#10;3. Nama Anggota&#10;..."></textarea>
-          </div>
-        </div>
-        <div style="margin-top:20px;display:flex;flex-direction:column;gap:14px">
-          <div class="lkpd-q">
-            <label class="lkpd-lbl">1. Sebutkan 3 fauna endemik zona Asiatis yang kamu temukan di peta!</label>
-            <textarea class="lkpd-ta" placeholder="Jawaban..."></textarea>
-          </div>
-          <div class="lkpd-q">
-            <label class="lkpd-lbl">2. Apa perbedaan utama fauna zona Peralihan dengan zona Asiatis dan Australis?</label>
-            <textarea class="lkpd-ta" placeholder="Jawaban..."></textarea>
-          </div>
-          <div class="lkpd-q">
-            <label class="lkpd-lbl">3. Mengapa Garis Wallace dan Weber penting dalam studi biogeografi Indonesia?</label>
-            <textarea class="lkpd-ta" placeholder="Jawaban..."></textarea>
-          </div>
-          <div class="lkpd-q">
-            <label class="lkpd-lbl">4. Sebutkan 2 contoh flora endemik Indonesia beserta wilayah persebarannya!</label>
-            <textarea class="lkpd-ta" placeholder="Jawaban..."></textarea>
-          </div>
-        </div>
-        <button class="kg-btn kb-a" onclick="printAktivitas(4)" style="margin-top:4px"><i class="fa-solid fa-print"></i> Cetak PDF</button>
-      </div>
-    </div>
+    <iframe src="https://denicendrianto41.github.io/Peta_Keanekaragaman_Hayati.html" style="width:100%;height:100vh;border:none;display:block;" scrolling="no" allowfullscreen loading="lazy" title="LKPD Peta Hayati"></iframe>
   </div>
 
   <!-- KEGIATAN 5 -->
   <div class="asub" id="asub-k5">
-    <div class="sec">
-      <div class="sec-inner">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
-          <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#2563eb);color:#fff;font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(59,130,246,.3)">5</div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--em);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Pola Persebaran</div>
-            <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:900">Pola Sebaran Keanekaragaman Hayati Indonesia</div>
-          </div>
-        </div>
-        <div class="kg-intro">
-          Mengamati Pola persebaran Keanekaragaman Hayati melalui peta interaktif. Perhatikan distribusi spesies berdasarkan zona biogeografi dan catat pola sebarannya!
-        </div>
-        <button class="kg-btn kb-p" onclick="goPage('peta')"><i class="fa-solid fa-map"></i> Buka Peta Interaktif</button>
-        <div class="guide-box">
-          <div class="guide-lbl">&#128161; Panduan Eksplorasi Peta</div>
-          <div class="guide-item"><span>&#9989;</span> Gunakan filter Semua/Flora/Fauna/Zona untuk melihat distribusi berbeda</div>
-          <div class="guide-item"><span>&#9989;</span> Klik marker untuk melihat informasi detail spesies</div>
-          <div class="guide-item"><span>&#9989;</span> Perhatikan pola sebaran di zona Asiatis, Peralihan, dan Australis</div>
-          <div class="guide-item"><span>&#9989;</span> Catat 5 spesies endemik beserta lokasinya untuk laporan tertulis</div>
-          <div class="guide-item"><span>&#9989;</span> Bandingkan jumlah spesies di tiap zona biogeografi</div>
-        </div>
-      </div>
-    </div>
+    <iframe src="https://denicendrianto41.github.io/Peta_Sebaran_Kehati.html" style="width:100%;height:100vh;border:none;display:block;" scrolling="no" allowfullscreen loading="lazy" title="Pola Sebaran Kehati"></iframe>
   </div>
 
   <!-- KEGIATAN 6 -->
