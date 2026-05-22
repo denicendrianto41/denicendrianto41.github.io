@@ -212,27 +212,34 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .pg-title em{color:#93c5fd;font-style:normal}
 .pg-desc{font-size:13px;color:rgba(255,255,255,.65)}
 
-/* ── MATERI PAGE TABS (floating left sidebar) ── */
-.materi-tabs{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:6px;width:52px;transition:width .25s ease}
-.materi-tabs:hover{width:210px}
-.materi-tabs .mtab-label{display:none;white-space:nowrap;overflow:hidden}
-.materi-tabs:hover .mtab-label{display:inline}
-.mtab{background:rgba(255,255,255,.95);border:1px solid var(--bdr);border-radius:12px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--mu);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 3px 12px rgba(0,0,0,.1);overflow:hidden}
-.mtab:hover{color:var(--green);background:#fff;border-color:var(--glight);box-shadow:0 4px 16px rgba(59,130,246,.2)}
-.mtab.active{background:var(--glight);color:#fff;border-color:var(--glight);box-shadow:0 4px 14px rgba(59,130,246,.35)}
-.mtab i{flex-shrink:0;font-size:14px}
+/* ── MATERI & AKTIVITAS PAGE TABS ── */
 .msub{display:none}.msub.active{display:block}
-
-/* ── AKTIVITAS PAGE TABS (floating left sidebar) ── */
-.aktiv-tabs{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:800;display:flex;flex-direction:column;gap:6px;width:52px;transition:width .25s ease}
-.aktiv-tabs:hover{width:230px}
-.aktiv-tabs .atab-label{display:none;white-space:nowrap;overflow:hidden}
-.aktiv-tabs:hover .atab-label{display:inline}
-.atab{background:rgba(255,255,255,.95);border:1px solid var(--bdr);border-radius:12px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--mu);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 3px 12px rgba(0,0,0,.1);overflow:hidden}
-.atab:hover{color:var(--green);background:#fff;border-color:var(--glight);box-shadow:0 4px 16px rgba(59,130,246,.2)}
-.atab.active{background:var(--glight);color:#fff;border-color:var(--glight);box-shadow:0 4px 14px rgba(59,130,246,.35)}
-.atab i{flex-shrink:0;font-size:14px}
 .asub{display:none}.asub.active{display:block}
+
+/* ── DROPDOWN NAV ── */
+.ntab-dd{position:static}
+.ntab-dd-menu{
+  position:fixed;
+  background:#fff;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.22);
+  border:1px solid var(--bdr);min-width:235px;z-index:3000;
+  padding:6px;display:none;flex-direction:column;gap:2px;
+}
+@keyframes ddFade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.ntab-dd-menu.open{display:flex;animation:ddFade .18s ease}
+.ntab-dd-item{
+  background:none;border:none;width:100%;text-align:left;
+  padding:9px 12px;border-radius:9px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;
+  color:var(--txt);cursor:pointer;display:flex;align-items:center;gap:9px;
+  transition:all .15s;white-space:nowrap;
+}
+.ntab-dd-item:hover{background:var(--gpale);color:var(--green)}
+.ntab-dd-item.active{background:var(--glight);color:#fff}
+.ntab-dd-item i{width:16px;text-align:center;flex-shrink:0;font-size:13px}
+.ntab-dd-sep{height:1px;background:var(--bdr);margin:4px 6px}
+/* caret icon on dropdown trigger */
+.ntab-caret{font-size:9px;margin-left:2px;opacity:.7;transition:transform .2s}
+.ntab-dd.open > .ntab .ntab-caret{transform:rotate(180deg)}
 
 /* ── KEGIATAN BODY STYLES ── */
 .kg-intro{font-size:13.5px;color:var(--mu);line-height:1.82;margin-bottom:16px;background:var(--gpale);border-radius:10px;padding:14px 16px;border-left:4px solid var(--glight)}
@@ -388,8 +395,29 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div class="nav-tabs">
     <button class="ntab active" id="ntab-home" onclick="goPage('home')"><i class="fa-solid fa-house"></i> Beranda</button>
-    <button class="ntab" id="ntab-materi" onclick="goPage('materi')"><i class="fa-solid fa-book-open"></i> Materi</button>
-    <button class="ntab" id="ntab-aktivitas" onclick="goPage('aktivitas')"><i class="fa-solid fa-flask"></i> Aktivitas</button>
+    <!-- MATERI DROPDOWN -->
+    <div class="ntab-dd" id="dd-materi">
+      <button class="ntab" id="ntab-materi" onclick="toggleDD('materi')"><i class="fa-solid fa-book-open"></i> Materi <i class="fa-solid fa-chevron-down ntab-caret"></i></button>
+      <div class="ntab-dd-menu" id="ddm-materi">
+        <button class="ntab-dd-item mtab active" data-tab="tp"         onclick="goPage('materi');setMateriTab('tp');closeAllDD()"><i class="fa-solid fa-bullseye"></i> Tujuan Pembelajaran</button>
+        <div class="ntab-dd-sep"></div>
+        <button class="ntab-dd-item mtab"        data-tab="tingkatan"  onclick="goPage('materi');setMateriTab('tingkatan');closeAllDD()"><i class="fa-solid fa-layer-group"></i> Tingkatan Keanekaragaman</button>
+        <button class="ntab-dd-item mtab"        data-tab="persebaran" onclick="goPage('materi');setMateriTab('persebaran');closeAllDD()"><i class="fa-solid fa-map-location-dot"></i> Persebaran Flora &amp; Fauna</button>
+        <button class="ntab-dd-item mtab"        data-tab="ancaman"    onclick="goPage('materi');setMateriTab('ancaman');closeAllDD()"><i class="fa-solid fa-triangle-exclamation"></i> Ancaman &amp; Pelestarian</button>
+      </div>
+    </div>
+    <!-- AKTIVITAS DROPDOWN -->
+    <div class="ntab-dd" id="dd-aktivitas">
+      <button class="ntab" id="ntab-aktivitas" onclick="toggleDD('aktivitas')"><i class="fa-solid fa-flask"></i> Aktivitas <i class="fa-solid fa-chevron-down ntab-caret"></i></button>
+      <div class="ntab-dd-menu" id="ddm-aktivitas">
+        <button class="ntab-dd-item atab active" data-tab="k1" onclick="goPage('aktivitas');setAktivTab('k1');closeAllDD()"><i class="fa-solid fa-1"></i> Karakteristik Teman</button>
+        <button class="ntab-dd-item atab"        data-tab="k2" onclick="goPage('aktivitas');setAktivTab('k2');closeAllDD()"><i class="fa-solid fa-2"></i> Jenis Pisang</button>
+        <button class="ntab-dd-item atab"        data-tab="k3" onclick="goPage('aktivitas');setAktivTab('k3');closeAllDD()"><i class="fa-solid fa-3"></i> Beragam Ekosistem</button>
+        <button class="ntab-dd-item atab"        data-tab="k4" onclick="goPage('aktivitas');setAktivTab('k4');closeAllDD()"><i class="fa-solid fa-4"></i> LKPD Peta Hayati</button>
+        <button class="ntab-dd-item atab"        data-tab="k5" onclick="goPage('aktivitas');setAktivTab('k5');closeAllDD()"><i class="fa-solid fa-5"></i> Pola Persebaran</button>
+        <button class="ntab-dd-item atab"        data-tab="k6" onclick="goPage('aktivitas');setAktivTab('k6');closeAllDD()"><i class="fa-solid fa-6"></i> Tugas Proyek</button>
+      </div>
+    </div>
     <button class="ntab" id="ntab-peta" onclick="goPage('peta')"><i class="fa-solid fa-map"></i> Peta Hayati</button>
     <button class="ntab" id="ntab-game" onclick="goPage('game')"><i class="fa-solid fa-gamepad"></i> Game</button>
     <button class="ntab" id="ntab-spesies" onclick="goPage('spesies')"><i class="fa-solid fa-star"></i> Karya Siswa</button>
@@ -740,14 +768,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <!-- ════════════ MATERI PAGE ════════════ -->
 <div class="pg" id="pg-materi">
 
-  <!-- SUB MENU TABS MATERI -->
-  <div class="materi-tabs" id="materiTabs">
-    <button class="mtab active" data-tab="tp"          onclick="setMateriTab('tp')"><i class="fa-solid fa-bullseye"></i><span class="mtab-label"> Tujuan Pembelajaran</span></button>
-    <button class="mtab"        data-tab="tingkatan"   onclick="setMateriTab('tingkatan')"><i class="fa-solid fa-layer-group"></i><span class="mtab-label"> Tingkatan Keanekaragaman</span></button>
-    <button class="mtab"        data-tab="persebaran"  onclick="setMateriTab('persebaran')"><i class="fa-solid fa-map-location-dot"></i><span class="mtab-label"> Persebaran Flora &amp; Fauna</span></button>
-    <button class="mtab"        data-tab="ancaman"     onclick="setMateriTab('ancaman')"><i class="fa-solid fa-triangle-exclamation"></i><span class="mtab-label"> Ancaman &amp; Pelestarian</span></button>
-  </div>
-
   <!-- TAB: TUJUAN PEMBELAJARAN -->
   <div class="msub active" id="msub-tp">
     <div class="sec">
@@ -1002,16 +1022,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 <!-- ════════════ AKTIVITAS PAGE ════════════ -->
 <div class="pg" id="pg-aktivitas">
-
-  <!-- SUB MENU TABS AKTIVITAS -->
-  <div class="aktiv-tabs" id="aktivTabs">
-    <button class="atab active" data-tab="k1" onclick="setAktivTab('k1')"><i class="fa-solid fa-1"></i><span class="atab-label"> Karakteristik Teman</span></button>
-    <button class="atab"        data-tab="k2" onclick="setAktivTab('k2')"><i class="fa-solid fa-2"></i><span class="atab-label"> Jenis Pisang</span></button>
-    <button class="atab"        data-tab="k3" onclick="setAktivTab('k3')"><i class="fa-solid fa-3"></i><span class="atab-label"> Beragam Ekosistem</span></button>
-    <button class="atab"        data-tab="k4" onclick="setAktivTab('k4')"><i class="fa-solid fa-4"></i><span class="atab-label"> LKPD Peta Hayati</span></button>
-    <button class="atab"        data-tab="k5" onclick="setAktivTab('k5')"><i class="fa-solid fa-5"></i><span class="atab-label"> Pola Persebaran</span></button>
-    <button class="atab"        data-tab="k6" onclick="setAktivTab('k6')"><i class="fa-solid fa-6"></i><span class="atab-label"> Tugas Proyek</span></button>
-  </div>
 
   <!-- KEGIATAN 1 -->
   <div class="asub active" id="asub-k1">
@@ -1530,8 +1540,38 @@ function goPage(id) {
   document.querySelectorAll('.subnav').forEach(s=>s.classList.remove('show'));
   const sn = document.getElementById('subnav-'+id);
   if(sn) sn.classList.add('show');
+  // highlight dropdown trigger when on materi/aktivitas page
+  ['materi','aktivitas'].forEach(pg => {
+    const ddBtn = document.querySelector('#dd-'+pg+' > .ntab');
+    if(ddBtn) ddBtn.classList.toggle('active', id === pg);
+  });
 }
 function mNav(id){ goPage(id); closeDrawer(); }
+
+// ── DROPDOWN TOGGLE ──
+function toggleDD(name){
+  const dd = document.getElementById('dd-'+name);
+  const menu = document.getElementById('ddm-'+name);
+  const wasOpen = menu.classList.contains('open');
+  closeAllDD();
+  if(!wasOpen){
+    // Position menu using fixed coords from trigger button's bounding rect
+    const trigger = dd.querySelector('.ntab');
+    const rect = trigger.getBoundingClientRect();
+    menu.style.top  = (rect.bottom + 6) + 'px';
+    menu.style.left = rect.left + 'px';
+    dd.classList.add('open');
+    menu.classList.add('open');
+  }
+}
+function closeAllDD(){
+  document.querySelectorAll('.ntab-dd').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.ntab-dd-menu').forEach(m=>m.classList.remove('open'));
+}
+// close dropdown on outside click
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.ntab-dd')) closeAllDD();
+});
 
 // ── MATERI TABS ──
 function setMateriTab(tab){
