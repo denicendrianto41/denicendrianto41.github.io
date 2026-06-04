@@ -1081,9 +1081,57 @@ function animateDrop(canvasId,agg,callback){
   tick();
 }
 
+function playSound(id){try{const a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(()=>{});}}catch(e){}}
+
+function showToastWarning(msg){
+  playSound('sndSalah');
+  const existing=document.getElementById('toastWarningEl');if(existing) existing.remove();
+  const toast=document.createElement('div');
+  toast.id='toastWarningEl';
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.5) rotate(-4deg);background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;font-family:Space Grotesk,sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;padding:18px 36px;border-radius:20px;box-shadow:0 10px 40px rgba(217,119,6,.5),0 0 0 0 rgba(251,191,36,.6);z-index:9999;opacity:0;pointer-events:none;text-align:center;max-width:85vw;line-height:1.4;white-space:pre-line;';
+  toast.innerHTML='⚠️ '+msg;
+  document.body.appendChild(toast);
+  // Animate in with bounce
+  requestAnimationFrame(()=>{
+    toast.style.transition='all .35s cubic-bezier(.34,1.56,.64,1)';
+    toast.style.opacity='1';
+    toast.style.transform='translate(-50%,-50%) scale(1) rotate(0deg)';
+  });
+  // Pulse ring animation
+  let pulse=0;
+  const pulseInterval=setInterval(()=>{
+    pulse++;
+    const s=pulse%2===0?'0 10px 40px rgba(217,119,6,.5),0 0 0 0 rgba(251,191,36,.6)':'0 10px 40px rgba(217,119,6,.5),0 0 0 12px rgba(251,191,36,.0)';
+    if(toast.isConnected) toast.style.boxShadow=s;
+    else clearInterval(pulseInterval);
+  },350);
+  // Shake animation
+  setTimeout(()=>{
+    if(!toast.isConnected) return;
+    toast.animate([
+      {transform:'translate(-50%,-50%) rotate(-3deg) scale(1)'},
+      {transform:'translate(-50%,-50%) rotate(3deg) scale(1)'},
+      {transform:'translate(-50%,-50%) rotate(-2deg) scale(1)'},
+      {transform:'translate(-50%,-50%) rotate(2deg) scale(1)'},
+      {transform:'translate(-50%,-50%) rotate(0deg) scale(1)'}
+    ],{duration:400,easing:'ease-in-out'});
+  },350);
+  // Animate out
+  setTimeout(()=>{
+    clearInterval(pulseInterval);
+    if(!toast.isConnected) return;
+    toast.style.transition='all .3s ease-in';
+    toast.style.opacity='0';
+    toast.style.transform='translate(-50%,-50%) scale(0.7) rotate(4deg)';
+    setTimeout(()=>{if(toast.isConnected) toast.remove();},320);
+  },2400);
+}
+
 function runSimulation(){
   const gol=document.getElementById('selGol').value,rh=document.getElementById('selRh').value;
-  if(!gol||!rh){alert('Pilih golongan darah dan faktor Rh terlebih dahulu!');return;}
+  if(!gol&&!rh){showToastWarning('Pilih golongan darah dan\nfaktor Rh terlebih dahulu!');return;}
+  if(!gol){showToastWarning('Pilih golongan darah\nterlebih dahulu!');return;}
+  if(!rh){showToastWarning('Pilih faktor Rh\nterlebih dahulu!');return;}
   if(simRunning) return;
   simRunning=true;document.getElementById('btnSim').disabled=true;
   document.getElementById('resCard').style.display='none';
