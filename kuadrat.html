@@ -174,9 +174,15 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .wstable td{padding:4px 7px;border:1px solid var(--border);color:var(--text2);}
 .wstable tr:nth-child(even) td{background:#f8fafc;}
 .wstable tr:hover td{background:#eff6ff;}
-.ws-input{width:28px;height:22px;text-align:center;font-size:11px;font-weight:700;border:1px solid var(--border);border-radius:3px;padding:0;background:var(--surf2);text-transform:uppercase;font-family:'JetBrains Mono',monospace;outline:none;transition:all .15s;}
+.ws-input{width:44px;height:24px;text-align:center;font-size:12px;font-weight:700;border:1px solid var(--border);border-radius:3px;padding:0 2px;background:var(--surf2);font-family:'JetBrains Mono',monospace;outline:none;transition:all .15s;}
 .ws-input.is-y{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
 .ws-input.is-n{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+.ws-num::-webkit-outer-spin-button,.ws-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.ws-num{-moz-appearance:textfield;}
+.ws-num:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.12);}
+.ws-ind{width:52px!important;height:22px;text-align:center;font-size:11px;font-weight:700;border:1px solid #fde68a;border-radius:3px;padding:0 2px;background:#fefce8;font-family:'JetBrains Mono',monospace;outline:none;transition:all .15s;-moz-appearance:textfield;}
+.ws-ind::-webkit-outer-spin-button,.ws-ind::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.ws-ind:focus{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.15);}
 .ws-freq{font-weight:700;color:var(--acc3);font-family:'JetBrains Mono',monospace;}
 .ws-pct{font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace;}
 
@@ -826,14 +832,18 @@ document.addEventListener('click',function(e){
               </div>
               <button class="btn-back-sim" onclick="closeWsOverlay()">◄ Kembali ke Peta</button>
             </div>
-            <div style="font-size:11px;color:var(--text2);margin-bottom:8px;flex-shrink:0;">Masukkan <strong style="color:var(--green)">Y</strong> jika spesies ada atau <strong style="color:var(--red)">N</strong> jika tidak ada pada setiap kuadrat.</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px;flex-shrink:0;">
+              Masukkan <strong style="color:var(--green)">angka jumlah individu</strong> tiap spesies pada setiap kuadrat. Tulis <strong style="color:var(--red)">0</strong> atau <strong style="color:var(--red)">–</strong> jika spesies tidak ditemukan. Kolom N, %F, Jml Individu, <strong style="color:#92400e;">K</strong>, dan <strong style="color:#9d174d;">KR</strong> dihitung otomatis.
+            </div>
             <div style="overflow:auto;flex:1;">
               <table class="wstable" id="wsTable"></table>
             </div>
-            <div style="display:flex;gap:8px;margin-top:8px;flex-shrink:0;align-items:center;">
-              <div style="font-size:10px;color:var(--text3);">
-                <span style="display:inline-block;width:14px;height:14px;background:#d1fae5;border:1px solid #6ee7b7;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>Y = Hadir
-                <span style="display:inline-block;width:14px;height:14px;background:#fee2e2;border:1px solid #fca5a5;border-radius:2px;vertical-align:middle;margin-left:8px;margin-right:3px;"></span>N = Tidak hadir
+            <div style="display:flex;gap:12px;margin-top:8px;flex-shrink:0;align-items:center;flex-wrap:wrap;">
+              <div style="font-size:10px;color:var(--text3);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <span><span style="display:inline-block;width:14px;height:14px;background:#d1fae5;border:1px solid #6ee7b7;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>Angka &gt; 0 = Hadir</span>
+                <span><span style="display:inline-block;width:14px;height:14px;background:#fee2e2;border:1px solid #fca5a5;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>0 atau – = Tidak hadir</span>
+                <span style="color:#92400e;font-weight:600;">K = Jml Individu ÷ 7 m²</span>
+                <span style="color:#9d174d;font-weight:600;">KR = (K spesies ÷ Total K) × 100%</span>
               </div>
             </div>
           </div>
@@ -850,7 +860,7 @@ document.addEventListener('click',function(e){
         <li>Pilih <strong>lingkungan penelitian</strong> dari dropdown kiri.</li>
         <li>Klik <strong>pin bernomor</strong> pada peta untuk memperbesar tampilan kuadrat.</li>
         <li>Amati spesies tumbuhan yang ada dalam kuadrat.</li>
-        <li>Klik <strong>Lembar Kerja</strong>, masukkan <strong style="color:var(--green)">Y</strong> atau <strong style="color:var(--red)">N</strong>.</li>
+        <li>Klik <strong>Lembar Kerja</strong>, masukkan <strong style="color:var(--green)">angka jumlah individu</strong> atau <strong style="color:var(--red)">0 / –</strong> jika tidak ada.</li>
         <li>Lembar kerja menghitung <strong>frekuensi populasi</strong> secara otomatis.</li>
         <li>Klik <strong>Reset</strong> untuk memulai ulang percobaan.</li>
         <li>Bandingkan hasil antar lingkungan untuk analisis keanekaragaman.</li>
@@ -954,7 +964,7 @@ const simSteps=[
   {emoji:'🗺️',text:'Pilih <strong>lokasi penelitian</strong> dari dropdown di panel kontrol.'},
   {emoji:'📍',text:'Klik <strong>pin bernomor</strong> pada peta untuk membuka tampilan closeup kuadrat.'},
   {emoji:'🌿',text:'Amati <strong>spesies tumbuhan</strong> dalam petak — cocokkan warna & bentuk dengan legenda di panel kiri.'},
-  {emoji:'📋',text:'Klik <strong>Lembar Kerja</strong>, isi <strong>Y</strong> (hadir) atau <strong>N</strong> (tidak hadir) tiap spesies.'},
+  {emoji:'📋',text:'Klik <strong>Lembar Kerja</strong>, masukkan <strong>angka jumlah individu</strong> tiap spesies per kuadrat. Tulis 0 atau – jika tidak ada.'},
   {emoji:'🔁',text:'Ulangi langkah 2–4 untuk semua <strong>7 kuadrat</strong> hingga semua data terisi.'},
   {emoji:'📊',text:'Lembar kerja <strong>menghitung otomatis</strong> nilai N, Q, dan %Frekuensi tiap spesies.'},
   {emoji:'🔬',text:'Ganti lingkungan dan <strong>bandingkan</strong> distribusi spesies antar ekosistem.'},
@@ -1594,15 +1604,17 @@ function closeWsOverlay(){
 }
 
 function buildWorksheet(){
-  const env=ENVS[currentEnv];
   const tbl=document.getElementById('wsTable');
   const rNums=['I','II','III','IV','V','VI','VII'];
   let html=`<thead><tr>
-    <th style="min-width:110px;">Spesies Tumbuhan</th>
-    ${rNums.map(r=>`<th>Kuadrat ${r}</th>`).join('')}
-    <th style="background:#dbeafe;">N (Kuadrat dgn spesies)</th>
-    <th style="background:#dbeafe;">Q (Total)</th>
-    <th style="background:#d1fae5;">%Frekuensi (N/Q×100)</th>
+    <th style="min-width:120px;">Spesies Tumbuhan</th>
+    ${rNums.map(r=>`<th style="min-width:62px;">Kuadrat ${r}</th>`).join('')}
+    <th style="background:#dbeafe;min-width:70px;" title="Jumlah kuadrat yang mengandung spesies (nilai &gt; 0)">N (Kuadrat dgn spesies)</th>
+    <th style="background:#dbeafe;min-width:50px;">Q (Total)</th>
+    <th style="background:#d1fae5;min-width:90px;">%Frekuensi (N/Q×100)</th>
+    <th style="background:#fef3c7;min-width:80px;">Jml Individu</th>
+    <th style="background:#fed7aa;min-width:90px;">K (ind/m²)</th>
+    <th style="background:#fce7f3;min-width:80px;">KR (%)</th>
   </tr></thead><tbody>`;
   SPECIES.forEach((sp,si)=>{
     html+=`<tr><td style="text-align:left;font-weight:600;color:var(--text);">
@@ -1610,49 +1622,93 @@ function buildWorksheet(){
       ${sp.name}
     </td>`;
     for(let q=0;q<7;q++){
-      const key=`${si}-${q}`;const val=worksheetData[key]||'';
-      const cls=val==='Y'?'is-y':val==='N'?'is-n':'';
-      html+=`<td><input class="ws-input ${cls}" maxlength="1" value="${val}" data-si="${si}" data-qi="${q}"/></td>`;
+      const key=`${si}-${q}`;
+      const raw=worksheetData[key];
+      const displayVal=(raw===undefined||raw==='')?'':(raw==='-'?'-':raw);
+      const numVal=parseFloat(displayVal)||0;
+      const cls=displayVal===''?'':(numVal>0?'is-y':'is-n');
+      html+=`<td><input class="ws-input ws-num ${cls}" value="${displayVal}" data-si="${si}" data-qi="${q}" placeholder="–" inputmode="numeric"/></td>`;
     }
-    const freq=calcFreq(si);
+    const {freq,total}=calcFreqTotal(si);
     const pct=freq>0?((freq/7)*100).toFixed(2):'';
-    html+=`<td class="ws-freq">${freq>0?freq:''}</td><td class="ws-freq">7</td><td class="ws-pct">${pct?pct+'%':''}</td></tr>`;
+    html+=`<td class="ws-freq" data-cell="freq-${si}">${freq>0?freq:''}</td>`;
+    html+=`<td class="ws-freq">7</td>`;
+    html+=`<td class="ws-pct" data-cell="pct-${si}">${pct?pct+'%':''}</td>`;
+    html+=`<td class="ws-freq" data-cell="tot-${si}" style="color:#92400e;">${total>0?total:''}</td>`;
+    html+=`<td class="ws-k" data-cell="k-${si}" style="font-weight:700;color:#92400e;font-family:'JetBrains Mono',monospace;"></td>`;
+    html+=`<td class="ws-kr" data-cell="kr-${si}" style="font-weight:700;color:#9d174d;font-family:'JetBrains Mono',monospace;"></td></tr>`;
   });
   html+=`</tbody>`;
   tbl.innerHTML=html;
-  tbl.querySelectorAll('.ws-input').forEach(inp=>{
+
+  tbl.querySelectorAll('.ws-num').forEach(inp=>{
     inp.addEventListener('input',function(){
-      const v=this.value.toUpperCase().replace(/[^YN]/g,'');
-      this.value=v;
       const si=+this.dataset.si,qi=+this.dataset.qi;
-      worksheetData[`${si}-${qi}`]=v;
-      this.className='ws-input'+(v==='Y'?' is-y':v==='N'?' is-n':'');
+      let v=this.value.trim();
+      // Allow: empty, '-', or non-negative integers
+      if(v==='-'){
+        worksheetData[`${si}-${qi}`]='-';
+        this.className='ws-input ws-num is-n';
+      } else {
+        v=v.replace(/[^0-9]/g,'');
+        this.value=v;
+        worksheetData[`${si}-${qi}`]=v;
+        const n=parseInt(v)||0;
+        this.className='ws-input ws-num'+(v===''?'':(n>0?' is-y':' is-n'));
+      }
       refreshRow(si);
+      refreshKKR();
     });
     inp.addEventListener('keydown',function(e){
       if(e.key==='Enter'){
         const si=+this.dataset.si,qi=+this.dataset.qi;
-        const next=tbl.querySelector(`[data-si="${si}"][data-qi="${qi+1}"]`)||
-                    tbl.querySelector(`[data-si="${si+1}"][data-qi="0"]`);
+        const next=tbl.querySelector(`.ws-num[data-si="${si}"][data-qi="${qi+1}"]`)||
+                    tbl.querySelector(`.ws-num[data-si="${si+1}"][data-qi="0"]`);
         if(next)next.focus();
       }
     });
+    inp.addEventListener('focus',function(){this.select();});
   });
+
+  refreshKKR();
 }
 
-function calcFreq(si){
-  let c=0;for(let q=0;q<7;q++)if((worksheetData[`${si}-${q}`]||'').toUpperCase()==='Y')c++;return c;
+// Returns: freq = jumlah kuadrat dgn spesies hadir (nilai > 0), total = jumlah individu semua kuadrat
+function calcFreqTotal(si){
+  let freq=0,total=0;
+  for(let q=0;q<7;q++){
+    const raw=worksheetData[`${si}-${q}`]||'';
+    const n=parseInt(raw)||0;
+    if(n>0){freq++;total+=n;}
+  }
+  return {freq,total};
 }
+
+function calcFreq(si){return calcFreqTotal(si).freq;}
 
 function refreshRow(si){
-  const tbl=document.getElementById('wsTable');
-  const rows=tbl.querySelectorAll('tbody tr');
-  if(!rows[si])return;
-  const freq=calcFreq(si);
-  const cells=rows[si].querySelectorAll('td');
-  const last=cells.length-1;
-  cells[last-2].textContent=freq>0?freq:'';
-  cells[last].textContent=freq>0?((freq/7)*100).toFixed(2)+'%':'';
+  const {freq,total}=calcFreqTotal(si);
+  const freqCell=document.querySelector(`[data-cell="freq-${si}"]`);
+  const pctCell=document.querySelector(`[data-cell="pct-${si}"]`);
+  const totCell=document.querySelector(`[data-cell="tot-${si}"]`);
+  if(freqCell)freqCell.textContent=freq>0?freq:'';
+  if(pctCell)pctCell.textContent=freq>0?((freq/7)*100).toFixed(2)+'%':'';
+  if(totCell)totCell.textContent=total>0?total:'';
+}
+
+function refreshKKR(){
+  const totalLuas=7; // 7 kuadrat × 1 m² = 7 m²
+  const kValues=SPECIES.map((sp,si)=>{
+    const {total}=calcFreqTotal(si);
+    return total/totalLuas;
+  });
+  const totalK=kValues.reduce((a,b)=>a+b,0);
+  SPECIES.forEach((sp,si)=>{
+    const kCell=document.querySelector(`[data-cell="k-${si}"]`);
+    const krCell=document.querySelector(`[data-cell="kr-${si}"]`);
+    if(kCell)kCell.textContent=kValues[si]>0?kValues[si].toFixed(4):'';
+    if(krCell)krCell.textContent=(totalK>0&&kValues[si]>0)?((kValues[si]/totalK)*100).toFixed(2)+'%':'';
+  });
 }
 
 // ===================== HELP MODAL =====================
