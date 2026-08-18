@@ -107,7 +107,7 @@
     position:absolute;inset:0;
     background-image:
       linear-gradient(120deg, rgba(13,19,51,0.94) 0%, rgba(24,34,98,0.86) 45%, rgba(34,48,140,0.55) 100%),
-      url('https://asset.kompas.com/crops/Wl_pBQICmCtTC-3YiL5hkmsAPFE=/0x0:0x0/1200x800/data/photo/2023/07/12/64ade44009009.jpg');
+      url('https://denicendrianto41.github.io/IMG-20260818-WA0017.jpg');
     background-size:cover;
     background-position:center;
     pointer-events:none;
@@ -146,14 +146,23 @@
     display:grid;grid-template-columns:repeat(5,1fr);
     padding:34px 0;
   }
-  .stat{text-align:center;padding:0 12px;border-right:1px solid var(--line);}
+  .stat{text-align:center;padding:0 12px;border-right:1px solid var(--line);min-width:0;}
   .stat:last-child{border-right:none;}
   .stat .num{font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:var(--navy-800);}
   .stat .label{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:0.03em;text-transform:uppercase;margin-top:4px;}
+  /* Visi HEBAT tetap satu baris (5 kolom) di semua ukuran layar, termasuk HP portrait & landscape */
   @media (max-width:700px){
-    .stats-grid{grid-template-columns:repeat(2,1fr);row-gap:22px;}
-    .stat{border-right:none;}
+    .stats-grid{padding:22px 0;}
+    .stat{padding:0 5px;}
+    .stat .num{font-size:19px;}
+    .stat .label{font-size:8px;letter-spacing:0.01em;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   }
+  @media (max-width:420px){
+    .stat{padding:0 3px;}
+    .stat .num{font-size:16px;}
+    .stat .label{font-size:6.8px;}
+  }
+
 
   /* ---------------- section heads ---------------- */
   .section{padding:86px 0;}
@@ -272,6 +281,7 @@
   .step h4{font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;margin:0 0 8px;color:var(--ink);}
   .step p{font-size:13px;color:var(--muted);line-height:1.6;margin:0;}
   @media (max-width:800px){ .steps-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .steps-grid{grid-template-columns:1fr;} }
 
   /* ---------------- CTA ---------------- */
   .cta{
@@ -307,7 +317,14 @@
     .wrap{padding:0 20px;}
     .hero{padding-top:70px;}
     .section{padding:64px 0;}
+    .hero h1{font-size:28px;}
+    .hero p{font-size:15px;}
+    .hero-actions .btn{flex:1 1 auto;justify-content:center;}
   }
+  @media (max-width:380px){
+    .wrap{padding:0 16px;}
+  }
+  html, body{overflow-x:hidden;}
 
   /* ---------------- sub-page: Ruang Kepala Sekolah / Ruang Guru ---------------- */
 
