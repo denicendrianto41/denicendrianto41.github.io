@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUMANSA — Ruang Utama Multilayanan SMA Negeri Satu Batujajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#0D1333;
+    --navy-800:#131B4A;
+    --navy-700:#182262;
+    --navy-600:#22308C;
+    --orange:#F5A524;
+    --orange-dark:#DD8B0E;
+    --blue:#3D5AFE;
+    --purple:#8B5CF6;
+    --green:#16A34A;
+    --teal:#0FAE9E;
+    --bg-light:#F4F6FC;
+    --white:#FFFFFF;
+    --ink:#131C3B;
+    --muted:#647089;
+    --line:#E5E8F2;
+    --shadow-card: 0 14px 34px -18px rgba(19,28,59,0.22);
+    --shadow-card-hover: 0 22px 44px -18px rgba(19,28,59,0.32);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg-light);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.font-display{font-family:'Poppins', sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px;}
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Poppins',sans-serif;
+    font-size:12.5px;font-weight:600;
+    letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--blue);
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:2px;background:var(--orange);display:inline-block;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:14.5px;
+    padding:13px 22px;border-radius:11px;
+    border:none;cursor:pointer;
+    transition:transform .22s ease, box-shadow .22s ease, background .22s ease;
+  }
+  .btn svg{width:15px;height:15px;transition:transform .22s ease;}
+  .btn:hover svg{transform:translateX(3px);}
+  .btn-primary{background:var(--orange);color:#2A1B03;box-shadow:0 12px 26px -10px rgba(245,165,36,0.55);}
+  .btn-primary:hover{background:var(--orange-dark);transform:translateY(-2px);box-shadow:0 16px 30px -10px rgba(245,165,36,0.6);}
+  .btn-ghost{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.28);}
+  .btn-ghost:hover{background:rgba(255,255,255,0.16);transform:translateY(-2px);}
+
+  /* ---------------- header ---------------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--navy-800);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .header-row{display:flex;align-items:center;justify-content:space-between;height:74px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .brand-mark img{width:100%;height:100%;object-fit:contain;}
+  .brand-text{line-height:1.15;}
+  .brand-text .name{font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;color:#fff;}
+  .brand-text .sub{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.01em;font-weight:500;}
+  nav.main-nav{display:flex;align-items:center;gap:28px;}
+  nav.main-nav a{
+    font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);
+    display:flex;align-items:center;gap:6px;
+    transition:color .2s ease;
+  }
+  nav.main-nav a:hover{color:#fff;}
+  nav.main-nav a svg{width:15px;height:15px;}
+  .header-cta{
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
+    background:rgba(255,255,255,0.1);color:#fff;
+    padding:9px 16px;border-radius:9px;border:1px solid rgba(255,255,255,0.2);
+  }
+  @media (max-width:860px){ nav.main-nav{display:none;} }
+
+  /* ---------------- hero ---------------- */
+  .hero{
+    position:relative;
+    background:linear-gradient(120deg, var(--navy-900) 0%, var(--navy-700) 52%, var(--navy-600) 100%);
+    overflow:hidden;
+    padding:88px 0 0;
+  }
+  .hero-photo{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(120deg, rgba(13,19,51,0.94) 0%, rgba(24,34,98,0.86) 45%, rgba(34,48,140,0.55) 100%),
+      url('https://asset.kompas.com/crops/Wl_pBQICmCtTC-3YiL5hkmsAPFE=/0x0:0x0/1200x800/data/photo/2023/07/12/64ade44009009.jpg');
+    background-size:cover;
+    background-position:center;
+    pointer-events:none;
+  }
+  .hero-glow{
+    position:absolute;right:-140px;top:-120px;width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle, rgba(245,165,36,0.28), transparent 65%);
+    pointer-events:none;
+  }
+  .hero-glow-2{
+    position:absolute;left:-100px;bottom:-160px;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle, rgba(61,90,254,0.25), transparent 65%);
+    pointer-events:none;
+  }
+  .hero-content{position:relative;z-index:2;padding-bottom:70px;max-width:640px;}
+  .hero .eyebrow{color:#FFC97A;}
+  .hero .eyebrow .dot{background:#fff;}
+  .hero h1{
+    font-size:clamp(32px, 4.6vw, 50px);
+    font-weight:700;color:#fff;line-height:1.14;
+    margin:18px 0 20px;
+  }
+  .hero h1 span{color:var(--orange);}
+  .hero p{
+    font-size:16.5px;line-height:1.75;color:rgba(255,255,255,0.72);
+    max-width:52ch;margin:0 0 32px;
+  }
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+
+  /* ---------------- stats ---------------- */
+  .stats{
+    background:var(--white);
+    border-bottom:1px solid var(--line);
+  }
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    padding:34px 0;
+  }
+  .stat{text-align:center;padding:0 12px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:var(--navy-800);}
+  .stat .label{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:0.03em;text-transform:uppercase;margin-top:4px;}
+  @media (max-width:700px){
+    .stats-grid{grid-template-columns:repeat(2,1fr);row-gap:22px;}
+    .stat{border-right:none;}
+  }
+
+  /* ---------------- section heads ---------------- */
+  .section{padding:86px 0;}
+  .section.alt{background:var(--white);}
+  .section-head{max-width:640px;margin:0 auto 46px;text-align:center;}
+  .section-head h2{font-size:32px;font-weight:700;color:var(--navy-800);margin:14px 0 12px;}
+  .section-head h2 span{color:var(--orange);}
+  .section-head p{color:var(--muted);font-size:15.5px;line-height:1.7;margin:0;}
+
+  /* ---------------- card grid ---------------- */
+  .card-grid{
+    display:grid;grid-template-columns:repeat(5, 1fr);
+    gap:16px;
+  }
+  @media (max-width:1080px){ .card-grid{grid-template-columns:repeat(3, 1fr);} }
+  @media (max-width:700px){ .card-grid{grid-template-columns:repeat(2, 1fr);} }
+  @media (max-width:460px){ .card-grid{grid-template-columns:1fr;} }
+  .card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 18px 16px;
+    box-shadow:var(--shadow-card);
+    transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+    opacity:0; transform:translateY(18px);
+    display:flex;
+    flex-direction:column;
+    height:100%;
+  }
+  .card.in-view{opacity:1;transform:translateY(0);transition:opacity .55s ease, transform .55s ease;}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow-card-hover);border-color:transparent;}
+
+  .card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+
+  .badge{
+    width:38px;height:38px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .badge svg{width:19px;height:19px;}
+  .badge.orange{background:#FFF1DC;color:var(--orange-dark);}
+  .badge.blue{background:#E7ECFF;color:var(--blue);}
+  .badge.purple{background:#F1E9FE;color:var(--purple);}
+  .badge.green{background:#E3F7EA;color:var(--green);}
+  .badge.teal{background:#DDF6F1;color:var(--teal);}
+
+  .card h3{font-size:14.5px;font-weight:600;color:var(--ink);margin:0;line-height:1.3;}
+  .card p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 16px;flex-grow:1;}
+
+  .card-btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
+    padding:9px 16px;border-radius:9px;color:#fff;
+    transition:transform .22s ease, opacity .22s ease;
+    align-self:flex-start;
+  }
+  .card-btn svg{width:13px;height:13px;transition:transform .22s ease;}
+  .card:hover .card-btn svg{transform:translateX(3px);}
+  .card-btn.orange{background:var(--orange);color:#2A1B03;}
+  .card-btn.blue{background:var(--blue);}
+  .card-btn.purple{background:var(--purple);}
+  .card-btn.green{background:var(--green);}
+  .card-btn.teal{background:var(--teal);}
+
+  /* ---------------- about (dark) ---------------- */
+  .about{
+    background:linear-gradient(165deg, var(--navy-900), var(--navy-700));
+    color:#fff;padding:90px 0;
+  }
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+  .about .eyebrow{color:#FFC97A;}
+  .about .eyebrow .dot{background:#fff;}
+  .about h2{font-size:30px;font-weight:700;margin:14px 0 16px;}
+  .about h2 span{color:var(--orange);}
+  .about > .wrap > .about-grid > div:first-child p{
+    color:rgba(255,255,255,0.72);font-size:15px;line-height:1.8;margin:0 0 24px;
+  }
+  .about-callout{
+    border-left:3px solid var(--orange);
+    background:rgba(255,255,255,0.06);
+    border-radius:0 12px 12px 0;
+    padding:16px 18px;font-size:13.6px;line-height:1.7;color:rgba(255,255,255,0.82);
+  }
+  .about-callout b{font-family:'Poppins',sans-serif;color:#fff;}
+
+  .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .feature{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:14px;padding:20px;
+  }
+  .feature svg{width:22px;height:22px;color:var(--orange);margin-bottom:12px;}
+  .feature h4{font-family:'Poppins',sans-serif;font-size:14.5px;font-weight:600;margin:0 0 6px;color:#fff;}
+  .feature p{font-size:12.6px;color:rgba(255,255,255,0.62);line-height:1.6;margin:0;}
+  @media (max-width:860px){ .about-grid{grid-template-columns:1fr;} }
+
+  /* ---------------- steps ---------------- */
+  .steps-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  }
+  .step{
+    background:var(--white);border:1px solid var(--line);border-radius:16px;
+    padding:28px 20px;text-align:center;
+    box-shadow:var(--shadow-card);
+    opacity:0;transform:translateY(18px);
+  }
+  .step.in-view{opacity:1;transform:translateY(0);transition:opacity .55s ease, transform .55s ease;}
+  .step-num{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--navy-800);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;
+    margin:0 auto 14px;
+  }
+  .step-icon{font-size:26px;margin-bottom:10px;}
+  .step h4{font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;margin:0 0 8px;color:var(--ink);}
+  .step p{font-size:13px;color:var(--muted);line-height:1.6;margin:0;}
+  @media (max-width:800px){ .steps-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* ---------------- CTA ---------------- */
+  .cta{
+    position:relative;overflow:hidden;
+    background:linear-gradient(120deg, var(--navy-700), var(--navy-600));
+    padding:80px 0;text-align:center;color:#fff;
+  }
+  .cta-glow{position:absolute;left:50%;top:-140px;transform:translateX(-50%);width:600px;height:400px;
+    background:radial-gradient(ellipse, rgba(245,165,36,0.22), transparent 70%);pointer-events:none;}
+  .cta-mark{
+    width:56px;height:56px;border-radius:16px;margin:0 auto 22px;
+    background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.22);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cta-mark svg{width:26px;height:26px;color:var(--orange);}
+  .cta h2{font-size:30px;font-weight:700;margin:0 0 14px;position:relative;z-index:1;}
+  .cta h2 span{color:var(--orange);}
+  .cta p{color:rgba(255,255,255,0.72);font-size:15px;max-width:52ch;margin:0 auto 30px;position:relative;z-index:1;}
+  .cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+
+  /* ---------------- footer ---------------- */
+  footer{background:var(--navy-900);color:rgba(255,255,255,0.6);padding:52px 0 24px;}
+  .footer-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,0.09);}
+  .footer-brand .brand{margin-bottom:10px;}
+  .footer-brand p{font-size:13px;line-height:1.7;max-width:34ch;color:rgba(255,255,255,0.5);}
+  .footer-cols{display:flex;gap:56px;flex-wrap:wrap;}
+  .footer-col h5{font-family:'Poppins',sans-serif;font-size:13px;color:#fff;margin:0 0 14px;letter-spacing:0.04em;text-transform:uppercase;}
+  .footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,0.55);margin-bottom:10px;transition:color .2s ease;}
+  .footer-col a:hover{color:var(--orange);}
+  .footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:22px;font-size:12px;color:rgba(255,255,255,0.4);}
+
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+    .hero{padding-top:70px;}
+    .section{padding:64px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-row">
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="https://logo.siap-ppdb.com/upload/sekolah/20227902.png" alt="Logo SMA Negeri 1 Batujajar">
+      </div>
+      <div class="brand-text">
+        <div class="name">RUMANSA</div>
+        <div class="sub">Ruang Utama Multilayanan SMAN 1 Batujajar</div>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="#ruang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-7h6v7"/></svg>Ruang Layanan</a>
+      <a href="#lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Laboratorium</a>
+      <a href="#tentang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 8v.01"/></svg>Tentang</a>
+      <a href="#cara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6 6-2Z"/></svg>Cara Pakai</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="wrap">
+    <div class="hero-content">
+      <h1>Satu Pintu Menuju <span>Seluruh Ruang</span> SMANSABA</h1>
+      <p>RUMANSA menghimpun ruang layanan dan laboratorium SMA Negeri 1 Batujajar dalam satu portal — pilih ruang yang dituju, dan Anda akan diarahkan langsung ke layanannya.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#ruang">Jelajahi Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="btn btn-ghost" href="#tentang">Tentang RUMANSA</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat"><div class="num">5</div><div class="label">Ruang Layanan</div></div>
+    <div class="stat"><div class="num">5</div><div class="label">Laboratorium</div></div>
+    <div class="stat"><div class="num">10</div><div class="label">Tautan Aktif</div></div>
+    <div class="stat"><div class="num">1</div><div class="label">Portal Sekolah</div></div>
+  </div>
+</section>
+
+<section class="section" id="ruang">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Ruang <span>Layanan</span></h2>
+      <p>Akses langsung ke ruang administrasi dan layanan warga sekolah, masing-masing terhubung ke portal resmi ruangnya.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-head">
+          <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7" width="16" height="13" rx="1"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M4 12h16"/></svg></div>
+          <h3>Ruang Kepala Sekolah</h3>
+        </div>
+        <p>Informasi kebijakan, sambutan, dan arah pengembangan sekolah dari pimpinan SMANSATA.</p>
+        <a class="card-btn orange" href="https://portal-saba.my.canva.site/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M9 20h6M12 16v4"/></svg></div>
+          <h3>Ruang Guru</h3>
+        </div>
+        <p>Sarana, prasarana, dan dokumen kerja guru untuk menunjang kegiatan belajar-mengajar.</p>
+        <a class="card-btn blue" href="https://portal-saba.my.canva.site/sarpras" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h9l2 3h5v10H4z"/></svg></div>
+          <h3>Ruang Tata Usaha</h3>
+        </div>
+        <p>Layanan administrasi, surat-menyurat, dan kebutuhan persuratan sekolah.</p>
+        <a class="card-btn purple" href="https://sites.google.com/sman1batujajar.sch.id/tatausaha" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 5.5 6 5c2-.3 3.7.8 4.5 2.2C11.3 5.8 13 4.7 15 5c3.5.5 5 4 3.5 7.5C16 16.65 12 21 12 21Z"/></svg></div>
+          <h3>Ruang BK</h3>
+        </div>
+        <p>Layanan bimbingan dan konseling untuk mendampingi perkembangan siswa.</p>
+        <a class="card-btn green" href="https://sites.google.com/sman1batujajar.sch.id/ruang-bk" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5v-13Z"/></svg></div>
+          <h3>Ruang Perpustakaan</h3>
+        </div>
+        <p>Koleksi bacaan dan sumber belajar digital untuk mendukung literasi siswa.</p>
+        <a class="card-btn teal" href="https://sites.google.com/sman1batujajar.sch.id/perpus-saba" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="lab">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Laboratorium <span>Sekolah</span></h2>
+      <p>Portal masing-masing laboratorium untuk kegiatan praktikum, panduan, dan sumber belajar mata pelajaran terkait.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-head">
+          <div class="badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M8 15h8"/></svg></div>
+          <h3>Laboratorium Biologi</h3>
+        </div>
+        <p>Praktikum, media pembelajaran, dan panduan kegiatan mata pelajaran Biologi.</p>
+        <a class="card-btn green" href="https://sites.google.com/sman1batujajar.sch.id/labbiologi" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/></svg></div>
+          <h3>Laboratorium Fisika</h3>
+        </div>
+        <p>Eksperimen dan alat peraga untuk pembelajaran konsep-konsep Fisika.</p>
+        <a class="card-btn blue" href="https://sites.google.com/sman1batujajar.sch.id/lab-fisika" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 2h4M10 2v6l-6 11a1.6 1.6 0 0 0 1.4 2.4h13.2A1.6 1.6 0 0 0 20 19L14 8V2"/><path d="M8.5 15h7"/></svg></div>
+          <h3>Laboratorium Kimia</h3>
+        </div>
+        <p>Kegiatan praktikum dan protokol keselamatan untuk mata pelajaran Kimia.</p>
+        <a class="card-btn purple" href="https://sites.google.com/sman1batujajar.sch.id/lab-kimia" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.8 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.8-3.8-9S9.5 5.6 12 3Z"/></svg></div>
+          <h3>Laboratorium Bahasa</h3>
+        </div>
+        <p>Latihan menyimak dan berbicara untuk mata pelajaran bahasa dengan perangkat digital.</p>
+        <a class="card-btn teal" href="https://sites.google.com/sman1batujajar.sch.id/lab-bahasa" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></div>
+          <h3>Laboratorium Komputer</h3>
+        </div>
+        <p>Fasilitas dan panduan praktik Informatika serta literasi digital siswa.</p>
+        <a class="card-btn orange" href="https://sites.google.com/sman1batujajar.sch.id/labkomputer" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="tentang">
+  <div class="wrap about-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Tentang Kami</div>
+      <h2>Portal <span>RUMANSA</span></h2>
+      <p>RUMANSA (Ruang Utama Multilayanan SMA Negeri 1 Batujajar) adalah portal digital yang menghubungkan seluruh ruang layanan dan laboratorium SMA Negeri 1 Batujajar dalam satu akses terpadu, terinspirasi dari semangat Rumah Pendidikan Kemendikdasmen.</p>
+      <div class="about-callout"><b>Tujuan:</b> Memudahkan siswa, guru, dan orang tua menemukan ruang layanan sekolah yang tepat, kapan pun dan dari perangkat apa pun.</div>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+        <h4>Terpusat</h4>
+        <p>Seluruh ruang dan laboratorium terhimpun dalam satu portal.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg>
+        <h4>Mudah Diakses</h4>
+        <p>Terbuka dari laptop maupun ponsel, tanpa perlu login khusus.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M4 8l8-5 8 5M4 8v10l8 4 8-4V8"/></svg>
+        <h4>Terhubung Langsung</h4>
+        <p>Setiap kartu ruang tersambung langsung ke portal resminya.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 13.2a5.2 5.2 0 0 1 6 6.8"/></svg>
+        <h4>Untuk Semua Warga</h4>
+        <p>Dibangun untuk siswa, guru, tenaga kependidikan, dan orang tua.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cara">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Cara <span>Menggunakan</span> RUMANSA</h2>
+      <p>Tidak perlu mengingat banyak tautan — cukup empat langkah sederhana untuk sampai ke ruang yang dituju.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-icon">🧭</div>
+        <h4>Buka RUMANSA</h4>
+        <p>Akses portal ini dari perangkat apa pun, kapan saja.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-icon">🗂️</div>
+        <h4>Pilih Blok</h4>
+        <p>Tentukan Blok Ruang Layanan atau Blok Laboratorium.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-icon">🖱️</div>
+        <h4>Klik Kartu Ruang</h4>
+        <p>Sentuh tombol "Buka Ruang" pada ruang yang dituju.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-icon">✅</div>
+        <h4>Sampai Tujuan</h4>
+        <p>Anda langsung diarahkan ke portal resmi ruang tersebut.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-glow"></div>
+  <div class="wrap">
+    <div class="cta-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L21 8L12 13L3 8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 10.5V16C6 16 8.5 18 12 18C15.5 18 18 16 18 16V10.5" stroke="currentColor" stroke-width="1.5"/></svg>
+    </div>
+    <h2>Siap Menuju <span>Ruang Anda?</span></h2>
+    <p>Semua ruang layanan dan laboratorium SMA Negeri 1 Batujajar kini hanya sejauh satu klik.</p>
+    <div class="cta-actions">
+      <a class="btn btn-primary" href="#ruang">Jelajahi Ruang Layanan <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a class="btn btn-ghost" href="#lab">Jelajahi Laboratorium</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand">
+          <div class="brand-mark" style="width:34px;height:34px;border-radius:9px;">
+            <img src="https://logo.siap-ppdb.com/upload/sekolah/20227902.png" alt="Logo SMA Negeri 1 Batujajar">
+          </div>
+          <div class="brand-text"><div class="name">RUMANSA</div></div>
+        </div>
+        <p>Ruang Utama Multilayanan SMA Negeri Satu Batujajar — portal digital menuju seluruh ruang layanan dan laboratorium sekolah.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h5>Ruang Layanan</h5>
+          <a href="https://portal-saba.my.canva.site/" target="_blank" rel="noopener">Kepala Sekolah</a>
+          <a href="https://portal-saba.my.canva.site/sarpras" target="_blank" rel="noopener">Guru</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/tatausaha" target="_blank" rel="noopener">Tata Usaha</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/ruang-bk" target="_blank" rel="noopener">BK</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/perpus-saba" target="_blank" rel="noopener">Perpustakaan</a>
+        </div>
+        <div class="footer-col">
+          <h5>Laboratorium</h5>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/labbiologi" target="_blank" rel="noopener">Biologi</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/lab-fisika" target="_blank" rel="noopener">Fisika</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/lab-kimia" target="_blank" rel="noopener">Kimia</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/lab-bahasa" target="_blank" rel="noopener">Bahasa</a>
+          <a href="https://sites.google.com/sman1batujajar.sch.id/labkomputer" target="_blank" rel="noopener">Komputer</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 SMA Negeri 1 Batujajar</span>
+      <span>Kabupaten Bandung Barat · Jawa Barat</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); }
+      });
+    }, {threshold:0.15});
+    document.querySelectorAll('.card, .step').forEach(el=>io.observe(el));
+  } else {
+    document.querySelectorAll('.card, .step').forEach(el=>el.classList.add('in-view'));
+  }
+</script>
+
+</body>
+</html>
