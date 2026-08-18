@@ -137,13 +137,13 @@
   }
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
 
-  /* ---------------- stats ---------------- */
+  /* ---------------- stats (Visi HEBAT) ---------------- */
   .stats{
     background:var(--white);
     border-bottom:1px solid var(--line);
   }
   .stats-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);
+    display:grid;grid-template-columns:repeat(5,1fr);
     padding:34px 0;
   }
   .stat{text-align:center;padding:0 12px;border-right:1px solid var(--line);}
@@ -308,10 +308,39 @@
     .hero{padding-top:70px;}
     .section{padding:64px 0;}
   }
+
+  /* ---------------- sub-page: Ruang Kepala Sekolah / Ruang Guru ---------------- */
+
+  .visi-card{
+    background:var(--white);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow-card);padding:38px 40px;max-width:900px;margin:0 auto 20px;
+  }
+  .visi-card h3{font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--orange-dark);margin:0 0 14px;}
+  .visi-card p{font-size:15.5px;line-height:1.85;color:var(--ink);margin:0 0 22px;}
+  .satria-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:6px;}
+  .satria-item:last-child:nth-child(odd){grid-column:1 / -1;}
+  .satria-item{display:flex;gap:12px;align-items:flex-start;background:var(--bg-light);border-radius:12px;padding:12px 14px;}
+  .satria-letter{width:32px;height:32px;border-radius:9px;background:var(--navy-800);color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;}
+  .satria-item div p{margin:0;font-size:13.3px;line-height:1.55;color:var(--muted);}
+  .satria-item div b{color:var(--ink);font-family:'Poppins',sans-serif;font-size:13.5px;}
+  @media (max-width:700px){ .satria-grid{grid-template-columns:1fr;} .visi-card{padding:28px 22px;} }
+
+  .misi-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .misi-list li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.65;color:var(--ink);}
+  .misi-num{width:26px;height:26px;border-radius:50%;background:#FFF1DC;color:var(--orange-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;margin-top:1px;}
+  .tujuan-indikator{font-size:12.5px;line-height:1.6;color:var(--muted);margin-top:4px;}
+
+  .tujuan-note{border-left:3px solid var(--orange);background:#FFF8EC;border-radius:0 12px 12px 0;padding:14px 18px;font-size:13.2px;line-height:1.7;color:var(--muted);margin-top:22px;}
+  .tujuan-note b{color:var(--ink);font-family:'Poppins',sans-serif;}
+
+  .subpage-cards{display:grid;grid-template-columns:repeat(4, 1fr);gap:16px;}
+  .subpage-cards.five{grid-template-columns:repeat(5, 1fr);}
+  @media (max-width:1080px){ .subpage-cards.five{grid-template-columns:repeat(3, 1fr);} }
+  @media (max-width:900px){ .subpage-cards{grid-template-columns:repeat(2, 1fr);} }
+  @media (max-width:460px){ .subpage-cards{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
-
 <header>
   <div class="wrap header-row">
     <div class="brand">
@@ -324,13 +353,15 @@
       </div>
     </div>
     <nav class="main-nav">
-      <a href="#ruang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-7h6v7"/></svg>Ruang Layanan</a>
-      <a href="#lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Laboratorium</a>
-      <a href="#tentang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 8v.01"/></svg>Tentang</a>
-      <a href="#cara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6 6-2Z"/></svg>Cara Pakai</a>
+      <a href="#ruang" onclick="showPage('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-7h6v7"/></svg>Ruang Layanan</a>
+      <a href="#lab" onclick="showPage('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Laboratorium</a>
+      <a href="#tentang" onclick="showPage('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 8v.01"/></svg>Tentang</a>
+      <a href="#cara" onclick="showPage('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6 6-2Z"/></svg>Cara Pakai</a>
     </nav>
   </div>
 </header>
+
+<main id="page-home">
 
 <section class="hero">
   <div class="hero-photo"></div>
@@ -351,10 +382,11 @@
 
 <section class="stats">
   <div class="wrap stats-grid">
-    <div class="stat"><div class="num">5</div><div class="label">Ruang Layanan</div></div>
-    <div class="stat"><div class="num">5</div><div class="label">Laboratorium</div></div>
-    <div class="stat"><div class="num">10</div><div class="label">Tautan Aktif</div></div>
-    <div class="stat"><div class="num">1</div><div class="label">Portal Sekolah</div></div>
+    <div class="stat"><div class="num">H</div><div class="label">Humanis</div></div>
+    <div class="stat"><div class="num">E</div><div class="label">Edukatif</div></div>
+    <div class="stat"><div class="num">B</div><div class="label">Berakhlak Mulia</div></div>
+    <div class="stat"><div class="num">A</div><div class="label">Adaptif</div></div>
+    <div class="stat"><div class="num">T</div><div class="label">Tangguh</div></div>
   </div>
 </section>
 
@@ -372,7 +404,7 @@
           <h3>Ruang Kepala Sekolah</h3>
         </div>
         <p>Informasi kebijakan, sambutan, dan arah pengembangan sekolah dari pimpinan SMANSATA.</p>
-        <a class="card-btn orange" href="https://portal-saba.my.canva.site/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn orange" href="#page-kepsek" onclick="showPage('kepsek');return false;">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
 
       <div class="card">
@@ -381,7 +413,7 @@
           <h3>Ruang Guru</h3>
         </div>
         <p>Sarana, prasarana, dan dokumen kerja guru untuk menunjang kegiatan belajar-mengajar.</p>
-        <a class="card-btn blue" href="https://portal-saba.my.canva.site/sarpras" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn blue" href="#page-guru" onclick="showPage('guru');return false;">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
 
       <div class="card">
@@ -553,6 +585,201 @@
   </div>
 </section>
 
+</main>
+
+<main id="page-kepsek" style="display:none;">
+
+<section class="hero" style="padding-bottom:70px;">
+  <div class="hero-photo"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="eyebrow"><span class="dot"></span>Ruang Layanan</div>
+      <h1>Ruang <span>Kepala Sekolah</span></h1>
+      <p>Visi, misi, dan arah tujuan SMA Negeri 1 Batujajar, serta akses ke ruang-ruang layanan di bawah koordinasi pimpinan sekolah.</p>
+      <div class="hero-actions">
+        <a class="btn btn-ghost" href="#" onclick="showPage('home');return false;">← Kembali ke RUMANSA</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Visi, Misi & <span>Tujuan</span> Sekolah</h2>
+      <p>Arah dan cita-cita SMA Negeri 1 Batujajar sebagaimana dirumuskan dalam dokumen profil sekolah.</p>
+    </div>
+
+    <div class="visi-card">
+      <h3>Visi Sekolah</h3>
+      <p>Mewujudkan SMA Negeri 1 Batujajar yang <b>"HEBAT"</b> — Humanis, Edukatif, Berakhlak Mulia, Adaptif, dan Tangguh.</p>
+
+      <div class="satria-grid">
+        <div class="satria-item"><div class="satria-letter">H</div><div><b>Humanis</b><p>Mengedepankan sikap saling menghormati dan peduli.</p></div></div>
+        <div class="satria-item"><div class="satria-letter">E</div><div><b>Edukatif</b><p>Proses pembelajaran berpusat pada peserta didik.</p></div></div>
+        <div class="satria-item"><div class="satria-letter">B</div><div><b>Berakhlak Mulia</b><p>Menjunjung nilai-nilai akhlak dan religiusitas.</p></div></div>
+        <div class="satria-item"><div class="satria-letter">A</div><div><b>Adaptif</b><p>Tanggap terhadap perkembangan ilmu dan teknologi.</p></div></div>
+        <div class="satria-item"><div class="satria-letter">T</div><div><b>Tangguh</b><p>Memiliki daya juang tinggi dalam belajar dan berkarya.</p></div></div>
+      </div>
+    </div>
+
+    <div class="visi-card">
+      <h3>Misi Sekolah</h3>
+      <ul class="misi-list">
+        <li><span class="misi-num">1</span>Menyelenggarakan proses pembelajaran yang edukatif dan berpusat pada peserta didik untuk mengoptimalkan pencapaian kompetensi akademik.</li>
+        <li><span class="misi-num">2</span>Mengembangkan program penguatan literasi dan numerasi secara berkelanjutan untuk meningkatkan mutu lulusan.</li>
+        <li><span class="misi-num">3</span>Menanamkan nilai-nilai akhlak mulia dan religius dalam setiap kegiatan sekolah untuk membentuk karakter peserta didik yang beriman dan bertakwa.</li>
+        <li><span class="misi-num">4</span>Membekali peserta didik dengan keterampilan adaptif terhadap perkembangan ilmu pengetahuan dan teknologi melalui pembelajaran berbasis inovasi.</li>
+        <li><span class="misi-num">5</span>Melatih ketangguhan dan daya juang peserta didik melalui kegiatan kokurikuler dan ekstrakurikuler yang menantang dan mendidik.</li>
+        <li><span class="misi-num">6</span>Membudayakan sikap humanis melalui penguatan rasa saling menghormati, empati, dan kepedulian antarwarga sekolah.</li>
+        <li><span class="misi-num">7</span>Membangun lingkungan sekolah yang nyaman, aman, dan mendukung tumbuh kembang peserta didik secara humanis.</li>
+        <li><span class="misi-num">8</span>Menjalin kemitraan dengan orang tua, masyarakat, dan dunia usaha/industri untuk mendukung pengembangan sekolah yang adaptif dan tangguh.</li>
+      </ul>
+    </div>
+
+    <div class="visi-card">
+      <h3>Tujuan Sekolah</h3>
+      <ul class="misi-list">
+        <li><span class="misi-num">1</span><div><div>Meningkatnya kompetensi akademik peserta didik pada seluruh mata pelajaran.</div><div class="tujuan-indikator">Indikator (4 tahun): rata-rata nilai asesmen sumatif naik menjadi minimal 80 dan tingkat kelulusan mencapai 100%.</div></div></li>
+        <li><span class="misi-num">2</span><div><div>Meningkatnya kemampuan literasi dan numerasi peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): skor literasi &amp; numerasi ANBK kategori "Baik" atau lebih, naik minimal 10%.</div></div></li>
+        <li><span class="misi-num">3</span><div><div>Terbentuknya karakter peserta didik yang religius dan berakhlak mulia.</div><div class="tujuan-indikator">Indikator (4 tahun): minimal 90% peserta didik aktif dalam pembiasaan keagamaan harian, tanpa pelanggaran berat tata tertib.</div></div></li>
+        <li><span class="misi-num">4</span><div><div>Meningkatnya kemampuan adaptasi peserta didik dan pendidik terhadap perkembangan IPTEK.</div><div class="tujuan-indikator">Indikator (4 tahun): seluruh guru menerapkan pembelajaran berbasis TIK/digital, minimal 70% peserta didik mandiri memanfaatkan platform digital.</div></div></li>
+        <li><span class="misi-num">5</span><div><div>Meningkatnya ketangguhan, kemandirian, dan daya juang peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): partisipasi kokurikuler/ekstrakurikuler minimal 80%, prestasi non-akademik meningkat tiap tahun.</div></div></li>
+        <li><span class="misi-num">6</span><div><div>Terwujudnya budaya sekolah yang humanis dan bebas perundungan.</div><div class="tujuan-indikator">Indikator (4 tahun): kasus perundungan nol, survei iklim sekolah kategori "aman dan nyaman" minimal 90%.</div></div></li>
+        <li><span class="misi-num">7</span><div><div>Terwujudnya lingkungan sekolah yang aman, nyaman, dan mendukung tumbuh kembang peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): standar sarana-prasarana ramah anak terpenuhi, hasil audit keselamatan sekolah kategori "baik" setiap tahun.</div></div></li>
+        <li><span class="misi-num">8</span><div><div>Terjalinnya kemitraan yang efektif dengan orang tua, masyarakat, dan dunia usaha/industri.</div><div class="tujuan-indikator">Indikator (4 tahun): minimal 4 program kemitraan aktif per tahun (magang/PKL, beasiswa, forum orang tua, kunjungan industri).</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Ruang <span>Layanan Terkait</span></h2>
+      <p>Akses langsung ke ruang-ruang di bawah koordinasi Kepala Sekolah.</p>
+    </div>
+
+    <div class="subpage-cards">
+      <div class="card">
+        <div class="card-head">
+          <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+          <h3>Kurikulum</h3>
+        </div>
+        <p>Struktur, perangkat, dan kebijakan kurikulum SMA Negeri 1 Batujajar.</p>
+        <a class="card-btn orange" href="https://sites.google.com/view/kurikulumsman1batujajar/home" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 13.2a5.2 5.2 0 0 1 6 6.8"/></svg></div>
+          <h3>Kesiswaan</h3>
+        </div>
+        <p>Kegiatan, pembinaan, dan layanan kesiswaan sekolah.</p>
+        <a class="card-btn blue" href="https://sites.google.com/sman1batujajar.sch.id/kesiswaan" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
+          <h3>Sarana Prasarana</h3>
+        </div>
+        <p>Data dan pengelolaan sarana serta prasarana sekolah.</p>
+        <a class="card-btn purple" href="https://portal-saba.my.canva.site/sarpras" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11a9 9 0 0 1 18 0v6a2 2 0 0 1-2 2h-1v-7h3M3 17v-6h3v7H4a1 1 0 0 1-1-1Z"/></svg></div>
+          <h3>Humas</h3>
+        </div>
+        <p>Informasi publik dan hubungan masyarakat sekolah.</p>
+        <a class="card-btn teal" href="https://sites.google.com/sman1batujajar.sch.id/humas" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<main id="page-guru" style="display:none;">
+
+<section class="hero" style="padding-bottom:70px;">
+  <div class="hero-photo"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="eyebrow"><span class="dot"></span>Ruang Layanan</div>
+      <h1>Ruang <span>Guru</span></h1>
+      <p>Kumpulan dokumen kerja dan administrasi guru SMA Negeri 1 Batujajar dalam satu akses terpadu.</p>
+      <div class="hero-actions">
+        <a class="btn btn-ghost" href="#" onclick="showPage('home');return false;">← Kembali ke RUMANSA</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Dokumen & <span>Administrasi Guru</span></h2>
+      <p>Pilih kartu di bawah untuk membuka layanan yang dibutuhkan.</p>
+    </div>
+
+    <div class="subpage-cards five">
+      <div class="card">
+        <div class="card-head">
+          <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+          <h3>Agenda Guru</h3>
+        </div>
+        <p>Rekap agenda kegiatan guru sepanjang tahun ajaran.</p>
+        <a class="card-btn orange" href="https://kangcen.my.canva.site/recap-agenda-guru-2025" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+          <h3>Administrasi Guru</h3>
+        </div>
+        <p>Perangkat dan dokumen administrasi pembelajaran guru.</p>
+        <a class="card-btn blue" href="https://adm-guru-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></div>
+          <h3>Absensi Siswa</h3>
+        </div>
+        <p>Rekap kehadiran siswa untuk kebutuhan pembelajaran.</p>
+        <a class="card-btn purple" href="https://absensi-siswa-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 13.2a5.2 5.2 0 0 1 6 6.8"/></svg></div>
+          <h3>Guru Wali</h3>
+        </div>
+        <p>Dokumen dan pendampingan wali kelas untuk siswa binaan.</p>
+        <a class="card-btn green" href="https://wali-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5v-13Z"/></svg></div>
+          <h3>7 KAIH</h3>
+        </div>
+        <p>Ruang khusus kelas 7 KAIH untuk dokumen dan kegiatan terkait.</p>
+        <a class="card-btn teal" href="https://saba7kaih.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
 <footer>
   <div class="wrap">
     <div class="footer-top">
@@ -568,8 +795,8 @@
       <div class="footer-cols">
         <div class="footer-col">
           <h5>Ruang Layanan</h5>
-          <a href="https://portal-saba.my.canva.site/" target="_blank" rel="noopener">Kepala Sekolah</a>
-          <a href="https://portal-saba.my.canva.site/sarpras" target="_blank" rel="noopener">Guru</a>
+          <a href="#page-kepsek" onclick="showPage('kepsek');return false;">Kepala Sekolah</a>
+          <a href="#page-guru" onclick="showPage('guru');return false;">Guru</a>
           <a href="https://sites.google.com/sman1batujajar.sch.id/tatausaha" target="_blank" rel="noopener">Tata Usaha</a>
           <a href="https://sites.google.com/sman1batujajar.sch.id/ruang-bk" target="_blank" rel="noopener">BK</a>
           <a href="https://sites.google.com/sman1batujajar.sch.id/perpus-saba" target="_blank" rel="noopener">Perpustakaan</a>
@@ -592,6 +819,13 @@
 </footer>
 
 <script>
+  function showPage(name){
+    document.getElementById('page-home').style.display = (name === 'home') ? '' : 'none';
+    document.getElementById('page-kepsek').style.display = (name === 'kepsek') ? '' : 'none';
+    document.getElementById('page-guru').style.display = (name === 'guru') ? '' : 'none';
+    window.scrollTo(0, 0);
+  }
+
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{
