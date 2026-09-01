@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Lab Virtual – Enzim Katalase</title><!-- v20260311_063805 -->
+<title>Lab Maya – Enzim Katalase</title><!-- v20260311_063805 -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -275,7 +275,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(22,163,74,.1);}
   <div class="load-sub">Enzim Katalase</div>
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
   <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 
@@ -384,12 +384,12 @@ function startPraktikum(){
       <div style="position:relative;z-index:1;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Enzim Katalase</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Enzim Katalase</div>
           </div>
         </div>
         <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#93c5fd);border-radius:2px;margin-bottom:10px;"></div>
         <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
-          Selamat datang di laboratorium virtual. Pelajari cara kerja <strong style="color:#93c5fd;">enzim katalase</strong> secara interaktif — dari teori, simulasi, hingga diskusi hasil percobaan.
+          Selamat datang di laboratorium maya. Pelajari cara kerja <strong style="color:#93c5fd;">enzim katalase</strong> secara interaktif — dari teori, simulasi, hingga diskusi hasil percobaan.
         </p>
       </div>
     </div>
@@ -1590,7 +1590,7 @@ function printDiskusi(){
     </div>`).join('');
   const html=`<!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8">
-<title>Diskusi – Lab Virtual Enzim Katalase</title>
+<title>Diskusi – Lab Maya Enzim Katalase</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -1611,13 +1611,13 @@ function printDiskusi(){
 </style>
 </head><body>
 <div class="header">
-  <div class="lab-title">🔬 Lab Virtual – Enzim Katalase</div>
+  <div class="lab-title">🔬 Lab Maya – Enzim Katalase</div>
   <div class="lab-sub">Percobaan Enzim Katalase · Pertanyaan Diskusi Hasil Percobaan</div>
   <div class="meta">📅 Dicetak pada: ${tgl}</div>
 </div>
 <div class="section-title">Jawaban Diskusi</div>
 ${rows}
-<div class="footer">Lab Maya Biologi · Dicetak dari aplikasi Lab Virtual Enzim Katalase</div>
+<div class="footer">Lab Maya Biologi · Dicetak dari aplikasi Lab Maya Enzim Katalase</div>
 <script>window.onload=function(){window.print();}` + `<\/script>
 </body></html>`;
   const w=window.open('','_blank','width=900,height=700');
