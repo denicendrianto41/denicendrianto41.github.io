@@ -54,6 +54,9 @@ nav::-webkit-scrollbar{display:none;}
 .scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.fit-inner{transform-origin:top left;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
@@ -279,7 +282,7 @@ nav::-webkit-scrollbar{display:none;}
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_jamur.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
@@ -449,7 +452,8 @@ document.addEventListener('click',function(e){
      TUJUAN
 ══════════════════════════════════════════ -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <!-- Hero Banner -->
     <div style="
@@ -573,13 +577,15 @@ document.addEventListener('click',function(e){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
      TEORI
 ══════════════════════════════════════════ -->
 <div id="page-teori" class="page">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" style="overflow:hidden;padding:10px 14px 14px;">
+  <div class="fit-inner">
 
     <!-- Teori Header -->
     <div style="
@@ -742,6 +748,7 @@ document.addEventListener('click',function(e){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -749,80 +756,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
-        <div id="drag-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
-          <div class="drag-item" data-id="beaker" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/beker_glass.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Beaker</div>
-            <div style="font-size:9.5px;color:var(--text3);">250 mL</div>
-          </div>
-          <div class="drag-item" data-id="microscope" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/mikroskop.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Mikroskop</div>
-            <div style="font-size:9.5px;color:var(--text3);">Compound</div>
-          </div>
-          <div class="drag-item" data-id="glassslide" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/kaca_objek.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Kaca Preparat</div>
-            <div style="font-size:9.5px;color:var(--text3);">Object Glass</div>
-          </div>
-          <div class="drag-item" data-id="coverslip" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/kaca_penutup.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Kaca Penutup</div>
-            <div style="font-size:9.5px;color:var(--text3);">Cover Glass</div>
-          </div>
-          <div class="drag-item" data-id="dropper" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/pipet.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Pipet Tetes</div>
-            <div style="font-size:9.5px;color:var(--text3);">Dropper</div>
-          </div>
-          <div class="drag-item" data-id="glassrod" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/pengaduk.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Batang Pengaduk</div>
-            <div style="font-size:9.5px;color:var(--text3);">Glass rod</div>
-          </div>
-          <div class="drag-item" data-id="spatula" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/spatula.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Sendok Spatula</div>
-            <div style="font-size:9.5px;color:var(--text3);">Spatula</div>
-          </div>
-          <div class="drag-item" data-id="yeast" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/ragi.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Ragi Kering</div>
-            <div style="font-size:9.5px;color:var(--text3);">Yeast powder</div>
-          </div>
-          <div class="drag-item" data-id="sugar" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/gula.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Gula</div>
-            <div style="font-size:9.5px;color:var(--text3);">Sukrosa</div>
-          </div>
-          <div class="drag-item" data-id="warmwater" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/air.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Air Hangat</div>
-            <div style="font-size:9.5px;color:var(--text3);">~37°C</div>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
-        <div class="ch"><div class="ci y">🔬</div><div class="ct">Meja Percobaan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
-        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat</div>
-        <div id="drop-alat" data-zone="alat" style="min-height:110px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s;margin-bottom:10px;position:relative;">
-          <span id="hint-alat" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag alat ke sini</span>
-        </div>
-        <div style="font-size:10px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🧫 Bahan</div>
-        <div id="drop-bahan" data-zone="bahan" style="min-height:110px;border:2px dashed #86efac;border-radius:10px;background:#f0fdf4;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s;position:relative;">
-          <span id="hint-bahan" style="color:#86efac;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag bahan ke sini</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ch"><div class="ci y">💡</div><div class="ct">Catatan Persiapan</div></div>
-      <p>Gunakan <strong>air hangat (±37°C)</strong> — bukan mendidih. Larutkan gula dahulu, lalu tambahkan ragi. Inkubasi ±45 menit di tempat hangat agar ragi aktif dan mulai bertunas sebelum diamati di mikroskop.</p>
-    </div>
+    <img src="https://denicendrianto41.github.io/mejalab_ragi.png" alt="Alat dan Bahan Percobaan Reproduksi Sel Ragi" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -830,29 +764,8 @@ document.addEventListener('click',function(e){
      PROSEDUR
 ══════════════════════════════════════════ -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <div class="card" style="margin-bottom:0;overflow-y:auto;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Simulasi</div></div>
-        <div id="simSteps"></div>
-      </div>
-      <div class="card" style="margin-bottom:0;overflow-y:auto;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-        <ul class="olist" style="font-size:11px;">
-          <li>Gunakan air hangat (±37°C), bukan air mendidih</li>
-          <li>Larutkan gula sebelum menambahkan ragi</li>
-          <li>Inkubasi minimal 45 menit agar ragi aktif</li>
-          <li>Hindari gelembung saat menutup kaca preparat</li>
-          <li>Mulai fokus dengan pembesaran kasar, lalu halus</li>
-          <li>Klik ℹ untuk membaca informasi gambar mikroskop</li>
-          <li>Klik Next untuk lanjut ke pelabelan sel</li>
-        </ul>
-        <div class="notebox" style="margin-top:10px;">
-          <div class="nt">🔭 Hasil Pengamatan</div>
-          <p>Terlihat sel ragi bulat kecil. Beberapa memiliki tonjolan bulat (tunas/bud). Ada yang terlihat seperti rantai 3–4 sel berhubungan — ini adalah budding berulang.</p>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_ragi.png" alt="Prosedur Percobaan Reproduksi Sel Ragi" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -2305,10 +2218,51 @@ function show(id,btn){
   if(id==='simulasi'){
     setTimeout(()=>{try{if(typeof initSim==='function')initSim();}catch(e){}},80);
   }
+  if(id==='tujuan'||id==='teori'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
 }
 document.addEventListener('click',function(e){
   if(!e.target.closest('nav')&&!e.target.closest('#menuToggle'))
     document.getElementById('mainNav').classList.remove('open');
+});
+
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa scroll ══
+function fitToContainer(container){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom;
+  const naturalH = inner.scrollHeight;
+  if(availH <= 0 || naturalH <= 0) return;
+  let scale = availH / naturalH;
+  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
+}
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'));
+  }else if(id==='teori'){
+    fitToContainer(document.querySelector('#page-teori > .scroll'));
+  }
+}
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori') fitPage(id);
+  });
+}
+window.addEventListener('load', ()=>{ fitPage('tujuan'); });
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 120);
 });
 
 // ══════════════════════════════════════════
@@ -2324,8 +2278,10 @@ const simSteps=[
   {svg:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="10" r="6" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="10" r="1" fill="currentColor"/><path d="M12 16v5M9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 10H3M21 10h-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,text:'Atur fokus mikroskop hingga sel ragi dan proses <em>budding</em> tampak jelas.'},
 ];
 (function(){
+  const simStepsEl=document.getElementById('simSteps');
+  if(!simStepsEl)return;
   const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea','#0284c7','#2563eb','#7c3aed','#0891b2','#059669','#d97706'];
-  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
+  simStepsEl.innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
     const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===simSteps.length-1,right=i%2===0;
     return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
       ${right?`
