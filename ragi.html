@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Virtual – Reproduksi Sel Ragi</title>
+<title>Lab Maya – Reproduksi Sel Ragi</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -370,13 +370,13 @@ body.is-fullscreen .viewport{padding:0}
   <div class="load-sub">Reproduksi Sel Ragi</div>
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
   <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 <script>
 (function(){
   const bar=document.getElementById('loadBar'),pct=document.getElementById('loadPercent'),status=document.getElementById('loadStatus');
-  const msgs=['Memuat laboratorium virtual…','Menyiapkan alat percobaan…','Memuat gambar sel ragi…','Menginisialisasi simulasi…'];
+  const msgs=['Memuat laboratorium maya…','Menyiapkan alat percobaan…','Memuat gambar sel ragi…','Menginisialisasi simulasi…'];
   let cur=0,mi=0;const total=3000,step=20,inc=100/(total/step);
   const iv=setInterval(()=>{
     cur=Math.min(100,cur+inc);const v=Math.floor(cur);
@@ -472,13 +472,13 @@ document.addEventListener('click',function(e){
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
        
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Reproduksi Sel Ragi</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Reproduksi Sel Ragi</div>
            
           </div>
         </div>
         <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
         <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
-          Selamat datang di laboratorium virtual. Pelajari proses <strong style="color:#93c5fd;">pertunasan (budding)</strong> ragi secara interaktif — dari teori, simulasi, hingga pengamatan di bawah mikroskop.
+          Selamat datang di laboratorium maya. Pelajari proses <strong style="color:#93c5fd;">pertunasan (budding)</strong> ragi secara interaktif — dari teori, simulasi, hingga pengamatan di bawah mikroskop.
         </p>
       </div>
     </div>
@@ -3073,7 +3073,7 @@ function printDiskusi(){
     </div>`).join('');
   const html=`<!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8">
-<title>Diskusi – Lab Virtual Reproduksi Sel Ragi</title>
+<title>Diskusi – Lab Maya Reproduksi Sel Ragi</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -3097,13 +3097,13 @@ function printDiskusi(){
 </style>
 </head><body>
 <div class="header">
-  <div class="lab-title">&#x1F52C; Lab Virtual – Reproduksi Sel Ragi</div>
+  <div class="lab-title">&#x1F52C; Lab Maya – Reproduksi Sel Ragi</div>
   <div class="lab-sub">Kelas X Fungi · Pertanyaan Diskusi Hasil Percobaan</div>
   <div class="meta">&#x1F4C5; Dicetak pada: ${tgl}</div>
 </div>
 <div class="section-title">Jawaban Diskusi</div>
 ${rows}
-<div class="footer">Lab Maya Biologi · SMAN 1 Batujajar · Dicetak dari aplikasi Lab Virtual</div>
+<div class="footer">Lab Maya Biologi · SMAN 1 Batujajar · Dicetak dari aplikasi Lab Maya</div>
 <script>window.onload=function(){window.print();}` + `<\/script>
 </body></html>`;
   const w=window.open('','_blank','width=900,height=700');
