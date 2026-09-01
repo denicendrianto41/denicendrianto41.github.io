@@ -103,10 +103,15 @@ nav::-webkit-scrollbar{display:none;}
 .card p:last-child{margin-bottom:0;}
 .card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+#page-tujuan .scroll{overflow:hidden;}
+#page-teori .scroll{overflow:hidden;display:flex;flex-direction:column;}
 #page-teori .card p{font-size:clamp(11px,1.1vw,13px);line-height:1.55;margin-bottom:4px;}
 #page-teori .card h4{margin:6px 0 3px;}
 #page-teori .two-col{gap:5px;}
 #page-teori .card{margin-bottom:5px;padding:9px 12px;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+.fit-inner{transform-origin:top left;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 .fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
 .fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
@@ -208,7 +213,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 }
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_kuadrat.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2.5vw,26px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
@@ -289,6 +294,7 @@ function startPraktikum(){
     document.getElementById('page-tujuan').classList.add('active');
     const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
     if(tujuanBtn) tujuanBtn.classList.add('active');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('tujuan')));
   },650);
 }
 </script>
@@ -342,6 +348,7 @@ document.addEventListener('click',function(e){
 <!-- ========================= TUJUAN ========================= -->
 <div id="page-tujuan" class="page">
   <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <!-- Hero Banner -->
     <div style="background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
@@ -425,11 +432,13 @@ document.addEventListener('click',function(e){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ========================= TEORI ========================= -->
 <div id="page-teori" class="page">
-  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 10px;">
+  <div class="scroll" style="padding:10px 14px 10px;">
+  <div class="fit-inner">
 
     <!-- Teori Header -->
     <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);border-radius:12px;padding:12px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(15,36,96,0.22);position:relative;overflow:hidden;flex-shrink:0;">
@@ -609,121 +618,13 @@ document.addEventListener('click',function(e){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ========================= ALAT & BAHAN ========================= -->
 <div id="page-alatbahan" class="page">
-  <div style="flex:1;overflow:hidden;padding:7px 12px 8px;display:flex;flex-direction:column;gap:6px;">
-
-    <!-- Top: Daftar + Meja Percobaan -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;min-height:0;overflow:hidden;">
-
-      <!-- Kiri: Daftar Alat & Bahan -->
-      <div class="card" style="margin-bottom:0;padding:9px 12px;display:flex;flex-direction:column;overflow:hidden;">
-        <div class="ch" style="margin-bottom:5px;flex-shrink:0;"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:6px;flex-shrink:0;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
-
-        <!-- Alat & Bahan (digabung) -->
-        <div id="drag-alat-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;margin-bottom:8px;flex-shrink:0;">
-          <div class="drag-item" draggable="true" data-id="tali" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/tali.png" alt="Tali" style="width:32px;height:32px;object-fit:contain;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tali</div>
-            <div style="font-size:9.5px;color:var(--text3);">Batas kuadrat</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="paku" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/paku.png" alt="Paku/Pasak" style="width:32px;height:32px;object-fit:contain;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Paku/Pasak</div>
-            <div style="font-size:9.5px;color:var(--text3);">Penanda sudut</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="palu" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/palu.png" alt="Palu" style="width:32px;height:32px;object-fit:contain;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Palu</div>
-            <div style="font-size:9.5px;color:var(--text3);">Pasang paku</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="meteran" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;"><img src="https://denicendrianto41.github.io/meteran.png" alt="Meteran" style="width:32px;height:32px;object-fit:contain;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Meteran</div>
-            <div style="font-size:9.5px;color:var(--text3);">1 m × 1 m</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="clipboard" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">📋</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Lembar Data</div>
-            <div style="font-size:9.5px;color:var(--text3);">Tabel pengamatan</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="pensil" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">✏️</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Alat Tulis</div>
-            <div style="font-size:9.5px;color:var(--text3);">Pencatat data</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="tumbuhan" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">🌿</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tumbuhan</div>
-            <div style="font-size:9.5px;color:var(--text3);">Objek penelitian</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="lok-sekolah" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">🏫</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Halaman Sekolah</div>
-            <div style="font-size:9.5px;color:var(--text3);">Lokasi 1</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="lok-rumah" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">🏠</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Halaman Rumah</div>
-            <div style="font-size:9.5px;color:var(--text3);">Lokasi 2</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="lok-jalanan" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">🛣️</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tepi Jalan</div>
-            <div style="font-size:9.5px;color:var(--text3);">Lokasi 3</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="lok-sungai" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">🌊</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tepi Sungai</div>
-            <div style="font-size:9.5px;color:var(--text3);">Lokasi 4</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="lok-pabrik" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:3px;">🏭</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Kaw. Pabrik</div>
-            <div style="font-size:9.5px;color:var(--text3);">Lokasi 5</div>
-          </div>
-        </div>
-        <div id="drag-bahan-src" style="display:none;"></div>
-
-        <!-- Catatan Penting ringkas -->
-        <div class="notebox" style="margin-top:6px;flex-shrink:0;">
-          <div class="nt">💡 Catatan Penting</div>
-          <p style="font-size:10.5px;">Ukuran kuadrat standar <strong>1 m × 1 m</strong>. Tempatkan secara <strong>acak</strong> untuk menghindari bias. Identifikasi semua spesies sebelum pengamatan dimulai.</p>
-        </div>
-      </div>
-
-      <!-- Kanan: Meja Percobaan -->
-      <div class="card" style="margin-bottom:0;padding:9px 12px;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);display:flex;flex-direction:column;overflow:hidden;">
-        <div class="ch" style="margin-bottom:5px;flex-shrink:0;"><div class="ci y">🔬</div><div class="ct">Meja Percobaan</div></div>
-
-        <!-- Progress bar -->
-        <div id="ab-progress-wrap" style="flex-shrink:0;margin-bottom:6px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-            <span style="font-size:9.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Progress</span>
-            <span id="ab-progress-label" style="font-size:9.5px;font-weight:700;color:var(--acc);">0 / 14 item</span>
-          </div>
-          <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;">
-            <div id="ab-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#10b981);border-radius:3px;transition:width .4s ease;"></div>
-          </div>
-        </div>
-
-        <!-- Drop zone alat -->
-        <div style="font-size:9.5px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;flex-shrink:0;">⚙️ Alat Percobaan</div>
-        <div id="drop-alat" data-zone="alat" style="min-height:110px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-bottom:10px;position:relative;transition:background .2s;">
-          <span id="drop-alat-hint" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag alat ke sini</span>
-        </div>
-
-        <!-- Drop zone bahan -->
-        <div style="font-size:9.5px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;flex-shrink:0;">🌿 Bahan &amp; Lokasi Penelitian</div>
-        <div id="drop-bahan" data-zone="bahan" style="min-height:110px;border:2px dashed #86efac;border-radius:10px;background:#f0fdf4;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;position:relative;transition:background .2s;">
-          <span id="drop-bahan-hint" style="color:#86efac;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag bahan &amp; lokasi ke sini</span>
-        </div>
-      </div>
-    </div>
-
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/mejalab_kuadrat.png" alt="Alat dan Bahan Percobaan Metode Kuadrat" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -750,32 +651,8 @@ document.addEventListener('click',function(e){
 
 <!-- ========================= PROSEDUR ========================= -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <div class="card" style="margin-bottom:0;overflow:auto;">
-        <div class="ch"><div class="ci b">📋</div><div class="ct">Langkah Prosedur</div></div>
-        <div id="simSteps" style="display:flex;flex-direction:column;gap:6px;"></div>
-        <div class="notebox" style="margin-top:8px;">
-          <div class="nt">Rumus Penting</div>
-          <p>%Frekuensi = (N / Q) × 100<br>N = kuadrat yang mengandung spesies, Q = total kuadrat</p>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
-        <div class="ch"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-        <ul class="olist" style="font-size:11px;">
-          <li>Pasang paku <strong>tanpa merusak vegetasi</strong> yang ada</li>
-          <li>Tempatkan kuadrat secara <strong>acak</strong>, bukan di area yang sudah diketahui padat</li>
-          <li>Catat keberadaan spesies dengan <strong>Y (ada)</strong> atau <strong>N (tidak ada)</strong></li>
-          <li>Identifikasi spesies dengan cermat sebelum mencatat</li>
-          <li>Gunakan minimal <strong>7 kuadrat</strong> agar data representatif</li>
-          <li>Ulangi percobaan dengan lingkungan berbeda untuk perbandingan</li>
-        </ul>
-        <div class="notebox" style="margin-top:8px;">
-          <div class="nt">Prosedur Lab Nyata</div>
-          <p>1. Pilih lokasi penelitian. 2. Pasang 4 paku membentuk kuadrat 1×1 m. 3. Ikat tali ke setiap paku. 4. Buat 6 kuadrat lagi secara acak. 5. Amati dan catat spesies di tiap kuadrat. 6. Hitung frekuensi setiap spesies.</p>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_kuadrat.png" alt="Prosedur Percobaan Metode Kuadrat" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -957,7 +834,52 @@ function show(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='simulasi')setTimeout(()=>{resizeCanvases();drawScene();buildPins();},40);
+  if(id==='tujuan'||id==='teori'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
 }
+
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa scroll ══
+function fitToContainer(container){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom;
+  const naturalH = inner.scrollHeight;
+  if(availH <= 0 || naturalH <= 0) return;
+  let scale = availH / naturalH;
+  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
+}
+
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'));
+  }else if(id==='teori'){
+    fitToContainer(document.querySelector('#page-teori > .scroll'));
+  }else if(id==='prosedur'){
+    document.querySelectorAll('#page-prosedur .card').forEach(fitToContainer);
+  }
+}
+
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori'||id==='prosedur') fitPage(id);
+  });
+}
+
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 120);
+});
 
 // ===================== PROSEDUR STEPS =====================
 const simSteps=[
@@ -970,8 +892,10 @@ const simSteps=[
   {emoji:'🔬',text:'Ganti lingkungan dan <strong>bandingkan</strong> distribusi spesies antar ekosistem.'},
 ];
 (function buildSteps(){
+  const stepsContainer=document.getElementById('simSteps');
+  if(!stepsContainer) return;
   const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea'];
-  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
+  stepsContainer.innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
     const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===simSteps.length-1,right=i%2===0;
     return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
       ${right?`
