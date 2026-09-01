@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Virtual – Kunci Determinasi</title>
+<title>Lab Maya – Kunci Determinasi</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -240,7 +240,7 @@ nav::-webkit-scrollbar{display:none;}
   <div class="load-sub">Klasifikasi &amp; Kunci Determinasi</div>
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
   <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 
@@ -249,7 +249,7 @@ nav::-webkit-scrollbar{display:none;}
   const bar=document.getElementById('loadBar');
   const pct=document.getElementById('loadPercent');
   const status=document.getElementById('loadStatus');
-  const msgs=['Memuat laboratorium virtual…','Menyiapkan data tumbuhan…','Menyusun kunci determinasi…','Menginisialisasi diagram klasifikasi…'];
+  const msgs=['Memuat laboratorium maya…','Menyiapkan data tumbuhan…','Menyusun kunci determinasi…','Menginisialisasi diagram klasifikasi…'];
   let cur=0;const total=3000;const step=20;const inc=100/(total/step);
   let mi=0;
   const iv=setInterval(()=>{
@@ -347,7 +347,7 @@ function startPraktikum(){
       <div style="position:relative;z-index:1;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Kunci Determinasi Makhluk Hidup</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Kunci Determinasi Makhluk Hidup</div>
           </div>
         </div>
         <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
@@ -1058,7 +1058,7 @@ function printDiskusi(){
     </div>`).join('');
   const html=`<!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8">
-<title>Diskusi – Lab Virtual Kunci Determinasi</title>
+<title>Diskusi – Lab Maya Kunci Determinasi</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -1082,13 +1082,13 @@ function printDiskusi(){
 </style>
 </head><body>
 <div class="header">
-  <div class="lab-title">&#x1F9EC; Lab Virtual – Kunci Determinasi Makhluk Hidup</div>
+  <div class="lab-title">&#x1F9EC; Lab Maya – Kunci Determinasi Makhluk Hidup</div>
   <div class="lab-sub">Klasifikasi &amp; Kunci Determinasi · Pertanyaan Diskusi Hasil Percobaan</div>
   <div class="meta">&#x1F4C5; Dicetak pada: ${tgl}</div>
 </div>
 <div class="section-title">Jawaban Diskusi</div>
 ${rows}
-<div class="footer">Lab Maya Biologi · Kunci Determinasi Makhluk Hidup · Dicetak dari aplikasi Lab Virtual</div>
+<div class="footer">Lab Maya Biologi · Kunci Determinasi Makhluk Hidup · Dicetak dari aplikasi Lab Maya</div>
 <script>window.onload=function(){window.print();}` + `<\/script>
 </body></html>`;
   const w=window.open('','_blank','width=900,height=700');
