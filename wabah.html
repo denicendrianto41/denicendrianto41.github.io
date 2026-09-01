@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Virtual – Simulasi Wabah Virus</title>
+<title>Lab Maya – Simulasi Wabah Virus</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -64,6 +64,8 @@ nav::-webkit-scrollbar{display:none;}
 .scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.fit-inner{transform-origin:top left;}
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
@@ -169,15 +171,15 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 50%,#dc2626 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_virus.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(60,0,0,0.60);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(60,0,0,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#fca5a5;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.55);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#fca5a5;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;text-shadow:0 2px 8px rgba(0,0,0,.55);}
 .load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
 .load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#fca5a5,#fb923c,#fbbf24);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#fecaca;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 2px 8px rgba(0,0,0,.55);}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#fecaca;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.55);}
 #btnMulai{display:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(5,150,105,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulai:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
@@ -254,6 +256,7 @@ document.addEventListener('click',function(e){
 <!-- ═══ TUJUAN ═══ -->
 <div id="page-tujuan" class="page active">
   <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <!-- Hero Banner -->
     <div style="background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 45%,#dc2626 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(100,0,0,0.28);">
@@ -263,7 +266,7 @@ document.addEventListener('click',function(e){
       <div style="position:relative;z-index:1;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Simulasi Wabah Virus</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Simulasi Wabah Virus</div>
           </div>
         </div>
         <div style="width:48px;height:3px;background:linear-gradient(90deg,#fca5a5,#fb923c);border-radius:2px;margin-bottom:10px;"></div>
@@ -347,6 +350,7 @@ document.addEventListener('click',function(e){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ═══ TEORI ═══ -->
@@ -387,6 +391,7 @@ document.addEventListener('click',function(e){
 
   <!-- ── Panel 1: Apa Itu Virus ── -->
   <div class="tpanel active" id="tp0">
+  <div class="fit-inner">
     <div class="article-hero" style="margin-bottom:14px;">
       <div class="article-kelas">Biologi Kelas X &nbsp;·&nbsp; Virologi &amp; Epidemiologi</div>
       <div class="article-judul">Apa Itu Virus?</div>
@@ -432,9 +437,11 @@ document.addEventListener('click',function(e){
       <button class="tnav-btn" onclick="showTeoriTab(1,document.querySelectorAll('.ttab')[1])">Selanjutnya →</button>
     </div>
   </div>
+  </div>
 
   <!-- ── Panel 2: Struktur & Siklus ── -->
   <div class="tpanel" id="tp1">
+  <div class="fit-inner">
     <div class="article-hero" style="margin-bottom:14px;">
       <div class="article-kelas">Virologi</div>
       <div class="article-judul">Struktur dan Cara Kerja Virus</div>
@@ -487,9 +494,11 @@ document.addEventListener('click',function(e){
       <button class="tnav-btn" onclick="showTeoriTab(2,document.querySelectorAll('.ttab')[2])">Selanjutnya →</button>
     </div>
   </div>
+  </div>
 
   <!-- ── Panel 3: Model SIR ── -->
   <div class="tpanel" id="tp2">
+  <div class="fit-inner">
     <div class="article-hero" style="margin-bottom:14px;">
       <div class="article-kelas">Epidemiologi Matematis</div>
       <div class="article-judul">Model Matematis Penyebaran Wabah (SIR)</div>
@@ -532,9 +541,11 @@ document.addEventListener('click',function(e){
       <button class="tnav-btn" onclick="showTeoriTab(3,document.querySelectorAll('.ttab')[3])">Selanjutnya →</button>
     </div>
   </div>
+  </div>
 
   <!-- ── Panel 4: Bilangan R₀ ── -->
   <div class="tpanel" id="tp3">
+  <div class="fit-inner">
     <div class="article-hero" style="margin-bottom:14px;">
       <div class="article-kelas">Parameter Epidemiologi</div>
       <div class="article-judul">Bilangan Reproduksi Dasar R₀</div>
@@ -570,9 +581,11 @@ document.addEventListener('click',function(e){
       <button class="tnav-btn" onclick="showTeoriTab(4,document.querySelectorAll('.ttab')[4])">Selanjutnya →</button>
     </div>
   </div>
+  </div>
 
   <!-- ── Panel 5: Intervensi & Herd Immunity ── -->
   <div class="tpanel" id="tp4">
+  <div class="fit-inner">
     <div class="article-hero" style="margin-bottom:14px;">
       <div class="article-kelas">Kesehatan Masyarakat</div>
       <div class="article-judul">Intervensi dan Herd Immunity</div>
@@ -617,9 +630,11 @@ document.addEventListener('click',function(e){
       <button class="tnav-btn" onclick="showTeoriTab(5,document.querySelectorAll('.ttab')[5])">Selanjutnya →</button>
     </div>
   </div>
+  </div>
 
   <!-- ── Panel 6: Ringkasan ── -->
   <div class="tpanel" id="tp5">
+  <div class="fit-inner">
     <div class="article-hero" style="margin-bottom:14px;">
       <div class="article-kelas">Ringkasan Materi</div>
       <div class="article-judul">Kesimpulan &amp; Poin Kunci</div>
@@ -671,39 +686,15 @@ document.addEventListener('click',function(e){
       <button class="tnav-btn" disabled>Selesai ✓</button>
     </div>
   </div>
+  </div>
 
 </div><!-- /teori-flex -->
 </div>
 
 <!-- ═══ PROSEDUR ═══ -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <div class="card" style="margin-bottom:0;overflow:auto;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci r">📋</div><div class="ct">Langkah Simulasi</div></div>
-        <div id="simSteps"></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:7px;">
-        <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
-          <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-          <ul class="olist" style="font-size:11px;">
-            <li>Klik <strong>Stop</strong> sebelum mengubah parameter</li>
-            <li>Klik <strong>Reset</strong> sebelum memulai percobaan baru</li>
-            <li><strong>Ubah satu variabel saja</strong> per percobaan agar perbandingan valid</li>
-            <li>Catat setiap hasil di lembar kerja observasi</li>
-            <li>Perhatikan nilai <strong>R₀</strong> yang berubah secara real-time</li>
-          </ul>
-        </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="ch" style="margin-bottom:5px;"><div class="ci y">💡</div><div class="ct">Variabel Percobaan</div></div>
-          <div style="display:flex;flex-direction:column;gap:5px;">
-            <div class="fi" style="border-left:3px solid var(--acc);"><strong>Variabel Bebas</strong><span>Laju transmisi β, laju pemulihan γ, ukuran populasi, kasus awal, intervensi</span></div>
-            <div class="fi" style="border-left:3px solid #2563eb;"><strong>Variabel Terikat</strong><span>Jumlah S, I, R dari waktu ke waktu; puncak infeksi; durasi wabah</span></div>
-            <div class="fi" style="border-left:3px solid #059669;"><strong>Variabel Kontrol</strong><span>Model SIR deterministik, populasi tertutup (tanpa migrasi)</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_virus.png" alt="Prosedur Simulasi Wabah Virus" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -820,7 +811,46 @@ function showTeoriTab(idx, btn){
   btn.classList.add('active');
   // scroll tab into view on mobile
   btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('teori')));
 }
+
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa sisa ruang kosong ══
+function fitToContainer(container){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom;
+  const naturalH = inner.scrollHeight;
+  if(availH <= 0 || naturalH <= 0) return;
+  let scale = availH / naturalH;
+  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
+}
+
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'));
+  }else if(id==='teori'){
+    fitToContainer(document.querySelector('#page-teori .tpanel.active'));
+  }else if(id==='prosedur'){
+    document.querySelectorAll('#page-prosedur .card').forEach(fitToContainer);
+  }
+}
+
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori'||id==='prosedur') fitPage(id);
+  });
+}
+
+window.addEventListener('load', ()=>{ fitPage('tujuan'); });
 
 // ── NAV ──
 function show(id,btn){
@@ -829,39 +859,13 @@ function show(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='simulasi')setTimeout(()=>{resizeCanvas();if(!simRunning)drawIdle();},40);
+  if(id==='tujuan'||id==='teori'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
 }
 let navOpen=false;
 function toggleNav(){navOpen=!navOpen;document.getElementById('mainNav').classList.toggle('open',navOpen);}
 function closeNav(){navOpen=false;document.getElementById('mainNav').classList.remove('open');}
-
-// ── PROSEDUR STEPS ──
-const STEPS=[
-  {icon:"🔬",text:"Pilih <strong>ukuran populasi</strong> dari panel kontrol (500 – 10.000 orang)."},
-  {icon:"🤒",text:"Atur <strong>jumlah kasus awal</strong> (I₀) yang akan memulai wabah."},
-  {icon:"📡",text:"Geser slider <strong>laju transmisi β</strong> — semakin tinggi, virus semakin mudah menular."},
-  {icon:"💊",text:"Geser slider <strong>laju pemulihan γ</strong> — semakin tinggi, pasien semakin cepat sembuh."},
-  {icon:"🛡️",text:"Pilih <strong>intervensi</strong>: masker, karantina, vaksinasi, atau kombinasi semua."},
-  {icon:"▶️",text:"Klik <strong>▶ Mulai</strong> dan amati dinamika kurva S, I, dan R secara perlahan."},
-  {icon:"📊",text:"Amati <strong>puncak infeksi</strong> dan berapa hari durasi wabah berlangsung."},
-  {icon:"🔄",text:"Klik <strong>↺ Reset</strong>, catat di lembar kerja, dan ulangi dengan parameter berbeda."}
-];
-(function(){
-  const colors=['#dc2626','#7c3aed','#0891b2','#059669','#d97706','#2563eb','#9333ea','#0284c7'];
-  const cont=document.getElementById('simSteps');
-  cont.innerHTML='<div style="position:relative;padding:4px 0;">'+STEPS.map((s,i)=>{
-    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===STEPS.length-1,even=i%2===0;
-    const circleBtn=`<button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:0;transition:transform .15s;touch-action:manipulation;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''"><span style="font-size:18px;pointer-events:none;">${s.icon}</span></button>${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin:4px 0;"></div>`:''}`;
-    const box=`<div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:7px 10px;" class="step-box"><div style="font-size:9px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div><p style="font-size:clamp(11px,1.2vw,13px);color:var(--text2);margin:0;line-height:1.55;">${s.text}</p></div>`;
-    return `<div style="display:flex;align-items:flex-start;gap:0;position:relative;" class="map-step">${even?`<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">${circleBtn}</div>${box}`:box+`<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">${circleBtn}</div>`}</div>`;
-  }).join('')+'</div>';
-})();
-function zoomStep(btn){
-  const sfx=document.getElementById('clickSfx');if(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
-  const box=btn.closest('.map-step').querySelector('.step-box');if(!box)return;
-  box.classList.remove('step-box-zoom');void box.offsetWidth;
-  box.classList.add('step-box-zoom');
-  box.addEventListener('animationend',()=>box.classList.remove('step-box-zoom'),{once:true});
-}
 
 // ── R0 ──
 function updateR0(){
@@ -1136,7 +1140,7 @@ function printDiskusi(){
     </div>`).join('');
   const html=`<!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8">
-<title>Diskusi – Lab Virtual Simulasi Wabah Virus</title>
+<title>Diskusi – Lab Maya Simulasi Wabah Virus</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -1157,13 +1161,13 @@ function printDiskusi(){
 </style>
 </head><body>
 <div class="header">
-  <div class="lab-title">🦠 Lab Virtual – Simulasi Wabah Virus</div>
+  <div class="lab-title">🦠 Lab Maya – Simulasi Wabah Virus</div>
   <div class="lab-sub">Kelas X Virologi · Pertanyaan Diskusi Hasil Percobaan</div>
   <div class="meta">📅 Dicetak pada: ${tgl}</div>
 </div>
 <div class="section-title">Jawaban Diskusi</div>
 ${rows}
-<div class="footer">Lab Maya Biologi · Simulasi Wabah Virus — Model SIR · Dicetak dari aplikasi Lab Virtual</div>
+<div class="footer">Lab Maya Biologi · Simulasi Wabah Virus — Model SIR · Dicetak dari aplikasi Lab Maya</div>
 <script>window.onload=function(){window.print();}` + `<\/script>
 </body></html>`;
   const w=window.open('','_blank','width=900,height=700');
@@ -1171,8 +1175,11 @@ ${rows}
 }
 
 // ── RESIZE ──
+let _fitResizeTimer=null;
 window.addEventListener('resize',()=>{
   if(document.getElementById('page-simulasi').classList.contains('active'))resizeCanvas();
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer=setTimeout(fitActivePages,120);
 });
 
 // Inject popup keyframes
