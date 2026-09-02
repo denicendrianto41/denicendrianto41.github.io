@@ -66,6 +66,7 @@ nav::-webkit-scrollbar{display:none;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .fit-inner{transform-origin:top left;}
 #page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-tujuan .scroll{overflow:hidden;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
@@ -197,13 +198,13 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
   <div class="load-sub">Simulasi Wabah Virus</div>
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
   <button id="btnMulai" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 <script>
 (function(){
   const bar=document.getElementById('loadBar'),pct=document.getElementById('loadPercent'),status=document.getElementById('loadStatus');
-  const msgs=['Memuat laboratorium virtual…','Menyiapkan model SIR…','Menginisialisasi partikel virus…','Konfigurasi parameter wabah…','Menghitung probabilitas infeksi…'];
+  const msgs=['Memuat laboratorium maya…','Menyiapkan model SIR…','Menginisialisasi partikel virus…','Konfigurasi parameter wabah…','Menghitung probabilitas infeksi…'];
   let cur=0,mi=0;const step=20,inc=100/(3000/step);
   const iv=setInterval(()=>{
     cur=Math.min(100,cur+inc);const v=Math.floor(cur);
@@ -255,95 +256,80 @@ document.addEventListener('click',function(e){
 
 <!-- ═══ TUJUAN ═══ -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" style="padding:10px 14px 26px;">
   <div class="fit-inner">
 
     <!-- Hero Banner -->
-    <div style="background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 45%,#dc2626 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(100,0,0,0.28);">
-      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
-      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
-      <div style="position:absolute;right:24px;top:-8px;font-size:88px;opacity:.08;pointer-events:none;">🦠</div>
-      <div style="position:relative;z-index:1;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Simulasi Wabah Virus</div>
-          </div>
-        </div>
-        <div style="width:48px;height:3px;background:linear-gradient(90deg,#fca5a5,#fb923c);border-radius:2px;margin-bottom:10px;"></div>
-        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
-          Selamat datang di laboratorium virtual. Pelajari dinamika penyebaran wabah virus melalui <strong style="color:#fca5a5;">Model SIR</strong> secara interaktif — dari teori, simulasi parameter β/γ, hingga analisis R₀ dan herd immunity.
-        </p>
-      </div>
+    <div class="article-hero" style="background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 45%,#dc2626 100%);margin-bottom:12px;">
+      <div class="article-kelas">Biologi Kelas X &nbsp;·&nbsp; Virologi &amp; Epidemiologi</div>
+      <div class="article-judul">Lab Maya – Simulasi Wabah Virus</div>
+      <p style="font-size:clamp(11.5px,1.3vw,13.5px);color:rgba(226,232,240,0.88);line-height:1.75;margin:0;max-width:620px;">
+        Selamat datang di laboratorium maya. Pelajari dinamika penyebaran wabah virus melalui <strong style="color:#fca5a5;">Model SIR</strong> secara interaktif — dari teori, simulasi parameter β/γ, hingga analisis R₀ dan herd immunity.
+      </p>
     </div>
 
     <!-- 2 Main Objective Cards -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;">
 
       <!-- Card 1: Tujuan Pembelajaran -->
-      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;"
-        onmouseover="this.style.boxShadow='0 6px 24px rgba(220,38,38,0.13)';this.style.transform='translateY(-2px)'"
-        onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
-        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#dc2626,#f87171);border-radius:14px 14px 0 0;"></div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
-          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fee2e2,#fff1f2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+      <div class="callout callout-danger" style="margin:0;padding:11px 13px;">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🎯</div>
           <div>
-            <div style="font-size:9px;font-weight:700;color:#dc2626;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+            <div class="callout-lbl" style="margin-bottom:1px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11.5px,1.3vw,13.5px);font-weight:700;color:var(--text);">Pembelajaran</div>
           </div>
         </div>
-        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+        <div class="callout-body">
           Mendeskripsikan <strong style="color:#991b1b;">peranan virus.</strong>
-        </p>
+        </div>
       </div>
 
       <!-- Card 2: Tujuan Percobaan -->
-      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;"
-        onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'"
-        onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
-        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
-          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+      <div class="callout callout-success" style="margin:0;padding:11px 13px;">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🔬</div>
           <div>
-            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+            <div class="callout-lbl" style="margin-bottom:1px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11.5px,1.3vw,13.5px);font-weight:700;color:var(--text);">Percobaan</div>
           </div>
         </div>
-        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+        <div class="callout-body">
           Menganalisis <strong style="color:#059669;">dinamika penyebaran wabah virus</strong> menggunakan <strong style="color:#059669;">Model SIR</strong> dengan memvariasikan parameter laju transmisi (β), laju pemulihan (γ), dan intervensi kesehatan masyarakat.
-        </p>
+        </div>
       </div>
     </div>
 
     <!-- Hasil Belajar Section -->
-    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;box-shadow:0 2px 12px rgba(30,41,59,0.07);">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+    <div style="background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:12px 14px;">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🏆</div>
         <div>
-          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+          <div class="callout-lbl" style="color:#92400e;margin-bottom:1px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11.5px,1.3vw,13.5px);font-weight:700;color:var(--text);">Hasil Belajar yang Diharapkan</div>
         </div>
       </div>
-      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <p class="callout-body" style="margin-bottom:8px;color:var(--text3);">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div class="fgrid" style="grid-template-columns:1fr 1fr;">
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
-          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">1</div>
-          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Memahami konsep <strong style="color:#dc2626;">Model SIR</strong> dan persamaan diferensialnya dalam epidemiologi</span>
+        <div class="fi" style="display:flex;align-items:flex-start;gap:9px;border-left:3px solid #dc2626;">
+          <div style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">1</div>
+          <span>Memahami konsep <strong style="color:#dc2626;">Model SIR</strong> dan persamaan diferensialnya dalam epidemiologi</span>
         </div>
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
-          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
-          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menghitung <strong style="color:#059669;">bilangan reproduksi dasar R₀</strong> dan menginterpretasikan maknanya</span>
+        <div class="fi" style="display:flex;align-items:flex-start;gap:9px;border-left:3px solid #059669;">
+          <div style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span>Menghitung <strong style="color:#059669;">bilangan reproduksi dasar R₀</strong> dan menginterpretasikan maknanya</span>
         </div>
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
-          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
-          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menganalisis pengaruh <strong style="color:#7c3aed;">intervensi kesehatan</strong> (masker, karantina, vaksinasi) terhadap dinamika wabah</span>
+        <div class="fi" style="display:flex;align-items:flex-start;gap:9px;border-left:3px solid #7c3aed;">
+          <div style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span>Menganalisis pengaruh <strong style="color:#7c3aed;">intervensi kesehatan</strong> (masker, karantina, vaksinasi) terhadap dinamika wabah</span>
         </div>
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fcd34d'" onmouseout="this.style.borderColor='#e2e8f0'">
-          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fef9c3,#fef08a);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#d97706;font-family:'JetBrains Mono',monospace;">4</div>
-          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan konsep <strong style="color:#d97706;">herd immunity</strong> dan menghitung ambang batas vaksinasi minimal</span>
+        <div class="fi" style="display:flex;align-items:flex-start;gap:9px;border-left:3px solid #d97706;">
+          <div style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#fef9c3,#fef08a);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;color:#d97706;font-family:'JetBrains Mono',monospace;">4</div>
+          <span>Menjelaskan konsep <strong style="color:#d97706;">herd immunity</strong> dan menghitung ambang batas vaksinasi minimal</span>
         </div>
 
       </div>
@@ -828,7 +814,7 @@ function fitToContainer(container){
   const naturalH = inner.scrollHeight;
   if(availH <= 0 || naturalH <= 0) return;
   let scale = availH / naturalH;
-  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  scale = Math.min(Math.max(scale, 0.3), 1.8);
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
 }
@@ -1180,6 +1166,12 @@ window.addEventListener('resize',()=>{
   if(document.getElementById('page-simulasi').classList.contains('active'))resizeCanvas();
   clearTimeout(_fitResizeTimer);
   _fitResizeTimer=setTimeout(fitActivePages,120);
+});
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(ev=>{
+  document.addEventListener(ev,()=>{
+    setTimeout(fitActivePages,150);
+    setTimeout(fitActivePages,400);
+  });
 });
 
 // Inject popup keyframes
