@@ -242,12 +242,12 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(22,163,74,.1);}
 #loadScreen > *{position:relative;z-index:2;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.55);}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;text-shadow:0 2px 8px rgba(0,0,0,.55);}
-.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative;}
-.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#93c5fd,#3b82f6);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 2px 8px rgba(0,0,0,.55);}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.55);}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#0f172a;text-align:center;margin-bottom:4px;text-shadow:0 1px 3px rgba(255,255,255,.5);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#1e3a8a;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;text-shadow:0 1px 3px rgba(255,255,255,.5);}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(15,23,42,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#1d4ed8,#2563eb,#1e40af);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#0f172a;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 1px 3px rgba(255,255,255,.5);}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#1e293b;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;text-shadow:0 1px 3px rgba(255,255,255,.5);}
 #btnMulaiPraktikum{
   display:none;
   background:linear-gradient(135deg,#1d4ed8,#3b82f6);
@@ -270,6 +270,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(22,163,74,.1);}
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
+  <div style="transform:translateY(-60px);display:flex;flex-direction:column;align-items:center;">
   <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
   <div class="load-title">Lab Maya Biologi</div>
   <div class="load-sub">Enzim Katalase</div>
@@ -277,6 +278,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(22,163,74,.1);}
   <div class="load-percent" id="loadPercent">0%</div>
   <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
   <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+  </div>
 </div>
 
 <script>
