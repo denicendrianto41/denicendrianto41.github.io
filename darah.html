@@ -60,6 +60,8 @@ nav::-webkit-scrollbar{display:none;}
 .scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.fit-inner{transform-origin:top left;}
+#page-tujuan .scroll{overflow:hidden;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,.06);}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,.09);}
@@ -70,7 +72,7 @@ nav::-webkit-scrollbar{display:none;}
 .card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
 .card p:last-child{margin-bottom:0;}
 .card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px;}
 .olist{list-style:none;}
 .olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
 .olist li:last-child{border-bottom:none;}
@@ -81,12 +83,23 @@ nav::-webkit-scrollbar{display:none;}
 /* TEORI TABS */
 #page-teori{overflow:hidden;}
 #page-teori .scroll{overflow:hidden;display:flex;flex-direction:column;padding:8px 12px;}
+/* Penyesuaian ukuran font Teori setelah menambahkan ruang kosong 15px di bagian bawah */
+#page-teori .ct{font-size:clamp(14px,1.5vw,16px);}
+#page-teori .card p{font-size:clamp(13px,1.3vw,15px);}
+#page-teori .card h4{font-size:clamp(11px,1.1vw,13px);}
+#page-teori .bt-table{font-size:clamp(12px,1.2vw,14px);}
+#page-teori .bt-table th{font-size:clamp(11px,1.1vw,13px);}
+#page-teori .bt-table td{font-size:clamp(12px,1.2vw,13px);}
+#page-teori .notebox p{font-size:clamp(13px,1.2vw,14px);}
+#page-teori .tgol{font-size:21px;}
+#page-teori .tdonor{font-size:10.5px;}
+#page-teori .tlist{font-size:12.5px;}
 .teori-tabs{display:flex;gap:4px;flex-shrink:0;margin-bottom:8px;overflow-x:auto;}
 .teori-tabs::-webkit-scrollbar{display:none;}
 .t-tab{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-family:'Inter',sans-serif;font-size:clamp(11px,1.2vw,13px);font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .17s;flex-shrink:0;}
 .t-tab.active{background:var(--acc);color:#fff;border-color:var(--acc);}
 .t-tab:hover:not(.active){border-color:var(--acc2);color:var(--acc);}
-.t-panel{display:none;flex:1;min-height:0;overflow-y:auto;}
+.t-panel{display:none;flex:1;min-height:0;overflow:hidden;position:relative;}
 .t-panel.active{display:flex;flex-direction:column;}
 /* TEORI TABLE */
 .bt-table{width:100%;border-collapse:collapse;font-size:clamp(11px,1.2vw,13px);}
@@ -96,15 +109,15 @@ nav::-webkit-scrollbar{display:none;}
 .bt-table tr:hover td{background:#eff6ff;}
 .bt-table td:first-child{font-weight:700;color:var(--acc3);}
 /* TRANSFUSI DIAGRAM */
-.trans-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:7px;}
-@media(max-width:600px){.trans-grid{grid-template-columns:repeat(2,1fr);}}
+.trans-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:7px;}
+@media(max-width:600px){.trans-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .trans-cell{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:9px;text-align:center;transition:all .17s;}
 .trans-cell:hover{border-color:var(--acc2);box-shadow:0 3px 10px rgba(37,99,235,.1);}
 .tgol{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:4px;}
 .tdonor{font-size:9.5px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
 .tlist{font-size:11.5px;color:var(--text2);line-height:1.5;}
 /* ALAT BAHAN */
-#page-alatbahan .scroll{overflow-y:auto;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 /* DRAG CARDS */
 .drag-card{background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;cursor:grab;transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s,background .15s;user-select:none;-webkit-user-select:none;position:relative;touch-action:none;-webkit-tap-highlight-color:transparent;}
@@ -139,6 +152,7 @@ nav::-webkit-scrollbar{display:none;}
 .anim-correct{animation:anim-correct .3s cubic-bezier(.34,1.56,.64,1);}
 .anim-wrong-card{animation:anim-wrong-card .3s cubic-bezier(.34,1.56,.64,1);}
 /* PROSEDUR */
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0 0 15px;}
 .step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 /* SIMULASI */
@@ -189,16 +203,17 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_darah.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,.55);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,.15);z-index:1;}
 #loadScreen>*{position:relative;z-index:2;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
+.load-content{display:flex;flex-direction:column;align-items:center;transform:translateY(-70px);}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#0f172a;text-align:center;margin-bottom:4px;text-shadow:none;}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#1e3a8a;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
 .load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
 .load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#93c5fd,#3b82f6);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#0f172a;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#1e293b;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;}
 #btnMulaiPraktikum{display:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(37,99,235,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(37,99,235,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
@@ -246,13 +261,15 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
-  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
-  <div class="load-title">Lab Maya Biologi</div>
-  <div class="load-sub">Golongan Darah · Sistem ABO &amp; Rhesus</div>
-  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
-  <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
-  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+  <div class="load-content">
+    <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+    <div class="load-title">Lab Maya Biologi</div>
+    <div class="load-sub">Golongan Darah · Sistem ABO &amp; Rhesus</div>
+    <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+    <div class="load-percent" id="loadPercent">0%</div>
+    <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+    <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+  </div>
 </div>
 <script>
 (function(){
@@ -270,7 +287,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 function startPraktikum(){
   const sfx=new Audio('https://denicendrianto41.github.io/tring.wav');sfx.play().catch(()=>{});
   const ls=document.getElementById('loadScreen');ls.classList.add('hide');
-  setTimeout(()=>{ls.style.display='none';document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));document.getElementById('page-tujuan').classList.add('active');document.querySelector('.nb[onclick*="tujuan"]').classList.add('active');},650);
+  setTimeout(()=>{ls.style.display='none';document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));document.getElementById('page-tujuan').classList.add('active');document.querySelector('.nb[onclick*="tujuan"]').classList.add('active');requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('tujuan')));},650);
 }
 </script>
 
@@ -317,17 +334,18 @@ document.addEventListener('click',function(e){
 <!-- ===== TUJUAN ===== -->
 <div id="page-tujuan" class="page">
 <div class="scroll" style="padding:14px 16px 20px;">
+<div class="fit-inner">
   <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,23,42,.28);">
     <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;"></div>
     <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;"></div>
     <div style="position:relative;z-index:1;">
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;margin-bottom:8px;">Lab Virtual – Golongan Darah</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,1.8vw,21px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;margin-bottom:8px;">Lab Virtual – Golongan Darah</div>
       <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#93c5fd);border-radius:2px;margin-bottom:10px;"></div>
-      <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,.88);line-height:1.7;margin:0;max-width:620px;">Selamat datang di laboratorium virtual. Pelajari cara menentukan <strong style="color:#93c5fd;">golongan darah ABO dan Rhesus</strong> secara interaktif — dari teori, simulasi uji antisera, hingga diskusi hasil percobaan.</p>
+      <p style="font-size:clamp(12px,1.2vw,14px);color:rgba(226,232,240,.88);line-height:1.7;margin:0;max-width:620px;">Selamat datang di laboratorium virtual. Pelajari cara menentukan <strong style="color:#93c5fd;">golongan darah ABO dan Rhesus</strong> secara interaktif — dari teori, simulasi uji antisera, hingga diskusi hasil percobaan.</p>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:10px;">
     <!-- Tujuan Pembelajaran -->
     <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,.07)';this.style.transform=''">
       <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
@@ -335,13 +353,13 @@ document.addEventListener('click',function(e){
         <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
         <div>
           <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.3vw,15px);font-weight:700;color:#1e293b;">Pembelajaran</div>
         </div>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;">
-        <li style="display:flex;gap:8px;font-size:clamp(11px,1.2vw,12.5px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;flex-shrink:0;">›</span><span>Memahami konsep antigen, antibodi, aglutinogen, dan aglutinin dalam penentuan golongan darah</span></li>
-        <li style="display:flex;gap:8px;font-size:clamp(11px,1.2vw,12.5px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;flex-shrink:0;">›</span><span>Menjelaskan hubungan transfusi darah antargolongan ABO serta konsep donor dan resipien universal</span></li>
-        <li style="display:flex;gap:8px;font-size:clamp(11px,1.2vw,12.5px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;flex-shrink:0;">›</span><span>Mendeskripsikan faktor Rhesus dan kaitannya dengan eritroblastosis fetalis</span></li>
+        <li style="display:flex;gap:8px;font-size:clamp(12px,1.2vw,13.5px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;flex-shrink:0;">›</span><span>Memahami konsep antigen, antibodi, aglutinogen, dan aglutinin dalam penentuan golongan darah</span></li>
+        <li style="display:flex;gap:8px;font-size:clamp(12px,1.2vw,13.5px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;flex-shrink:0;">›</span><span>Menjelaskan hubungan transfusi darah antargolongan ABO serta konsep donor dan resipien universal</span></li>
+        <li style="display:flex;gap:8px;font-size:clamp(12px,1.2vw,13.5px);color:#475569;line-height:1.6;"><span style="color:#2563eb;font-weight:700;flex-shrink:0;">›</span><span>Mendeskripsikan faktor Rhesus dan kaitannya dengan eritroblastosis fetalis</span></li>
       </ul>
     </div>
     <!-- Tujuan Percobaan -->
@@ -351,43 +369,44 @@ document.addEventListener('click',function(e){
         <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dcfce7,#f0fdf4);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
         <div>
           <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.3vw,15px);font-weight:700;color:#1e293b;">Percobaan</div>
         </div>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;">
-        <li style="display:flex;gap:8px;font-size:clamp(11px,1.2vw,12.5px);color:#475569;line-height:1.6;"><span style="color:#059669;font-weight:700;flex-shrink:0;">›</span><span>Mempelajari cara-cara untuk <strong>menentukan golongan darah A, B, O, dan AB</strong> dengan antisera ABO</span></li>
-        <li style="display:flex;gap:8px;font-size:clamp(11px,1.2vw,12.5px);color:#475569;line-height:1.6;"><span style="color:#059669;font-weight:700;flex-shrink:0;">›</span><span>Menentukan faktor <strong>Rhesus (Rh+ / Rh−)</strong> menggunakan Anti-Rh serum</span></li>
-        <li style="display:flex;gap:8px;font-size:clamp(11px,1.2vw,12.5px);color:#475569;line-height:1.6;"><span style="color:#059669;font-weight:700;flex-shrink:0;">›</span><span>Mengamati dan mencatat reaksi <strong>aglutinasi</strong> sebagai dasar penentuan golongan darah</span></li>
+        <li style="display:flex;gap:8px;font-size:clamp(12px,1.2vw,13.5px);color:#475569;line-height:1.6;"><span style="color:#059669;font-weight:700;flex-shrink:0;">›</span><span>Mempelajari cara-cara untuk <strong>menentukan golongan darah A, B, O, dan AB</strong> dengan antisera ABO</span></li>
+        <li style="display:flex;gap:8px;font-size:clamp(12px,1.2vw,13.5px);color:#475569;line-height:1.6;"><span style="color:#059669;font-weight:700;flex-shrink:0;">›</span><span>Menentukan faktor <strong>Rhesus (Rh+ / Rh−)</strong> menggunakan Anti-Rh serum</span></li>
+        <li style="display:flex;gap:8px;font-size:clamp(12px,1.2vw,13.5px);color:#475569;line-height:1.6;"><span style="color:#059669;font-weight:700;flex-shrink:0;">›</span><span>Mengamati dan mencatat reaksi <strong>aglutinasi</strong> sebagai dasar penentuan golongan darah</span></li>
       </ul>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;">
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,.06);position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#d97706,#fbbf24);border-radius:14px 14px 0 0;"></div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;margin-top:4px;">
         <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚠️</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#d97706;">Keselamatan Kerja</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.3vw,15px);font-weight:700;color:#d97706;">Keselamatan Kerja</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;gap:8px;padding:4px 8px;background:#fffbeb;border-radius:7px;font-size:11.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🧤</span><span>Gunakan <strong>sarung tangan lateks</strong> saat kontak dengan darah</span></div>
-        <div style="display:flex;gap:8px;padding:4px 8px;background:#fff1f2;border-radius:7px;font-size:11.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🩸</span><span><strong>Blood lancet sekali pakai</strong> — langsung buang ke wadah khusus</span></div>
-        <div style="display:flex;gap:8px;padding:4px 8px;background:#eff6ff;border-radius:7px;font-size:11.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🧴</span><span>Sterilkan ujung jari dengan <strong>alkohol 70%</strong> sebelum penusukan</span></div>
+        <div style="display:flex;gap:8px;padding:4px 8px;background:#fffbeb;border-radius:7px;font-size:12.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🧤</span><span>Gunakan <strong>sarung tangan lateks</strong> saat kontak dengan darah</span></div>
+        <div style="display:flex;gap:8px;padding:4px 8px;background:#fff1f2;border-radius:7px;font-size:12.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🩸</span><span><strong>Blood lancet sekali pakai</strong> — langsung buang ke wadah khusus</span></div>
+        <div style="display:flex;gap:8px;padding:4px 8px;background:#eff6ff;border-radius:7px;font-size:12.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🧴</span><span>Sterilkan ujung jari dengan <strong>alkohol 70%</strong> sebelum penusukan</span></div>
       </div>
     </div>
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,.06);position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;margin-top:4px;">
         <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💡</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:var(--acc3);">Membaca Hasil</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.3vw,15px);font-weight:700;color:var(--acc3);">Membaca Hasil</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;gap:8px;padding:4px 8px;background:#fff1f2;border-radius:7px;font-size:11.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🔴</span><span>Terjadi penggumpalan → <strong style="color:#dc2626;">Aglutinasi (+)</strong> → aglutinogen ada</span></div>
-        <div style="display:flex;gap:8px;padding:4px 8px;background:#f0fdf4;border-radius:7px;font-size:11.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🟢</span><span>Tidak ada penggumpalan → <strong style="color:#059669;">Tidak aglutinasi (−)</strong></span></div>
-        <div style="display:flex;gap:8px;padding:4px 8px;background:#eff6ff;border-radius:7px;font-size:11.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🔵</span><span>Anti-A = <strong>Biru</strong> &nbsp;|&nbsp; Anti-B = <strong>Oranye</strong></span></div>
+        <div style="display:flex;gap:8px;padding:4px 8px;background:#fff1f2;border-radius:7px;font-size:12.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🔴</span><span>Terjadi penggumpalan → <strong style="color:#dc2626;">Aglutinasi (+)</strong> → aglutinogen ada</span></div>
+        <div style="display:flex;gap:8px;padding:4px 8px;background:#f0fdf4;border-radius:7px;font-size:12.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🟢</span><span>Tidak ada penggumpalan → <strong style="color:#059669;">Tidak aglutinasi (−)</strong></span></div>
+        <div style="display:flex;gap:8px;padding:4px 8px;background:#eff6ff;border-radius:7px;font-size:12.5px;color:var(--text2);align-items:center;"><span style="font-size:14px;flex-shrink:0;">🔵</span><span>Anti-A = <strong>Biru</strong> &nbsp;|&nbsp; Anti-B = <strong>Oranye</strong></span></div>
       </div>
     </div>
   </div>
+</div>
 </div>
 </div>
 
@@ -402,7 +421,8 @@ document.addEventListener('click',function(e){
   </div>
   <!-- Panel 0: Sistem ABO -->
   <div class="t-panel active" id="tp0">
-    <div class="two-col" style="gap:8px;flex:1;min-height:0;">
+  <div class="fit-inner">
+    <div class="two-col" style="gap:8px;">
       <div class="card" style="margin-bottom:0;overflow-y:auto;">
         <div class="ch"><div class="ci b">🩸</div><div class="ct">Sistem Golongan Darah ABO</div></div>
         <p>Sistem ABO adalah sistem penggolongan darah yang paling penting secara klinis. Golongan darah ditentukan oleh keberadaan <strong>aglutinogen (antigen)</strong> pada permukaan eritrosit dan <strong>aglutinin (antibodi)</strong> dalam plasma darah.</p>
@@ -433,9 +453,11 @@ document.addEventListener('click',function(e){
       </div>
     </div>
   </div>
+  </div>
   <!-- Panel 1: Aglutinogen -->
   <div class="t-panel" id="tp1">
-    <div class="two-col" style="gap:8px;flex:1;min-height:0;">
+  <div class="fit-inner">
+    <div class="two-col" style="gap:8px;">
       <div class="card" style="margin-bottom:0;overflow-y:auto;">
         <div class="ch"><div class="ci b">🧬</div><div class="ct">Antigen &amp; Antibodi</div></div>
         <p><strong>Antigen</strong> adalah molekul (umumnya protein) di permukaan sel yang dapat memicu respons imun spesifik.</p>
@@ -461,9 +483,11 @@ document.addEventListener('click',function(e){
       </div>
     </div>
   </div>
+  </div>
   <!-- Panel 2: Transfusi -->
   <div class="t-panel" id="tp2">
-    <div class="card" style="margin-bottom:0;flex:1;overflow-y:auto;">
+  <div class="fit-inner">
+    <div class="card" style="margin-bottom:0;overflow-y:auto;">
       <div class="ch"><div class="ci p">🔄</div><div class="ct">Hubungan Transfusi Darah ABO</div></div>
       <p>Kesalahan golongan darah dalam transfusi dapat menyebabkan reaksi transfusi yang fatal. Aturan transfusi sistem ABO didasarkan pada kecocokan aglutinogen dan aglutinin antara donor dan resipien.</p>
       <div class="trans-grid">
@@ -478,9 +502,11 @@ document.addEventListener('click',function(e){
       </div>
     </div>
   </div>
+  </div>
   <!-- Panel 3: Rh -->
   <div class="t-panel" id="tp3">
-    <div class="two-col" style="gap:8px;flex:1;min-height:0;">
+  <div class="fit-inner">
+    <div class="two-col" style="gap:8px;">
       <div class="card" style="margin-bottom:0;overflow-y:auto;">
         <div class="ch"><div class="ci r">🔴</div><div class="ct">Faktor Rhesus (Rh)</div></div>
         <p>Selain ABO, darah juga digolongkan berdasarkan faktor Rh yang ditemukan oleh Landsteiner dan Wiener (1940). Nama Rh berasal dari <em>Rhesus macaque</em>, kera yang digunakan dalam penelitian.</p>
@@ -503,47 +529,15 @@ document.addEventListener('click',function(e){
       </div>
     </div>
   </div>
+  </div>
 </div>
 </div>
 
 <!-- ===== ALAT & BAHAN ===== -->
 <div id="page-alatbahan" class="page">
-<div class="scroll" style="padding:10px 14px 14px;">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-    <!-- KIRI -->
-    <div class="card" style="margin-bottom:0;">
-      <div class="ch"><div class="ci b">📦</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
-      <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
-      <div id="sourceItems" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
-        <!-- ALAT -->
-        <div class="drag-card alat" draggable="true" data-id="lancet" data-type="alat" data-name="Blood Lancet" data-sub="Menusuk ujung jari"><div class="drag-icon"><img src="https://denicendrianto41.github.io/blood_lancet.png" alt="Blood Lancet" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Blood Lancet</div><div class="drag-sub">Steril, sekali pakai</div></div>
-        <div class="drag-card alat" draggable="true" data-id="tusuk" data-type="alat" data-name="Tusuk Gigi" data-sub="Mengaduk campuran"><div class="drag-icon"><img src="https://denicendrianto41.github.io/tusuk_gigi.png" alt="Tusuk Gigi" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Tusuk Gigi</div><div class="drag-sub">Mengaduk campuran</div></div>
-        <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Objek" data-sub="Tempat tetesan darah"><div class="drag-icon"><img src="https://denicendrianto41.github.io/kaca_objek.png" alt="Gelas Objek" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Gelas Objek</div><div class="drag-sub">Tempat tetesan</div></div>
-        <div class="drag-card alat" draggable="true" data-id="pipet" data-type="alat" data-name="Pipet Tetes" data-sub="Meneteskan antisera"><div class="drag-icon"><img src="https://denicendrianto41.github.io/pipet.png" alt="Pipet Tetes" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Pipet Tetes</div><div class="drag-sub">Meneteskan serum</div></div>
-        <!-- BAHAN -->
-        <div class="drag-card bahan" draggable="true" data-id="alkohol" data-type="bahan" data-name="Alkohol 70%" data-sub="Sterilisasi jari"><div class="drag-icon"><img src="https://denicendrianto41.github.io/alkohol.png" alt="Alkohol 70%" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Alkohol 70%</div><div class="drag-sub">Sterilisasi jari</div></div>
-        <div class="drag-card bahan" draggable="true" data-id="kapas" data-type="bahan" data-name="Kapas" data-sub="Pembersih luka"><div class="drag-icon"><img src="https://denicendrianto41.github.io/kapas.png" alt="Kapas" style="width:40px;height:40px;object-fit:contain;"></div><div class="drag-name">Kapas</div><div class="drag-sub">Pembersih luka</div></div>
-        <div class="drag-card bahan" draggable="true" data-id="antia" data-type="bahan" data-name="Anti-A Serum" data-sub="Biru · antisera A"><div class="drag-icon">🔵</div><div class="drag-name">Anti-A Serum</div><div class="drag-sub">Biru · antisera A</div></div>
-        <div class="drag-card bahan" draggable="true" data-id="antib" data-type="bahan" data-name="Anti-B Serum" data-sub="Oranye · antisera B"><div class="drag-icon">🟠</div><div class="drag-name">Anti-B Serum</div><div class="drag-sub">Oranye · antisera B</div></div>
-        <div class="drag-card bahan" draggable="true" data-id="antirh" data-type="bahan" data-name="Anti-Rh Serum" data-sub="Penentu faktor Rh"><div class="drag-icon">🔴</div><div class="drag-name">Anti-Rh Serum</div><div class="drag-sub">Penentu Rh</div></div>
-      </div>
-    </div>
-    <!-- KANAN -->
-    <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
-      <div class="ch"><div class="ci g">🧫</div><div class="ct">Meja Percobaan</div></div>
-      <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
-      <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat</div>
-      <div id="dropAlat" class="drop-zone" data-accept="alat" style="margin-bottom:10px;"><span id="hint-dropAlat" class="drop-hint">← Drag alat ke sini</span></div>
-      <div style="font-size:10px;font-weight:600;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🧬 Bahan</div>
-      <div id="dropBahan" class="drop-zone bahan-zone" data-accept="bahan"><span id="hint-dropBahan" class="drop-hint">← Drag bahan ke sini</span></div>
-      <button onclick="resetMeja()" style="margin-top:10px;flex-shrink:0;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .17s;width:100%;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↺ Reset Meja</button>
-      <div id="catatanMeja" style="display:none;margin-top:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;">
-        <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">💡 Catatan</div>
-        <p id="catatanText" style="font-size:11.5px;color:#92400e;line-height:1.6;margin:0;"></p>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/mejalab_darah.png" alt="Alat dan Bahan Percobaan Golongan Darah" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
-</div>
 </div>
 
 <!-- Popup Modal -->
@@ -580,56 +574,8 @@ document.addEventListener('click',function(e){
 
 <!-- ===== PROSEDUR ===== -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <!-- KIRI: Roadmap Langkah -->
-      <div class="card" style="margin-bottom:0;overflow-y:auto;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Percobaan</div></div>
-        <div id="stepsContainer"></div>
-      </div>
-      <!-- KANAN: Info -->
-      <div class="card" style="margin-bottom:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
-        <div>
-          <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-          <ul class="olist" style="font-size:11px;">
-            <li>Gunakan <strong>blood lancet steril</strong> sekali pakai — jangan berbagi lancet</li>
-            <li>Teteskan darah di <strong>dua tempat berbeda</strong> di gelas objek</li>
-            <li>Gunakan <strong>tusuk gigi terpisah</strong> untuk mengaduk Anti-A dan Anti-B</li>
-            <li>Anti-A = <strong>Biru</strong> | Anti-B = <strong>Oranye</strong> — jangan tertukar</li>
-            <li>Amati campuran selama <strong>beberapa saat</strong> sebelum mencatat hasil</li>
-          </ul>
-        </div>
-        <div class="notebox">
-          <div class="nt">💡 Membaca Hasil</div>
-          <div style="display:flex;flex-direction:column;gap:4px;margin-top:4px;">
-            <div style="display:flex;gap:8px;font-size:11.5px;color:#92400e;align-items:center;"><span>🔴</span><span>Penggumpalan (granula merah) → <strong>Aglutinasi (+)</strong></span></div>
-            <div style="display:flex;gap:8px;font-size:11.5px;color:#92400e;align-items:center;"><span>🟢</span><span>Cairan homogen merah → <strong>Tidak aglutinasi (−)</strong></span></div>
-            <div style="display:flex;gap:8px;font-size:11.5px;color:#92400e;align-items:center;"><span>💧</span><span>Anti-Rh gumpal → <strong>Rh+ (Positif)</strong></span></div>
-          </div>
-        </div>
-        <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:9px;padding:10px 14px;">
-          <div style="font-size:10px;font-weight:700;color:var(--acc3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;">🔬 Interpretasi ABO</div>
-          <div style="display:flex;flex-direction:column;gap:4px;">
-            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-              <span style="background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;">A</span>
-              <span style="font-size:12px;color:var(--text2);">Anti-A(+) · Anti-B(−)</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-              <span style="background:#dcfce7;color:#065f46;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;">B</span>
-              <span style="font-size:12px;color:var(--text2);">Anti-A(−) · Anti-B(+)</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;border-bottom:1px solid #bfdbfe44;">
-              <span style="background:#ede9fe;color:#5b21b6;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;">AB</span>
-              <span style="font-size:12px;color:var(--text2);">Anti-A(+) · Anti-B(+)</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:9px;padding:3px 0;">
-              <span style="background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 8px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;">O</span>
-              <span style="font-size:12px;color:var(--text2);">Anti-A(−) · Anti-B(−)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_darah.png" alt="Prosedur Percobaan Golongan Darah" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -754,68 +700,78 @@ function show(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='simulasi') setTimeout(initSim,80);
+  if(id==='tujuan'||id==='teori'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
 }
 
 // ===== TEORI TABS =====
 function switchTeori(idx,btn){
   document.querySelectorAll('.t-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
   document.querySelectorAll('.t-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('teori')));
 }
 
-// ===== PROSEDUR ANIMATED ROADMAP =====
-const stepsData=[
-  {icon:'<img src="https://denicendrianto41.github.io/kapas.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#2563eb',text:'Kenakan <strong>sarung tangan lateks</strong>. Hapus ujung jari dengan kapas beralkohol 70% hingga kering.'},
-  {icon:'<img src="https://denicendrianto41.github.io/blood_lancet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#7c3aed',text:'Tusuklah jari dengan <strong>blood lancet steril</strong>. Hapus tetesan darah pertama dengan kapas alkohol.'},
-  {icon:'<img src="https://denicendrianto41.github.io/kaca_objek.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#dc2626',text:'Pijit jari perlahan hingga keluar darah. Teteskan di <strong>dua tempat berbeda</strong> di gelas objek (untuk Anti-A dan Anti-B).'},
-  {icon:'<img src="https://denicendrianto41.github.io/pipet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#0891b2',text:'Teteskan satu tetes <strong>antisera A (biru)</strong> pada tetesan darah sisi pertama.'},
-  {icon:'<img src="https://denicendrianto41.github.io/pipet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#d97706',text:'Teteskan satu tetes <strong>antisera B (oranye)</strong> pada tetesan darah sisi kedua.'},
-  {icon:'<img src="https://denicendrianto41.github.io/tusuk_gigi.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#059669',text:'Aduk masing-masing campuran dengan <strong>tusuk gigi terpisah</strong>. Jangan mencampur tusuk gigi!'},
-  {icon:'🔍',color:'#9333ea',text:'Diamkan beberapa saat. Amati apakah terjadi <strong>penggumpalan (aglutinasi)</strong> pada salah satu atau kedua campuran.'},
-  {icon:'<img src="https://denicendrianto41.github.io/pipet.png" style="width:26px;height:26px;object-fit:contain;" alt="">',color:'#0284c7',text:'Untuk uji Rh: teteskan darah segar, tambahkan <strong>Anti-Rh serum</strong>, aduk, dan amati hasilnya.'},
-  {icon:'📝',color:'#15803d',text:'Catat hasil pengamatan: golongan darah ABO dan status Rh (+ atau −) di tabel laporan.'},
-];
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa sisa ruang kosong ══
+function fitToContainer(container, reserveBottom){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom - (reserveBottom||0);
+  if(availH <= 0) return;
 
-(function(){
-  const colors=['#2563eb','#7c3aed','#dc2626','#0891b2','#d97706','#059669','#9333ea','#0284c7','#15803d'];
-  const container=document.getElementById('stepsContainer');
-  container.innerHTML=`<div style="position:relative;padding:4px 0;">${stepsData.map((s,i)=>{
-    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===stepsData.length-1,right=i%2===0;
-    const btnStyle=`width:38px;height:38px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;font-size:18px;transition:transform .15s;`;
-    const boxStyle=`flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;`;
-    const connector=!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:'';
-    if(right){
-      return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
-          <button onclick="zoomStep(this)" style="${btnStyle}" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">${s.icon}</button>
-          ${connector}
-        </div>
-        <div style="${boxStyle}" class="step-box">
-          <div style="position:absolute;left:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${c}40;"></div>
-          <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-          <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
-        </div></div>`;
-    } else {
-      return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
-        <div style="${boxStyle}" class="step-box">
-          <div style="position:absolute;right:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${c}40;"></div>
-          <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-          <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
-          <button onclick="zoomStep(this)" style="${btnStyle}" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">${s.icon}</button>
-          ${connector}
-        </div></div>`;
-    }
-  }).join('')}</div>`;
-})();
+  // Tahap 1: ukur tinggi alami pada lebar penuh (100%) untuk estimasi awal skala.
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  const naturalH = inner.scrollHeight;
+  if(naturalH <= 0) return;
+  let scale = Math.min(Math.max(availH / naturalH, 0.45), 3);
 
-function zoomStep(btn){
-  const sfx=document.getElementById('clickSfx');if(sfx){sfx.currentTime=0;sfx.play().catch(()=>{});}
-  const row=btn.closest('.map-step');if(!row)return;
-  const box=row.querySelector('.step-box');if(!box)return;
-  box.classList.remove('step-box-zoom');void box.offsetWidth;box.classList.add('step-box-zoom');
-  box.addEventListener('animationend',()=>box.classList.remove('step-box-zoom'),{once:true});
+  // Tahap 2: pada lebar hasil estimasi, teks bisa re-wrap dan tingginya berubah —
+  // ukur ulang lalu sesuaikan skala akhir agar benar-benar pas & tidak terpotong,
+  // sekaligus memaksimalkan ukuran font untuk mengisi ruang layar (fullscreen).
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'none';
+  const reflowedH = inner.scrollHeight;
+  if(reflowedH > 0){
+    scale = Math.min(Math.max(availH / reflowedH, 0.45), 3);
+  }
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
 }
+
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'), 15);
+  }else if(id==='teori'){
+    const activePanel=document.querySelector('#page-teori .t-panel.active');
+    fitToContainer(activePanel, 15);
+  }
+}
+
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori') fitPage(id);
+  });
+}
+
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer=setTimeout(fitActivePages, 120);
+});
+// Re-hitung fit saat masuk/keluar mode layar penuh (fullscreen), agar semua
+// konten Tujuan & Teori tetap terlihat penuh pada ukuran layar yang baru.
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
+  document.addEventListener(evt, ()=>{
+    clearTimeout(_fitResizeTimer);
+    _fitResizeTimer=setTimeout(fitActivePages, 150);
+  });
+});
 
 // ===== DRAG & DROP ALAT BAHAN =====
 (function(){
