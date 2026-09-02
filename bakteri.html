@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Virtual – Bakteri pada Makanan Busuk</title>
+<title>Lab Maya – Bakteri pada Makanan Busuk</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -207,15 +207,15 @@ select option{background:#fff;color:var(--text);}
 }
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.58);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.55);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;text-shadow:0 2px 8px rgba(0,0,0,.55);}
 .load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative;}
 .load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#a78bfa,#34d399);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 2px 8px rgba(0,0,0,.55);}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.55);}
 #btnMulaiPraktikum{
   display:none;
   background:linear-gradient(135deg,#059669,#10b981);
@@ -243,7 +243,7 @@ select option{background:#fff;color:var(--text);}
   <div class="load-sub">Bakteri pada Makanan Busuk</div>
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
   <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 
@@ -283,6 +283,7 @@ function startPraktikum(){
     document.getElementById('page-tujuan').classList.add('active');
     const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
     if(tujuanBtn) tujuanBtn.classList.add('active');
+    if(typeof fitTujuan==='function') fitTujuan();
   }, 650);
 }
 </script>
@@ -336,7 +337,8 @@ function startPraktikum(){
 
 <!-- ══════════ TUJUAN ══════════ -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" id="fitContainer-tujuan" style="padding:14px 16px 20px;">
+  <div id="fitContent-tujuan" style="transform-origin:top left;">
     <!-- Hero Banner -->
     <div style="background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
       <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
@@ -344,12 +346,12 @@ function startPraktikum(){
       <div style="position:relative;z-index:1;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Bakteri pada Makanan Busuk</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Bakteri pada Makanan Busuk</div>
           </div>
         </div>
         <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
         <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
-          Selamat datang di laboratorium virtual. Pelajari proses <strong style="color:#93c5fd;">isolasi dan identifikasi bakteri</strong> pada makanan busuk secara interaktif — dari teori, simulasi pertumbuhan koloni, hingga diskusi hasil percobaan.
+          Selamat datang di laboratorium maya. Pelajari proses <strong style="color:#93c5fd;">isolasi dan identifikasi bakteri</strong> pada makanan busuk secara interaktif — dari teori, simulasi pertumbuhan koloni, hingga diskusi hasil percobaan.
         </p>
       </div>
     </div>
@@ -482,6 +484,7 @@ function startPraktikum(){
       </div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ══════════ TEORI ══════════ -->
@@ -512,13 +515,13 @@ function startPraktikum(){
 
       <!-- Panel: Apa itu Bakteri -->
       <div id="teori-panel-bakteri" class="teori-panel" style="display:flex;flex-direction:column;height:100%;gap:10px;animation:fu .22s ease;">
-        <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;flex:1;">
+        <div class="card fit-card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;transform-origin:top left;">
           <div class="ch" style="margin-bottom:10px;flex-shrink:0;">
             <div class="ci b" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);">🔬</div>
             <div class="ct">Apa itu Bakteri?</div>
           </div>
           <p style="font-size:clamp(12px,1.3vw,14px);line-height:1.7;margin-bottom:14px;flex-shrink:0;">Bakteri adalah organisme <strong>prokariotik</strong> bersel tunggal yang tidak memiliki membran inti. Ditemukan hampir di setiap lingkungan — tanah, air, udara, bahkan di dalam tubuh makhluk hidup. Ukurannya berkisar antara 0,5–5 µm.</p>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex:1;align-content:start;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-content:start;">
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;gap:6px;">
               <div style="font-size:11px;font-weight:700;color:#1d4ed8;">Prokariot</div>
               <div style="font-size:11px;color:#475569;line-height:1.5;">Tidak memiliki membran inti sel</div>
@@ -541,7 +544,7 @@ function startPraktikum(){
 
       <!-- Panel: Bakteri & Makanan Busuk -->
       <div id="teori-panel-makanan" class="teori-panel" style="display:none;flex-direction:column;height:100%;gap:10px;animation:fu .22s ease;">
-        <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;flex:1;">
+        <div class="card fit-card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;transform-origin:top left;">
           <div class="ch" style="margin-bottom:10px;flex-shrink:0;">
             <div class="ci y">🍎</div>
             <div class="ct">Bakteri &amp; Makanan Busuk</div>
@@ -584,13 +587,13 @@ function startPraktikum(){
 
       <!-- Panel: Media Agar Kultur -->
       <div id="teori-panel-agar" class="teori-panel" style="display:none;flex-direction:column;height:100%;gap:10px;animation:fu .22s ease;">
-        <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;flex:1;">
+        <div class="card fit-card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;transform-origin:top left;">
           <div class="ch" style="margin-bottom:10px;flex-shrink:0;">
             <div class="ci g" style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);">🧫</div>
             <div class="ct">Media Agar Kultur</div>
           </div>
           <p style="font-size:clamp(12px,1.3vw,14px);line-height:1.7;margin-bottom:14px;flex-shrink:0;">Media agar adalah campuran agar-agar dan kaldu nutrisi yang digunakan sebagai substrat pertumbuhan bakteri. Setelah memadat, bakteri yang diinokulasikan akan membentuk koloni yang dapat diamati dengan jelas.</p>
-          <div style="display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center;">
+          <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;">
             <div style="display:flex;align-items:center;gap:14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;">
               <img src="https://denicendrianto41.github.io/media_agar.png" style="width:48px;height:48px;object-fit:contain;flex-shrink:0;" alt="Agar-agar">
               <div>
@@ -632,13 +635,13 @@ function startPraktikum(){
 
       <!-- Panel: Metode Inokulasi Bakteri -->
       <div id="teori-panel-inokulasi" class="teori-panel" style="display:none;flex-direction:column;height:100%;gap:10px;animation:fu .22s ease;">
-        <div class="card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;flex:1;">
+        <div class="card fit-card" style="margin-bottom:0;overflow:hidden;display:flex;flex-direction:column;transform-origin:top left;">
           <div class="ch" style="margin-bottom:10px;flex-shrink:0;">
             <div class="ci b">🔧</div>
             <div class="ct">Metode Inokulasi Bakteri</div>
           </div>
           <p style="font-size:clamp(12px,1.3vw,14px);line-height:1.7;margin-bottom:14px;flex-shrink:0;">Inokulasi adalah proses pemindahan bakteri ke dalam media agar. Terdapat beberapa metode yang digunakan tergantung pada tujuan kultur yang ingin dicapai.</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex:1;align-content:start;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-content:start;">
             <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:10px;padding:16px 14px;display:flex;flex-direction:column;">
               <div style="font-size:28px;margin-bottom:8px;">〰️</div>
               <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:6px;">Metode Zig-zag</div>
@@ -665,129 +668,14 @@ function startPraktikum(){
 <!-- ══════════ ALAT & BAHAN ══════════ -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-      <!-- KIRI: Daftar Alat & Bahan -->
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
-        <div id="drag-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;">
-
-          <!-- ALAT -->
-          <div class="drag-item" draggable="true" data-id="cawanpetri" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/cawan_petri.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Cawan Petri"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Cawan Petri</div>
-            <div style="font-size:10px;color:var(--text3);">Steril</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="ose" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/ose.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Ose"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Ose</div>
-            <div style="font-size:10px;color:var(--text3);">Jarum inokulasi</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="bunsen" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/bunsen.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Bunsen"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Bunsen</div>
-            <div style="font-size:10px;color:var(--text3);">Sterilisasi ose</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="mikroskop" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/mikroskop.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Mikroskop"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Mikroskop</div>
-            <div style="font-size:10px;color:var(--text3);">Pengamatan</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="pipet" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/pipet.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Pipet Tetes"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Pipet Tetes</div>
-            <div style="font-size:10px;color:var(--text3);">Steril</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="objekglass" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/kaca_objek.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Objek Glass"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Objek Glass</div>
-            <div style="font-size:10px;color:var(--text3);">+ Cover glass</div>
-          </div>
-
-          <!-- BAHAN -->
-          <div class="drag-item" draggable="true" data-id="agaragar" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/media_agar.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Agar-agar"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Agar-agar</div>
-            <div style="font-size:10px;color:var(--text3);">Media kultur</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="kaldu" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/kaldu.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Kaldu Nutrisi"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Kaldu Nutrisi</div>
-            <div style="font-size:10px;color:var(--text3);">Nutrisi bakteri</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="airsuling" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/air.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Air Suling"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Air Suling</div>
-            <div style="font-size:10px;color:var(--text3);">Aquades</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="makananBusuk" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/buah_busuk.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Makanan Busuk"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Makanan Busuk</div>
-            <div style="font-size:10px;color:var(--text3);">Buah/roti basi</div>
-          </div>
-          <div class="drag-item" draggable="true" data-id="alkohol" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:grab;">
-            <div style="height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;"><img src="https://denicendrianto41.github.io/alkohol.png" style="max-height:34px;max-width:54px;object-fit:contain;" alt="Alkohol 70%"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--acc3);">Alkohol 70%</div>
-            <div style="font-size:10px;color:var(--text3);">Sterilisasi</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- KANAN: Meja Percobaan (drop zones) -->
-      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
-        <div class="ch"><div class="ci y">🔬</div><div class="ct">Meja Percobaan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
-
-        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat Percobaan</div>
-        <div id="drop-alat" data-zone="alat" style="min-height:130px;border:2px dashed #93c5fd;border-radius:10px;background:#dbeafe;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s,border-color .2s;margin-bottom:12px;position:relative;">
-          <span id="drop-alat-hint" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:10px 0;">← Drag alat ke sini</span>
-        </div>
-
-        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🧫 Bahan Percobaan</div>
-        <div id="drop-bahan" data-zone="bahan" style="min-height:130px;border:2px dashed #bfdbfe;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s,border-color .2s;position:relative;">
-          <span id="drop-bahan-hint" style="color:#bfdbfe;font-size:12px;width:100%;text-align:center;padding:10px 0;">← Drag bahan ke sini</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ch"><div class="ci y">💡</div><div class="ct">Catatan Penggunaan</div></div>
-      <p>Pastikan semua alat dalam kondisi steril sebelum digunakan. Panaskan ose di atas api bunsen hingga membara, kemudian biarkan dingin sejenak sebelum mengambil sampel. Larutkan agar-agar dan kaldu nutrisi dalam air suling lalu panaskan hingga mendidih. Tuang ke cawan petri secara aseptis dan biarkan memadat sebelum diinokulasi.</p>
-    </div>
+    <img src="https://denicendrianto41.github.io/mejalab_bakteri.png" alt="Alat dan Bahan Percobaan Bakteri pada Makanan Busuk" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
 <!-- ══════════ PROSEDUR ══════════ -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <div class="card" style="margin-bottom:0;overflow:auto;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Percobaan</div></div>
-        <div id="simSteps" style="display:flex;flex-direction:column;gap:6px;"></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:7px;overflow:auto;">
-        <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
-          <div class="ch" style="margin-bottom:5px;"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-          <ul class="olist" style="font-size:11px;">
-            <li>Gunakan ose steril untuk setiap pengambilan sampel baru.</li>
-            <li>Jangan bicara atau bersin di dekat cawan petri yang terbuka.</li>
-            <li>Inkubasi selama <strong>2–3 hari</strong> pada suhu kamar.</li>
-            <li>Catat setiap hasil pengamatan koloni di tabel.</li>
-          </ul>
-        </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="ch" style="margin-bottom:5px;"><div class="ci y">📊</div><div class="ct">Tabel Pengamatan</div></div>
-          <table class="wstable">
-            <thead><tr><th>No.</th><th>Bentuk Koloni</th><th>Warna</th><th>Elevasi</th><th>Margin</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td>Sirkuler</td><td>Putih</td><td>Cembung</td><td>Rata</td></tr>
-              <tr><td>2</td><td>Irreguler</td><td>Kuning</td><td>Datar</td><td>Bergerigi</td></tr>
-              <tr><td>3</td><td style="color:var(--text3);font-style:italic;">...</td><td style="color:var(--text3);">...</td><td style="color:var(--text3);">...</td><td style="color:var(--text3);">...</td></tr>
-            </tbody>
-          </table>
-          <p style="font-size:10px;color:var(--text3);margin-top:6px;">Isi tabel sesuai hasil pengamatan kamu.</p>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_bakteri.png" alt="Prosedur Percobaan Bakteri pada Makanan Busuk" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -917,7 +805,53 @@ function show(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='simulasi') setTimeout(()=>{resizeCanvas();drawPetri();},40);
+  if(id==='tujuan') fitTujuan();
+  if(id==='teori') fitActiveTeoriPanel();
 }
+
+// ══ AUTO-FIT FONT/KONTEN (tujuan & teori, agar tidak ada space kosong di bawah) ══
+function fitScaleToContainer(container, content, opts){
+  opts = opts || {};
+  const minScale = opts.minScale != null ? opts.minScale : 0.75;
+  const maxScale = opts.maxScale != null ? opts.maxScale : 1.3;
+  if(!container || !content) return;
+  content.style.transform = 'none';
+  content.style.width = '100%';
+  requestAnimationFrame(()=>{
+    const availH = container.clientHeight;
+    const natH = content.scrollHeight;
+    if(!availH || !natH) return;
+    let scale = availH / natH;
+    scale = Math.max(minScale, Math.min(maxScale, scale));
+    content.style.transformOrigin = 'top left';
+    content.style.transform = `scale(${scale.toFixed(4)})`;
+    content.style.width = (100/scale) + '%';
+  });
+}
+function fitTujuan(){
+  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), document.getElementById('fitContent-tujuan'), {minScale:0.75, maxScale:1.3});
+}
+function fitTeoriPanel(panel){
+  if(!panel || panel.id==='teori-panel-koloni') return;
+  const card = panel.querySelector('.fit-card');
+  fitScaleToContainer(panel, card, {minScale:0.7, maxScale:1.3});
+}
+function fitActiveTeoriPanel(){
+  const panels = document.querySelectorAll('.teori-panel');
+  for(let i=0;i<panels.length;i++){
+    if(panels[i].style.display !== 'none'){ fitTeoriPanel(panels[i]); return; }
+  }
+}
+let _fitResizeTO=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTO);
+  _fitResizeTO = setTimeout(()=>{
+    const tujuanPage = document.getElementById('page-tujuan');
+    const teoriPage = document.getElementById('page-teori');
+    if(tujuanPage && tujuanPage.classList.contains('active')) fitTujuan();
+    if(teoriPage && teoriPage.classList.contains('active')) fitActiveTeoriPanel();
+  }, 150);
+});
 
 // ══ PROSEDUR STEPS ══
 const simSteps = [
@@ -933,6 +867,7 @@ const simSteps = [
 (function buildSteps(){
   const colors=['#1d4ed8','#7c3aed','#0891b2','#d97706','#dc2626','#2563eb','#9333ea','#0284c7'];
   const el=document.getElementById('simSteps');
+  if(!el) return;
   el.innerHTML=`<div style="position:relative;padding:4px 0;">
     ${simSteps.map((s,i)=>{
       const isRight=i%2===0, clr=colors[i%colors.length], nextClr=colors[(i+1)%colors.length], isLast=i===simSteps.length-1;
@@ -1491,7 +1426,7 @@ function printDiskusi(){
     </div>`).join('');
   const html=`<!DOCTYPE html>
 <html lang="id"><head><meta charset="UTF-8">
-<title>Diskusi – Lab Virtual Bakteri pada Makanan Busuk</title>
+<title>Diskusi – Lab Maya Bakteri pada Makanan Busuk</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -1512,13 +1447,13 @@ function printDiskusi(){
 </style>
 </head><body>
 <div class="header">
-  <div class="lab-title">🦠 Lab Virtual – Bakteri pada Makanan Busuk</div>
+  <div class="lab-title">🦠 Lab Maya – Bakteri pada Makanan Busuk</div>
   <div class="lab-sub">Kelas X Monera · Pertanyaan Diskusi Hasil Percobaan</div>
   <div class="meta">📅 Dicetak pada: ${tgl}</div>
 </div>
 <div class="section-title">Jawaban Diskusi</div>
 ${rows}
-<div class="footer">Lab Maya Biologi · SMAN 1 Batujajar · Dicetak dari aplikasi Lab Virtual</div>
+<div class="footer">Lab Maya Biologi · SMAN 1 Batujajar · Dicetak dari aplikasi Lab Maya</div>
 <script>window.onload=function(){window.print();}` + `<\/script>
 </body></html>`;
   const w=window.open('','_blank','width=900,height=700');
@@ -1537,7 +1472,7 @@ function switchTeoriTab(id, btn) {
   });
   // Show selected panel
   const panel = document.getElementById('teori-panel-' + id);
-  if (panel) { panel.style.display = 'flex'; }
+  if (panel) { panel.style.display = 'flex'; fitTeoriPanel(panel); }
   // Activate selected button
   btn.style.color = '#1d4ed8';
   btn.style.borderBottomColor = '#1d4ed8';
@@ -1545,7 +1480,7 @@ function switchTeoriTab(id, btn) {
 }
 
 // Init canvas
-window.addEventListener('DOMContentLoaded',()=>{ resizeCanvas(); drawPetri(); });
+window.addEventListener('DOMContentLoaded',()=>{ resizeCanvas(); drawPetri(); fitTujuan(); });
 </script>
 </body>
 </html>
