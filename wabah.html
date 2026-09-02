@@ -187,9 +187,69 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ═══ ROTATE-DEVICE OVERLAY (dipaksa landscape di HP/tablet kecil) ═══ */
+#rotateOverlay{display:none;position:fixed;inset:0;z-index:1000000;background:linear-gradient(135deg,#3d0000 0%,#7f1d1d 50%,#dc2626 100%);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;color:#fff;}
+.rotate-icon{font-size:54px;margin-bottom:18px;animation:rotateHint 1.6s ease-in-out infinite;}
+@keyframes rotateHint{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
+.rotate-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(17px,4vw,22px);font-weight:800;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,.4);}
+.rotate-sub{font-size:clamp(12px,3vw,14px);color:#fecaca;max-width:340px;line-height:1.7;text-shadow:0 2px 8px rgba(0,0,0,.4);}
+.rotate-logo{width:56px;margin-bottom:14px;opacity:.9;}
+@media (max-width:900px) and (orientation:portrait){
+  #rotateOverlay{display:flex;}
+}
+
+/* ═══ MOBILE / RESPONSIVE FIXES (agar tidak terpotong & tetap bisa discroll) ═══ */
+@media (max-width:1024px){
+  /* Matikan skala auto-fit desktop, ganti dengan scroll natural */
+  .fit-inner{transform:none!important;width:100%!important;}
+  #page-tujuan .scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  .tpanel{-webkit-overflow-scrolling:touch;}
+  .scroll{-webkit-overflow-scrolling:touch;}
+
+  /* PROSEDUR: gambar besar jangan terpotong, tapi tetap bisa discroll bila perlu */
+  #page-prosedur .scroll{overflow:auto!important;padding:8px!important;-webkit-overflow-scrolling:touch;}
+  .prosedur-img{width:auto!important;height:auto!important;max-width:100%!important;max-height:none!important;object-fit:contain!important;margin:auto;}
+
+  /* SIMULASI: susun vertikal & bisa discroll */
+  .sim-wrap{flex-direction:column!important;overflow-y:auto!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;}
+  .sim-wrap .ctrl-panel{width:100%!important;flex-shrink:0;overflow:visible!important;}
+  .sim-wrap .sim-right{overflow:visible!important;min-height:auto!important;}
+  .sim-wrap .sim-right .card:first-child{min-height:260px;flex:none!important;}
+  #sirCanvas{min-height:220px;}
+  .sim-stats-row{flex-wrap:wrap!important;}
+  .sim-stats-row .sbox{min-width:80px;}
+
+  /* DISKUSI: satu kolom, bisa discroll, tombol tidak terpotong */
+  .diskusi-wrap{overflow-y:auto!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px 10px!important;}
+  .diskusi-grid{display:flex!important;flex-direction:column!important;gap:8px!important;}
+  .diskusi-grid .card{min-height:130px;}
+  .diskusi-grid .card textarea{min-height:90px!important;}
+  .diskusi-header{flex-wrap:wrap!important;gap:8px!important;}
+  .diskusi-header button{flex:1 1 auto;white-space:nowrap;}
+
+  /* Header/nav: pastikan tidak overflow di layar sempit landscape pendek */
+  header{flex-wrap:nowrap;}
+  .logo-text{font-size:15px!important;}
+}
+
+/* Layar landscape sangat pendek (misal HP kecil rebah) tetap bisa scroll penuh */
+@media (max-width:1024px) and (max-height:420px){
+  :root{--h:42px;}
+  .sim-wrap .sim-right .card:first-child{min-height:200px;}
+  #sirCanvas{min-height:180px;}
+}
 </style>
 </head>
 <body>
+
+<!-- ROTATE DEVICE OVERLAY -->
+<div id="rotateOverlay">
+  <img class="rotate-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="rotate-icon">📱</div>
+  <div class="rotate-title">Putar Perangkat Anda</div>
+  <div class="rotate-sub">Aplikasi Lab Maya Biologi dirancang untuk tampilan <strong>landscape (mendatar)</strong>. Silakan putar HP/tablet Anda agar semua fitur dapat berjalan dengan baik.</div>
+</div>
 
 <!-- LOADING -->
 <div id="loadScreen">
@@ -682,13 +742,13 @@ document.addEventListener('click',function(e){
 <!-- ═══ PROSEDUR ═══ -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/prosedur_virus.jpg" alt="Prosedur Simulasi Wabah Virus" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img class="prosedur-img" src="https://denicendrianto41.github.io/prosedur_virus.jpg" alt="Prosedur Simulasi Wabah Virus" style="width:100%;height:100%;object-fit:contain;display:block;">
   </div>
 </div>
 
 <!-- ═══ SIMULASI ═══ -->
 <div id="page-simulasi" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
+  <div class="sim-wrap" style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
     <!-- Panel Kontrol -->
     <div class="ctrl-panel" style="width:196px;flex-shrink:0;">
       <h3>⚙️ Panel Kontrol</h3>
@@ -722,7 +782,7 @@ document.addEventListener('click',function(e){
       <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
     </div>
     <!-- Area kanan -->
-    <div style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;">
+    <div class="sim-right" style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;">
       <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;padding:9px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-shrink:0;">
           <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);">🦠 Dinamika Populasi — Model SIR</div>
@@ -734,7 +794,7 @@ document.addEventListener('click',function(e){
         </div>
         <canvas id="sirCanvas" style="flex:1;min-height:0;width:100%;display:block;border-radius:6px;border:1px solid var(--border);"></canvas>
       </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
+      <div class="sim-stats-row" style="display:flex;gap:6px;flex-shrink:0;">
         <div class="sbox"><span class="sv" id="statS" style="color:#3b82f6;">–</span><span class="sl">😐 Rentan</span></div>
         <div class="sbox"><span class="sv" id="statI" style="color:#ef4444;">–</span><span class="sl">🤒 Terinfeksi</span></div>
         <div class="sbox"><span class="sv" id="statR" style="color:#10b981;">–</span><span class="sl">✅ Pulih</span></div>
@@ -754,8 +814,8 @@ document.addEventListener('click',function(e){
 
 <!-- ═══ DISKUSI ═══ -->
 <div id="page-evaluasi" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:6px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+  <div class="diskusi-wrap" style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:6px;">
+    <div class="diskusi-header" style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
@@ -763,7 +823,7 @@ document.addEventListener('click',function(e){
       <button style="padding:5px 12px;border-radius:6px;background:var(--surf2);border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;" onclick="clearDQ()">↺ Hapus Jawaban</button>
       <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#991b1b,#dc2626);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(220,38,38,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(220,38,38,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(220,38,38,0.25)'">🖨️ Cetak / Download PDF</button>
     </div>
-    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+    <div class="diskusi-grid" style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci r" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(12px,1.3vw,14px);">Apa yang terjadi jika nilai R₀ lebih besar dari 1?</div></div>
         <textarea class="disc-area" id="dq1" placeholder="Tuliskan jawabanmu di sini..." oninput="saveDQ(1,this.value)" style="flex:1;min-height:0;"></textarea>
