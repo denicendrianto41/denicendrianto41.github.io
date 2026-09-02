@@ -78,6 +78,9 @@ nav::-webkit-scrollbar{display:none;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.fit-inner{transform-origin:top left;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
 .ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
 .ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
@@ -150,7 +153,7 @@ nav::-webkit-scrollbar{display:none;}
 }
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_ekosistem.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2.5vw,26px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
@@ -314,7 +317,8 @@ document.addEventListener('click',function(e){
 
 <!-- ========================= TUJUAN ========================= -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <div style="background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
       <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
@@ -388,6 +392,7 @@ document.addEventListener('click',function(e){
       </div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ========================= TEORI ========================= -->
@@ -411,8 +416,8 @@ document.addEventListener('click',function(e){
     </div>
 
     <!-- Tab: Rantai Makanan -->
-    <div id="tab-rantai" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
-      <div class="card" style="margin-bottom:0;">
+    <div id="tab-rantai" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:8px;">
+      <div class="card fit-inner" style="margin-bottom:0;">
         <div class="ch"><div class="ci b">🔗</div><div class="ct">Rantai Makanan &amp; Jaring-Jaring Makanan</div></div>
         <p><strong>Rantai makanan</strong> adalah rangkaian proses makan dan dimakan antara makhluk hidup dalam suatu ekosistem berdasarkan urutan tertentu yang linear, dimulai dari produsen (tumbuhan hijau) sebagai organisme autotrof.</p>
         <div class="formula-box">🌿 Tumbuhan → 🦗 Belalang → 🐸 Katak → 🐍 Ular → 🦅 Elang → 🍄 Dekomposer</div>
@@ -446,8 +451,8 @@ document.addEventListener('click',function(e){
     </div>
 
     <!-- Tab: Aliran Energi -->
-    <div id="tab-energi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
-      <div class="card" style="margin-bottom:0;">
+    <div id="tab-energi" style="flex:1;min-height:0;overflow:hidden;display:none;flex-direction:column;gap:8px;">
+      <div class="card fit-inner" style="margin-bottom:0;">
         <div class="ch"><div class="ci y">⚡</div><div class="ct">Aliran Energi dalam Ekosistem</div></div>
         <p>Energi mengalir <strong>satu arah</strong> dalam ekosistem, dimulai dari matahari. Berbeda dengan materi yang dapat didaur ulang, <strong>energi tidak dapat didaur ulang</strong> — setiap perpindahan tingkat trofik selalu disertai hilangnya ~90% energi sebagai panas.</p>
         <div class="formula-box">Efisiensi Ekologis = (Energi Tingkat n+1 ÷ Energi Tingkat n) × 100% ≈ 10%</div>
@@ -474,8 +479,8 @@ document.addEventListener('click',function(e){
     </div>
 
     <!-- Tab: Daur Biogeokimia -->
-    <div id="tab-daur" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
-      <div class="card" style="margin-bottom:0;">
+    <div id="tab-daur" style="flex:1;min-height:0;overflow:hidden;display:none;flex-direction:column;gap:8px;">
+      <div class="card fit-inner" style="margin-bottom:0;">
         <div class="ch"><div class="ci b">🔄</div><div class="ct">Daur Biogeokimia</div></div>
         <p><strong>Daur biogeokimia</strong> adalah siklus perpindahan unsur kimia dari lingkungan abiotik ke makhluk hidup (biotik) dan kembali ke lingkungan. Materi dapat <strong>didaur ulang</strong> terus-menerus.</p>
         <div class="fgrid" style="margin-top:8px;">
@@ -493,8 +498,8 @@ document.addEventListener('click',function(e){
     </div>
 
     <!-- Tab: Interaksi -->
-    <div id="tab-interaksi" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;gap:8px;">
-      <div class="card" style="margin-bottom:0;">
+    <div id="tab-interaksi" style="flex:1;min-height:0;overflow:hidden;display:none;flex-direction:column;gap:8px;">
+      <div class="card fit-inner" style="margin-bottom:0;">
         <div class="ch"><div class="ci p">🤝</div><div class="ct">Interaksi Antar Komponen Ekosistem</div></div>
         <p>Interaksi antar organisme dapat bersifat positif (+), negatif (–), atau netral (0) bagi masing-masing pihak.</p>
         <div style="display:flex;flex-direction:column;gap:7px;margin-top:7px;">
@@ -530,174 +535,11 @@ document.addEventListener('click',function(e){
 </div>
 
 <!-- ========================= ALAT & BAHAN ========================= -->
-<style>
-.ab-item {
-  width: 115px;
-  height: 115px;
-  border-radius: 12px;
-  padding: 10px 6px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s, border-color .18s;
-  user-select: none;
-  flex-shrink: 0;
-  position: relative;
-  background: #eff6ff;
-  border: 2px solid #93c5fd;
-}
-.ab-item:hover {
-  transform: scale(1.08) translateY(-3px);
-  box-shadow: 0 8px 22px rgba(37,99,235,0.18);
-  border-color: #2563eb;
-}
-.ab-item:active {
-  transform: scale(0.94);
-}
-.ab-item.clicked {
-  animation: abPop .32s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes abPop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.18); }
-  70%  { transform: scale(0.96); }
-  100% { transform: scale(1); }
-}
-.ab-emoji { font-size: 30px; margin-bottom: 5px; line-height: 1; }
-.ab-name { font-size: 11px; font-weight: 700; line-height: 1.3; color: var(--acc3); }
-.ab-desc { font-size: 9px; color: var(--text3); margin-top: 2px; line-height: 1.3; }
-.ab-section-title {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--acc);
-}
-</style>
-
 <div id="page-alatbahan" class="page">
-  <div style="flex:1;overflow-y:auto;padding:8px 14px 14px;display:flex;flex-direction:column;gap:8px;">
-
-    <!-- Header -->
-    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);border-radius:12px;padding:11px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 18px rgba(15,36,96,0.22);flex-shrink:0;">
-      <div style="font-size:26px;">🧪</div>
-      <div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,17px);font-weight:700;color:#fff;">Alat &amp; Bahan</div>
-        <div style="font-size:10px;color:#93c5fd;margin-top:2px;">Klik item untuk mengenal fungsinya</div>
-      </div>
-    </div>
-
-    <!-- ALAT & BAHAN (gabungan) -->
-    <div class="card" style="margin-bottom:0;padding:14px 16px;">
-      <div class="ab-section-title">🔬 Alat &amp; Bahan</div>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-
-        <!-- Alat -->
-        <div class="ab-item" onclick="abClick(this,'Buku Catatan','Digunakan untuk mencatat hasil pengamatan dan data selama kegiatan laboratorium.')">
-          <div class="ab-emoji">📓</div>
-          <div class="ab-name">Buku Catatan</div>
-          <div class="ab-desc">Lembar kerja</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Alat Tulis','Pensil dan bolpoin untuk mencatat, menggambar diagram, dan mengisi LKPD.')">
-          <div class="ab-emoji">✏️</div>
-          <div class="ab-name">Alat Tulis</div>
-          <div class="ab-desc">Pencatat data</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Laptop / HP','Perangkat digital untuk mengakses lab virtual, referensi online, dan mengolah data.')">
-          <div class="ab-emoji">💻</div>
-          <div class="ab-name">Laptop/HP</div>
-          <div class="ab-desc">Referensi digital</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Kamera','Untuk mendokumentasikan hasil pengamatan ekosistem di lingkungan sekolah.')">
-          <div class="ab-emoji">📷</div>
-          <div class="ab-name">Kamera</div>
-          <div class="ab-desc">Dokumentasi</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Lembar LKPD','Panduan kerja siswa yang berisi pertanyaan dan tabel pengamatan yang harus diisi.')">
-          <div class="ab-emoji">📋</div>
-          <div class="ab-name">Lembar LKPD</div>
-          <div class="ab-desc">Panduan kerja</div>
-        </div>
-
-        <!-- Bahan -->
-        <div class="ab-item" onclick="abClick(this,'Ekosistem Sekolah','Lingkungan sekitar sekolah sebagai objek pengamatan langsung: taman, kolam, area terbuka.')">
-          <div class="ab-emoji">🏫</div>
-          <div class="ab-name">Ekos. Sekolah</div>
-          <div class="ab-desc">Objek pengamatan</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Gambar Ekosistem','Foto atau ilustrasi berbagai tipe ekosistem sebagai media analisis rantai makanan.')">
-          <div class="ab-emoji">🖼️</div>
-          <div class="ab-name">Gambar Ekosistem</div>
-          <div class="ab-desc">Media analisis</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Buku Teks Biologi','Sumber referensi materi ekosistem, interaksi antarorganisme, dan daur biogeokimia.')">
-          <div class="ab-emoji">📚</div>
-          <div class="ab-name">Buku Teks</div>
-          <div class="ab-desc">Referensi materi</div>
-        </div>
-
-        <div class="ab-item" onclick="abClick(this,'Internet','Sumber informasi digital untuk mencari data terkini dan gambar pendukung ekosistem.')">
-          <div class="ab-emoji">🌐</div>
-          <div class="ab-name">Internet</div>
-          <div class="ab-desc">Sumber informasi</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Catatan -->
-    <div class="notebox" style="flex-shrink:0;">
-      <div class="nt">💡 Catatan</div>
-      <p style="font-size:10.5px;">Amati langsung lingkungan sekitar sekolah untuk mengidentifikasi komponen biotik dan abiotik serta interaksinya.</p>
-    </div>
-
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/mejalab_ekosistem.png" alt="Alat dan Bahan Ekosistem" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
-
-<!-- Info popup alat/bahan -->
-<div id="ab-info-popup" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:2000;
-  background:linear-gradient(135deg,#0f2460,#1a3a8f);color:#fff;border-radius:12px;padding:10px 20px;
-  box-shadow:0 8px 28px rgba(10,30,80,.45);font-size:12.5px;line-height:1.6;max-width:320px;text-align:center;
-  border:1px solid rgba(255,255,255,.15);pointer-events:none;">
-  <span id="ab-info-name" style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;display:block;margin-bottom:3px;"></span>
-  <span id="ab-info-desc" style="color:#bfdbfe;font-size:11.5px;"></span>
-</div>
-
-<script>
-(function(){
-  let abPopupTimer=null;
-  window.abClick=function(el,name,desc){
-    // Sound
-    try{const s=new Audio('https://denicendrianto41.github.io/jump.wav');s.currentTime=0;s.play().catch(()=>{});}catch(e){}
-    // Animation
-    el.classList.remove('clicked');
-    void el.offsetWidth;
-    el.classList.add('clicked');
-    setTimeout(()=>el.classList.remove('clicked'),400);
-    // Popup
-    document.getElementById('ab-info-name').textContent=name;
-    document.getElementById('ab-info-desc').textContent=desc;
-    const popup=document.getElementById('ab-info-popup');
-    popup.style.display='block';
-    popup.style.opacity='1';
-    if(abPopupTimer)clearTimeout(abPopupTimer);
-    abPopupTimer=setTimeout(()=>{popup.style.opacity='0';setTimeout(()=>popup.style.display='none',300);},2800);
-  };
-})();
-</script>
 
 <!-- ===== SELAMAT OVERLAY ===== -->
 <div id="selamatOverlay" style="display:none;position:fixed;inset:0;z-index:5000;pointer-events:none;">
@@ -715,32 +557,8 @@ document.addEventListener('click',function(e){
 
 <!-- ========================= PROSEDUR ========================= -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <div class="card" style="margin-bottom:0;overflow:auto;">
-        <div class="ch"><div class="ci b">📋</div><div class="ct">Langkah Kegiatan</div></div>
-        <div id="simSteps" style="display:flex;flex-direction:column;gap:6px;"></div>
-        <div class="notebox" style="margin-top:8px;">
-          <div class="nt">Rumus Penting</div>
-          <p>Efisiensi Ekologis = (Energi TK-n+1 / Energi TK-n) × 100%<br>Rata-rata ≈ 10% energi diteruskan per tingkat trofik</p>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:0;border-color:rgba(248,113,113,.2);">
-        <div class="ch"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-        <ul class="olist" style="font-size:11px;">
-          <li>Amati ekosistem sekitar sekolah dengan <strong>teliti dan objektif</strong></li>
-          <li>Identifikasi komponen biotik <strong>(produsen, konsumen, dekomposer)</strong> dan abiotik</li>
-          <li>Catat setiap jenis interaksi yang ditemukan beserta <strong>contoh nyata</strong></li>
-          <li>Susun rantai makanan minimal <strong>4 tingkat trofik</strong></li>
-          <li>Diskusikan <strong>peran pohon sekolah</strong> dalam daur biogeokimia</li>
-          <li>Kerjakan semua pertanyaan diskusi berdasarkan hasil eksplorasi</li>
-        </ul>
-        <div class="notebox" style="margin-top:8px;">
-          <div class="nt">Prosedur Kegiatan Lab Virtual</div>
-          <p>1. Baca Teori ekosistem. 2. Siapkan alat &amp; bahan. 3. Susun rantai makanan di Simulasi. 4. Amati piramida energi &amp; daur biogeokimia. 5. Selesaikan kuis interaksi. 6. Jawab pertanyaan Diskusi.</p>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_ekosistem.png" alt="Prosedur Ekosistem" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -903,7 +721,77 @@ function show(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='simulasi')setTimeout(()=>initSimTabs(),80);
+  if(id==='tujuan'||id==='teori'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
 }
+
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa spasi kosong ══
+function fitToContainer(container,extraBottom,minScale){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  container.style.overflowY = 'hidden';
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom - (extraBottom||0);
+  if(availH <= 0) return;
+  const minS = minScale!==undefined?minScale:0.45;
+  const safeH = availH - 2; // margin aman kecil agar tidak overflow karena pembulatan
+
+  // Iteratif: mengubah width (untuk mengisi skala >1) dapat mengubah reflow
+  // (grid/kolom bisa menyempit dan menambah tinggi konten), jadi ukur ulang
+  // scrollHeight di setiap lebar baru sampai skalanya stabil.
+  let scale = 1;
+  for(let i=0;i<6;i++){
+    const naturalH = inner.scrollHeight;
+    if(naturalH <= 0) break;
+    let next = safeH / naturalH;
+    next = Math.min(Math.max(next, minS), 1.8);
+    inner.style.width = (100/next) + '%';
+    if(Math.abs(next-scale) < 0.01){ scale = next; break; }
+    scale = next;
+  }
+  inner.style.transform = 'scale(' + scale + ')';
+
+  // Verifikasi akhir: kalau ternyata masih terpotong (mis. skala sudah
+  // mentok di batas minimum), izinkan scroll supaya tidak ada yang hilang.
+  const finalH = inner.getBoundingClientRect().height;
+  if(finalH > availH + 1){
+    container.style.overflowY = 'auto';
+  }
+}
+
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'));
+  }else if(id==='teori'){
+    // minScale rendah agar seluruh materi selalu pas terlihat di layar fullscreen, tanpa terpotong
+    fitToContainer(document.querySelector('#tab-rantai'),15,0.2);
+    fitToContainer(document.querySelector('#tab-energi'),15,0.2);
+    fitToContainer(document.querySelector('#tab-daur'),15,0.2);
+    fitToContainer(document.querySelector('#tab-interaksi'),15,0.2);
+  }else if(id==='prosedur'){
+    document.querySelectorAll('#page-prosedur .card').forEach(fitToContainer);
+  }
+}
+
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori'||id==='prosedur') fitPage(id);
+  });
+}
+
+window.addEventListener('load', ()=>{ fitPage('tujuan'); });
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 120);
+});
 
 // ===================== TEORI TABS =====================
 function showTeoriTab(name,btn){
@@ -916,6 +804,7 @@ function showTeoriTab(name,btn){
   const cols={rantai:'#1d4ed8,#3b82f6',energi:'#d97706,#f59e0b',daur:'#1d4ed8,#3b82f6',interaksi:'#7c3aed,#a78bfa'};
   const shds={rantai:'rgba(37,99,235,0.35)',energi:'rgba(217,119,6,0.35)',daur:'rgba(37,99,235,0.35)',interaksi:'rgba(124,58,237,0.35)'};
   if(btn){btn.style.background='linear-gradient(135deg,'+cols[name]+')';btn.style.color='#fff';btn.style.border='none';btn.style.boxShadow='0 2px 10px '+shds[name];}
+  if(panel)requestAnimationFrame(()=>requestAnimationFrame(()=>fitToContainer(panel,15,0.2)));
 }
 
 // ===================== PROSEDUR STEPS =====================
@@ -929,8 +818,10 @@ const STEPS=[
   {emoji:'📝',text:'Jawab semua <strong>pertanyaan diskusi</strong> berdasarkan hasil eksplorasi virtual lab.'},
 ];
 (function buildSteps(){
+  const el=document.getElementById('simSteps');
+  if(!el)return;
   const colors=['#2563eb','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#9333ea'];
-  document.getElementById('simSteps').innerHTML=STEPS.map((s,i)=>{
+  el.innerHTML=STEPS.map((s,i)=>{
     return `<div style="display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;" onmouseover="this.style.borderColor='${colors[i%colors.length]}40'" onmouseout="this.style.borderColor=''">
       <div style="min-width:28px;height:28px;border-radius:50%;background:${colors[i%colors.length]}15;border:1px solid ${colors[i%colors.length]}30;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">${s.emoji}</div>
       <div>
