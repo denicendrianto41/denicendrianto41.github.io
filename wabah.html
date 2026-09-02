@@ -193,13 +193,15 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 
 <!-- LOADING -->
 <div id="loadScreen">
-  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
-  <div class="load-title">Lab Maya Biologi</div>
-  <div class="load-sub">Simulasi Wabah Virus</div>
-  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
-  <div class="load-percent" id="loadPercent">0%</div>
-  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
-  <button id="btnMulai" onclick="startPraktikum()">Mulai Praktikum</button>
+  <div class="load-content" style="transform:translateY(-60px);display:flex;flex-direction:column;align-items:center;">
+    <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+    <div class="load-title">Lab Maya Biologi</div>
+    <div class="load-sub">Simulasi Wabah Virus</div>
+    <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+    <div class="load-percent" id="loadPercent">0%</div>
+    <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
+    <button id="btnMulai" onclick="startPraktikum()">Mulai Praktikum</button>
+  </div>
 </div>
 <script>
 (function(){
