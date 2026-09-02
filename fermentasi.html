@@ -78,6 +78,7 @@ nav::-webkit-scrollbar{display:none;}
 .h-desc{font-size:11px;color:#bfdbfe;line-height:1.5;max-width:480px;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.fit-inner{transform-origin:top left;}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
 .ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
 .ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
@@ -96,7 +97,8 @@ nav::-webkit-scrollbar{display:none;}
 #page-teori .card h4{margin:6px 0 3px;}
 #page-teori .two-col{gap:5px;}
 #page-teori .card{margin-bottom:5px;padding:9px 12px;}
-#page-alatbahan .scroll{overflow:hidden;display:flex;flex-direction:column;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 .fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
 .fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
@@ -158,51 +160,6 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .disc-area{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.6;margin-top:6px;}
 .disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 /* DRAG CARDS */
-.drag-card{
-  border-radius:10px;padding:9px;
-  text-align:center;cursor:grab;
-  transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s,background .15s;
-  user-select:none;-webkit-user-select:none;
-  position:relative;touch-action:none;-webkit-tap-highlight-color:transparent;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  aspect-ratio:1/1;
-}
-.drag-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30,41,59,.12);}
-.drag-card:active{cursor:grabbing;transform:scale(.96);}
-.drag-card.alat{background:#eff6ff;border:1.5px dashed #93c5fd;}
-.drag-card.alat:hover{border-color:#2563eb;}
-.drag-card.bahan{background:#f0fdf4;border:1.5px dashed #86efac;}
-.drag-card.bahan:hover{border-color:#059669;}
-.drag-card.dragging{opacity:.3;transform:scale(.95);filter:grayscale(.5);}
-.drag-card.placed{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
-.drag-icon{margin-bottom:3px;display:flex;align-items:center;justify-content:center;line-height:1;}
-.drag-icon img{width:30px;height:30px;object-fit:contain;vertical-align:middle;display:inline-block;}
-.drag-name{font-size:11px;font-weight:600;color:var(--acc3);line-height:1.3;margin-bottom:1px;}
-.drag-card.bahan .drag-name{color:#065f46;}
-.drag-sub{font-size:9.5px;color:var(--text3);}
-.drag-card.touch-grabbing{transform:scale(1.06);box-shadow:0 8px 24px rgba(37,99,235,.22);border-color:var(--acc2);z-index:10;}
-.drop-zone{border:2px dashed var(--border2);border-radius:10px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;transition:background .2s,border-color .2s;position:relative;touch-action:none;min-height:110px;}
-#dropAlat{border-color:#93c5fd;background:#eff6ff;}
-#dropBahan{border-color:#86efac;background:#f0fdf4;}
-.drop-zone.drag-over-ok{background:#eff6ff;border-color:#3b82f6;}
-.drop-zone.bahan-zone.drag-over-ok{background:#f0fdf4;border-color:#4ade80;}
-.drop-zone.drag-over-wrong{background:#fff1f2;border-color:#f87171;}
-.drop-hint{width:100%;text-align:center;font-size:12px;color:#93c5fd;padding:8px 0;pointer-events:none;}
-#dropBahan .drop-hint{color:#86efac;}
-.drop-card{background:#eff6ff;border:1.5px solid #93c5fd;border-radius:10px;padding:9px;display:flex;flex-direction:column;align-items:center;gap:0;font-size:11px;font-weight:600;color:var(--text);position:relative;text-align:center;width:105px;min-width:90px;}
-.drop-card.bahan-card{background:#f0fdf4;border-color:#86efac;}
-.drop-card.wrong-card{border-color:#fca5a5;background:#fff1f2;color:#991b1b;}
-.drop-card-icon{font-size:22px;flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;margin-bottom:3px;}
-.drop-card-icon img{width:30px;height:30px;object-fit:contain;vertical-align:middle;}
-.drop-card-name{font-size:11px;font-weight:700;color:var(--acc3);line-height:1.3;margin-bottom:1px;}
-.drop-card.bahan-card .drop-card-name{color:#065f46;}
-.drop-card-sub{font-size:9.5px;color:var(--text3);}
-.drop-card-remove{position:absolute;top:3px;right:3px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;transition:color .15s;}
-.drop-card-remove:hover{color:#dc2626;}
-@keyframes shakeWrong{0%{transform:translateX(0);}15%{transform:translateX(-8px);}30%{transform:translateX(8px);}45%{transform:translateX(-6px);}60%{transform:translateX(6px);}75%{transform:translateX(-3px);}90%{transform:translateX(3px);}100%{transform:translateX(0);}}
-@keyframes bounceRight{0%{transform:scale(1);}30%{transform:scale(1.12);}55%{transform:scale(.95);}75%{transform:scale(1.05);}100%{transform:scale(1);}}
-.anim-correct{animation:bounceRight .4s cubic-bezier(.34,1.56,.64,1);}
-.anim-wrong{animation:shakeWrong .5s ease;}
 /* QUIZ */
 .quiz-nav-header{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--surf);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.05);}
 .qprog{display:flex;gap:3px;flex-wrap:wrap;}
@@ -255,21 +212,19 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_fermentasi.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
-.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
-.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#93c5fd,#3b82f6);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#0f172a;text-align:center;margin-bottom:4px;text-shadow:0 1px 2px rgba(255,255,255,.25);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#1d4ed8;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;font-weight:700;}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(15,23,42,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#1d4ed8,#1e40af);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#0f172a;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#1e293b;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;}
 #btnMulaiPraktikum{display:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(37,99,235,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(37,99,235,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
 /* CELEBRATION */
-@keyframes celebBounce{0%,100%{transform:translateY(0) scale(1);}40%{transform:translateY(-14px) scale(1.08);}70%{transform:translateY(-4px) scale(.97);}}
-@keyframes celebRingPulse{0%,100%{opacity:.3;}50%{opacity:.55;}}
 @keyframes starFloat{0%{opacity:0;transform:translateY(0) scale(0);}15%{opacity:1;}85%{opacity:.8;}100%{opacity:0;transform:translateY(-120px) scale(1.2) rotate(180deg);}}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -277,12 +232,6 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 @media (max-width: 640px) {
   .sim-wrap{grid-template-columns:1fr;}
   .ctrl-panel{max-height:180px;}
-  #page-alatbahan .scroll{overflow-y:auto;}
-  #page-alatbahan .scroll > div[style*="grid-template-columns:1fr 1fr"]{display:flex!important;flex-direction:column!important;height:auto!important;gap:10px!important;}
-  #page-alatbahan .card:first-child{max-height:46vh;}
-  #sourceAlat{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))!important;gap:8px!important;}
-  .drag-card{padding:8px 6px !important;}
-  .drag-icon{font-size:20px;}
 }
 </style>
 </head>
@@ -290,6 +239,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
+  <div class="load-content" style="display:flex;flex-direction:column;align-items:center;gap:0;transform:translateY(-60px);">
   <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
   <div class="load-title">Lab Maya Biologi</div>
   <div class="load-sub">Fermentasi Alkohol</div>
@@ -297,6 +247,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   <div class="load-percent" id="loadPercent">0%</div>
   <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
   <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+  </div>
 </div>
 
 <script>
@@ -331,6 +282,7 @@ function startPraktikum(){
     document.getElementById('page-tujuan').classList.add('active');
     const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
     if(tujuanBtn) tujuanBtn.classList.add('active');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('tujuan')));
   },650);
 }</script>
 
@@ -387,7 +339,8 @@ function startPraktikum(){
 
 <!-- ===== TUJUAN ===== -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <!-- Hero Banner -->
     <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
@@ -471,11 +424,13 @@ function startPraktikum(){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ===== TEORI ===== -->
 <div id="page-teori" class="page">
-  <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <!-- Teori Header -->
     <div style="background:linear-gradient(135deg,#1e293b 0%,#0f172a 60%,#1d4ed8 100%);border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(15,36,96,0.22);position:relative;overflow:hidden;">
@@ -634,345 +589,20 @@ function startPraktikum(){
     </script>
 
   </div>
+  </div>
 </div>
 
 <!-- ===== ALAT DAN BAHAN ===== -->
 <div id="page-alatbahan" class="page">
-  <div class="scroll" style="padding:10px 14px 14px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-
-      <!-- KIRI: Daftar Alat & Bahan -->
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch" style="flex-shrink:0;">
-          <div class="ci b">🔍</div>
-          <div class="ct">Daftar Alat &amp; Bahan</div>
-        </div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag atau <strong style="color:var(--acc3)">tekan &amp; geser</strong> item ke <strong style="color:var(--acc3)">Meja Percobaan</strong> di sebelah kanan.</p>
-
-        <div id="sourceAlat" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
-          <!-- ALAT -->
-          <div class="drag-card alat" draggable="true" data-id="erlenmeyer" data-type="alat" data-name="2 Tabung Erlenmeyer" data-sub="Tabung A &amp; B (kontrol)">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/elenmeyer.png" alt="Erlenmeyer" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div class="drag-name">2 Erlenmeyer</div>
-            <div class="drag-sub">Tabung A &amp; B</div>
-          </div>
-          <div class="drag-card alat" draggable="true" data-id="selang" data-type="alat" data-name="Selang Penghubung" data-sub="Mengalirkan gas CO₂">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/selang.png" alt="Selang" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div class="drag-name">Selang</div>
-            <div class="drag-sub">Alirkan gas CO₂</div>
-          </div>
-          <div class="drag-card alat" draggable="true" data-id="termometer" data-type="alat" data-name="Termometer" data-sub="Mengukur suhu">
-            <div class="drag-icon" style="font-size:30px;">🌡️</div>
-            <div class="drag-name">Termometer</div>
-            <div class="drag-sub">Mengukur suhu</div>
-          </div>
-          <div class="drag-card alat" draggable="true" data-id="gelas" data-type="alat" data-name="Gelas Ukur" data-sub="Mengukur volume">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/beker_glass.png" alt="Gelas Ukur" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div class="drag-name">Gelas Ukur</div>
-            <div class="drag-sub">Mengukur volume</div>
-          </div>
-          <!-- BAHAN -->
-          <div class="drag-card bahan" draggable="true" data-id="gula" data-type="bahan" data-name="Larutan Gula 30%" data-sub="Substrat fermentasi · 100cc">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/hcl.png" alt="Larutan Gula" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div class="drag-name">Larutan Gula 30%</div>
-            <div class="drag-sub">Substrat · 100cc</div>
-          </div>
-          <div class="drag-card bahan" draggable="true" data-id="ragi" data-type="bahan" data-name="Ragi Saccharomyces" data-sub="4 gram · agen fermentasi">
-            <div class="drag-icon" style="font-size:30px;">🦠</div>
-            <div class="drag-name">Ragi Yeast</div>
-            <div class="drag-sub">4 gram · agen</div>
-          </div>
-          <div class="drag-card bahan" draggable="true" data-id="airkapur" data-type="bahan" data-name="Air Kapur Ca(OH)₂" data-sub="Indikator CO₂ · 100cc">
-            <div class="drag-icon" style="font-size:30px;">🥛</div>
-            <div class="drag-name">Air Kapur</div>
-            <div class="drag-sub">Ca(OH)₂ · 100cc</div>
-          </div>
-          <div class="drag-card bahan" draggable="true" data-id="pp" data-type="bahan" data-name="Indikator PP" data-sub="Fenolftalein · 1 tetes">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/naoh.png" alt="Indikator PP" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div class="drag-name">Indikator PP</div>
-            <div class="drag-sub">Fenolftalein · 1 tetes</div>
-          </div>
-          <div class="drag-card bahan" draggable="true" data-id="air" data-type="bahan" data-name="Air (H₂O)" data-sub="Kontrol tanpa ragi">
-            <div class="drag-icon"><img src="https://denicendrianto41.github.io/air.png" alt="Air" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div class="drag-name">Air (H₂O)</div>
-            <div class="drag-sub">Kontrol tanpa ragi</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- KANAN: Meja Percobaan -->
-      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
-        <div class="ch" style="flex-shrink:0;">
-          <div class="ci g">⚗️</div>
-          <div class="ct">Meja Percobaan</div>
-        </div>
-
-        <div style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat Percobaan</div>
-        <div id="dropAlat" class="drop-zone" data-accept="alat" style="margin-bottom:10px;">
-          <div class="drop-hint">← Drag alat ke sini</div>
-        </div>
-
-        <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;">🧪 Bahan Percobaan</div>
-        <div id="dropBahan" class="drop-zone bahan-zone" data-accept="bahan">
-          <div class="drop-hint">← Drag bahan ke sini</div>
-        </div>
-
-        <button onclick="resetMeja()" style="margin-top:10px;flex-shrink:0;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .17s;" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">↺ Reset Meja</button>
-
-        <div id="catatanMeja" style="display:none;margin-top:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;flex-shrink:0;">
-          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">💡 Catatan Penggunaan</div>
-          <p id="catatanText" style="font-size:11.5px;color:#92400e;line-height:1.6;margin:0;"></p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- Celebration -->
-<div id="celebOverlay" style="display:none;position:fixed;inset:0;z-index:20000;align-items:center;justify-content:center;pointer-events:none;">
-  <canvas id="confettiCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
-  <div id="celebStars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
-  <div id="celebBox" style="position:relative;background:linear-gradient(145deg,#0a0f2e,#0f172a,#1a2a6e);border:1px solid rgba(99,179,237,0.25);border-radius:28px;padding:44px 52px 40px;text-align:center;max-width:420px;width:92%;box-shadow:0 30px 100px rgba(0,0,0,.7),0 0 60px rgba(37,99,235,.3),inset 0 1px 0 rgba(255,255,255,.1);transform:scale(.4) translateY(80px);opacity:0;transition:transform .6s cubic-bezier(.34,1.56,.64,1),opacity .4s;pointer-events:auto;">
-    <div style="position:absolute;inset:-2px;border-radius:30px;background:linear-gradient(145deg,#3b82f6,#8b5cf6,#ec4899,#3b82f6);opacity:.4;z-index:-1;animation:celebRingPulse 2s ease infinite;"></div>
-    <div style="position:relative;display:inline-block;margin-bottom:16px;">
-      <div style="font-size:72px;line-height:1;animation:celebBounce .8s ease infinite;filter:drop-shadow(0 0 20px rgba(251,191,36,.6));">🏆</div>
-    </div>
-    <div id="celebBadge" style="display:inline-block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a1a;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(251,191,36,.5);opacity:0;transform:scale(.6);transition:opacity .4s .5s,transform .4s .5s cubic-bezier(.34,1.56,.64,1);">✨ SEMPURNA! ✨</div>
-    <div id="celebTitle" style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.1;opacity:0;transform:translateY(10px);transition:opacity .4s .65s,transform .4s .65s ease-out;text-shadow:0 2px 20px rgba(99,179,237,.5);">Luar Biasa! 🎉</div>
-    <div id="celebSub" style="font-size:14px;color:#93c5fd;line-height:1.7;margin-bottom:12px;opacity:0;transform:translateY(8px);transition:opacity .4s .8s,transform .4s .8s ease-out;">Semua alat dan bahan telah ditempatkan<br>dengan <strong style="color:#34d399;">tepat</strong> di meja percobaan!</div>
-    <div id="celebStats" style="display:flex;gap:10px;justify-content:center;margin-bottom:26px;opacity:0;transition:opacity .4s .95s;">
-      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 16px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#34d399;">4</div>
-        <div style="font-size:10px;color:#94a3b8;letter-spacing:.05em;">ALAT</div>
-      </div>
-      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 16px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#60a5fa;">5</div>
-        <div style="font-size:10px;color:#94a3b8;letter-spacing:.05em;">BAHAN</div>
-      </div>
-      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 16px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#fbbf24;">9</div>
-        <div style="font-size:10px;color:#94a3b8;letter-spacing:.05em;">TOTAL</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button onclick="closeCelebration()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:12px;padding:11px 30px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(37,99,235,.45);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px) scale(1.04)'" onmouseout="this.style.transform=''">Lanjutkan ➜</button>
-      <button onclick="closeCelebration();resetMeja();" style="background:rgba(255,255,255,.1);color:#e2e8f0;border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:11px 30px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">↺ Coba Lagi</button>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/mejalab_fermentasi.png" alt="Alat dan Bahan Percobaan Fermentasi Alkohol" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
 <!-- ===== PROSEDUR ===== -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <style>
-    /* ===== TIMELINE PROSEDUR ===== */
-    .tl-section { margin-bottom: 10px; }
-    .tl-header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 10px 10px 0 0;
-      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px;
-    }
-    .tl-header.perlakuan { background: linear-gradient(135deg,#1d4ed8,#3b82f6); color: #fff; }
-    .tl-header.kontrol   { background: linear-gradient(135deg,#dc2626,#f87171); color: #fff; }
-    .tl-header-icon { width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0; }
-    .tl-body { background:var(--surf); border:1px solid var(--border); border-top:none; border-radius:0 0 10px 10px; padding:14px 14px 10px; position:relative; }
-    /* Vertical line */
-    .tl-body::before { content:''; position:absolute; left:30px; top:0; bottom:14px; width:2px; background:linear-gradient(to bottom,var(--acc2),transparent); border-radius:2px; }
-    .tl-kontrol .tl-body::before { background:linear-gradient(to bottom,#f87171,transparent); }
-    .tl-item {
-      display:flex; align-items:flex-start; gap:12px; margin-bottom:6px; position:relative;
-      padding: 8px 10px 8px 8px; border-radius:9px;
-      cursor:pointer; transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s, background 0.18s;
-      user-select:none;
-    }
-    .tl-item:hover { transform:scale(1.025); background:#eff6ff; box-shadow:0 4px 16px rgba(37,99,235,0.13); z-index:1; }
-    .tl-kontrol .tl-item:hover { background:#fff1f2; box-shadow:0 4px 16px rgba(220,38,38,0.12); }
-    .tl-item:active { transform:scale(1.045); }
-    .tl-item:last-child { margin-bottom:0; }
-    /* Icon circle */
-    .tl-icon {
-      flex-shrink:0; width:38px; height:38px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:17px; border:2px solid transparent;
-      box-shadow:0 2px 8px rgba(37,99,235,0.15); position:relative; z-index:1;
-      transition: transform 0.2s;
-    }
-    .tl-item:hover .tl-icon { transform: scale(1.12) rotate(-5deg); }
-    /* Connector line between icon and next item */
-    .tl-item:not(:last-child) .tl-icon::after {
-      content:''; position:absolute; left:50%; top:100%; transform:translateX(-50%);
-      width:2px; height:calc(100% + 8px); background:rgba(37,99,235,0.18); z-index:0;
-    }
-    .tl-kontrol .tl-item:not(:last-child) .tl-icon::after { background:rgba(220,38,38,0.18); }
-    .perlakuan .tl-icon { background:linear-gradient(135deg,#dbeafe,#bfdbfe); border-color:#93c5fd; color:#1d4ed8; }
-    .kontrol-icon   { background:linear-gradient(135deg,#fee2e2,#fecaca); border-color:#fca5a5; color:#b91c1c; }
-    .tl-content { flex:1; min-width:0; }
-    .tl-step-label {
-      font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:.1em;
-      text-transform:uppercase; font-weight:600; margin-bottom:2px;
-      color:var(--acc);
-    }
-    .tl-kontrol .tl-step-label { color:#dc2626; }
-    .tl-text { font-size:clamp(11px,1.2vw,13px); color:var(--text2); line-height:1.6; }
-    /* Connector arrow between steps (visual cue) */
-    .tl-connector {
-      display:flex; align-items:center; justify-content:center;
-      padding: 0 0 0 44px; margin: -2px 0;
-    }
-    .tl-connector span {
-      font-size:13px; color:var(--text3);
-      animation: bounceDown 1.2s ease-in-out infinite;
-    }
-    .tl-kontrol .tl-connector span { color:#fca5a5; }
-    @keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
-    </style>
-
-    <div class="two-col">
-      <!-- PERANGKAT I – PERLAKUAN -->
-      <div class="tl-section perlakuan">
-        <div class="tl-header perlakuan">
-          <div class="tl-header-icon">🧪</div>
-          Perangkat I – Perlakuan
-        </div>
-        <div class="tl-body">
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon perlakuan">🏷️</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 1 · Pelabelan</div>
-              <div class="tl-text">Beri label <strong>A</strong> pada tabung erlenmeyer pertama (tabung fermentasi) dan label <strong>B</strong> pada tabung kedua (tabung indikator).</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon perlakuan">🍬</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 2 · Isi Tabung A</div>
-              <div class="tl-text">Isi tabung erlenmeyer <strong>A</strong> dengan <strong>100 cc larutan gula 30%</strong>, kemudian tambahkan <strong>4 gram ragi</strong> (<em>Saccharomyces cerevisiae</em>) ke dalamnya.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon perlakuan">🥛</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 3 · Isi Tabung B</div>
-              <div class="tl-text">Isi tabung erlenmeyer <strong>B</strong> dengan <strong>100 cc air kapur Ca(OH)₂</strong>, kemudian tambahkan <strong>1 tetes indikator PP</strong>. Larutan akan berwarna merah muda.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon perlakuan">🔗</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 4 · Sambungkan Selang</div>
-              <div class="tl-text">Sambungkan tabung A ke tabung B menggunakan selang, sehingga gas CO₂ dari tabung A mengalir ke tabung B melalui air kapur.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon perlakuan">🔒</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 5 · Tutup Rapat</div>
-              <div class="tl-text">Tutup rapat tabung A dengan sumbat berselang agar kondisi <strong>anaerob</strong> tercapai dan gas CO₂ tersalurkan ke tabung B.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon perlakuan">👁️</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 6 · Amati</div>
-              <div class="tl-text">Amati perubahan selama <strong>30 menit</strong>: perubahan warna air kapur, timbulnya gelembung gas, dan perubahan suhu pada tabung A.</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- PERANGKAT II – KONTROL -->
-      <div class="tl-section tl-kontrol">
-        <div class="tl-header kontrol">
-          <div class="tl-header-icon">🔬</div>
-          Perangkat II – Kontrol
-        </div>
-        <div class="tl-body">
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon kontrol-icon">🏷️</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 1 · Ulangi Persiapan</div>
-              <div class="tl-text">Ulangi langkah 1, 2, dan 3 di atas pada perangkat kedua dengan cara yang sama persis.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon kontrol-icon">🚫</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 2 · Tanpa Ragi</div>
-              <div class="tl-text">Pada tabung A perangkat II, isi dengan <strong>100 cc larutan gula 30%</strong> tetapi <strong>TANPA menambahkan ragi</strong>.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon kontrol-icon">🥛</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 3 · Isi Tabung B</div>
-              <div class="tl-text">Pada tabung B perangkat II, isi dengan <strong>100 cc air kapur + 1 tetes PP</strong> sama seperti perangkat I.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon kontrol-icon">🔗</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 4 · Sambungkan Selang</div>
-              <div class="tl-text">Sambungkan tabung A ke tabung B menggunakan selang dengan cara yang sama seperti perangkat I.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon kontrol-icon">🔒</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 5 · Tutup Rapat</div>
-              <div class="tl-text">Tutup rapat tabung A perangkat II dengan sumbat berselang.</div>
-            </div>
-          </div>
-          <div class="tl-connector"><span>↓</span></div>
-
-          <div class="tl-item" onclick="tlZoom(this)">
-            <div class="tl-icon kontrol-icon">⚖️</div>
-            <div class="tl-content">
-              <div class="tl-step-label">Langkah 6 · Bandingkan</div>
-              <div class="tl-text">Amati perangkat II selama <strong>30 menit</strong> dan bandingkan hasilnya dengan Perangkat I.</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <script>
-    function tlZoom(el){
-      el.style.transform='scale(1.06)';
-      el.style.boxShadow='0 8px 24px rgba(37,99,235,0.22)';
-      el.style.background=el.closest('.tl-kontrol') ? '#fff1f2' : '#eff6ff';
-      el.style.zIndex='2';
-      setTimeout(()=>{
-        el.style.transform='';
-        el.style.boxShadow='';
-        el.style.background='';
-        el.style.zIndex='';
-      },380);
-    }
-    </script>
-
+    <img src="https://denicendrianto41.github.io/prosedur_fermentasi.png" alt="Prosedur Percobaan Fermentasi Alkohol" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -1099,7 +729,52 @@ function show(id,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn) btn.classList.add('active');
+  if(id==='tujuan'||id==='teori'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
 }
+
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa scroll ══
+function fitToContainer(container,bottomGap){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom - (bottomGap||0);
+  const naturalH = inner.scrollHeight;
+  if(availH <= 0 || naturalH <= 0) return;
+  let scale = availH / naturalH;
+  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
+}
+
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'),20);
+  }else if(id==='teori'){
+    fitToContainer(document.querySelector('#page-teori > .scroll'),20);
+  }else if(id==='prosedur'){
+    document.querySelectorAll('#page-prosedur .card').forEach(el=>fitToContainer(el));
+  }
+}
+
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori'||id==='prosedur') fitPage(id);
+  });
+}
+
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 120);
+});
 let navOpen=false;
 function toggleNav(){
   navOpen=!navOpen;
@@ -1109,238 +784,6 @@ function toggleNav(){
 function closeNav(){
   navOpen=false;
   document.getElementById('mainNav').classList.remove('open');
-}
-
-// ── DRAG & DROP ──
-const NOTES = {
-  erlenmeyer:'Siapkan 2 tabung erlenmeyer, beri label A (fermentasi) dan B (indikator). Pastikan bersih dan kering.',
-  selang:'Selang penghubung mengalirkan gas CO₂ dari tabung A ke tabung B yang berisi air kapur.',
-  termometer:'Gunakan termometer untuk mengukur suhu tabung fermentasi sebelum dan sesudah percobaan.',
-  gelas:'Gunakan gelas ukur untuk mengukur 100 cc larutan gula dan 100 cc air kapur secara akurat.',
-  gula:'Larutan gula 30% berfungsi sebagai substrat (bahan bakar) untuk fermentasi oleh ragi.',
-  ragi:'Ragi Saccharomyces cerevisiae adalah agen fermentasi. Tambahkan 4 gram ke tabung A.',
-  airkapur:'Air kapur Ca(OH)₂ bereaksi dengan CO₂ membentuk endapan CaCO₃ — larutan menjadi keruh.',
-  pp:'Indikator PP (fenolftalein) menunjukkan perubahan pH: merah muda di basa, bening di asam.',
-  air:'Air digunakan pada perangkat kontrol (tanpa ragi) untuk membandingkan hasil percobaan.',
-};
-
-const TOTAL_ALAT=4, TOTAL_BAHAN=5;
-let dragId=null,dragType=null;
-let touchClone=null,touchCard=null,popupTimer=null;
-let touchLongTimer=null,touchStartX=0,touchStartY=0,touchDragging=false;
-const LONG_PRESS_MS=120;
-
-function playSound(id){try{const a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(()=>{});}}catch(e){}}
-function showToast(text,type){
-  const toast=document.createElement('div');
-  toast.textContent=text;
-  const bg=type==='ok'?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)';
-  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);background:'+bg+';color:#fff;font-family:Space Grotesk,sans-serif;font-size:22px;font-weight:700;padding:16px 32px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);';
-  document.body.appendChild(toast);
-  requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
-  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1600);
-}
-function showDropBenar(zone){
-  playSound('sndBenar');
-  showToast('✅ Kamu Benar!','ok');
-  zone.style.borderColor='#10b981';zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';
-  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},1800);
-}
-function showDropSalah(zone){
-  playSound('sndSalah');
-  showToast('❌ Salah! Coba lagi.','err');
-  zone.style.borderColor='#ef4444';zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';
-  zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
-  setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},800);
-}
-function highlightZones(type){
-  document.querySelectorAll('.drop-zone').forEach(z=>{z.style.opacity=z.dataset.accept===type?'1':'0.45';});
-}
-function clearZoneHighlights(){
-  document.querySelectorAll('.drop-zone').forEach(z=>{z.style.opacity='';z.classList.remove('drag-over-ok','drag-over-wrong');});
-}
-
-document.querySelectorAll('.drag-card').forEach(card=>{
-  card.addEventListener('dragstart',e=>{
-    if(card.classList.contains('placed')){e.preventDefault();return;}
-    dragId=card.dataset.id;dragType=card.dataset.type;
-    card.classList.add('dragging');e.dataTransfer.effectAllowed='copy';
-    highlightZones(dragType);
-  });
-  card.addEventListener('dragend',()=>{card.classList.remove('dragging');clearZoneHighlights();});
-
-  card.addEventListener('touchstart',e=>{
-    if(card.classList.contains('placed')) return;
-    const t=e.touches[0];touchStartX=t.clientX;touchStartY=t.clientY;touchDragging=false;
-    touchLongTimer=setTimeout(()=>{
-      touchDragging=true;touchCard=card;dragId=card.dataset.id;dragType=card.dataset.type;
-      if(navigator.vibrate) navigator.vibrate(30);
-      card.classList.add('touch-grabbing');
-      const rect=card.getBoundingClientRect();
-      touchClone=card.cloneNode(true);
-      touchClone.style.cssText=['position:fixed','z-index:99999','pointer-events:none',`width:${rect.width}px`,`height:${rect.height}px`,`top:${rect.top}px`,`left:${rect.left}px`,'transition:none','box-shadow:0 12px 36px rgba(0,0,0,.35)','transform:scale(1.1)','opacity:.92','border-radius:10px'].join(';');
-      document.body.appendChild(touchClone);
-      card.classList.add('dragging');highlightZones(dragType);
-    },LONG_PRESS_MS);
-  },{passive:true});
-
-  card.addEventListener('touchmove',e=>{
-    const t=e.touches[0];const dx=t.clientX-touchStartX;const dy=t.clientY-touchStartY;
-    if(!touchDragging){if(Math.abs(dx)>8||Math.abs(dy)>8){clearTimeout(touchLongTimer);touchLongTimer=null;}return;}
-    e.preventDefault();
-    if(!touchClone||!touchCard) return;
-    const rect=touchCard.getBoundingClientRect();
-    touchClone.style.top=(t.clientY-rect.height/2)+'px';touchClone.style.left=(t.clientX-rect.width/2)+'px';
-    touchClone.style.display='none';const el=document.elementFromPoint(t.clientX,t.clientY);touchClone.style.display='';
-    document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('drag-over-ok','drag-over-wrong'));
-    const zone=el&&el.closest('.drop-zone');
-    if(zone){zone.classList.add(zone.dataset.accept===dragType?'drag-over-ok':'drag-over-wrong');}
-  },{passive:false});
-
-  card.addEventListener('touchend',e=>{
-    clearTimeout(touchLongTimer);touchLongTimer=null;
-    if(!touchDragging||!touchClone||!touchCard){touchDragging=false;return;}
-    const t=e.changedTouches[0];
-    touchClone.style.display='none';const el=document.elementFromPoint(t.clientX,t.clientY);touchClone.style.display='';
-    const zone=el&&el.closest('.drop-zone');if(zone) drop(zone);
-    touchClone.remove();touchClone=null;
-    touchCard.classList.remove('dragging','touch-grabbing');touchCard=null;
-    clearZoneHighlights();touchDragging=false;dragId=null;dragType=null;
-  });
-
-  card.addEventListener('touchcancel',()=>{
-    clearTimeout(touchLongTimer);touchLongTimer=null;
-    if(touchClone){touchClone.remove();touchClone=null;}
-    if(touchCard){touchCard.classList.remove('dragging','touch-grabbing');touchCard=null;}
-    clearZoneHighlights();touchDragging=false;dragId=null;dragType=null;
-  });
-});
-
-document.querySelectorAll('.drop-zone').forEach(zone=>{
-  zone.addEventListener('dragover',e=>{
-    e.preventDefault();
-    if(zone.dataset.accept===dragType){zone.classList.add('drag-over-ok');zone.classList.remove('drag-over-wrong');}
-    else{zone.classList.add('drag-over-wrong');zone.classList.remove('drag-over-ok');}
-  });
-  zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over-ok','drag-over-wrong'));
-  zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over-ok','drag-over-wrong');drop(zone);});
-});
-
-function drop(zone){
-  if(!dragId) return;
-  const card=document.querySelector(`.drag-card[data-id="${dragId}"]`);
-  if(!card) return;
-  const isCorrect=zone.dataset.accept===dragType;
-  if(isCorrect){
-    if(card.classList.contains('placed')) return;
-    card.classList.add('placed');
-    const dc=document.createElement('div');
-    dc.className='drop-card'+(dragType==='bahan'?' bahan-card':'');
-    dc.dataset.id=dragId;
-    dc.innerHTML=`<button class="drop-card-remove" onclick="removeFromZone(this,'${dragId}','${dragType}')">✕</button><div class="drop-card-icon">${card.querySelector('.drag-icon').innerHTML}</div><div class="drop-card-name">${card.querySelector('.drag-name').textContent}</div><div class="drop-card-sub">${card.querySelector('.drag-sub').textContent}</div>`;
-    dc.classList.add('anim-correct');
-    const hint=zone.querySelector('.drop-hint');if(hint) hint.style.display='none';
-    zone.appendChild(dc);
-    showDropBenar(zone);
-    const note=NOTES[dragId];
-    if(note){
-      document.getElementById('catatanMeja').style.display='block';
-      document.getElementById('catatanText').textContent=note;
-    }
-    checkAllPlaced();
-  } else {
-    const clone=document.createElement('div');
-    clone.className='drop-card wrong-card';
-    clone.style.animation='none';
-    clone.innerHTML=`<div class="drop-card-icon">${card.querySelector('.drag-icon').innerHTML}</div><div class="drop-card-name">${card.querySelector('.drag-name').textContent}</div><div class="drop-card-sub">${card.querySelector('.drag-sub').textContent}</div>`;
-    clone.classList.add('anim-wrong');
-    const hint=zone.querySelector('.drop-hint');if(hint) hint.style.display='none';
-    zone.appendChild(clone);
-    showDropSalah(zone);
-    setTimeout(()=>{clone.remove();const h=zone.querySelector('.drop-hint');if(h&&zone.querySelectorAll('.drop-card').length===0) h.style.display='';},1200);
-  }
-  dragId=null;dragType=null;clearZoneHighlights();
-}
-
-function removeFromZone(btn,id,type){
-  const card=document.querySelector(`.drag-card[data-id="${id}"]`);
-  if(card) card.classList.remove('placed');
-  const dc=btn.closest('.drop-card');
-  const zone=dc.parentElement;
-  dc.remove();
-  if(zone.querySelectorAll('.drop-card').length===0){const h=zone.querySelector('.drop-hint');if(h) h.style.display='';}
-}
-
-function checkAllPlaced(){
-  const alatPlaced=document.getElementById('dropAlat').querySelectorAll('.drop-card:not(.wrong-card)').length;
-  const bahanPlaced=document.getElementById('dropBahan').querySelectorAll('.drop-card:not(.wrong-card)').length;
-  if(alatPlaced>=TOTAL_ALAT&&bahanPlaced>=TOTAL_BAHAN){
-    setTimeout(showCelebration,400);
-    playSound('sndBerhasil');
-  }
-}
-
-window.resetMeja=function(){
-  document.querySelectorAll('.drag-card').forEach(c=>c.classList.remove('placed'));
-  ['dropAlat','dropBahan'].forEach(zid=>{
-    const z=document.getElementById(zid);
-    z.querySelectorAll('.drop-card').forEach(d=>d.remove());
-    const h=z.querySelector('.drop-hint');if(h) h.style.display='';
-  });
-  document.getElementById('catatanMeja').style.display='none';
-};
-
-function showCelebration(){
-  const ol=document.getElementById('celebOverlay');
-  ol.style.display='flex';
-  const box=document.getElementById('celebBox');
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    box.style.transform='scale(1) translateY(0)';box.style.opacity='1';
-    setTimeout(()=>{document.getElementById('celebBadge').style.opacity='1';document.getElementById('celebBadge').style.transform='scale(1)';},500);
-    setTimeout(()=>{document.getElementById('celebTitle').style.opacity='1';document.getElementById('celebTitle').style.transform='translateY(0)';},650);
-    setTimeout(()=>{document.getElementById('celebSub').style.opacity='1';document.getElementById('celebSub').style.transform='translateY(0)';},800);
-    setTimeout(()=>{document.getElementById('celebStats').style.opacity='1';},950);
-  }));
-  launchConfetti();
-}
-window.closeCelebration=function(){
-  const ol=document.getElementById('celebOverlay');
-  const box=document.getElementById('celebBox');
-  box.style.transform='scale(.4) translateY(80px)';box.style.opacity='0';
-  setTimeout(()=>{ol.style.display='none';resetCelebBox();},600);
-};
-function resetCelebBox(){
-  ['celebBadge','celebTitle','celebSub','celebStats'].forEach(id=>{
-    const el=document.getElementById(id);if(!el) return;
-    el.style.opacity='0';if(id==='celebBadge') el.style.transform='scale(.6)';
-    else if(id!=='celebStats') el.style.transform='translateY(10px)';
-  });
-}
-
-// Confetti
-function launchConfetti(){
-  const canvas=document.getElementById('confettiCanvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  const pieces=[];
-  const colors=['#3b82f6','#f59e0b','#10b981','#ec4899','#8b5cf6','#60a5fa','#fbbf24'];
-  for(let i=0;i<120;i++){
-    pieces.push({x:Math.random()*canvas.width,y:-10-Math.random()*200,r:3+Math.random()*5,c:colors[Math.floor(Math.random()*colors.length)],vx:(Math.random()-.5)*4,vy:3+Math.random()*3,rot:Math.random()*360,vr:(Math.random()-.5)*8,alpha:1});
-  }
-  let frame=0;
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    let active=false;
-    pieces.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(p.y>150) p.alpha=Math.max(0,p.alpha-.008);
-      if(p.alpha>0) active=true;
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.globalAlpha=p.alpha;
-      ctx.fillStyle=p.c;ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore();
-    });
-    if(active&&frame<300){frame++;requestAnimationFrame(draw);}
-    else ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
-  draw();
 }
 
 // ── SIMULATION ──
