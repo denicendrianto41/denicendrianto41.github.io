@@ -77,8 +77,13 @@ nav::-webkit-scrollbar{display:none;}
 .page.active{animation:fu .22s ease;}
 .scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
 .fit-inner{transform-origin:top left;}
-#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
-#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-alatbahan .scroll{overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:0;-webkit-overflow-scrolling:touch;}
+#page-prosedur .scroll{overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:0;-webkit-overflow-scrolling:touch;}
+#page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:auto;max-width:100%;object-fit:contain;display:block;}
+@media (orientation:landscape){
+  #page-alatbahan .scroll,#page-prosedur .scroll{align-items:center;}
+  #page-alatbahan .scroll img,#page-prosedur .scroll img{width:auto;height:100%;max-height:100%;max-width:100%;}
+}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 /* CARDS */
@@ -229,9 +234,39 @@ nav::-webkit-scrollbar{display:none;}
 }
 #btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+
+/* ═══ PAKSA ROTASI KE LANDSCAPE (HP/perangkat sentuh) ═══ */
+#rotateOverlay{display:none;}
+@media (orientation:portrait) and (pointer:coarse), (orientation:portrait) and (max-width:900px){
+  #rotateOverlay{
+    display:flex;position:fixed;inset:0;z-index:2147483647;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    padding:32px 24px;text-align:center;
+    background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);
+    color:#fff;
+  }
+  #loadScreen,header,#app{display:none!important;}
+}
+.rot-icon{width:64px;height:64px;animation:rotHint 1.6s ease-in-out infinite;}
+@keyframes rotHint{
+  0%,100%{transform:rotate(0deg);}
+  50%{transform:rotate(-90deg);}
+}
+.rot-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,5vw,20px);font-weight:800;}
+.rot-sub{font-size:clamp(12px,3.6vw,14px);color:rgba(226,232,240,0.85);max-width:320px;line-height:1.6;}
 </style>
 </head>
 <body>
+
+<!-- OVERLAY: memaksa pengguna memutar perangkat ke mode landscape -->
+<div id="rotateOverlay">
+  <svg class="rot-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2.2"></rect>
+    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+  </svg>
+  <div class="rot-title">Putar Perangkat Anda</div>
+  <div class="rot-sub">Aplikasi Lab Maya Biologi ditampilkan dalam mode <strong>landscape</strong> (mendatar) agar semua fitur terlihat dengan baik. Silakan putar HP/tablet Anda.</div>
+</div>
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
@@ -329,7 +364,7 @@ function startPraktikum(){
 
 <!-- ═══════════ TUJUAN ═══════════ -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="scroll" style="overflow-y:auto;padding:14px 16px 20px;">
   <div class="fit-inner">
 
     <!-- Hero Banner -->
@@ -456,7 +491,7 @@ function startPraktikum(){
 
 <!-- ═══════════ TEORI ═══════════ -->
 <div id="page-teori" class="page">
-  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="scroll" style="overflow-y:auto;padding:14px 16px 20px;">
   <div class="fit-inner">
 
     <!-- Teori Header -->
@@ -616,14 +651,14 @@ function startPraktikum(){
 <!-- ═══════════ ALAT & BAHAN ═══════════ -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/mejalab_determinasi.png" alt="Alat dan Bahan Kunci Determinasi" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/mejalab_determinasi.png" alt="Alat dan Bahan Kunci Determinasi">
   </div>
 </div>
 
 <!-- ═══════════ PROSEDUR ═══════════ -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/prosedur_determinasi.png" alt="Prosedur Kunci Determinasi" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/prosedur_determinasi.png" alt="Prosedur Kunci Determinasi">
   </div>
 </div>
 
@@ -830,11 +865,14 @@ function show(id,btn){
   }
 }
 
-// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa scroll ══
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar; jika tetap tidak
+// muat pada skala minimum, kontainer tetap bisa discroll (tidak ada yang terpotong) ══
 function fitToContainer(container){
   if(!container) return;
   const inner = container.querySelector(':scope > .fit-inner');
   if(!inner) return;
+  // reset dulu supaya scrollHeight diukur dari ukuran alami (bukan hasil scale sebelumnya)
+  inner.style.zoom = '1';
   inner.style.transform = 'none';
   inner.style.width = '100%';
   const cs = getComputedStyle(container);
@@ -844,9 +882,22 @@ function fitToContainer(container){
   const naturalH = inner.scrollHeight;
   if(availH <= 0 || naturalH <= 0) return;
   let scale = availH / naturalH;
-  scale = Math.min(Math.max(scale, 0.45), 1.8);
-  inner.style.width = (100/scale) + '%';
-  inner.style.transform = 'scale(' + scale + ')';
+  // batas bawah dinaikkan agar teks tetap terbaca; jika kontennya tetap lebih tinggi
+  // dari layar pada skala minimum ini, sisanya tetap bisa dilihat lewat scroll
+  // (overflow-y:auto pada .scroll), sehingga tidak ada bagian yang benar-benar hilang.
+  scale = Math.min(Math.max(scale, 0.6), 1.5);
+  if('zoom' in inner.style){
+    // 'zoom' (didukung Chrome/Safari/Edge/Android/iOS) ikut memengaruhi layout,
+    // sehingga tinggi scroll kontainer terhitung benar dan tidak ada konten tersembunyi.
+    inner.style.zoom = scale;
+  } else {
+    // fallback untuk browser tanpa 'zoom' (misal Firefox lama): pakai transform scale
+    // ditambah spacer agar tinggi kontainer tetap sesuai ukuran visual hasil scale.
+    inner.style.transformOrigin = 'top left';
+    inner.style.width = (100/scale) + '%';
+    inner.style.transform = 'scale(' + scale + ')';
+    inner.style.marginBottom = (naturalH*scale - naturalH) + 'px';
+  }
 }
 
 function fitPage(id){
@@ -872,6 +923,18 @@ window.addEventListener('resize', ()=>{
   clearTimeout(_fitResizeTimer);
   _fitResizeTimer = setTimeout(fitActivePages, 120);
 });
+// saat perangkat diputar (portrait -> landscape), overlay hilang & ukuran berubah;
+// hitung ulang skala konten setelah transisi orientasi selesai.
+window.addEventListener('orientationchange', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 350);
+});
+if(window.screen && window.screen.orientation){
+  window.screen.orientation.addEventListener('change', ()=>{
+    clearTimeout(_fitResizeTimer);
+    _fitResizeTimer = setTimeout(fitActivePages, 350);
+  });
+}
 function toggleNav(){document.getElementById('mainNav').classList.toggle('open');}
 function closeNav(){document.getElementById('mainNav').classList.remove('open');}
 document.addEventListener('click',function(e){
