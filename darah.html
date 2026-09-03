@@ -117,7 +117,7 @@ nav::-webkit-scrollbar{display:none;}
 .tdonor{font-size:9.5px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
 .tlist{font-size:11.5px;color:var(--text2);line-height:1.5;}
 /* ALAT BAHAN */
-#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-alatbahan .scroll{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 /* DRAG CARDS */
 .drag-card{background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;cursor:grab;transition:transform .15s,box-shadow .15s,border-color .15s,opacity .2s,background .15s;user-select:none;-webkit-user-select:none;position:relative;touch-action:none;-webkit-tap-highlight-color:transparent;}
@@ -152,7 +152,7 @@ nav::-webkit-scrollbar{display:none;}
 .anim-correct{animation:anim-correct .3s cubic-bezier(.34,1.56,.64,1);}
 .anim-wrong-card{animation:anim-wrong-card .3s cubic-bezier(.34,1.56,.64,1);}
 /* PROSEDUR */
-#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0 0 15px;}
+#page-prosedur .scroll{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0 0 15px;}
 .step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 /* SIMULASI */
@@ -202,11 +202,11 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
-#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_darah.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_darah.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
 #loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,.15);z-index:1;}
 #loadScreen>*{position:relative;z-index:2;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
-.load-content{display:flex;flex-direction:column;align-items:center;transform:translateY(-70px);}
+.load-content{display:flex;flex-direction:column;align-items:center;transform:translateY(-80px);}
 .load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#0f172a;text-align:center;margin-bottom:4px;text-shadow:none;}
 .load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#1e3a8a;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;}
@@ -255,9 +255,79 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .btn-reset-q{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
 .btn-reset-q:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
 .qcounter{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3);}
+
+/* ══ ROTATE OVERLAY (paksa landscape di HP/tablet) ══ */
+#rotateOverlay{display:none;position:fixed;inset:0;z-index:200000;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#2563eb 100%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px;}
+.rotate-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,5vw,24px);font-weight:800;}
+.rotate-text{font-family:'Inter',sans-serif;font-size:clamp(12px,3.5vw,15px);color:rgba(255,255,255,.85);max-width:320px;line-height:1.6;}
+@keyframes rotateHint{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
+@media (pointer:coarse) and (orientation:portrait){
+  #rotateOverlay{display:flex;}
+  header,#app,#loadScreen{visibility:hidden;}
+}
+
+/* ══ PENYESUAIAN MOBILE / TABLET (perangkat sentuh, semua orientasi) ══ */
+@media (pointer:coarse){
+  /* Semua halaman & panel bisa discroll penuh di perangkat mobile, tidak dipotong */
+  html,body{overflow:hidden;}
+  #page-tujuan .scroll,
+  #page-teori .scroll,
+  #page-teori .t-panel,
+  #page-alatbahan .scroll,
+  #page-prosedur .scroll,
+  #page-simulasi > div,
+  #page-evaluasi > div{overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  #page-tujuan .fit-inner,
+  #page-teori .fit-inner{transform:none!important;width:100%!important;}
+
+  /* Gambar besar (Alat & Bahan, Prosedur): lebar penuh tanpa spasi kiri-kanan,
+     tinggi menyesuaikan otomatis (tidak dipotong), sisa tinggi bisa discroll */
+  #page-alatbahan .scroll,
+  #page-prosedur .scroll{align-items:flex-start!important;}
+  #page-alatbahan .scroll img,
+  #page-prosedur .scroll img{position:static!important;width:100%!important;height:auto!important;object-fit:contain!important;display:block;}
+}
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+}
+/* Loading screen: ukuran & posisi menyesuaikan layar mobile agar tidak terpotong */
+@media (pointer:coarse){
+  .load-content{transform:translateY(-24px);}
+  .load-logo{width:clamp(46px,14vw,72px);margin-bottom:10px;}
+  .load-title{font-size:clamp(17px,5.5vw,22px);}
+  .load-sub{font-size:clamp(8.5px,2.6vw,11px);margin-bottom:18px;}
+  .load-bar-wrap{width:min(70vw,300px);margin-bottom:7px;}
+  .load-percent{font-size:clamp(11px,3.2vw,13px);margin-bottom:10px;}
+  .load-status{font-size:clamp(10px,2.8vw,11.5px);margin-bottom:18px;}
+  #btnMulaiPraktikum{padding:9px 24px;font-size:clamp(11px,3.2vw,13px);}
+}
+@media (pointer:coarse) and (max-height:420px){
+  .load-content{transform:translateY(-4px);}
+  .load-logo{width:clamp(38px,10vw,52px);margin-bottom:6px;}
+  .load-sub{margin-bottom:10px;}
+  .load-bar-wrap{margin-bottom:5px;}
+  .load-percent{margin-bottom:6px;}
+  .load-status{margin-bottom:10px;}
+}
 </style>
 </head>
 <body>
+
+<!-- ROTATE OVERLAY: memaksa pengguna mobile/tablet memutar perangkat ke landscape -->
+<div id="rotateOverlay">
+  <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="animation:rotateHint 1.6s ease-in-out infinite;">
+    <rect x="7" y="2" width="10" height="16" rx="2"/>
+    <line x1="10" y1="20" x2="14" y2="20"/>
+  </svg>
+  <div class="rotate-title">Putar Perangkat Anda</div>
+  <div class="rotate-text">Untuk pengalaman terbaik, gunakan aplikasi ini dalam posisi <b>mendatar (landscape)</b>.</div>
+</div>
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
@@ -536,7 +606,7 @@ document.addEventListener('click',function(e){
 <!-- ===== ALAT & BAHAN ===== -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/mejalab_darah.png" alt="Alat dan Bahan Percobaan Golongan Darah" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/mejalab_darah.webp" alt="Alat dan Bahan Percobaan Golongan Darah" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -575,7 +645,7 @@ document.addEventListener('click',function(e){
 <!-- ===== PROSEDUR ===== -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/prosedur_darah.png" alt="Prosedur Percobaan Golongan Darah" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/prosedur_darah.webp" alt="Prosedur Percobaan Golongan Darah" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -713,10 +783,20 @@ function switchTeori(idx,btn){
 }
 
 // ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa sisa ruang kosong ══
+// Pada perangkat sentuh (HP/tablet), skala otomatis DINONAKTIFKAN — konten memakai
+// ukuran font normal dan halaman cukup discroll (lihat CSS @media(pointer:coarse)).
+function isTouchDevice(){
+  return window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+}
 function fitToContainer(container, reserveBottom){
   if(!container) return;
   const inner = container.querySelector(':scope > .fit-inner');
   if(!inner) return;
+  if(isTouchDevice()){
+    inner.style.transform = 'none';
+    inner.style.width = '100%';
+    return;
+  }
   const cs = getComputedStyle(container);
   const padTop = parseFloat(cs.paddingTop) || 0;
   const padBottom = parseFloat(cs.paddingBottom) || 0;
@@ -771,6 +851,11 @@ window.addEventListener('resize', ()=>{
     clearTimeout(_fitResizeTimer);
     _fitResizeTimer=setTimeout(fitActivePages, 150);
   });
+});
+// Re-hitung fit saat perangkat mobile/tablet diputar (rotate) antara portrait & landscape.
+window.addEventListener('orientationchange', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer=setTimeout(fitActivePages, 250);
 });
 
 // ===== DRAG & DROP ALAT BAHAN =====
