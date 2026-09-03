@@ -280,12 +280,21 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   #page-tujuan .fit-inner,
   #page-teori .fit-inner{transform:none!important;width:100%!important;}
 
-  /* Gambar besar (Alat & Bahan, Prosedur): lebar penuh tanpa spasi kiri-kanan,
-     tinggi menyesuaikan otomatis (tidak dipotong), sisa tinggi bisa discroll */
+  /* Gambar besar (Alat & Bahan, Prosedur): ukuran & arah scroll (vertikal/horizontal)
+     dihitung otomatis lewat JS (fitScrollableImage) berdasarkan rasio gambar asli,
+     supaya selalu mengisi penuh tanpa spasi kosong di sisi manapun dan tanpa terpotong
+     permanen — kelebihannya cukup digeser/discroll. CSS di sini hanya reset dasar. */
   #page-alatbahan .scroll,
-  #page-prosedur .scroll{align-items:flex-start!important;}
+  #page-prosedur .scroll{align-items:flex-start!important;justify-content:flex-start!important;}
   #page-alatbahan .scroll img,
-  #page-prosedur .scroll img{position:static!important;width:100%!important;height:auto!important;object-fit:contain!important;display:block;}
+  #page-prosedur .scroll img{position:static!important;display:block;}
+
+  /* Simulasi — Gelas Objek Virtual: baris 4 gelas objek dibuat bisa digeser (scroll)
+     secara horizontal supaya tidak menyusut/terpotong pada layar sempit (landscape HP) */
+  .sim-right{overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  .petri-area{overflow-x:auto!important;-webkit-overflow-scrolling:touch;padding-bottom:12px;}
+  .petri-stage{flex-wrap:nowrap!important;}
+  .petri-item{flex-shrink:0;}
 }
 /* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
 @media (pointer:coarse) and (orientation:landscape){
@@ -305,15 +314,18 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   .load-bar-wrap{width:min(70vw,300px);margin-bottom:7px;}
   .load-percent{font-size:clamp(11px,3.2vw,13px);margin-bottom:10px;}
   .load-status{font-size:clamp(10px,2.8vw,11.5px);margin-bottom:18px;}
-  #btnMulaiPraktikum{padding:9px 24px;font-size:clamp(11px,3.2vw,13px);}
+  /* Target sentuh tombol dibuat nyaman (tinggi ±44px sesuai standar aksesibilitas mobile) */
+  #btnMulaiPraktikum{padding:13px 30px;font-size:clamp(12px,3.4vw,14px);min-height:44px;}
 }
 @media (pointer:coarse) and (max-height:420px){
   .load-content{transform:translateY(-4px);}
   .load-logo{width:clamp(38px,10vw,52px);margin-bottom:6px;}
+  .load-title{font-size:clamp(15px,4.8vw,19px);}
   .load-sub{margin-bottom:10px;}
   .load-bar-wrap{margin-bottom:5px;}
   .load-percent{margin-bottom:6px;}
   .load-status{margin-bottom:10px;}
+  #btnMulaiPraktikum{padding:10px 26px;min-height:40px;}
 }
 </style>
 </head>
@@ -773,6 +785,9 @@ function show(id,btn){
   if(id==='tujuan'||id==='teori'){
     requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
   }
+  if(id==='alatbahan'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitScrollableImage(id)));
+  }
 }
 
 // ===== TEORI TABS =====
@@ -832,10 +847,46 @@ function fitPage(id){
   }
 }
 
+// ══ Gambar besar (Alat & Bahan / Prosedur) di perangkat mobile: pilih otomatis
+// arah "cover" (lebar-penuh ATAU tinggi-penuh) mana yang membuat gambar menutupi
+// seluruh area tanpa sisa ruang kosong, sisanya cukup digeser (scroll) — tidak ada
+// bagian yang hilang/dipotong permanen karena selalu bisa dijangkau lewat scroll.
+function fitScrollableImage(pageId){
+  if(!isTouchDevice()) return;
+  const container = document.querySelector('#page-'+pageId+' .scroll');
+  if(!container) return;
+  const img = container.querySelector('img');
+  if(!img) return;
+  const apply = ()=>{
+    if(!img.naturalWidth || !img.naturalHeight) return;
+    const cw = container.clientWidth, ch = container.clientHeight;
+    if(cw<=0||ch<=0) return;
+    const naturalRatio = img.naturalWidth/img.naturalHeight;
+    const heightIfFitWidth = cw/naturalRatio;
+    if(heightIfFitWidth >= ch - 0.5){
+      // Lebar penuh sudah cukup membuat tingginya menutupi/​melebihi kontainer.
+      img.style.width='100%';img.style.height='auto';img.style.maxWidth='none';img.style.maxHeight='none';
+      container.style.overflowX='hidden';container.style.overflowY='auto';
+    }else{
+      // Jika mengikuti lebar penuh justru menyisakan ruang kosong di bawah,
+      // pakai tinggi penuh sebagai gantinya — lebar akan melebihi layar,
+      // dipusatkan dan bisa digeser ke kiri/kanan untuk melihat sisi lainnya.
+      img.style.height='100%';img.style.width='auto';img.style.maxWidth='none';img.style.maxHeight='none';
+      container.style.overflowX='auto';container.style.overflowY='hidden';
+      requestAnimationFrame(()=>{
+        container.scrollLeft = Math.max(0,(img.offsetWidth - container.clientWidth)/2);
+      });
+    }
+  };
+  if(img.complete && img.naturalWidth){ apply(); }
+  else{ img.addEventListener('load', apply, {once:true}); }
+}
+
 function fitActivePages(){
   document.querySelectorAll('.page.active').forEach(p=>{
     const id = p.id.replace('page-','');
     if(id==='tujuan'||id==='teori') fitPage(id);
+    if(id==='alatbahan'||id==='prosedur') fitScrollableImage(id);
   });
 }
 
