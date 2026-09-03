@@ -34,16 +34,31 @@ nav::-webkit-scrollbar{display:none;}
 .nb.active{color:#fff;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
-@media(max-width:640px){
-  header{flex-wrap:nowrap;padding:0 10px;}
-  .logo-text{font-size:16px;}.logo-sub{display:none;}
+/* Breakpoint mobile: lebar sempit ATAU perangkat sentuh (mencakup HP dalam mode landscape,
+   yang lebarnya bisa 640–1000px, agar logo & menu tidak bertumpuk/berdesakan) */
+@media (max-width:640px), ((pointer:coarse) and (max-width:1024px)){
+  header{flex-wrap:nowrap;padding:0 8px;gap:6px;}
+  .logo{gap:6px;min-width:0;}
+  .logo-icon{width:28px;height:28px;}
+  .logo-text{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw;}
+  .logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav{
+    display:none;flex-direction:column;
+    justify-content:flex-start!important;align-items:stretch;
+    position:fixed;top:var(--h);right:0;left:0;z-index:999;
+    background:linear-gradient(180deg,#0f2460,#1a3a8f);
+    border-bottom:1px solid rgba(255,255,255,.15);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    overflow-y:auto;max-height:calc(100vh - var(--h));max-height:calc(100dvh - var(--h));gap:0;flex:none;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;
+  }
   nav.open{display:flex;}
-  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
   .nb::after{display:none;}
   .nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
+  .disc-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(140px,auto)!important;}
 }
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -55,8 +70,16 @@ nav::-webkit-scrollbar{display:none;}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .fit-inner{transform-origin:top left;}
-#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
-#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-alatbahan .scroll{overflow-y:auto;overflow-x:hidden;display:block;padding:0;-webkit-overflow-scrolling:touch;}
+#page-prosedur .scroll{overflow-y:auto;overflow-x:hidden;display:block;padding:0;-webkit-overflow-scrolling:touch;}
+#page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:auto;display:block;margin:0 auto;}
+/* Desktop (layar lebar, non-sentuh): isi penuh area halaman tanpa sisa ruang kosong
+   di bawah gambar. Di HP/tablet (breakpoint di bawah) tetap dibiarkan lebar-penuh +
+   scroll agar gambar tidak pernah terpotong. */
+@media (min-width:1025px) and (pointer:fine){
+  #page-alatbahan .scroll,#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:100%;object-fit:cover;object-position:center;}
+}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
@@ -281,7 +304,7 @@ nav::-webkit-scrollbar{display:none;}
 /* LOADING */
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
-#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_jamur.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_jamur.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
 #loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
 
@@ -308,6 +331,48 @@ nav::-webkit-scrollbar{display:none;}
 /* Complete overlay */
 .complete-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:50;display:none;align-items:center;justify-content:center;}
 .complete-overlay.on{display:flex;}
+
+/* Loading screen di HP: layar landscape HP pendek (tinggi terbatas) & lebar terbatas,
+   jadi semua elemen disusutkan menyesuaikan tinggi & lebar layar sekaligus (bukan cuma lebar),
+   supaya logo/judul/tombol tidak tampil kebesaran. */
+@media (max-height:520px), ((pointer:coarse) and (max-width:1024px)){
+  .load-logo{width:clamp(38px,7vh,56px);margin-bottom:8px;}
+  .load-title{font-size:clamp(14px,3.6vh,20px);margin-bottom:3px;}
+  .load-sub{font-size:clamp(8.5px,1.8vh,10.5px);letter-spacing:.1em;margin-bottom:12px;}
+  .load-bar-wrap{width:clamp(150px,42vw,240px);height:5px;margin-bottom:6px;}
+  .load-percent{font-size:clamp(11px,2.4vh,13px);margin-bottom:8px;}
+  .load-status{font-size:clamp(9.5px,1.9vh,11px);margin-bottom:14px;min-height:14px;}
+  #btnMulaiPraktikum{padding:7px 20px;font-size:clamp(11px,2.2vh,13px);}
+}
+@media (max-height:400px){
+  .load-logo{width:clamp(32px,6vh,44px);margin-bottom:5px;}
+  .load-title{font-size:clamp(13px,3.2vh,17px);margin-bottom:2px;}
+  .load-sub{font-size:clamp(8px,1.6vh,9.5px);margin-bottom:8px;}
+  .load-bar-wrap{margin-bottom:4px;}
+  .load-percent{margin-bottom:5px;}
+  .load-status{margin-bottom:9px;min-height:12px;}
+  #btnMulaiPraktikum{padding:6px 18px;}
+}
+
+/* ═══ PAKSA ROTASI KE LANDSCAPE (HP/perangkat sentuh) ═══ */
+#rotateOverlay{display:none;}
+@media (orientation:portrait) and (pointer:coarse), (orientation:portrait) and (max-width:900px){
+  #rotateOverlay{
+    display:flex;position:fixed;inset:0;z-index:2147483647;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    padding:32px 24px;text-align:center;
+    background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);
+    color:#fff;
+  }
+  #loadScreen,header,#app{display:none!important;}
+}
+.rot-icon{width:64px;height:64px;animation:rotHint 1.6s ease-in-out infinite;}
+@keyframes rotHint{
+  0%,100%{transform:rotate(0deg);}
+  50%{transform:rotate(-90deg);}
+}
+.rot-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,5vw,20px);font-weight:800;}
+.rot-sub{font-size:clamp(12px,3.6vw,14px);color:rgba(226,232,240,0.85);max-width:320px;line-height:1.6;}
 </style>
 
 <style>
@@ -362,6 +427,16 @@ body.is-fullscreen .viewport{padding:0}
 
 </head>
 <body>
+
+<!-- OVERLAY: memaksa pengguna memutar perangkat ke mode landscape -->
+<div id="rotateOverlay">
+  <svg class="rot-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2.2"></rect>
+    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+  </svg>
+  <div class="rot-title">Putar Perangkat Anda</div>
+  <div class="rot-sub">Aplikasi Lab Maya Biologi ditampilkan dalam mode <strong>landscape</strong> (mendatar) agar semua fitur terlihat dengan baik. Silakan putar HP/tablet Anda.</div>
+</div>
 
 <!-- LOADING -->
 <div id="loadScreen">
@@ -452,7 +527,7 @@ document.addEventListener('click',function(e){
      TUJUAN
 ══════════════════════════════════════════ -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="scroll" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 20px;">
   <div class="fit-inner">
 
     <!-- Hero Banner -->
@@ -584,7 +659,7 @@ document.addEventListener('click',function(e){
      TEORI
 ══════════════════════════════════════════ -->
 <div id="page-teori" class="page">
-  <div class="scroll" style="overflow:hidden;padding:10px 14px 14px;">
+  <div class="scroll" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 14px;">
   <div class="fit-inner">
 
     <!-- Teori Header -->
@@ -756,7 +831,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/mejalab_ragi.png" alt="Alat dan Bahan Percobaan Reproduksi Sel Ragi" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/mejalab_ragi.webp" alt="Alat dan Bahan Percobaan Reproduksi Sel Ragi">
   </div>
 </div>
 
@@ -765,7 +840,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/prosedur_ragi.png" alt="Prosedur Percobaan Reproduksi Sel Ragi" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/prosedur_ragi.webp" alt="Prosedur Percobaan Reproduksi Sel Ragi">
   </div>
 </div>
 
@@ -2129,8 +2204,8 @@ refreshUI();
      DISKUSI / EVALUASI
 ══════════════════════════════════════════ -->
 <div id="page-evaluasi" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 12px 10px;display:flex;flex-direction:column;gap:7px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px;">
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);letter-spacing:.12em;color:var(--acc);text-transform:uppercase;">Pertanyaan Diskusi</div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2vw,20px);font-weight:700;color:var(--acc3);">Diskusi <span style="color:var(--acc2)">Hasil Percobaan</span></div>
@@ -2140,7 +2215,7 @@ refreshUI();
         <button onclick="printDiskusi()" style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .17s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(37,99,235,0.4)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(37,99,235,0.25)'">🖨️ Cetak / Download PDF</button>
       </div>
     </div>
-    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
+    <div class="disc-grid" style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;min-height:0;">
       <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;">
         <div class="ch" style="margin-bottom:4px;"><div class="ci b" style="min-width:22px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">1</div><div class="ct" style="font-size:clamp(13px,1.4vw,15px);">Apa yang dimaksud dengan budding pada ragi?</div></div>
         <textarea class="disc-area" placeholder="Jawaban..." oninput="saveDQ(1,this.value)" id="dq1" style="flex:1;resize:none;margin-top:0;min-height:0;"></textarea>
@@ -2264,6 +2339,18 @@ window.addEventListener('resize', ()=>{
   clearTimeout(_fitResizeTimer);
   _fitResizeTimer = setTimeout(fitActivePages, 120);
 });
+// saat perangkat diputar (portrait -> landscape), overlay hilang & ukuran berubah;
+// hitung ulang skala konten setelah transisi orientasi selesai.
+window.addEventListener('orientationchange', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 350);
+});
+if(window.screen && window.screen.orientation){
+  window.screen.orientation.addEventListener('change', ()=>{
+    clearTimeout(_fitResizeTimer);
+    _fitResizeTimer = setTimeout(fitActivePages, 350);
+  });
+}
 
 // ══════════════════════════════════════════
 //  PROSEDUR — animated roadmap (simulator steps only)
