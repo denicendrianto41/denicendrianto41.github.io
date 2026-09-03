@@ -82,6 +82,41 @@ nav::-webkit-scrollbar{display:none;}
   .ctrl-panel{width:150px !important;padding:8px !important;}
   .ctrl-panel h3,.aquarium h3{font-size:10.5px !important;}
 }
+
+/* ═══════════════ ALAT & BAHAN / PROSEDUR: scroll di mobile ═══════════════ */
+@media (pointer:coarse), (max-width:900px){
+  #page-alatbahan .scroll,#page-prosedur .scroll{
+    overflow-y:auto !important;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  }
+}
+
+/* ═══════════════ SIMULASI: layout & scroll di mobile ═══════════════ */
+@media (pointer:coarse), (max-width:900px){
+  #page-simulasi{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
+  #page-simulasi > div:first-child{
+    display:flex !important;flex-direction:column !important;
+    height:auto !important;min-height:100%;
+    overflow:visible !important;
+    padding:8px !important;gap:8px !important;
+  }
+  #page-simulasi .ctrl-panel{
+    width:100% !important;flex-shrink:0;
+    flex-direction:row !important;flex-wrap:wrap;align-items:flex-end;gap:8px !important;
+    max-height:none !important;overflow:visible;
+  }
+  #page-simulasi .ctrl-panel .cg{flex:1 1 150px;}
+  #page-simulasi .ctrl-panel > div[style*="Legenda"],
+  #page-simulasi .ctrl-panel > div:has(#speciesLegend){flex:1 1 100%;order:5;}
+  #page-simulasi .ctrl-panel button{flex:1 1 auto;}
+  #page-simulasi > div:first-child > div:last-child{
+    flex:none !important;overflow:visible !important;
+  }
+  #page-simulasi .aquarium{
+    flex:none !important;height:62vh;min-height:280px;max-height:520px;
+    overflow:hidden;
+  }
+  #page-simulasi .sim-overlay{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
+}
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;overflow:hidden;}
@@ -302,7 +337,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 
 <!-- ROTATE-TO-LANDSCAPE OVERLAY -->
 <div id="rotateOverlay">
-  <div class="ro-icon">📱↻</div>
+  <div class="ro-icon">📱</div>
   <div class="ro-title">Putar Perangkat Anda</div>
   <div class="ro-desc">Aplikasi Lab Maya Biologi dirancang untuk tampilan <strong>landscape (mendatar)</strong>. Silakan putar perangkat ke posisi mendatar untuk melanjutkan.</div>
 </div>
@@ -1743,6 +1778,12 @@ function initSim(){
   window.addEventListener('resize',()=>{
     resizeCanvases();drawScene();
     if(currentView==='closeup')drawCloseup(currentQuadrat);
+  });
+  window.addEventListener('orientationchange',()=>{
+    setTimeout(()=>{
+      resizeCanvases();drawScene();
+      if(currentView==='closeup')drawCloseup(currentQuadrat);
+    },300);
   });
 }
 
