@@ -330,16 +330,21 @@ select option{background:#fff;color:var(--text);}
    diubah jadi menumpuk 1 kolom yang bisa digulir, supaya semua bagian tetap terjangkau
    di layar sempit / mode landscape HP. */
 @media (max-width:640px), ((pointer:coarse) and (max-width:1024px)){
-  #simOuter{flex-direction:column!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;align-items:stretch;}
-  #simOuter .ctrl-panel{width:100%!important;flex-shrink:0!important;overflow-y:visible;}
-  #simRightCol{flex:none!important;overflow:visible!important;min-height:0;}
-  #simRightCol .aquarium{flex:none!important;height:auto!important;min-height:0;}
-  #simCanvasWrap{flex:none!important;height:min(60vw,320px)!important;min-height:200px!important;}
+  #simOuter{overflow:hidden;}
+  #simOuter .ctrl-panel{width:128px!important;flex-shrink:0!important;padding:8px 7px;gap:6px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  #simOuter .ctrl-panel h3{font-size:10.5px;}
+  #simOuter .ctrl-panel .cg label{font-size:8.5px!important;}
+  #simOuter .ctrl-panel select{font-size:10px;padding:5px 20px 5px 6px;}
+  #simOuter .ctrl-panel .btn{font-size:10px;padding:6px;}
+  #simRightCol{flex:1!important;overflow:hidden;min-width:0;}
+  #simRightCol .aquarium{flex:1!important;min-height:0;}
+  #simCanvasWrap{flex:1!important;height:auto!important;min-height:0!important;}
+  #simRightCol .card{max-height:90px!important;}
   #evalOuter{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
   #evalGrid{grid-template-columns:1fr!important;grid-template-rows:none!important;min-height:0;}
   #evalGrid .card{grid-column:auto!important;min-height:110px;}
   #page-teori .scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
-  #page-tujuan .scroll{-webkit-overflow-scrolling:touch;touch-action:pan-y;}
+  #page-tujuan .scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
 }
 </style>
 </head>
