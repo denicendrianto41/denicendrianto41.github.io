@@ -184,6 +184,29 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 #btnMulai{display:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(5,150,105,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulai:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+
+/* Loading screen di HP: layar landscape HP pendek (tinggi terbatas) & lebar terbatas,
+   jadi semua elemen disusutkan menyesuaikan tinggi & lebar layar sekaligus (bukan cuma lebar),
+   supaya logo/judul/tombol tidak tampil kebesaran. */
+@media (max-height:520px), ((pointer:coarse) and (max-width:1024px)){
+  .load-logo{width:clamp(38px,7vh,56px);margin-bottom:8px;}
+  .load-title{font-size:clamp(14px,3.6vh,20px);margin-bottom:3px;}
+  .load-sub{font-size:clamp(8.5px,1.8vh,10.5px);letter-spacing:.1em;margin-bottom:12px;}
+  .load-bar-wrap{width:clamp(150px,42vw,240px);height:5px;margin-bottom:6px;}
+  .load-percent{font-size:clamp(11px,2.4vh,13px);margin-bottom:8px;}
+  .load-status{font-size:clamp(9.5px,1.9vh,11px);margin-bottom:14px;min-height:14px;}
+  #btnMulai{padding:7px 20px;font-size:clamp(11px,2.2vh,13px);}
+}
+@media (max-height:400px){
+  .load-logo{width:clamp(32px,6vh,44px);margin-bottom:5px;}
+  .load-title{font-size:clamp(13px,3.2vh,17px);margin-bottom:2px;}
+  .load-sub{font-size:clamp(8px,1.6vh,9.5px);margin-bottom:8px;}
+  .load-bar-wrap{margin-bottom:4px;}
+  .load-percent{margin-bottom:5px;}
+  .load-status{margin-bottom:9px;min-height:12px;}
+  #btnMulai{padding:6px 18px;}
+}
+
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
@@ -253,15 +276,13 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 
 <!-- LOADING -->
 <div id="loadScreen">
-  <div class="load-content" style="transform:translateY(-60px);display:flex;flex-direction:column;align-items:center;">
-    <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
-    <div class="load-title">Lab Maya Biologi</div>
-    <div class="load-sub">Simulasi Wabah Virus</div>
-    <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
-    <div class="load-percent" id="loadPercent">0%</div>
-    <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
-    <button id="btnMulai" onclick="startPraktikum()">Mulai Praktikum</button>
-  </div>
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Simulasi Wabah Virus</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
+  <button id="btnMulai" onclick="startPraktikum()">Mulai Praktikum</button>
 </div>
 <script>
 (function(){
