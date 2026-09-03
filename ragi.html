@@ -1165,10 +1165,38 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 .dropzone.correct{border-color:var(--ok);background:#eefbf3}
 .dropzone .slot-label{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;color:#32553e}
 @media (max-width: 1100px){
-  .app{grid-template-columns:1fr;overflow:auto;height:auto;min-height:100vh}
-  body{overflow:auto}
-  .sidebar{max-height:none}
+  body{overflow:hidden}
+  .app{display:flex;flex-direction:column;grid-template-columns:none;height:100vh;height:100dvh;min-height:0;overflow:hidden}
+  .sidebar{flex:0 0 auto;max-height:38vh;max-height:38dvh}
+  .step-list{flex:1;min-height:60px}
+  .main,.workspace{flex:1;min-height:0;height:auto}
   .modal-grid,.diagram-grid{grid-template-columns:1fr}
+  .modal{overflow-y:auto}
+  .modal-grid{overflow:visible;min-height:0}
+  .diagram{min-height:280px}
+}
+/* Landscape mobile/tablet dengan tinggi layar terbatas: perkecil sidebar &amp; elemen
+   supaya seluruh area simulasi (stage, mikroskop, label) tetap termuat &amp; terlihat penuh */
+@media (max-height:560px) and (orientation:landscape) and (pointer:coarse){
+  .app{padding:5px;gap:5px}
+  .sidebar{max-height:34vh;max-height:34dvh}
+  .sidebar-head{padding:6px 10px 6px}
+  .sidebar-head h2{font-size:12px;margin-bottom:4px}
+  .progress-row{font-size:10px}
+  .step-list{padding:5px;gap:3px}
+  .step{font-size:9.5px;padding:5px 7px;line-height:1.25}
+  .step .num{width:16px;height:16px;font-size:9px}
+  .sidebar-foot{padding:6px 10px 8px;margin-top:0}
+  .btn-row button{font-size:10.5px;padding:6px 8px}
+  .toolbar{padding:3px 3px 0}
+  button.icon-btn{width:28px;height:28px}
+  .viewport{padding:3px}
+  .modal{width:min(1080px,98vw);height:94vh;height:94dvh;max-height:94vh;max-height:94dvh;padding:10px}
+  .modal-grid{grid-template-columns:170px 1fr}
+  .diagram-grid{grid-template-columns:170px 1fr}
+  .diagram{min-height:200px}
+  .control-card,.view-card{padding:8px}
+  .control-card h3{font-size:12.5px;margin-bottom:6px}
 }
 &lt;/style&gt;
 &lt;/head&gt;
