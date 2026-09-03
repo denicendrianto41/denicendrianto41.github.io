@@ -146,8 +146,16 @@ nav::-webkit-scrollbar{display:none;}
 .sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
 .sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
 /* SIMULASI */
-.sim-wrap{display:grid;grid-template-columns:210px 1fr;gap:8px;flex:1;min-height:0;}
-.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.sim-wrap{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  grid-template-areas:
+    "ctrl aquarium"
+    "rekap rekap";
+  grid-template-rows:auto auto;
+  gap:8px;
+}
+.ctrl-panel{grid-area:ctrl;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
 .cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
 select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
@@ -161,8 +169,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .btn-stop:disabled{opacity:.35;cursor:not-allowed;}
 .btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
 .btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
-.sim-right{display:flex;flex-direction:column;gap:7px;overflow:hidden;}
-.aquarium{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;}
+.aquarium{grid-area:aquarium;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;}
 .aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;}
 #simCanvas{width:100%;border-radius:6px;display:block;background:#0f172a;border:1px solid var(--border);}
 .statsrow{display:flex;gap:6px;margin-top:6px;}
@@ -171,6 +178,7 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .sl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
 .tipinfo{background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:7px 10px;margin-top:6px;font-size:11px;color:#1e3a8a;display:none;line-height:1.6;}
 .tipinfo.on{display:block;}
+.rekap-card{grid-area:rekap;}
 .wstable{width:100%;border-collapse:collapse;font-size:11px;}
 .wstable th{background:#eff6ff;color:var(--acc3);padding:6px 9px;text-align:left;border:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
 .wstable td{padding:5px 9px;border:1px solid var(--border);color:var(--text2);}
@@ -232,15 +240,15 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_fermentasi.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(8,15,35,0.45);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
-.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#0f172a;text-align:center;margin-bottom:4px;text-shadow:0 1px 2px rgba(255,255,255,.25);}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#1d4ed8;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;font-weight:700;}
-.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(15,23,42,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
-.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#1d4ed8,#1e40af);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#0f172a;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#1e293b;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#ffffff;text-align:center;margin-bottom:4px;text-shadow:0 2px 6px rgba(0,0,0,.55);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.5);}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.22);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#3b82f6,#93c5fd);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#ffffff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 1px 4px rgba(0,0,0,.5);}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#e0e7ff;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.5);}
 #btnMulaiPraktikum{display:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(37,99,235,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(37,99,235,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
@@ -293,9 +301,8 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 @media (max-width:640px), ((pointer:coarse) and (max-width:1024px)){
   #page-simulasi>.scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
-  .sim-wrap{grid-template-columns:1fr!important;overflow:visible;}
+  .sim-wrap{grid-template-columns:1fr!important;grid-template-areas:"ctrl" "aquarium" "rekap"!important;}
   .ctrl-panel{max-height:none;overflow:visible;}
-  .sim-right{overflow:visible;min-height:0;}
   .aquarium canvas{max-width:100%;}
 }
 </style>
@@ -683,7 +690,7 @@ function startPraktikum(){
 
 <!-- ===== SIMULASI ===== -->
 <div id="page-simulasi" class="page">
-  <div class="scroll" style="overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;">
+  <div class="scroll" style="overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;-webkit-overflow-scrolling:touch;">
     <div class="sim-wrap">
       <div class="ctrl-panel">
         <h3>⚙️ Pengaturan Simulasi</h3>
@@ -734,26 +741,24 @@ function startPraktikum(){
         <div class="tipinfo" id="simTip"></div>
       </div>
 
-      <div class="sim-right">
-        <div class="aquarium">
-          <h3>🔬 Visualisasi Perangkat Fermentasi</h3>
-          <canvas id="simCanvas" height="200"></canvas>
-          <div class="statsrow">
-            <div class="sbox"><span class="sv" id="svCO2">0</span><span class="sl">Gelembung CO₂</span></div>
-            <div class="sbox"><span class="sv" id="svSuhu">--°C</span><span class="sl">Suhu Tabung</span></div>
-            <div class="sbox"><span class="sv" id="svWaktu">0:00</span><span class="sl">Waktu (mnt)</span></div>
-            <div class="sbox"><span class="sv" id="svStatus">⏸</span><span class="sl">Status</span></div>
-          </div>
+      <div class="aquarium">
+        <h3>🔬 Visualisasi Perangkat Fermentasi</h3>
+        <canvas id="simCanvas" height="200"></canvas>
+        <div class="statsrow">
+          <div class="sbox"><span class="sv" id="svCO2">0</span><span class="sl">Gelembung CO₂</span></div>
+          <div class="sbox"><span class="sv" id="svSuhu">--°C</span><span class="sl">Suhu Tabung</span></div>
+          <div class="sbox"><span class="sv" id="svWaktu">0:00</span><span class="sl">Waktu (mnt)</span></div>
+          <div class="sbox"><span class="sv" id="svStatus">⏸</span><span class="sl">Status</span></div>
         </div>
+      </div>
 
-        <div class="card" style="flex:1;overflow:hidden;display:flex;flex-direction:column;margin-bottom:0;">
-          <div class="ch"><div class="ci b">📊</div><div class="ct">Rekap Hasil Pengamatan</div></div>
-          <div style="overflow-y:auto;flex:1;">
-            <table class="wstable" id="hasilTable">
-              <thead><tr><th>Waktu</th><th>Perangkat</th><th>Suhu (°C)</th><th>Gula (%)</th><th>Ragi (g)</th><th>CO₂ (gelembung)</th><th>Etanol (est.)</th><th>Suhu Tabung</th><th>Warna Air Kapur</th><th>Keterangan</th></tr></thead>
-              <tbody id="hasilBody"></tbody>
-            </table>
-          </div>
+      <div class="card rekap-card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci b">📊</div><div class="ct">Rekap Hasil Pengamatan</div></div>
+        <div style="overflow:auto;max-height:280px;">
+          <table class="wstable" id="hasilTable">
+            <thead><tr><th>Waktu</th><th>Perangkat</th><th>Suhu (°C)</th><th>Gula (%)</th><th>Ragi (g)</th><th>CO₂ (gelembung)</th><th>Etanol (est.)</th><th>Suhu Tabung</th><th>Warna Air Kapur</th><th>Keterangan</th></tr></thead>
+            <tbody id="hasilBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -809,13 +814,16 @@ function show(id,btn){
   }
 }
 
-// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa scroll ══
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar; di perangkat sentuh (HP/tablet,
+// termasuk mode landscape) skala minimum dinaikkan agar font tetap terbaca jelas, dan jika
+// konten masih belum muat pada skala minimum tersebut, halaman diizinkan discroll. ══
 function fitToContainer(container,bottomGap){
   if(!container) return;
   const inner = container.querySelector(':scope > .fit-inner');
   if(!inner) return;
   inner.style.transform = 'none';
   inner.style.width = '100%';
+  container.style.overflowY = 'hidden';
   const cs = getComputedStyle(container);
   const padTop = parseFloat(cs.paddingTop) || 0;
   const padBottom = parseFloat(cs.paddingBottom) || 0;
@@ -823,9 +831,14 @@ function fitToContainer(container,bottomGap){
   const naturalH = inner.scrollHeight;
   if(availH <= 0 || naturalH <= 0) return;
   let scale = availH / naturalH;
-  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  const isTouch = window.matchMedia('(pointer:coarse)').matches;
+  const minScale = isTouch ? 0.72 : 0.45;
+  scale = Math.min(Math.max(scale, minScale), 1.8);
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
+  if(naturalH*scale > availH + 2){
+    container.style.overflowY = 'auto';
+  }
 }
 
 function fitPage(id){
