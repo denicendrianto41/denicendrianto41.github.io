@@ -56,16 +56,78 @@ nav::-webkit-scrollbar{display:none;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
-@media(max-width:640px){
+@media(max-width:1024px){
   header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-icon{width:30px;height:30px;}
   .logo-text{font-size:14px;}
   .logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow-y:auto;max-height:calc(100dvh - var(--h));gap:0;flex:none;}
   nav.open{display:flex;}
-  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb{height:48px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .nb img{width:22px;height:22px;}
   .nb::after{display:none;}
   .nb.active{background:rgba(255,255,255,.08);}
+}
+@media(max-width:480px){
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:12.5px;}
+  header{gap:8px;padding:0 8px;}
+}
+
+/* ══════════ MOBILE / TABLET: cegah gambar besar terpotong + izinkan scroll ══════════ */
+@media (max-width:1024px){
+  #page-alatbahan .scroll,#page-prosedur .scroll{
+    display:block !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch;
+    padding:0 !important;
+  }
+  #page-alatbahan .scroll img,#page-prosedur .scroll img{
+    width:100% !important;
+    height:auto !important;
+    max-width:100%;
+    object-fit:contain !important;
+    display:block !important;
+    margin:0 auto;
+  }
+  /* jaga-jaga: pastikan semua bagian lain juga bisa discroll penuh di mobile/tablet */
+  #page-simulasi>div,#page-evaluasi>div{
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #simtab-rantai>div:first-child,
+  #simtab-energi>div:first-child,
+  #simtab-daur>div:first-child{
+    grid-template-columns:1fr !important;
+  }
+  #page-evaluasi [style*="grid-template-rows:1fr 1fr 1fr"]{
+    display:flex !important;
+    flex-direction:column !important;
+    grid-template-columns:none !important;
+    grid-template-rows:none !important;
+    overflow-y:auto !important;
+  }
+  #page-evaluasi [style*="grid-template-rows:1fr 1fr 1fr"] .card{
+    min-height:110px;
+  }
+  .two-col{grid-template-columns:1fr !important;}
+}
+
+/* ══════════ PAKSA ROTASI: kunci tampilan ke landscape di HP/tablet ══════════ */
+#rotateOverlay{
+  display:none;position:fixed;inset:0;z-index:999999;
+  background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);
+  flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;text-align:center;padding:28px;
+}
+@keyframes rotatePhoneIcon{0%,15%{transform:rotate(0deg);}45%,65%{transform:rotate(90deg);}100%{transform:rotate(90deg);}}
+.rotate-icon{font-size:56px;margin-bottom:16px;animation:rotatePhoneIcon 1.8s ease-in-out infinite;display:inline-block;}
+.rotate-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,4.5vw,20px);font-weight:800;margin-bottom:8px;}
+.rotate-sub{font-family:'Inter',sans-serif;font-size:clamp(12px,3.2vw,14px);color:#bfdbfe;max-width:300px;line-height:1.7;}
+@media (max-width:1024px) and (orientation:portrait){
+  #rotateOverlay{display:flex;}
 }
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -152,17 +214,25 @@ nav::-webkit-scrollbar{display:none;}
   gap:0;transition:opacity .6s ease;
 }
 #loadScreen.hide{opacity:0;pointer-events:none;}
-#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_ekosistem.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_ekosistem.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
 #loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
-.load-content{display:flex;flex-direction:column;align-items:center;transform:translateY(-160px);}
-.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;}
+#loadScreen{padding:16px;}
+.load-content{display:flex;flex-direction:column;align-items:center;transform:translateY(-160px);max-width:100%;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;max-width:70px;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,2.5vw,26px);font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
 .load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:24px;}
-.load-bar-wrap{width:clamp(200px,28vw,320px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-bar-wrap{width:clamp(200px,28vw,320px);height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:8px;max-width:80vw;}
 .load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#34d399,#a78bfa);border-radius:6px;transition:width .1s linear;}
 .load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#fff;font-weight:700;margin-bottom:12px;text-align:center;}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:28px;min-height:16px;text-align:center;}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#bfdbfe;font-family:'Inter',sans-serif;margin-bottom:28px;min-height:16px;text-align:center;padding:0 12px;}
+/* Di HP/tablet & layar pendek: hilangkan offset agar logo, judul, dan progress bar tidak terpotong di tepi layar */
+@media (max-width:1024px),(max-height:520px){
+  .load-content{transform:none;}
+  .load-logo{margin-bottom:10px;}
+  .load-sub{margin-bottom:16px;}
+  .load-status{margin-bottom:16px;}
+}
 #btnMulaiPraktikum{
   display:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;
   padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;
@@ -219,6 +289,28 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 </style>
 </head>
 <body>
+
+<!-- ROTATE OVERLAY: memaksa pengguna HP/tablet memutar ke landscape -->
+<div id="rotateOverlay">
+  <div class="rotate-icon">📱</div>
+  <div class="rotate-title">Putar Perangkat Anda</div>
+  <div class="rotate-sub">Lab Virtual ini dirancang untuk tampilan <strong>landscape (mendatar)</strong>. Silakan putar perangkat Anda untuk melanjutkan praktikum.</div>
+</div>
+<script>
+// Best-effort: kunci orientasi ke landscape jika browser mengizinkan (butuh fullscreen/PWA di sebagian besar browser)
+(function(){
+  function tryLock(){
+    try{
+      if(screen.orientation && screen.orientation.lock){
+        screen.orientation.lock('landscape').catch(function(){});
+      }
+    }catch(e){}
+  }
+  window.addEventListener('load',tryLock);
+  document.addEventListener('click',tryLock,{once:true});
+  window.addEventListener('orientationchange',tryLock);
+})();
+</script>
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
@@ -540,7 +632,7 @@ document.addEventListener('click',function(e){
 <!-- ========================= ALAT & BAHAN ========================= -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/mejalab_ekosistem.png" alt="Alat dan Bahan Ekosistem" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/mejalab_ekosistem.webp" alt="Alat dan Bahan Ekosistem" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -561,7 +653,7 @@ document.addEventListener('click',function(e){
 <!-- ========================= PROSEDUR ========================= -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img src="https://denicendrianto41.github.io/prosedur_ekosistem.png" alt="Prosedur Ekosistem" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <img src="https://denicendrianto41.github.io/prosedur_ekosistem.webp" alt="Prosedur Ekosistem" style="width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
