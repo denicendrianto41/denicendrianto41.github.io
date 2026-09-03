@@ -1164,22 +1164,44 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 .dropzone{position:absolute;width:220px;height:54px;border:3px solid #b8b7be;border-radius:10px;background:#fff}
 .dropzone.correct{border-color:var(--ok);background:#eefbf3}
 .dropzone .slot-label{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;color:#32553e}
+button.stepsToggleBtn{display:none}
+.sidebar-backdrop{display:none}
+/* MOBILE/TABLET: sidebar Prosedur Simulator disembunyikan secara default dan
+   dijadikan panel geser (drawer) dari sisi kiri, supaya area simulasi utama
+   (panggung, mikroskop, label) selalu tampil penuh &amp; langsung bisa dijalankan. */
 @media (max-width: 1100px){
   body{overflow:hidden}
-  .app{display:flex;flex-direction:column;grid-template-columns:none;height:100vh;height:100dvh;min-height:0;overflow:hidden}
-  .sidebar{flex:0 0 auto;max-height:38vh;max-height:38dvh}
+  .app{display:block;position:relative;height:100vh;height:100dvh;min-height:0;padding:6px;overflow:hidden}
+  .main,.workspace{width:100%;height:100%;min-height:0}
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;z-index:45;
+    width:min(82vw,300px);max-height:none;
+    border-radius:0 16px 16px 0;
+    box-shadow:6px 0 28px rgba(0,0,0,.4);
+    transform:translateX(-105%);
+    transition:transform .25s ease;
+  }
+  .sidebar.open{transform:translateX(0)}
   .step-list{flex:1;min-height:60px}
-  .main,.workspace{flex:1;min-height:0;height:auto}
+  .sidebar-backdrop{
+    display:block;position:fixed;inset:0;z-index:40;
+    background:rgba(10,20,10,0);pointer-events:none;
+    transition:background .25s ease;
+  }
+  .sidebar-backdrop.show{background:rgba(10,20,10,.5);pointer-events:auto}
+  button.stepsToggleBtn{display:inline-flex;margin-right:auto}
+  .toolbar{justify-content:space-between}
+  #sidebarCloseBtn{display:inline-flex!important}
   .modal-grid,.diagram-grid{grid-template-columns:1fr}
   .modal{overflow-y:auto}
   .modal-grid{overflow:visible;min-height:0}
   .diagram{min-height:280px}
 }
-/* Landscape mobile/tablet dengan tinggi layar terbatas: perkecil sidebar &amp; elemen
-   supaya seluruh area simulasi (stage, mikroskop, label) tetap termuat &amp; terlihat penuh */
+/* Landscape mobile/tablet dengan tinggi layar terbatas: perkecil elemen supaya
+   seluruh area simulasi &amp; panel drawer tetap termuat &amp; terlihat penuh */
 @media (max-height:560px) and (orientation:landscape) and (pointer:coarse){
-  .app{padding:5px;gap:5px}
-  .sidebar{max-height:34vh;max-height:34dvh}
+  .app{padding:5px}
+  .sidebar{width:min(70vw,280px)}
   .sidebar-head{padding:6px 10px 6px}
   .sidebar-head h2{font-size:12px;margin-bottom:4px}
   .progress-row{font-size:10px}
@@ -1202,9 +1224,15 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 &lt;/head&gt;
 &lt;body&gt;
 &lt;div class=&quot;app&quot;&gt;
-  &lt;aside class=&quot;panel sidebar&quot;&gt;
+  &lt;div class=&quot;sidebar-backdrop&quot; id=&quot;sidebarBackdrop&quot;&gt;&lt;/div&gt;
+  &lt;aside class=&quot;panel sidebar&quot; id=&quot;sidebarPanel&quot;&gt;
     &lt;div class=&quot;sidebar-head&quot;&gt;
-      &lt;h2&gt;Prosedur Simulator&lt;/h2&gt;
+      &lt;div style=&quot;display:flex;align-items:center;justify-content:space-between;gap:8px;&quot;&gt;
+        &lt;h2 style=&quot;margin:0&quot;&gt;Prosedur Simulator&lt;/h2&gt;
+        &lt;button id=&quot;sidebarCloseBtn&quot; class=&quot;ghost small icon-btn&quot; title=&quot;Tutup&quot; style=&quot;display:none;width:28px;height:28px;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;6&quot; x2=&quot;6&quot; y2=&quot;18&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;18&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
       &lt;div class=&quot;progress-row&quot;&gt;&lt;span id=&quot;progressText&quot;&gt;Progres 0/10&lt;/span&gt;&lt;span id=&quot;stepHint&quot;&gt;Ikuti urutan seret dan lepas&lt;/span&gt;&lt;/div&gt;
       &lt;div class=&quot;meter&quot;&gt;&lt;div id=&quot;progressBar&quot;&gt;&lt;/div&gt;&lt;/div&gt;
     &lt;/div&gt;
@@ -1220,6 +1248,9 @@ body.is-fullscreen .stage-shell{border-radius:0;border:none;box-shadow:none;heig
 
   &lt;section class=&quot;panel main workspace&quot;&gt;
     &lt;div class=&quot;toolbar&quot;&gt;
+      &lt;button id=&quot;stepsToggleBtn&quot; class=&quot;ghost small icon-btn stepsToggleBtn&quot; title=&quot;Langkah Prosedur&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;8&quot; y1=&quot;6&quot; x2=&quot;21&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;12&quot; x2=&quot;21&quot; y2=&quot;12&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;18&quot; x2=&quot;21&quot; y2=&quot;18&quot;/&gt;&lt;line x1=&quot;3&quot; y1=&quot;6&quot; x2=&quot;3.01&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;3&quot; y1=&quot;12&quot; x2=&quot;3.01&quot; y2=&quot;12&quot;/&gt;&lt;line x1=&quot;3&quot; y1=&quot;18&quot; x2=&quot;3.01&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;
+      &lt;/button&gt;
       &lt;button id=&quot;helpBtn&quot; class=&quot;ghost small icon-btn&quot; title=&quot;Bantuan&quot;&gt;
         &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;path d=&quot;M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;17&quot; x2=&quot;12.01&quot; y2=&quot;17&quot;/&gt;&lt;/svg&gt;
       &lt;/button&gt;
@@ -2185,6 +2216,23 @@ if(_maxBtn) _maxBtn.addEventListener(&#x27;click&#x27;, async () =&gt; {
 
 const _resetBtn = document.getElementById(&#x27;resetBtn&#x27;);
 if(_resetBtn) _resetBtn.addEventListener(&#x27;click&#x27;, resetSim);
+
+// ══ Drawer Prosedur Simulator (mobile/tablet) ══
+(function(){
+  const panel = document.getElementById(&#x27;sidebarPanel&#x27;);
+  const backdrop = document.getElementById(&#x27;sidebarBackdrop&#x27;);
+  const toggleBtn = document.getElementById(&#x27;stepsToggleBtn&#x27;);
+  const closeBtn = document.getElementById(&#x27;sidebarCloseBtn&#x27;);
+  if(!panel || !backdrop || !toggleBtn) return;
+  function setOpen(open){
+    panel.classList.toggle(&#x27;open&#x27;, open);
+    backdrop.classList.toggle(&#x27;show&#x27;, open);
+  }
+  toggleBtn.addEventListener(&#x27;click&#x27;, () =&gt; setOpen(!panel.classList.contains(&#x27;open&#x27;)));
+  backdrop.addEventListener(&#x27;click&#x27;, () =&gt; setOpen(false));
+  if(closeBtn) closeBtn.addEventListener(&#x27;click&#x27;, () =&gt; setOpen(false));
+  window.addEventListener(&#x27;resize&#x27;, () =&gt; { if(window.innerWidth &gt; 1100) setOpen(false); });
+})();
 function resetPositions() {
   home.slide = {x:375, y:465};
   Object.entries(home).forEach(([id, pos]) =&gt; {
