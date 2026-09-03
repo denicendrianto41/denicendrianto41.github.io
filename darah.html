@@ -305,27 +305,27 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   .nb{font-size:11.5px;padding:0 9px;}
   .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
 }
-/* Loading screen: ukuran & posisi menyesuaikan layar mobile agar tidak terpotong */
-@media (pointer:coarse){
-  .load-content{transform:translateY(-24px);}
-  .load-logo{width:clamp(46px,14vw,72px);margin-bottom:10px;}
-  .load-title{font-size:clamp(17px,5.5vw,22px);}
-  .load-sub{font-size:clamp(8.5px,2.6vw,11px);margin-bottom:18px;}
-  .load-bar-wrap{width:min(70vw,300px);margin-bottom:7px;}
-  .load-percent{font-size:clamp(11px,3.2vw,13px);margin-bottom:10px;}
-  .load-status{font-size:clamp(10px,2.8vw,11.5px);margin-bottom:18px;}
-  /* Target sentuh tombol dibuat nyaman (tinggi ±44px sesuai standar aksesibilitas mobile) */
-  #btnMulaiPraktikum{padding:13px 30px;font-size:clamp(12px,3.4vw,14px);min-height:44px;}
+/* Loading screen: ukuran & posisi menyesuaikan layar mobile — mengikuti pendekatan
+   yang sama seperti determinasi.html (breakpoint berbasis tinggi layar/vh, tanpa
+   transform offset, supaya selalu proporsional & tidak terpotong di layar pendek). */
+@media (max-height:520px), ((pointer:coarse) and (max-width:1024px)){
+  .load-content{transform:translateY(0);}
+  .load-logo{width:clamp(38px,7vh,56px);margin-bottom:8px;}
+  .load-title{font-size:clamp(14px,3.6vh,20px);margin-bottom:3px;}
+  .load-sub{font-size:clamp(8.5px,1.8vh,10.5px);letter-spacing:.1em;margin-bottom:12px;}
+  .load-bar-wrap{width:clamp(150px,42vw,240px);height:5px;margin-bottom:6px;}
+  .load-percent{font-size:clamp(11px,2.4vh,13px);margin-bottom:8px;}
+  .load-status{font-size:clamp(9.5px,1.9vh,11px);margin-bottom:14px;min-height:14px;}
+  #btnMulaiPraktikum{padding:7px 20px;font-size:clamp(11px,2.2vh,13px);}
 }
-@media (pointer:coarse) and (max-height:420px){
-  .load-content{transform:translateY(-4px);}
-  .load-logo{width:clamp(38px,10vw,52px);margin-bottom:6px;}
-  .load-title{font-size:clamp(15px,4.8vw,19px);}
-  .load-sub{margin-bottom:10px;}
-  .load-bar-wrap{margin-bottom:5px;}
-  .load-percent{margin-bottom:6px;}
-  .load-status{margin-bottom:10px;}
-  #btnMulaiPraktikum{padding:10px 26px;min-height:40px;}
+@media (max-height:400px){
+  .load-logo{width:clamp(32px,6vh,44px);margin-bottom:5px;}
+  .load-title{font-size:clamp(13px,3.2vh,17px);margin-bottom:2px;}
+  .load-sub{font-size:clamp(8px,1.6vh,9.5px);margin-bottom:8px;}
+  .load-bar-wrap{margin-bottom:4px;}
+  .load-percent{margin-bottom:5px;}
+  .load-status{margin-bottom:9px;min-height:12px;}
+  #btnMulaiPraktikum{padding:6px 18px;}
 }
 </style>
 </head>
