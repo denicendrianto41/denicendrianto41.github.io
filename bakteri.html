@@ -294,11 +294,22 @@ select option{background:#fff;color:var(--text);}
 
 /* ═══ MOBILE: pastikan semua halaman bisa discroll, tidak ada bagian terpotong ═══ */
 @media (max-width:900px), (pointer:coarse){
-  #simRow{flex-direction:column!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;}
-  #simRow .ctrl-panel{width:100%!important;flex-shrink:0!important;}
-  #simRow > div:last-child{overflow:visible!important;}
-  #simRow .aquarium{min-height:260px;flex:none!important;}
-  #simRow #simCanvas{height:260px!important;}
+  /* Layout Simulasi di mobile/tablet: Panel Kontrol & Cawan Petri Virtual sejajar
+     di baris atas, Lembar Kerja Simulasi memenuhi lebar penuh di baris bawah
+     (lihat gambar layout acuan). Wrapper kanan (aquarium+lembar kerja) dijadikan
+     display:contents agar kedua anaknya bisa ditempatkan langsung sebagai grid item. */
+  #simRow{
+    display:grid!important;
+    grid-template-columns:180px 1fr;
+    grid-template-areas:"panel cawan" "kerja kerja";
+    gap:8px;
+    overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;
+  }
+  #simRow .ctrl-panel{grid-area:panel;width:100%!important;flex-shrink:0!important;}
+  #simRow > div:last-child{display:contents!important;}
+  #simRow .aquarium{grid-area:cawan;min-height:200px;flex:none!important;}
+  #simRow .card{grid-area:kerja;max-height:none!important;}
+  #simRow #simCanvas{height:200px!important;}
   #diskWrap{overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;}
   #diskGrid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;}
   #diskGrid .disc-area{min-height:80px;}
