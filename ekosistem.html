@@ -62,7 +62,7 @@ nav::-webkit-scrollbar{display:none;}
   .logo-text{font-size:14px;}
   .logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow-y:auto;max-height:calc(100dvh - var(--h));gap:0;flex:none;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;max-height:calc(100vh - var(--h));max-height:calc(100dvh - var(--h));gap:0;flex:none;}
   nav.open{display:flex;}
   .nb{height:48px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
   .nb img{width:22px;height:22px;}
@@ -113,6 +113,16 @@ nav::-webkit-scrollbar{display:none;}
     min-height:110px;
   }
   .two-col{grid-template-columns:1fr !important;}
+  /* Perbesar font di halaman Tujuan & Teori agar jelas terbaca di HP/tablet (termasuk landscape) */
+  #page-tujuan .ct,#page-teori .ct{font-size:16px !important;}
+  #page-tujuan .card p,#page-teori .card p,
+  #page-tujuan .olist li,#page-teori .olist li,
+  #page-tujuan .step p,#page-teori .step p{font-size:14px !important;line-height:1.65 !important;}
+  #page-tujuan .card h4,#page-teori .card h4{font-size:12.5px !important;}
+  #page-teori .fi strong,#page-teori .fi span{font-size:13.5px !important;}
+  #page-teori .formula-box{font-size:13.5px !important;}
+  #page-teori .chip{font-size:13px !important;}
+  #page-teori .notebox p{font-size:13.5px !important;}
 }
 
 /* ═══ PAKSA ROTASI KE LANDSCAPE (HP/perangkat sentuh) ═══ */
@@ -869,28 +879,39 @@ function fitToContainer(container,extraBottom,minScale){
   }
 }
 
-// Di HP/tablet (termasuk landscape) atau layar pendek, jangan biarkan auto-fit
-// menyusutkan teks sampai terlalu kecil dibaca — naikkan batas skala minimum.
-// Kalau kontennya tetap lebih tinggi dari layar pada skala minimum ini,
-// fitToContainer otomatis mengaktifkan scroll (lihat fungsi di atas).
-function effMinScale(desktopMin, mobileMin){
-  const isCompact = window.matchMedia('(max-width:1024px), (max-height:520px)').matches;
-  return isCompact ? mobileMin : desktopMin;
+// Di HP/tablet (termasuk landscape) atau layar pendek, JANGAN pakai auto-fit skala sama sekali.
+// Alasan: font di halaman ini sudah pakai ukuran clamp() yang relatif kecil untuk layar sempit,
+// kalau masih dikalikan lagi dengan skala <1 (mis. 0.6), hasilnya jadi sangat kecil & sulit dibaca.
+// Solusinya: biarkan ukuran teks 100% natural di mobile/tablet, dan izinkan halaman discroll penuh.
+function isCompactView(){
+  return window.matchMedia('(max-width:1024px), (max-height:520px)').matches;
+}
+function resetFitNatural(container){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(inner){
+    inner.style.transform = 'none';
+    inner.style.width = '100%';
+  }
+  container.style.overflowY = 'auto';
 }
 
 function fitPage(id){
+  const compact = isCompactView();
   if(id==='tujuan'){
-    fitToContainer(document.querySelector('#page-tujuan > .scroll'), 0, effMinScale(0.45,0.72));
+    const el = document.querySelector('#page-tujuan > .scroll');
+    if(compact){ resetFitNatural(el); } else { fitToContainer(el); }
   }else if(id==='teori'){
     // minScale rendah di desktop agar seluruh materi selalu pas di layar fullscreen tanpa terpotong;
-    // dinaikkan di mobile/tablet supaya font tetap terbaca jelas (dengan fallback scroll bila perlu)
-    const ms = effMinScale(0.2,0.6);
-    fitToContainer(document.querySelector('#tab-rantai'),15,ms);
-    fitToContainer(document.querySelector('#tab-energi'),15,ms);
-    fitToContainer(document.querySelector('#tab-daur'),15,ms);
-    fitToContainer(document.querySelector('#tab-interaksi'),15,ms);
+    // di mobile/tablet skala dimatikan total (lihat resetFitNatural) supaya font tetap terbaca jelas
+    ['#tab-rantai','#tab-energi','#tab-daur','#tab-interaksi'].forEach(sel=>{
+      const el = document.querySelector(sel);
+      if(compact){ resetFitNatural(el); } else { fitToContainer(el,15,0.2); }
+    });
   }else if(id==='prosedur'){
-    document.querySelectorAll('#page-prosedur .card').forEach(fitToContainer);
+    document.querySelectorAll('#page-prosedur .card').forEach(c=>{
+      if(compact){ resetFitNatural(c); } else { fitToContainer(c); }
+    });
   }
 }
 
