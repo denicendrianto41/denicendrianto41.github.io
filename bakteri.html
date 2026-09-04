@@ -330,8 +330,11 @@ select option{background:#fff;color:var(--text);}
      tinggi kontennya (tabel), tanpa scrollbar sendiri. */
   #simLembarKerja{flex:0 0 100%!important;width:100%!important;max-height:none!important;overflow:visible!important;}
   #diskWrap{overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;}
-  #diskGrid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;}
-  #diskGrid .disc-area{min-height:80px;}
+  /* Mobile/tablet landscape: jaga lebar kolom benar-benar simetris.
+     Handphone akan dioverride menjadi 1 kolom pada media query khusus di bawah. */
+  #diskGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;}
+  #diskGrid .card{min-width:0;width:100%;grid-column:auto!important;}
+  #diskGrid .disc-area{min-height:80px;width:100%;}
   /* Halaman Teori: matikan auto-scale JS (transform/width dipaksa netral) dan
      jadikan area panel bisa discroll vertikal, supaya konten tidak terpotong. */
   #teoriPanelsWrap{overflow-y:auto!important;-webkit-overflow-scrolling:touch;-ms-overflow-style:auto;}
@@ -339,6 +342,36 @@ select option{background:#fff;color:var(--text);}
   #page-teori .teori-panel .card{overflow:visible!important;flex:none!important;height:auto!important;transform:none!important;width:100%!important;max-width:100%!important;}
   #teori-panel-koloni{min-height:220px;}
   #teori-panel-koloni .card > div{min-height:180px;}
+}
+
+/* ═══ TUJUAN: MOBILE/TABLET LANDSCAPE ═══
+   Hilangkan gutter kosong di sisi kanan dan bawah pada area Tujuan. */
+@media (pointer:coarse) and (orientation:landscape){
+  #fitContainer-tujuan{
+    padding-right:0!important;
+    padding-bottom:0!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-x:none;
+  }
+}
+
+/* ═══ KHUSUS HANDPHONE LANDSCAPE ═══
+   Tinggi viewport dipakai untuk membedakan HP landscape dari tablet landscape.
+   Semua card Diskusi dipaksa 1 kolom dan span 2 pada card terakhir dinetralkan. */
+@media (orientation:landscape) and (max-height:520px) and (max-width:950px){
+  #diskGrid{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:none!important;
+    grid-auto-rows:minmax(150px,auto)!important;
+    width:100%!important;
+  }
+  #diskGrid .card{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  #diskGrid .disc-area{width:100%!important;max-width:100%!important;}
 }
 </style>
 </head>
@@ -940,7 +973,52 @@ function fitScaleToContainer(container, content, opts){
   });
 }
 function fitTujuan(){
-  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), document.getElementById('fitContent-tujuan'), {minScale:0.75, maxScale:2.2});
+  const container = document.getElementById('fitContainer-tujuan');
+  const content = document.getElementById('fitContent-tujuan');
+  if(!container || !content) return;
+
+  const minScale = 0.75;
+  const maxScale = 2.2;
+
+  // Reset fit sebelumnya agar pengukuran tidak membawa sisa overflow lama.
+  content.style.transform = 'none';
+  content.style.width = '100%';
+  content.style.marginBottom = '0px';
+  container.style.overflowX = 'hidden';
+
+  requestAnimationFrame(()=>{
+    const cs = getComputedStyle(container);
+    const padTop = parseFloat(cs.paddingTop) || 0;
+    const padBottom = parseFloat(cs.paddingBottom) || 0;
+    const availH = Math.max(1, container.clientHeight - padTop - padBottom);
+
+    let natH = content.scrollHeight;
+    if(!natH) return;
+
+    // Lebar inverse-scale membuat tampilan tetap memenuhi lebar container.
+    // Ulangi beberapa kali karena perubahan width dapat mengubah wrapping teks.
+    let scale = Math.max(minScale, Math.min(maxScale, availH / natH));
+    for(let i=0;i<3;i++){
+      content.style.width = (100/scale) + '%';
+      natH = content.scrollHeight;
+      if(!natH) break;
+      const nextScale = Math.max(minScale, Math.min(maxScale, availH / natH));
+      if(Math.abs(nextScale-scale) < 0.002){ scale = nextScale; break; }
+      scale = nextScale;
+    }
+
+    content.style.width = (100/scale) + '%';
+    natH = content.scrollHeight;
+    content.style.transformOrigin = 'top left';
+    content.style.transform = `scale(${scale.toFixed(4)})`;
+
+    // Transform mengecilkan tampilan tetapi tidak mengecilkan box layout asli.
+    // Margin kompensasi menyamakan tinggi area scroll dengan tinggi visual,
+    // sehingga tidak ada ruang kosong palsu di bawah; overflow-x hidden
+    // menghilangkan ruang kosong palsu di sisi kanan.
+    const visualH = natH * scale;
+    content.style.marginBottom = (visualH - natH).toFixed(2) + 'px';
+  });
 }
 function isMobileLayout(){
   return window.matchMedia('(max-width:900px), (pointer:coarse)').matches;
