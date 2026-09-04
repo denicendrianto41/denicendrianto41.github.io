@@ -148,6 +148,13 @@ nav::-webkit-scrollbar{display:none;}
 .sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
 .sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
 /* SIMULASI */
+/* #simRow: grid layout dasar (desktop) — panel kiri penuh 2 baris, kanan atas
+   Cawan Petri, kanan bawah Lembar Kerja. Diratakan (bukan nested flex) supaya
+   breakpoint mobile bisa menata ulang area tanpa trik display:contents. */
+#simRow{display:grid!important;grid-template-columns:195px 1fr;grid-template-rows:1fr auto;grid-template-areas:"panel cawan" "panel kerja";}
+#simPanelKontrol{grid-area:panel;width:100%!important;min-height:0;}
+#simAquarium{grid-area:cawan;min-height:0;}
+#simLembarKerja{grid-area:kerja;}
 .ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
 .cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
@@ -296,19 +303,20 @@ select option{background:#fff;color:var(--text);}
 @media (max-width:900px), (pointer:coarse){
   /* Layout Simulasi di mobile/tablet: Panel Kontrol & Cawan Petri Virtual sejajar
      di baris atas, Lembar Kerja Simulasi memenuhi lebar penuh di baris bawah
-     (lihat gambar layout acuan). Wrapper kanan (aquarium+lembar kerja) dijadikan
-     display:contents agar kedua anaknya bisa ditempatkan langsung sebagai grid item. */
+     (lihat gambar layout acuan). #simRow sudah berupa grid dgn anak-anak rata
+     (bukan nested), jadi cukup ubah grid-template-areas & pastikan bisa discroll. */
   #simRow{
-    display:grid!important;
-    grid-template-columns:180px 1fr;
-    grid-template-areas:"panel cawan" "kerja kerja";
+    grid-template-columns:180px 1fr!important;
+    grid-template-rows:auto auto!important;
+    grid-template-areas:"panel cawan" "kerja kerja" !important;
     gap:8px;
-    overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;
+    min-height:0!important;
+    overflow-y:auto!important;-webkit-overflow-scrolling:touch;
+    align-content:start;
   }
-  #simRow .ctrl-panel{grid-area:panel;width:100%!important;flex-shrink:0!important;}
-  #simRow > div:last-child{display:contents!important;}
-  #simRow .aquarium{grid-area:cawan;min-height:200px;flex:none!important;}
-  #simRow .card{grid-area:kerja;max-height:none!important;}
+  #simPanelKontrol{max-height:none;}
+  #simAquarium{min-height:200px;flex:none!important;}
+  #simLembarKerja{max-height:none!important;overflow:visible;}
   #simRow #simCanvas{height:200px!important;}
   #diskWrap{overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;}
   #diskGrid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;}
@@ -782,7 +790,7 @@ function startPraktikum(){
 <div id="page-simulasi" class="page">
   <div id="simRow" style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
     <!-- PANEL KONTROL -->
-    <div class="ctrl-panel" style="width:195px;flex-shrink:0;">
+    <div class="ctrl-panel" id="simPanelKontrol" style="width:195px;flex-shrink:0;">
       <h3>⚙️ Panel Kontrol</h3>
       <div class="cg">
         <label>Jenis Sampel</label>
@@ -822,26 +830,23 @@ function startPraktikum(){
       <div class="tipinfo" id="tipInfo"></div>
     </div>
 
-    <!-- AREA KANAN -->
-    <div style="flex:1;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-width:0;">
-      <!-- CANVAS -->
-      <div class="aquarium" style="flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;overflow:visible;">
-        <h3>🧫 Cawan Petri Virtual</h3>
-        <div style="position:relative;flex:1;min-height:0;overflow:visible;">
-          <canvas id="simCanvas" style="width:100%;height:100%;display:block;border-radius:6px;background:#0f172a;border:1px solid var(--border);"></canvas>
-          <div class="sim-tooltip" id="simTooltip" style="left:auto;right:auto;top:8px;">
-            <div class="sim-tip-item"><span class="sim-tip-val" id="statK">0</span><span class="sim-tip-lbl">🦠 Koloni</span></div>
-            <div class="sim-tip-item"><span class="sim-tip-val" id="statT">0h</span><span class="sim-tip-lbl">⏱ Waktu</span></div>
-            <div class="sim-tip-item"><span class="sim-tip-val" id="statG">–</span><span class="sim-tip-lbl">📈 Laju/jam</span></div>
-          </div>
+    <!-- CANVAS -->
+    <div class="aquarium" id="simAquarium" style="flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;overflow:visible;">
+      <h3>🧫 Cawan Petri Virtual</h3>
+      <div style="position:relative;flex:1;min-height:0;overflow:visible;">
+        <canvas id="simCanvas" style="width:100%;height:100%;display:block;border-radius:6px;background:#0f172a;border:1px solid var(--border);"></canvas>
+        <div class="sim-tooltip" id="simTooltip" style="left:auto;right:auto;top:8px;">
+          <div class="sim-tip-item"><span class="sim-tip-val" id="statK">0</span><span class="sim-tip-lbl">🦠 Koloni</span></div>
+          <div class="sim-tip-item"><span class="sim-tip-val" id="statT">0h</span><span class="sim-tip-lbl">⏱ Waktu</span></div>
+          <div class="sim-tip-item"><span class="sim-tip-val" id="statG">–</span><span class="sim-tip-lbl">📈 Laju/jam</span></div>
         </div>
       </div>
-      <!-- LEMBAR KERJA -->
-      <div class="card" style="flex-shrink:0;overflow:auto;margin-bottom:0;max-height:130px;">
-        <div class="ch"><div class="ci y">📊</div><div class="ct">Lembar Kerja Simulasi</div></div>
-        <table class="wstable"><thead><tr><th>#</th><th>Sampel</th><th>Suhu</th><th>Metode</th><th>Durasi</th><th>Koloni</th><th>Bentuk Dominan</th></tr></thead>
-        <tbody id="wsBody"><tr><td colspan="7" style="text-align:center;color:var(--text3);padding:12px;">Belum ada data. Jalankan simulasi terlebih dahulu.</td></tr></tbody></table>
-      </div>
+    </div>
+    <!-- LEMBAR KERJA -->
+    <div class="card" id="simLembarKerja" style="flex-shrink:0;overflow:auto;margin-bottom:0;max-height:130px;">
+      <div class="ch"><div class="ci y">📊</div><div class="ct">Lembar Kerja Simulasi</div></div>
+      <table class="wstable"><thead><tr><th>#</th><th>Sampel</th><th>Suhu</th><th>Metode</th><th>Durasi</th><th>Koloni</th><th>Bentuk Dominan</th></tr></thead>
+      <tbody id="wsBody"><tr><td colspan="7" style="text-align:center;color:var(--text3);padding:12px;">Belum ada data. Jalankan simulasi terlebih dahulu.</td></tr></tbody></table>
     </div>
   </div>
 </div>
