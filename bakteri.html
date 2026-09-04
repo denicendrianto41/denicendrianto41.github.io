@@ -54,6 +54,15 @@ nav::-webkit-scrollbar{display:none;}
   .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
 }
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+}
 /* APP */
 #app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
