@@ -60,7 +60,7 @@ nav::-webkit-scrollbar{display:none;}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
 
-@media(max-width:900px){
+@media(max-width:640px){
   header{flex-wrap:nowrap;padding:0 10px;}
   .logo-icon{width:30px;height:30px;}
   .logo-text{font-size:13px;}
@@ -346,6 +346,258 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   #btnMulaiPraktikum{padding:7px 20px !important;}
 }
 </style>
+
+<style id="kuadrat-mobile-landscape-fix">
+/* =============================================================
+   FIX RESPONSIVE KUADRAT — mengikuti perilaku header darah.html
+   dan layout referensi simulasi pada perangkat sentuh landscape.
+   ============================================================= */
+
+/* Header/menu/logo lebih ringkas saat mobile/tablet landscape.
+   Ini sengaja mengikuti pola darah.html: header 42px, logo kecil,
+   subtitle disembunyikan, ikon/menu diperkecil. */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  header{
+    flex-wrap:nowrap;
+    padding:0 10px;
+    gap:8px;
+    min-width:0;
+  }
+  .logo{
+    min-width:0;
+    flex:0 0 auto;
+    gap:7px;
+  }
+  .logo-icon{
+    width:26px;
+    height:26px;
+    font-size:14px;
+    overflow:hidden;
+    padding:2px;
+  }
+  .logo-text{
+    font-size:14px;
+    line-height:1.05;
+    white-space:nowrap;
+  }
+  .logo-sub{display:none;}
+  .nb{
+    font-size:11.5px;
+    padding:0 9px;
+  }
+  .nb img{
+    width:18px!important;
+    height:18px!important;
+    margin-right:4px!important;
+  }
+}
+
+/* Di landscape dengan lebar >640px, menu harus tetap horizontal seperti darah.html.
+   Aturan ini menetralkan properti menu vertikal dari versi lama kuadrat.html. */
+@media (pointer:coarse) and (orientation:landscape) and (min-width:641px){
+  #menuToggle{display:none!important;}
+  nav#mainNav{
+    display:flex!important;
+    position:static!important;
+    inset:auto!important;
+    top:auto!important;
+    right:auto!important;
+    left:auto!important;
+    z-index:auto!important;
+    flex-direction:row!important;
+    flex:1 1 auto!important;
+    justify-content:flex-end!important;
+    gap:2px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    max-height:none!important;
+    background:none!important;
+    border:0!important;
+    box-shadow:none!important;
+    min-width:0!important;
+  }
+  nav#mainNav .nb{
+    width:auto!important;
+    height:var(--h)!important;
+    flex:0 0 auto!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:0!important;
+    text-align:center!important;
+    border-bottom:0!important;
+    background:none!important;
+  }
+}
+
+/* -------------------------------------------------------------
+   SIMULASI — mobile/tablet landscape
+   Acuan layout: sidebar vertikal kiri + peta besar di kanan.
+   Tidak lagi ditumpuk menjadi satu kolom.
+   ------------------------------------------------------------- */
+@media (pointer:coarse) and (orientation:landscape){
+  #page-simulasi{
+    overflow:hidden!important;
+    min-height:0!important;
+  }
+  #page-simulasi > div:first-child{
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:stretch!important;
+    height:100%!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    padding:6px 8px 8px!important;
+    gap:8px!important;
+  }
+
+  /* Sidebar kiri seperti gambar referensi. */
+  #page-simulasi .ctrl-panel{
+    width:clamp(150px,17vw,220px)!important;
+    flex:0 0 clamp(150px,17vw,220px)!important;
+    min-width:0!important;
+    height:100%!important;
+    max-height:none!important;
+    flex-direction:column!important;
+    flex-wrap:nowrap!important;
+    align-items:stretch!important;
+    gap:6px!important;
+    padding:8px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #page-simulasi .ctrl-panel .cg{
+    flex:0 0 auto!important;
+    width:100%!important;
+  }
+  #page-simulasi .ctrl-panel > div:has(#speciesLegend){
+    flex:0 0 auto!important;
+    width:100%!important;
+    order:initial!important;
+  }
+  #page-simulasi .ctrl-panel button{
+    flex:0 0 auto!important;
+    width:100%!important;
+  }
+
+  /* Area kanan selalu mengambil seluruh sisa ruang. */
+  #page-simulasi > div:first-child > div:last-child{
+    flex:1 1 0!important;
+    width:auto!important;
+    min-width:0!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  #page-simulasi .aquarium{
+    flex:1 1 auto!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+  }
+  #page-simulasi .aquarium > div{
+    flex:1 1 auto!important;
+    min-height:0!important;
+  }
+  #simCanvas{
+    width:100%!important;
+    height:100%!important;
+    max-width:none!important;
+    max-height:none!important;
+  }
+}
+
+/* Landscape HP dengan tinggi layar terbatas: seluruh sidebar dipadatkan
+   agar dropdown, 6 spesies, dan 3 tombol tetap tampil seperti referensi. */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:520px){
+  #page-simulasi > div:first-child{
+    padding:5px 6px 6px!important;
+    gap:6px!important;
+  }
+  #page-simulasi .ctrl-panel{
+    width:clamp(142px,18vw,172px)!important;
+    flex-basis:clamp(142px,18vw,172px)!important;
+    padding:5px!important;
+    gap:4px!important;
+    overflow-y:auto!important;
+  }
+  #page-simulasi .ctrl-panel .cg label{
+    font-size:8px!important;
+    margin-bottom:2px!important;
+  }
+  #page-simulasi .ctrl-panel select{
+    min-height:26px!important;
+    padding:4px 22px 4px 6px!important;
+    font-size:9.5px!important;
+    background-position:right 6px center!important;
+  }
+  #page-simulasi .ctrl-panel > div:has(#speciesLegend){
+    padding:4px!important;
+    border-radius:5px!important;
+  }
+  #page-simulasi .ctrl-panel > div:has(#speciesLegend) > div:first-child{
+    font-size:7.5px!important;
+    margin-bottom:3px!important;
+  }
+  #speciesLegend{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:2px!important;
+  }
+  #speciesLegend > div{
+    padding:2px 1px!important;
+    border-width:1px!important;
+    border-radius:4px!important;
+    min-width:0!important;
+  }
+  #speciesLegend canvas{
+    width:30px!important;
+    height:30px!important;
+  }
+  #speciesLegend > div > div:last-child{
+    font-size:7.5px!important;
+    line-height:1!important;
+    margin-top:1px!important;
+    white-space:nowrap;
+  }
+  #page-simulasi .ctrl-panel .btn{
+    padding:4px 5px!important;
+    min-height:24px!important;
+    font-size:9.5px!important;
+    line-height:1.1!important;
+    border-radius:5px!important;
+  }
+  #page-simulasi .aquarium{
+    padding:6px!important;
+  }
+  #page-simulasi .aquarium h3{
+    font-size:10px!important;
+    margin-bottom:4px!important;
+    line-height:1.15!important;
+  }
+}
+
+/* Extra compact untuk HP landscape yang sangat pendek. */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:380px){
+  #page-simulasi .ctrl-panel{
+    width:138px!important;
+    flex-basis:138px!important;
+    padding:4px!important;
+    gap:3px!important;
+  }
+  #speciesLegend canvas{width:25px!important;height:25px!important;}
+  #speciesLegend > div > div:last-child{font-size:7px!important;}
+  #page-simulasi .ctrl-panel .btn{min-height:21px!important;padding:3px 4px!important;font-size:9px!important;}
+  #page-simulasi .ctrl-panel select{min-height:23px!important;font-size:9px!important;padding-top:3px!important;padding-bottom:3px!important;}
+  #page-simulasi .aquarium{padding:5px!important;}
+  #page-simulasi .aquarium h3{font-size:9.5px!important;margin-bottom:3px!important;}
+}
+</style>
+
 </head>
 <body>
 
