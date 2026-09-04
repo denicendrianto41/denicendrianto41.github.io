@@ -313,10 +313,14 @@ select option{background:#fff;color:var(--text);}
     min-height:0!important;
     overflow-y:auto!important;-webkit-overflow-scrolling:touch;
   }
+  /* Panel Kontrol: scroll internal DINONAKTIFKAN — tinggi dibiarkan natural
+     (tidak dipotong), tidak ada scrollbar sendiri. Yang tetap bisa discroll
+     hanya Lembar Kerja Simulasi (tabel) dan #simRow secara keseluruhan
+     (kalau total konten lebih tinggi dari layar). */
   #simPanelKontrol{
     flex:0 0 160px!important;width:160px!important;
-    height:clamp(120px,34vh,240px)!important;max-height:clamp(120px,34vh,240px)!important;
-    min-height:0;overflow-y:auto!important;
+    height:auto!important;max-height:none!important;
+    overflow:visible!important;
   }
   /* Cawan Petri Virtual: tinggi eksplisit (clamp) + overflow:hidden terkunci,
      sehingga canvas (height:100% bawaan) selalu pas mengisi bingkainya sendiri. */
