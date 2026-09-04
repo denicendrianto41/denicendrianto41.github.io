@@ -1473,9 +1473,15 @@ function fitToContainer(container){
   const naturalH = inner.scrollHeight;
   if(availH <= 0 || naturalH <= 0) return;
   let scale = availH / naturalH;
-  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  /* Batas minimum skala dinaikkan (dulu 0.45) agar teks di halaman Tujuan & Teori
+     tidak diciutkan sampai terlalu kecil saat HP dalam mode landscape (layar pendek).
+     Jika konten masih lebih tinggi dari layar pada skala minimum ini, biarkan
+     pengguna scroll (lihat overflowY di bawah) daripada memaksakan teks makin kecil. */
+  const minScale = (window.matchMedia('(pointer:coarse)').matches || window.innerWidth<=1024) ? 0.78 : 0.45;
+  scale = Math.min(Math.max(scale, minScale), 1.8);
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
+  container.style.overflowY = (scale <= minScale) ? 'auto' : 'hidden';
 }
 
 function fitPage(id){
