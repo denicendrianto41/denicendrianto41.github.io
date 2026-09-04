@@ -30,49 +30,28 @@ body::before{
     repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
 }
 /* HEADER */
-header{
-  position:relative;z-index:10;height:var(--h);flex-shrink:0;
-  background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(255,255,255,0.12);
-  display:flex;align-items:center;padding:0 14px;gap:12px;
-  box-shadow:0 2px 10px rgba(10,30,80,0.45);
-}
+header{position:relative;z-index:10;height:var(--h);flex-shrink:0;background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;padding:0 14px;gap:12px;box-shadow:0 2px 10px rgba(10,30,80,.45);}
 .logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.logo-icon{width:35px;height:35px;border-radius:6px;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
-.logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#ffffff;line-height:1.1;}
-.logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);overflow:hidden;padding:2px;}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,.75);}
 nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
 nav::-webkit-scrollbar{display:none;}
-.nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
-.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
-.nb:hover{color:rgba(255,255,255,0.95);}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#60a5fa;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,.95);}
 .nb.active{color:#fff;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
-/* Breakpoint mobile: lebar sempit ATAU perangkat sentuh (mencakup HP dalam mode landscape,
-   yang lebarnya bisa 640–1000px, agar logo & menu tidak bertumpuk/berdesakan) */
-@media (max-width:640px), ((pointer:coarse) and (max-width:1024px)){
-  header{flex-wrap:nowrap;padding:0 8px;gap:6px;}
-  .logo{gap:6px;min-width:0;}
-  .logo-icon{width:28px;height:28px;}
-  .logo-text{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw;}
-  .logo-sub{display:none;}
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:16px;}.logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{
-    display:none;flex-direction:column;
-    justify-content:flex-start!important;align-items:stretch;
-    position:fixed;top:var(--h);right:0;left:0;z-index:999;
-    background:linear-gradient(180deg,#0f2460,#1a3a8f);
-    border-bottom:1px solid rgba(255,255,255,.15);
-    box-shadow:0 8px 24px rgba(0,0,0,.35);
-    overflow-y:auto;max-height:calc(100vh - var(--h));max-height:calc(100dvh - var(--h));gap:0;flex:none;
-    -webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;
-  }
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
   nav.open{display:flex;}
-  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-  .nb::after{display:none;}
-  .nb.active{background:rgba(255,255,255,.08);}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
 }
 /* APP */
@@ -434,7 +413,7 @@ function startPraktikum(){
 
 <header style="justify-content:space-between;">
   <div class="logo">
-    <div class="logo-icon" style="background:#fff;overflow:hidden;padding:2px;">
+    <div class="logo-icon">
       <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
     </div>
     <div>
@@ -448,18 +427,12 @@ function startPraktikum(){
     </svg>
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
-    <button class="nb active" onclick="show('tujuan',this);closeNav()">
-      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
-    <button class="nb" onclick="show('teori',this);closeNav()">
-      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
-    <button class="nb" onclick="show('alatbahan',this);closeNav()">
-      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
-    <button class="nb" onclick="show('prosedur',this);closeNav()">
-      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
-    <button class="nb" onclick="show('simulasi',this);closeNav()">
-      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
-    <button class="nb" onclick="show('diskusi',this);closeNav()">
-      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+    <button class="nb active" onclick="show('tujuan',this);closeNav()"><img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()"><img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this);closeNav()"><img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()"><img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()"><img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('diskusi',this);closeNav()"><img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
   </nav>
 </header>
 
@@ -958,14 +931,7 @@ function fitScaleToContainer(container, content, opts){
   });
 }
 function fitTujuan(){
-  const content = document.getElementById('fitContent-tujuan');
-  if(isMobileLayout()){
-    // Di mobile/tablet: JANGAN disusutkan — biarkan font tampil dengan ukuran natural
-    // (lebih besar & mudah dibaca), cukup discroll bila kontennya lebih tinggi dari layar.
-    if(content){ content.style.transform='none'; content.style.width='100%'; }
-    return;
-  }
-  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), content, {minScale:0.75, maxScale:2.2});
+  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), document.getElementById('fitContent-tujuan'), {minScale:0.75, maxScale:2.2});
 }
 function isMobileLayout(){
   return window.matchMedia('(max-width:900px), (pointer:coarse)').matches;
