@@ -87,6 +87,15 @@ nav::-webkit-scrollbar{display:none;}
   .selected-display{min-height:110px;}
   .kunci-scroll{max-height:38vh;overflow-y:auto;}
   .diag-outer{overflow:auto;-webkit-overflow-scrolling:touch;}
+  /* Tab Determinasi secara khusus: matikan "stretch" bawaan flex/grid yang memaksa
+     tinggi panel mengikuti kontainer induk. Dengan display:block, tinggi setiap
+     panel mengikuti tinggi konten aslinya, sehingga kelebihan tingginya terdeteksi
+     dengan benar oleh .sim-outer dan bisa digulir di HP/tablet. */
+  #simtab-determinasi.sim-panel.active{display:block;}
+  #simtab-determinasi .sim-wrap-det{display:block;}
+  #simtab-determinasi .sim-wrap-det .det-panel{height:auto;}
+  #simtab-determinasi .sim-wrap-det .det-panel+.det-panel{margin-top:8px;}
+  #simtab-determinasi .kunci-scroll{max-height:none;overflow-y:visible;}
 }
 #app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
@@ -914,6 +923,13 @@ function fitToContainer(container){
   inner.style.zoom = '1';
   inner.style.transform = 'none';
   inner.style.width = '100%';
+  inner.style.marginBottom = '';
+  // Di perangkat sentuh (HP/tablet) — termasuk saat landscape, di mana tinggi layar
+  // sangat pendek — auto-fit (pengecilan otomatis) DIMATIKAN total supaya font selalu
+  // tampil ukuran normal/terbaca. Jika konten lebih panjang dari layar, halaman cukup
+  // digulir (container sudah mendukung scroll), bukan dipaksa diperkecil.
+  const isTouch = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+  if(isTouch) return;
   const cs = getComputedStyle(container);
   const padTop = parseFloat(cs.paddingTop) || 0;
   const padBottom = parseFloat(cs.paddingBottom) || 0;
@@ -926,11 +942,7 @@ function fitToContainer(container){
   scale = scale * 0.98;
   // batas bawah diturunkan agar di layar laptop/desktop yang kontennya cukup panjang
   // (mis. halaman Teori) tetap bisa diskalakan sampai benar-benar pas tanpa scrollbar.
-  // Namun di perangkat sentuh (HP/tablet) — termasuk saat landscape, di mana tinggi
-  // layar sangat pendek — batas bawah dinaikkan supaya teks tetap terbaca; jika konten
-  // tidak muat pada skala ini, halaman cukup di-scroll (container sudah mendukung scroll).
-  const isTouch = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
-  const minScale = isTouch ? 0.72 : 0.45;
+  const minScale = 0.45;
   scale = Math.min(Math.max(scale, minScale), 1.5);
   if('zoom' in inner.style){
     // 'zoom' (didukung Chrome/Safari/Edge/Android/iOS) ikut memengaruhi layout,
@@ -940,8 +952,7 @@ function fitToContainer(container){
     // ada overflow (perbedaan pembulatan antar-browser), kecilkan bertahap sampai benar-benar
     // pas — ini menghilangkan scrollbar di laptop/desktop secara pasti, apapun penyebabnya.
     let tries = 0;
-    const correctionFloor = isTouch ? minScale : 0.3;
-    while(container.scrollHeight > container.clientHeight + 1 && scale > correctionFloor && tries < 8){
+    while(container.scrollHeight > container.clientHeight + 1 && scale > 0.3 && tries < 8){
       scale -= 0.03;
       inner.style.zoom = scale;
       tries++;
@@ -953,8 +964,7 @@ function fitToContainer(container){
     inner.style.marginBottom = (naturalH*scale - naturalH) + 'px';
     // koreksi tambahan untuk jalur fallback (transform), sama seperti di atas
     let tries2 = 0;
-    const correctionFloor2 = isTouch ? minScale : 0.3;
-    while(container.scrollHeight > container.clientHeight + 1 && scale > correctionFloor2 && tries2 < 8){
+    while(container.scrollHeight > container.clientHeight + 1 && scale > 0.3 && tries2 < 8){
       scale -= 0.03;
       inner.style.width = (100/scale) + '%';
       inner.style.transform = 'scale(' + scale + ')';
