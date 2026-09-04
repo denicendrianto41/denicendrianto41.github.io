@@ -46,6 +46,18 @@ nav::-webkit-scrollbar{display:none;}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
   .disc-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(140px,auto)!important;}
 }
+/* HP/tablet orientasi landscape: lebar bisa >640px tapi tinggi pendek, sehingga menu & logo
+   bisa bertumpuk kalau tetap pakai tampilan menu mendatar. Pakai menu dropdown seperti di atas. */
+@media (orientation:landscape) and (max-width:1024px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:16px;}.logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow-y:auto;max-height:calc(100vh - var(--h));max-height:calc(100dvh - var(--h));gap:0;flex:none;}
+  nav.open{display:flex;}
+  .nb{height:48px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
+  .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
+}
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;overflow:hidden;}
