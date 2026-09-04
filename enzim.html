@@ -64,6 +64,15 @@ nav::-webkit-scrollbar{display:none;}
   .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
 }
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+}
 #app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
 .page.active{display:flex;flex-direction:column;}
@@ -102,6 +111,12 @@ nav::-webkit-scrollbar{display:none;}
 #page-teori .card{margin-bottom:5px;padding:9px 12px;}
 #page-alatbahan .scroll,#page-prosedur .scroll{overflow:hidden;display:flex;padding:0;}
 #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:100%;object-fit:cover;display:block;}
+/* Pada perangkat sentuh (HP/tablet), auto-fit skala teks Tujuan & Teori dinonaktifkan
+   lewat JS (lihat fitToContainer) — supaya halaman tetap bisa discroll penuh. */
+@media (pointer:coarse){
+  #page-tujuan .scroll,
+  #page-teori .scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+}
 @media (max-width:640px), ((pointer:coarse) and (max-width:1024px)){
   #page-alatbahan .scroll,#page-prosedur .scroll{overflow-y:auto;overflow-x:hidden;display:block;-webkit-overflow-scrolling:touch;}
   #page-alatbahan .scroll img,#page-prosedur .scroll img{height:auto;object-fit:unset;margin:0 auto;}
@@ -1444,36 +1459,52 @@ function show(id,btn){
   }
 }
 
-// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa scroll ══
-function fitToContainer(container){
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa sisa ruang kosong ══
+// Pada perangkat sentuh (HP/tablet), skala otomatis DINONAKTIFKAN — konten memakai
+// ukuran font normal dan halaman cukup discroll (lihat CSS @media(pointer:coarse)).
+function isTouchDevice(){
+  return window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+}
+function fitToContainer(container, reserveBottom){
   if(!container) return;
   const inner = container.querySelector(':scope > .fit-inner');
   if(!inner) return;
-  inner.style.transform = 'none';
-  inner.style.width = '100%';
+  if(isTouchDevice()){
+    inner.style.transform = 'none';
+    inner.style.width = '100%';
+    return;
+  }
   const cs = getComputedStyle(container);
   const padTop = parseFloat(cs.paddingTop) || 0;
   const padBottom = parseFloat(cs.paddingBottom) || 0;
-  const availH = container.clientHeight - padTop - padBottom;
+  const availH = container.clientHeight - padTop - padBottom - (reserveBottom||0);
+  if(availH <= 0) return;
+
+  // Tahap 1: ukur tinggi alami pada lebar penuh (100%) untuk estimasi awal skala.
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
   const naturalH = inner.scrollHeight;
-  if(availH <= 0 || naturalH <= 0) return;
-  let scale = availH / naturalH;
-  /* Batas minimum skala dinaikkan (dulu 0.45) agar teks di halaman Tujuan & Teori
-     tidak diciutkan sampai terlalu kecil saat HP dalam mode landscape (layar pendek).
-     Jika konten masih lebih tinggi dari layar pada skala minimum ini, biarkan
-     pengguna scroll (lihat overflowY di bawah) daripada memaksakan teks makin kecil. */
-  const minScale = (window.matchMedia('(pointer:coarse)').matches || window.innerWidth<=1024) ? 0.78 : 0.45;
-  scale = Math.min(Math.max(scale, minScale), 1.8);
+  if(naturalH <= 0) return;
+  let scale = Math.min(Math.max(availH / naturalH, 0.45), 3);
+
+  // Tahap 2: pada lebar hasil estimasi, teks bisa re-wrap dan tingginya berubah —
+  // ukur ulang lalu sesuaikan skala akhir agar benar-benar pas & tidak terpotong,
+  // sekaligus memaksimalkan ukuran font untuk mengisi ruang layar (fullscreen).
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'none';
+  const reflowedH = inner.scrollHeight;
+  if(reflowedH > 0){
+    scale = Math.min(Math.max(availH / reflowedH, 0.45), 3);
+  }
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
-  container.style.overflowY = (scale <= minScale) ? 'auto' : 'hidden';
 }
 
 function fitPage(id){
   if(id==='tujuan'){
-    fitToContainer(document.querySelector('#page-tujuan > .scroll'));
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'), 15);
   }else if(id==='teori'){
-    fitToContainer(document.querySelector('#page-teori > .scroll'));
+    fitToContainer(document.querySelector('#page-teori > .scroll'), 15);
   }else if(id==='prosedur'){
     document.querySelectorAll('#page-prosedur .card').forEach(fitToContainer);
   }
