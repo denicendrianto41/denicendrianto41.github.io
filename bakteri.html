@@ -958,7 +958,14 @@ function fitScaleToContainer(container, content, opts){
   });
 }
 function fitTujuan(){
-  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), document.getElementById('fitContent-tujuan'), {minScale:0.75, maxScale:2.2});
+  const content = document.getElementById('fitContent-tujuan');
+  if(isMobileLayout()){
+    // Di mobile/tablet: JANGAN disusutkan — biarkan font tampil dengan ukuran natural
+    // (lebih besar & mudah dibaca), cukup discroll bila kontennya lebih tinggi dari layar.
+    if(content){ content.style.transform='none'; content.style.width='100%'; }
+    return;
+  }
+  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), content, {minScale:0.75, maxScale:2.2});
 }
 function isMobileLayout(){
   return window.matchMedia('(max-width:900px), (pointer:coarse)').matches;
