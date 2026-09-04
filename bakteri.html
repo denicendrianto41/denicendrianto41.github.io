@@ -302,22 +302,26 @@ select option{background:#fff;color:var(--text);}
 /* ═══ MOBILE: pastikan semua halaman bisa discroll, tidak ada bagian terpotong ═══ */
 @media (max-width:900px), (pointer:coarse){
   /* Layout Simulasi di mobile/tablet: Panel Kontrol & Cawan Petri Virtual sejajar
-     di baris atas, Lembar Kerja Simulasi memenuhi lebar penuh di baris bawah
-     (lihat gambar layout acuan). #simRow sudah berupa grid dgn anak-anak rata
-     (bukan nested), jadi cukup ubah grid-template-areas & pastikan bisa discroll. */
+     di baris atas (baris ini mengisi SISA tinggi yang tersedia via 1fr, sehingga
+     ukuran Cawan Petri Virtual otomatis menyesuaikan bingkainya), Lembar Kerja
+     Simulasi memenuhi lebar penuh di baris bawah dengan tinggi terbatas + scroll
+     sendiri. #simRow sudah berupa grid dgn anak-anak rata (bukan nested). */
   #simRow{
-    grid-template-columns:180px 1fr!important;
-    grid-template-rows:auto auto!important;
+    grid-template-columns:165px 1fr!important;
+    grid-template-rows:1fr auto!important;
     grid-template-areas:"panel cawan" "kerja kerja" !important;
-    gap:8px;
+    gap:7px;
     min-height:0!important;
     overflow-y:auto!important;-webkit-overflow-scrolling:touch;
-    align-content:start;
   }
-  #simPanelKontrol{max-height:none;}
-  #simAquarium{min-height:200px;flex:none!important;}
-  #simLembarKerja{max-height:none!important;overflow:visible;}
-  #simRow #simCanvas{height:200px!important;}
+  #simPanelKontrol{min-height:0;max-height:none;}
+  /* Cawan Petri Virtual: dikunci overflow:hidden supaya canvas selalu mengikuti
+     tinggi sel grid (1fr) yang tersedia, bukan meluber ke luar frame. */
+  #simAquarium{min-height:110px;flex:none!important;overflow:hidden!important;}
+  #simAquarium > div{overflow:hidden!important;}
+  /* Lembar Kerja Simulasi: tinggi dibatasi + scroll sendiri, supaya baris "cawan"
+     di atasnya tetap kebagian ruang yang cukup dan tidak bertumpuk. */
+  #simLembarKerja{max-height:min(150px,32vh)!important;overflow:auto!important;}
   #diskWrap{overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;}
   #diskGrid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;}
   #diskGrid .disc-area{min-height:80px;}
