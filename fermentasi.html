@@ -240,15 +240,15 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 #loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
 #loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_fermentasi.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(8,15,35,0.45);z-index:1;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(8,15,35,0.12);z-index:1;}
 #loadScreen > *{position:relative;z-index:2;}
-.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));}
-.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#ffffff;text-align:center;margin-bottom:4px;text-shadow:0 2px 6px rgba(0,0,0,.55);}
-.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#93c5fd;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.5);}
-.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.22);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#ffffff;text-align:center;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.85),0 0 24px rgba(0,0,0,.5);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#bfdbfe;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.5);}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.28);border-radius:6px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);}
 .load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#3b82f6,#93c5fd);border-radius:6px;transition:width .1s linear;}
-.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#ffffff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 1px 4px rgba(0,0,0,.5);}
-.load-status{font-size:clamp(11px,1.1vw,12px);color:#e0e7ff;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.5);}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#ffffff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 2px 8px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.5);}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#e0e7ff;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.5);}
 #btnMulaiPraktikum{display:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(37,99,235,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(37,99,235,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
@@ -832,7 +832,9 @@ function fitToContainer(container,bottomGap){
   if(availH <= 0 || naturalH <= 0) return;
   let scale = availH / naturalH;
   const isTouch = window.matchMedia('(pointer:coarse)').matches;
-  const minScale = isTouch ? 0.72 : 0.45;
+  const isLandscape = window.matchMedia('(orientation:landscape)').matches;
+  let minScale = 0.45;
+  if(isTouch){ minScale = isLandscape ? 0.9 : 0.72; }
   scale = Math.min(Math.max(scale, minScale), 1.8);
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
