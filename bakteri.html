@@ -322,16 +322,18 @@ select option{background:#fff;color:var(--text);}
     height:auto!important;max-height:none!important;
     overflow:visible!important;
   }
-  /* Cawan Petri Virtual: tinggi eksplisit (clamp) + overflow:hidden terkunci,
-     sehingga canvas (height:100% bawaan) selalu pas mengisi bingkainya sendiri. */
+  /* Cawan Petri Virtual: tinggi TIDAK lagi dipatok sendiri (clamp) — dibiarkan
+     "stretch" (perilaku flexbox default) sehingga otomatis menyamai tinggi
+     Panel Kontrol di sebelahnya (item flex tertinggi pada baris yang sama). */
   #simAquarium{
     flex:1 1 200px!important;min-width:0;
-    height:clamp(120px,34vh,240px)!important;max-height:clamp(120px,34vh,240px)!important;
-    min-height:0;overflow:hidden!important;
+    height:auto!important;max-height:none!important;
+    overflow:hidden!important;
   }
   #simAquarium > div{overflow:hidden!important;}
-  /* Lembar Kerja Simulasi: baris penuh di bawah, tinggi dibatasi + scroll sendiri. */
-  #simLembarKerja{flex:0 0 100%!important;width:100%!important;max-height:min(150px,28vh)!important;overflow:auto!important;}
+  /* Lembar Kerja Simulasi: scroll internal DINONAKTIFKAN — tampil penuh sesuai
+     tinggi kontennya (tabel), tanpa scrollbar sendiri. */
+  #simLembarKerja{flex:0 0 100%!important;width:100%!important;max-height:none!important;overflow:visible!important;}
   #diskWrap{overflow-y:auto!important;-webkit-overflow-scrolling:touch;min-height:0;}
   #diskGrid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;}
   #diskGrid .disc-area{min-height:80px;}
