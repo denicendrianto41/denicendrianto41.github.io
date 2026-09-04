@@ -925,8 +925,13 @@ function fitToContainer(container){
   // memicu scrollbar muncul akibat pembulatan ukuran di browser (laptop/desktop)
   scale = scale * 0.98;
   // batas bawah diturunkan agar di layar laptop/desktop yang kontennya cukup panjang
-  // (mis. halaman Teori) tetap bisa diskalakan sampai benar-benar pas tanpa scrollbar
-  scale = Math.min(Math.max(scale, 0.45), 1.5);
+  // (mis. halaman Teori) tetap bisa diskalakan sampai benar-benar pas tanpa scrollbar.
+  // Namun di perangkat sentuh (HP/tablet) — termasuk saat landscape, di mana tinggi
+  // layar sangat pendek — batas bawah dinaikkan supaya teks tetap terbaca; jika konten
+  // tidak muat pada skala ini, halaman cukup di-scroll (container sudah mendukung scroll).
+  const isTouch = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+  const minScale = isTouch ? 0.72 : 0.45;
+  scale = Math.min(Math.max(scale, minScale), 1.5);
   if('zoom' in inner.style){
     // 'zoom' (didukung Chrome/Safari/Edge/Android/iOS) ikut memengaruhi layout,
     // sehingga tinggi scroll kontainer terhitung benar dan tidak ada konten tersembunyi.
@@ -935,7 +940,8 @@ function fitToContainer(container){
     // ada overflow (perbedaan pembulatan antar-browser), kecilkan bertahap sampai benar-benar
     // pas — ini menghilangkan scrollbar di laptop/desktop secara pasti, apapun penyebabnya.
     let tries = 0;
-    while(container.scrollHeight > container.clientHeight + 1 && scale > 0.3 && tries < 8){
+    const correctionFloor = isTouch ? minScale : 0.3;
+    while(container.scrollHeight > container.clientHeight + 1 && scale > correctionFloor && tries < 8){
       scale -= 0.03;
       inner.style.zoom = scale;
       tries++;
@@ -947,7 +953,8 @@ function fitToContainer(container){
     inner.style.marginBottom = (naturalH*scale - naturalH) + 'px';
     // koreksi tambahan untuk jalur fallback (transform), sama seperti di atas
     let tries2 = 0;
-    while(container.scrollHeight > container.clientHeight + 1 && scale > 0.3 && tries2 < 8){
+    const correctionFloor2 = isTouch ? minScale : 0.3;
+    while(container.scrollHeight > container.clientHeight + 1 && scale > correctionFloor2 && tries2 < 8){
       scale -= 0.03;
       inner.style.width = (100/scale) + '%';
       inner.style.transform = 'scale(' + scale + ')';
