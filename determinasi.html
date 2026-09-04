@@ -87,13 +87,21 @@ nav::-webkit-scrollbar{display:none;}
   .selected-display{min-height:110px;}
   .kunci-scroll{max-height:38vh;overflow-y:auto;}
   .diag-outer{overflow:auto;-webkit-overflow-scrolling:touch;}
-  /* Tab Determinasi secara khusus: matikan "stretch" bawaan flex/grid yang memaksa
-     tinggi panel mengikuti kontainer induk. Dengan display:block, tinggi setiap
-     panel mengikuti tinggi konten aslinya, sehingga kelebihan tingginya terdeteksi
-     dengan benar oleh .sim-outer dan bisa digulir di HP/tablet. */
-  #simtab-determinasi.sim-panel.active{display:block;}
-  #simtab-determinasi .sim-wrap-det{display:block;}
-  #simtab-determinasi .sim-wrap-det .det-panel{height:auto;}
+  /* Tab Determinasi secara khusus: panel ini sendiri dijadikan kontainer scroll
+     utama, dengan tinggi yang jelas (mengikuti sisa ruang di .sim-outer) dan
+     overflow-y:auto langsung padanya — bukan mengandalkan overflow yang "menembus"
+     banyak lapisan flex/grid, yang ternyata tidak konsisten di semua browser HP.
+     Konten di dalamnya (dua panel) disusun mengalir alami (block, tinggi=auto)
+     sehingga kelebihan tingginya pasti terdeteksi dan bisa digulir. */
+  #simtab-determinasi.sim-panel.active{
+    display:block;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+    overscroll-behavior:contain;
+  }
+  #simtab-determinasi .sim-wrap-det{display:block;overflow:visible;}
+  #simtab-determinasi .sim-wrap-det .det-panel{height:auto;overflow:visible;}
   #simtab-determinasi .sim-wrap-det .det-panel+.det-panel{margin-top:8px;}
   #simtab-determinasi .kunci-scroll{flex:none;height:auto;max-height:none;overflow-y:visible;}
 }
