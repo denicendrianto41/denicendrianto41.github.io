@@ -192,6 +192,13 @@ select option{background:#fff;color:var(--text);}
 .sim-tip-item{background:rgba(15,23,42,0.78);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:4px 8px;display:flex;align-items:center;gap:6px;white-space:nowrap;}
 .sim-tip-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#fff;}
 .sim-tip-lbl{font-size:9px;color:rgba(255,255,255,0.55);letter-spacing:.06em;text-transform:uppercase;}
+.sim-tip-actions{position:absolute;top:8px;right:8px;display:flex;gap:5px;pointer-events:auto;z-index:11;}
+.sim-tip-btn{flex:none;width:58px;box-sizing:border-box;border-radius:6px;padding:4px 2px;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.01em;cursor:pointer;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.35);}
+.sim-tip-btn-stop{background:#ef4444;border:1px solid #ef4444;color:#fff;}
+.sim-tip-btn-stop:hover{background:#dc2626;border-color:#dc2626;}
+.sim-tip-btn-stop:disabled{background:rgba(239,68,68,0.3);border-color:rgba(239,68,68,0.3);color:rgba(255,255,255,0.55);cursor:not-allowed;box-shadow:none;}
+.sim-tip-btn-reset{background:#f8fafc;border:1px solid #f8fafc;color:#1e293b;}
+.sim-tip-btn-reset:hover{background:#fff;border-color:#fff;}
 /* DRAG */
 .drag-item{touch-action:none;-webkit-user-select:none;user-select:none;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -473,7 +480,7 @@ function startPraktikum(){
           </div>
         </div>
         <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
-        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+        <p style="font-size:clamp(13px,1.5vw,15.5px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
           Selamat datang di laboratorium maya. Pelajari proses <strong style="color:#93c5fd;">isolasi dan identifikasi bakteri</strong> pada makanan busuk secara interaktif — dari teori, simulasi pertumbuhan koloni, hingga diskusi hasil percobaan.
         </p>
       </div>
@@ -487,24 +494,24 @@ function startPraktikum(){
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
           <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
           <div>
-            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.4vw,15px);font-weight:700;color:#1e293b;">Tujuan Pembelajaran</div>
+            <div style="font-size:10.5px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,1.6vw,17.5px);font-weight:700;color:#1e293b;">Tujuan Pembelajaran</div>
           </div>
         </div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#2563eb;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Mengisolasi dan mengidentifikasi jenis bakteri yang terdapat pada makanan busuk
           </li>
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#2563eb;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Memahami prinsip pembuatan media kultur agar-agar
           </li>
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#2563eb;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Mengamati pertumbuhan koloni bakteri pada media agar
           </li>
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#2563eb;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Menyadari pentingnya menjaga kebersihan makanan untuk mencegah pertumbuhan bakteri
           </li>
@@ -517,24 +524,24 @@ function startPraktikum(){
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
           <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
           <div>
-            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Kompetensi</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.4vw,15px);font-weight:700;color:#1e293b;">Tujuan Percobaan</div>
+            <div style="font-size:10.5px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Kompetensi</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,1.6vw,17.5px);font-weight:700;color:#1e293b;">Tujuan Percobaan</div>
           </div>
         </div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#059669;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Menyiapkan media agar nutrisi secara aseptis untuk kultur bakteri
           </li>
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#059669;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Menginokulasikan sampel bakteri dari makanan busuk ke media agar
           </li>
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#059669;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Mengidentifikasi morfologi koloni bakteri (bentuk, warna, elevasi, margin)
           </li>
-          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.6;">
+          <li style="display:flex;align-items:flex-start;gap:8px;font-size:clamp(13px,1.4vw,15px);color:#475569;line-height:1.65;">
             <span style="color:#059669;font-weight:700;font-size:14px;margin-top:-1px;flex-shrink:0;">›</span>
             Mendiskusikan faktor-faktor yang mempengaruhi pertumbuhan bakteri
           </li>
@@ -548,57 +555,57 @@ function startPraktikum(){
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:4px;">
         <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📊</div>
         <div>
-          <div style="font-size:9px;font-weight:700;color:#7c3aed;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.4vw,15px);font-weight:700;color:#1e293b;">Indikator Pencapaian Hasil Belajar yang Diharapkan</div>
+          <div style="font-size:10.5px;font-weight:700;color:#7c3aed;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,1.6vw,17.5px);font-weight:700;color:#1e293b;">Indikator Pencapaian Hasil Belajar yang Diharapkan</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
         <div style="background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #ddd6fe;border-radius:10px;padding:12px 14px;">
-          <div style="font-size:9.5px;font-weight:700;color:#7c3aed;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Kognitif</div>
+          <div style="font-size:11px;font-weight:700;color:#7c3aed;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Kognitif</div>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:4px;">
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#7c3aed;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Menjelaskan ciri-ciri bakteri sebagai organisme prokariotik
             </li>
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#7c3aed;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Mendeskripsikan proses isolasi dan identifikasi bakteri pada makanan busuk
             </li>
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#7c3aed;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Menganalisis faktor-faktor yang mempengaruhi pertumbuhan bakteri
             </li>
           </ul>
         </div>
         <div style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1px solid #bfdbfe;border-radius:10px;padding:12px 14px;">
-          <div style="font-size:9.5px;font-weight:700;color:#1d4ed8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Psikomotorik</div>
+          <div style="font-size:11px;font-weight:700;color:#1d4ed8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Psikomotorik</div>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:4px;">
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#1d4ed8;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Menyiapkan media agar secara aseptis dengan prosedur yang benar
             </li>
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#1d4ed8;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Melakukan inokulasi sampel bakteri ke media agar dengan teknik yang tepat
             </li>
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#1d4ed8;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Menggunakan alat laboratorium dengan aman dan sesuai fungsinya
             </li>
           </ul>
         </div>
         <div style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);border:1px solid #a7f3d0;border-radius:10px;padding:12px 14px;">
-          <div style="font-size:9.5px;font-weight:700;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Afektif</div>
+          <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Afektif</div>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:4px;">
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#059669;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Menunjukkan sikap teliti dan disiplin dalam setiap tahap percobaan
             </li>
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#059669;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Menyadari pentingnya menjaga kebersihan makanan dalam kehidupan sehari-hari
             </li>
-            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(11px,1.1vw,12.5px);color:#475569;line-height:1.6;">
+            <li style="display:flex;align-items:flex-start;gap:7px;font-size:clamp(12.5px,1.3vw,14px);color:#475569;line-height:1.65;">
               <span style="color:#059669;font-weight:700;font-size:13px;margin-top:-1px;flex-shrink:0;">›</span>
               Berkolaborasi secara aktif dalam diskusi dan analisis hasil percobaan
             </li>
@@ -841,20 +848,22 @@ function startPraktikum(){
         <div style="font-size:10px;color:var(--text3);margin-top:2px;display:flex;justify-content:space-between;"><span>1h</span><span>3h</span><span>5h</span></div>
       </div>
       <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai Inkubasi</button>
-      <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Stop</button>
-      <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
       <div class="tipinfo" id="tipInfo"></div>
     </div>
 
     <!-- CANVAS -->
     <div class="aquarium" id="simAquarium" style="flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;overflow:visible;">
       <h3>🧫 Cawan Petri Virtual</h3>
-      <div style="position:relative;flex:1;min-height:0;overflow:visible;">
+      <div id="simCanvasWrap" style="position:relative;flex:1;min-height:0;overflow:visible;">
         <canvas id="simCanvas" style="width:100%;height:100%;display:block;border-radius:6px;background:#0f172a;border:1px solid var(--border);"></canvas>
         <div class="sim-tooltip" id="simTooltip" style="left:auto;right:auto;top:8px;">
           <div class="sim-tip-item"><span class="sim-tip-val" id="statK">0</span><span class="sim-tip-lbl">🦠 Koloni</span></div>
           <div class="sim-tip-item"><span class="sim-tip-val" id="statT">0h</span><span class="sim-tip-lbl">⏱ Waktu</span></div>
           <div class="sim-tip-item"><span class="sim-tip-val" id="statG">–</span><span class="sim-tip-lbl">📈 Laju/jam</span></div>
+        </div>
+        <div class="sim-tip-actions" id="simActions">
+          <button class="sim-tip-btn sim-tip-btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Stop</button>
+          <button class="sim-tip-btn sim-tip-btn-reset" onclick="resetSim()">↺ Reset</button>
         </div>
       </div>
     </div>
@@ -949,7 +958,7 @@ function fitScaleToContainer(container, content, opts){
   });
 }
 function fitTujuan(){
-  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), document.getElementById('fitContent-tujuan'), {minScale:0.75, maxScale:1.3});
+  fitScaleToContainer(document.getElementById('fitContainer-tujuan'), document.getElementById('fitContent-tujuan'), {minScale:0.75, maxScale:2.2});
 }
 function isMobileLayout(){
   return window.matchMedia('(max-width:900px), (pointer:coarse)').matches;
@@ -1375,21 +1384,23 @@ function renderTable(){
 }
 
 function showHasil(){
+  const wrap=document.getElementById('simCanvasWrap');
   const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease;';
+  ov.style.cssText='position:absolute;inset:0;z-index:50;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;border-radius:6px;animation:fadeIn .3s ease;';
   const sd=SAMPEL_DATA[document.getElementById('selSampel').value];
   const box=document.createElement('div');
-  box.style.cssText='background:#fff;border-radius:20px;padding:32px 40px;text-align:center;max-width:380px;box-shadow:0 16px 48px rgba(0,0,0,0.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);font-family:Space Grotesk,sans-serif;';
+  box.style.cssText='background:#fff;border-radius:20px;padding:24px 28px;text-align:center;max-width:88%;width:340px;box-shadow:0 16px 48px rgba(0,0,0,0.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);font-family:Space Grotesk,sans-serif;';
   box.innerHTML=`
-    <div style="font-size:52px;margin-bottom:10px;">🦠</div>
-    <div style="font-size:22px;font-weight:800;color:#1d4ed8;margin-bottom:6px;">Inkubasi Selesai!</div>
-    <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:8px;">Ditemukan <strong style="color:#1d4ed8">${colCnt} koloni</strong> pada sampel <strong>${sd.name}</strong>.</div>
-    <div style="font-size:12px;color:#6b7280;margin-bottom:22px;">Bentuk dominan: ${sd.shapes[0]} · Warna umum: ${sd.colors[0]}</div>
+    <div style="font-size:44px;margin-bottom:8px;">🦠</div>
+    <div style="font-size:20px;font-weight:800;color:#1d4ed8;margin-bottom:6px;">Inkubasi Selesai!</div>
+    <div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:8px;">Ditemukan <strong style="color:#1d4ed8">${colCnt} koloni</strong> pada sampel <strong>${sd.name}</strong>.</div>
+    <div style="font-size:11.5px;color:#6b7280;margin-bottom:18px;">Bentuk dominan: ${sd.shapes[0]} · Warna umum: ${sd.colors[0]}</div>
     <button onclick="this.closest('.hasil-ov').remove();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));document.getElementById('page-simulasi').classList.add('active');document.querySelector('.nb[onclick*=simulasi]').classList.add('active');setTimeout(()=>{resizeCanvas();drawPetri();},40);"
-      style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(5,150,105,0.35);">
+      style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(5,150,105,0.35);">
       🔄 Coba Kembali
     </button>`;
-  ov.classList.add('hasil-ov'); ov.appendChild(box); document.body.appendChild(ov);
+  ov.classList.add('hasil-ov'); ov.appendChild(box);
+  (wrap||document.body).appendChild(ov);
   ov.addEventListener('click', e=>{ if(e.target===ov) ov.remove(); });
 }
 
