@@ -57,7 +57,7 @@ nav::-webkit-scrollbar{display:none;}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
 @media(max-width:1024px){
-  header{flex-wrap:nowrap;padding:0 10px;}
+  header{flex-wrap:nowrap;padding:0 10px;backdrop-filter:none;-webkit-backdrop-filter:none;}
   .logo-icon{width:30px;height:30px;}
   .logo-text{font-size:14px;}
   .logo-sub{display:none;}
@@ -879,38 +879,40 @@ function fitToContainer(container,extraBottom,minScale){
   }
 }
 
-// Di HP/tablet (termasuk landscape) atau layar pendek, JANGAN pakai auto-fit skala sama sekali.
-// Alasan: font di halaman ini sudah pakai ukuran clamp() yang relatif kecil untuk layar sempit,
-// kalau masih dikalikan lagi dengan skala <1 (mis. 0.6), hasilnya jadi sangat kecil & sulit dibaca.
-// Solusinya: biarkan ukuran teks 100% natural di mobile/tablet, dan izinkan halaman discroll penuh.
+// Di HP/tablet (termasuk landscape) atau layar pendek: banyak teks di halaman Tujuan & Teori
+// memakai ukuran font inline (bukan class), jadi override lewat CSS class saja tidak cukup.
+// Solusinya: BESARKAN seluruh konten memakai transform scale-up (bukan shrink seperti di desktop).
+// Ini membesarkan semua teks di dalamnya secara visual apa pun cara font-size-nya ditulis,
+// lalu halaman dibiarkan scroll karena kontennya jadi lebih tinggi dari layar.
 function isCompactView(){
   return window.matchMedia('(max-width:1024px), (max-height:520px)').matches;
 }
-function resetFitNatural(container){
+function enlargeForMobile(container, upScale){
   if(!container) return;
   const inner = container.querySelector(':scope > .fit-inner');
-  if(inner){
-    inner.style.transform = 'none';
-    inner.style.width = '100%';
-  }
+  if(!inner) return;
+  const s = upScale || 1.3;
+  inner.style.width = (100/s) + '%';
+  inner.style.transform = 'scale(' + s + ')';
   container.style.overflowY = 'auto';
+  container.style.overflowX = 'hidden';
 }
 
 function fitPage(id){
   const compact = isCompactView();
   if(id==='tujuan'){
     const el = document.querySelector('#page-tujuan > .scroll');
-    if(compact){ resetFitNatural(el); } else { fitToContainer(el); }
+    if(compact){ enlargeForMobile(el, 1.3); } else { fitToContainer(el); }
   }else if(id==='teori'){
     // minScale rendah di desktop agar seluruh materi selalu pas di layar fullscreen tanpa terpotong;
-    // di mobile/tablet skala dimatikan total (lihat resetFitNatural) supaya font tetap terbaca jelas
+    // di mobile/tablet konten justru DIBESARKAN (lihat enlargeForMobile) supaya font terbaca jelas
     ['#tab-rantai','#tab-energi','#tab-daur','#tab-interaksi'].forEach(sel=>{
       const el = document.querySelector(sel);
-      if(compact){ resetFitNatural(el); } else { fitToContainer(el,15,0.2); }
+      if(compact){ enlargeForMobile(el, 1.3); } else { fitToContainer(el,15,0.2); }
     });
   }else if(id==='prosedur'){
     document.querySelectorAll('#page-prosedur .card').forEach(c=>{
-      if(compact){ resetFitNatural(c); } else { fitToContainer(c); }
+      if(compact){ enlargeForMobile(c, 1.2); } else { fitToContainer(c); }
     });
   }
 }
@@ -940,7 +942,9 @@ function showTeoriTab(name,btn){
   const cols={rantai:'#1d4ed8,#3b82f6',energi:'#d97706,#f59e0b',daur:'#1d4ed8,#3b82f6',interaksi:'#7c3aed,#a78bfa'};
   const shds={rantai:'rgba(37,99,235,0.35)',energi:'rgba(217,119,6,0.35)',daur:'rgba(37,99,235,0.35)',interaksi:'rgba(124,58,237,0.35)'};
   if(btn){btn.style.background='linear-gradient(135deg,'+cols[name]+')';btn.style.color='#fff';btn.style.border='none';btn.style.boxShadow='0 2px 10px '+shds[name];}
-  if(panel)requestAnimationFrame(()=>requestAnimationFrame(()=>fitToContainer(panel,15,0.2)));
+  if(panel)requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(isCompactView()){ enlargeForMobile(panel,1.3); } else { fitToContainer(panel,15,0.2); }
+  }));
 }
 
 // ===================== PROSEDUR STEPS =====================
