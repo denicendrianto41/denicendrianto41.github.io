@@ -269,6 +269,16 @@ nav::-webkit-scrollbar{display:none;}
   .load-status{margin-bottom:9px;min-height:12px;}
   #btnMulaiPraktikum{padding:6px 18px;}
 }
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas),
+   supaya logo+judul dan deretan menu tidak melebihi lebar layar dan tidak saling bertumpuk. */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+}
 
 /* ═══ PAKSA ROTASI KE LANDSCAPE (HP/perangkat sentuh) ═══ */
 #rotateOverlay{display:none;}
