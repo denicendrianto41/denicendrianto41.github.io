@@ -789,7 +789,7 @@ document.addEventListener('click',function(e){
 <div id="page-simulasi" class="page">
   <div class="sim-wrap" style="flex:1;overflow:hidden;padding:8px 12px 10px;display:flex;gap:8px;">
     <!-- Panel Kontrol -->
-    <div class="ctrl-panel" style="width:196px;flex-shrink:0;">
+    <div class="ctrl-panel" style="width:216px;flex-shrink:0;">
       <h3>⚙️ Panel Kontrol</h3>
       <div class="cg"><label>Populasi (N)</label>
         <select id="selPop"><option value="500">500 orang</option><option value="1000" selected>1.000 orang</option><option value="5000">5.000 orang</option><option value="10000">10.000 orang</option></select>
@@ -982,7 +982,7 @@ function resizeCanvas(){
   const padY=(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0);
   const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
   const availW=Math.max(160,Math.floor(cardRect.width-padX));
-  const availH=Math.max(120,Math.floor(cardRect.height-padY-headerH));
+  const availH=Math.max(120,Math.floor((cardRect.height-padY-headerH)*0.9));
   CV.style.height=availH+'px';
   CV.width=availW;CV.height=availH;
   simRunning?drawChart():drawIdle();
