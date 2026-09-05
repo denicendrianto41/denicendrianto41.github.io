@@ -89,6 +89,13 @@ nav::-webkit-scrollbar{display:none;}
 /* ═══════════════ SIMULASI: layout & scroll di mobile ═══════════════ */
 @media (pointer:coarse), (max-width:900px){
   #page-simulasi{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
+  #page-simulasi .sim-overlay{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
+}
+/* Mode landscape (HP/tablet diputar mendatar): tetap berdampingan seperti desktop —
+   panel "Pilih Lingkungan" di kiri, peta area penelitian di kanan (lihat gambar acuan). */
+/* Mode portrait (jarang terjadi karena ada overlay putar layar): baru disusun vertikal
+   agar tetap bisa digunakan sebagai fallback. */
+@media (orientation:portrait) and (pointer:coarse), (orientation:portrait) and (max-width:900px){
   #page-simulasi > div:first-child{
     display:flex !important;flex-direction:column !important;
     height:auto !important;min-height:100%;
@@ -111,7 +118,6 @@ nav::-webkit-scrollbar{display:none;}
     flex:none !important;height:62vh;min-height:280px;max-height:520px;
     overflow:hidden;
   }
-  #page-simulasi .sim-overlay{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
 }
 
 /* ═══════════════ DISKUSI: scroll di mobile ═══════════════ */
@@ -330,6 +336,15 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   #page-tujuan .scroll .fit-inner,#page-teori .scroll .fit-inner{transform:none !important;width:100% !important;}
   html,body{overflow:hidden;}
   .scroll{-webkit-overflow-scrolling:touch;}
+}
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
 }
 @media (max-height:430px){
   .load-content{transform:translateY(-30px) !important;}
@@ -942,8 +957,11 @@ function show(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='simulasi')setTimeout(()=>{resizeCanvases();drawScene();buildPins();},40);
-  if(id==='tujuan'||id==='teori'||id==='prosedur'){
+  if(id==='tujuan'||id==='teori'){
     requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
+  if(id==='alatbahan'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitScrollableImage(id)));
   }
 }
 
@@ -980,15 +998,48 @@ function fitPage(id){
     fitToContainer(document.querySelector('#page-tujuan > .scroll'));
   }else if(id==='teori'){
     fitToContainer(document.querySelector('#page-teori > .scroll'));
-  }else if(id==='prosedur'){
-    document.querySelectorAll('#page-prosedur .card').forEach(fitToContainer);
   }
+}
+
+// ══ Gambar besar (Alat & Bahan / Prosedur): pilih otomatis arah "cover" (lebar-penuh
+// ATAU tinggi-penuh) mana yang membuat gambar mengisi seluruh area tanpa sisa ruang
+// kosong di bawah — berlaku di desktop maupun mobile. Sisanya cukup digeser (scroll),
+// tidak ada bagian yang hilang/dipotong permanen karena selalu bisa dijangkau.
+function fitScrollableImage(pageId){
+  const container = document.querySelector('#page-'+pageId+' .scroll');
+  if(!container) return;
+  const img = container.querySelector('img');
+  if(!img) return;
+  const apply = ()=>{
+    if(!img.naturalWidth || !img.naturalHeight) return;
+    const cw = container.clientWidth, ch = container.clientHeight;
+    if(cw<=0||ch<=0) return;
+    const naturalRatio = img.naturalWidth/img.naturalHeight;
+    const heightIfFitWidth = cw/naturalRatio;
+    if(heightIfFitWidth >= ch - 0.5){
+      // Lebar penuh sudah cukup membuat tingginya menutupi/melebihi kontainer.
+      img.style.width='100%';img.style.height='auto';img.style.maxWidth='none';img.style.maxHeight='none';
+      container.style.overflowX='hidden';container.style.overflowY='auto';
+    }else{
+      // Jika mengikuti lebar penuh justru menyisakan ruang kosong di bawah,
+      // pakai tinggi penuh sebagai gantinya — lebar akan melebihi layar,
+      // dipusatkan dan bisa digeser ke kiri/kanan untuk melihat sisi lainnya.
+      img.style.height='100%';img.style.width='auto';img.style.maxWidth='none';img.style.maxHeight='none';
+      container.style.overflowX='auto';container.style.overflowY='hidden';
+      requestAnimationFrame(()=>{
+        container.scrollLeft = Math.max(0,(img.offsetWidth - container.clientWidth)/2);
+      });
+    }
+  };
+  if(img.complete && img.naturalWidth){ apply(); }
+  else{ img.addEventListener('load', apply, {once:true}); }
 }
 
 function fitActivePages(){
   document.querySelectorAll('.page.active').forEach(p=>{
     const id = p.id.replace('page-','');
-    if(id==='tujuan'||id==='teori'||id==='prosedur') fitPage(id);
+    if(id==='tujuan'||id==='teori') fitPage(id);
+    if(id==='alatbahan'||id==='prosedur') fitScrollableImage(id);
   });
 }
 
