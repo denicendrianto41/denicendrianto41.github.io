@@ -59,7 +59,7 @@ nav::-webkit-scrollbar{display:none;}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
 
-@media(max-width:900px){
+@media(max-width:640px){
   header{flex-wrap:nowrap;padding:0 10px;}
   .logo-text{font-size:16px;}.logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
@@ -90,6 +90,27 @@ nav::-webkit-scrollbar{display:none;}
 @media (pointer:coarse), (max-width:900px){
   #page-simulasi{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
   #page-simulasi .sim-overlay{overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
+
+  /* Jika tinggi layar (landscape HP/tablet) tidak cukup memuat panel + peta,
+     jangan dipotong (overflow:hidden) — biarkan meluap ke bawah dan bisa
+     digulir lewat #page-simulasi (overflow-y:auto di atas), supaya seluruh
+     peta area penelitian & tampilan kuadrat tetap bisa dilihat utuh. */
+  #page-simulasi > div:first-child{
+    overflow:visible !important;height:auto !important;min-height:100%;
+  }
+
+  /* Perlebar panel "Pilih Lingkungan" supaya legenda spesies muat 3 kolom
+     (bukan 2), sehingga tidak perlu discroll vertikal di dalam panel. */
+  #page-simulasi .ctrl-panel{width:210px !important;gap:6px;}
+  #page-simulasi #speciesLegend{grid-template-columns:repeat(3,1fr) !important;}
+  #page-simulasi .sp-icon{width:44px !important;height:44px !important;}
+  #page-simulasi .sp-name{font-size:8.5px !important;}
+  #page-simulasi .sp-card{padding:4px 2px !important;}
+
+  /* Pastikan peta area penelitian punya tinggi minimum yang wajar agar tidak
+     menyusut/terpotong terlalu kecil; jika layar lebih pendek dari ini,
+     halaman akan bisa digulir (lihat aturan overflow di atas). */
+  #page-simulasi .aquarium{min-height:300px;}
 }
 /* Mode landscape (HP/tablet diputar mendatar): tetap berdampingan seperti desktop —
    panel "Pilih Lingkungan" di kiri, peta area penelitian di kanan (lihat gambar acuan). */
@@ -208,6 +229,9 @@ nav::-webkit-scrollbar{display:none;}
 .sim-wrap{display:grid;grid-template-columns:200px 1fr;gap:8px;flex:1;min-height:0;}
 .ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.sp-card{background:#fff;border:2px solid #c8a840;border-radius:6px;display:flex;flex-direction:column;align-items:center;padding:5px 3px;}
+.sp-icon{width:60px;height:60px;}
+.sp-name{font-size:10px;color:#4a3010;margin-top:2px;font-weight:bold;text-align:center;}
 .cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
 select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
 select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
@@ -1167,13 +1191,13 @@ function buildSpeciesLegend(){
   el.innerHTML='';
   SPECIES.forEach(sp=>{
     const card=document.createElement('div');
-    card.style.cssText='background:#fff;border:2px solid #c8a840;border-radius:6px;display:flex;flex-direction:column;align-items:center;padding:5px 3px;';
+    card.className='sp-card';
     const cv=document.createElement('canvas');
     cv.width=80;cv.height=80;
-    cv.style.cssText='width:60px;height:60px;';
+    cv.className='sp-icon';
     drawSpeciesIcon(cv,sp);
     const nm=document.createElement('div');
-    nm.style.cssText='font-size:10px;color:#4a3010;margin-top:2px;font-weight:bold;text-align:center;';
+    nm.className='sp-name';
     nm.textContent=sp.name;
     card.appendChild(cv);card.appendChild(nm);
     el.appendChild(card);
