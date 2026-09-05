@@ -361,30 +361,10 @@ nav::-webkit-scrollbar{display:none;}
 .rot-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,5vw,20px);font-weight:800;}
 .rot-sub{font-size:clamp(12px,3.6vw,14px);color:rgba(226,232,240,0.85);max-width:320px;line-height:1.6;}
 
-/* Perkecil khusus font di bagian Tujuan & Teori saat dibuka di desktop/laptop,
-   agar konten pasti muat tanpa perlu scroll. Tidak berlaku di HP/tablet. */
-@media (min-width:901px){
-  #page-tujuan [style*="clamp(10.5px,0.9vw,11.5px)"],#page-teori [style*="clamp(10.5px,0.9vw,11.5px)"]{font-size:clamp(10px,0.85vw,10.5px)!important;}
-  #page-tujuan [style*="clamp(11.5px,1vw,12.5px)"],#page-teori [style*="clamp(11.5px,1vw,12.5px)"]{font-size:clamp(11px,0.95vw,11.5px)!important;}
-  #page-tujuan [style*="clamp(11px,1vw,12.5px)"],#page-teori [style*="clamp(11px,1vw,12.5px)"]{font-size:clamp(10.5px,0.9vw,11.5px)!important;}
-  #page-tujuan [style*="clamp(11px,1vw,12px)"],#page-teori [style*="clamp(11px,1vw,12px)"]{font-size:clamp(10.5px,0.9vw,11px)!important;}
-  #page-tujuan [style*="clamp(12px,1.05vw,13px)"],#page-teori [style*="clamp(12px,1.05vw,13px)"]{font-size:clamp(11.5px,1vw,12px)!important;}
-  #page-tujuan [style*="clamp(12px,1.15vw,13.5px)"],#page-teori [style*="clamp(12px,1.15vw,13.5px)"]{font-size:clamp(11.5px,1.05vw,12.5px)!important;}
-  #page-tujuan [style*="clamp(12px,1.1vw,13.5px)"],#page-teori [style*="clamp(12px,1.1vw,13.5px)"]{font-size:clamp(11.5px,1vw,12.5px)!important;}
-  #page-tujuan [style*="clamp(12px,1.1vw,13px)"],#page-teori [style*="clamp(12px,1.1vw,13px)"]{font-size:clamp(11.5px,1vw,12px)!important;}
-  #page-tujuan [style*="clamp(13px,1.15vw,14px)"],#page-teori [style*="clamp(13px,1.15vw,14px)"]{font-size:clamp(12.5px,1.05vw,13px)!important;}
-  #page-tujuan [style*="clamp(14px,1.6vw,17px)"],#page-teori [style*="clamp(14px,1.6vw,17px)"]{font-size:clamp(13px,1.4vw,15px)!important;}
-  #page-tujuan [style*="clamp(14px,1.6vw,18px)"],#page-teori [style*="clamp(14px,1.6vw,18px)"]{font-size:clamp(13px,1.4vw,16px)!important;}
-  #page-tujuan [style*="font-size:11.5px"],#page-teori [style*="font-size:11.5px"]{font-size:10.5px!important;}
-  #page-tujuan [style*="font-size:11px"],#page-teori [style*="font-size:11px"]{font-size:10px!important;}
-  #page-tujuan [style*="font-size:14.5px"],#page-teori [style*="font-size:14.5px"]{font-size:13px!important;}
-  #page-tujuan [style*="font-size:15px"],#page-teori [style*="font-size:15px"]{font-size:13.5px!important;}
-  #page-tujuan [style*="font-size:16px"],#page-teori [style*="font-size:16px"]{font-size:14.5px!important;}
-  #page-tujuan [style*="font-size:18px"],#page-teori [style*="font-size:18px"]{font-size:16px!important;}
-  #page-tujuan [style*="font-size:22px"],#page-teori [style*="font-size:22px"]{font-size:19px!important;}
-  #page-tujuan [style*="line-height:1.4"],#page-teori [style*="line-height:1.4"]{line-height:1.3!important;}
-  #page-tujuan [style*="line-height:1.45"],#page-teori [style*="line-height:1.45"]{line-height:1.3!important;}
-}
+/* Font Tujuan & Teori tidak lagi dipaksa kecil di desktop/laptop — ukuran asli
+   (clamp() bawaan) dipertahankan sepenuhnya. Penyesuaian akhir kini ditangani
+   oleh fitToContainer() di skrip bawah, yang menskalakan konten agar menyisakan
+   ±20% ruang kosong di bawah, alih-alih memenuhi 100% tinggi seperti sebelumnya. */
 </style>
 
 <style>
@@ -2413,8 +2393,13 @@ function fitToContainer(container){
   const availH = container.clientHeight - padTop - padBottom;
   const naturalH = inner.scrollHeight;
   if(availH <= 0 || naturalH <= 0) return;
-  let scale = availH / naturalH;
-  scale = Math.min(Math.max(scale, 0.45), 1.8);
+  // Target: konten mengisi 80% tinggi yang tersedia, menyisakan ±20% ruang
+  // kosong di bawah. Skala boleh >1 (font diperbesar) jika konten aslinya
+  // lebih pendek dari target, dan tetap boleh <1 jika konten lebih panjang
+  // dari target (agar tidak perlu scroll).
+  const TARGET_FILL = 0.8;
+  let scale = (availH * TARGET_FILL) / naturalH;
+  scale = Math.min(Math.max(scale, 0.45), 1.6);
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
 }
