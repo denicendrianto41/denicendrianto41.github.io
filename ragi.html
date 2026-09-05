@@ -16,6 +16,11 @@
 }
 @media(max-width:768px){:root{--fbase:13px;--h:46px;}}
 @media(min-width:1200px){:root{--fbase:15px;}}
+/* HP dalam orientasi landscape selalu bertinggi layar pendek meski lebarnya
+   di atas 640px/768px, sehingga breakpoint berbasis lebar saja tidak cukup dan
+   logo/menu bisa tampak bertumpuk. Perkecil header berdasarkan TINGGI layar. */
+@media (orientation:landscape) and (max-height:500px){:root{--fbase:12.5px;--h:42px;}}
+@media (orientation:landscape) and (max-height:400px){:root{--h:38px;}}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
@@ -35,7 +40,7 @@ nav::-webkit-scrollbar{display:none;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
-@media(max-width:640px){
+@media(max-width:640px),(orientation:landscape) and (max-height:500px){
   header{flex-wrap:nowrap;padding:0 8px;gap:6px;}
   .logo{gap:6px;}
   .logo-icon{width:26px;height:26px;}
@@ -46,6 +51,13 @@ nav::-webkit-scrollbar{display:none;}
   .nb{font-size:11px;padding:0 8px;}
   .nb img{width:20px!important;height:20px!important;margin-right:4px!important;}
   .disc-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(140px,auto)!important;}
+}
+/* Landscape HP yang sangat pendek (mis. HP kecil): kompres lagi sedikit agar
+   header tetap satu baris rapi tanpa elemen saling menimpa. */
+@media (orientation:landscape) and (max-height:380px){
+  .logo-icon{width:22px!important;height:22px!important;}
+  .logo-text{font-size:12px!important;}
+  .nb{font-size:10.5px!important;padding:0 7px!important;}
 }
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
