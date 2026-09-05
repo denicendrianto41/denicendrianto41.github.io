@@ -91,9 +91,13 @@ nav::-webkit-scrollbar{display:none;}
 .page.active{animation:fu .22s ease;}
 .scroll{flex:1;min-height:0;overflow-y:auto;padding:10px 14px 14px;-webkit-overflow-scrolling:touch;}
 .fit-inner{transform-origin:top left;}
-#page-alatbahan .scroll{overflow-y:auto;overflow-x:hidden;display:block;padding:0;-webkit-overflow-scrolling:touch;}
-#page-prosedur .scroll{overflow-y:auto;overflow-x:hidden;display:block;padding:0;-webkit-overflow-scrolling:touch;}
-#page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:auto;display:block;margin:0 auto;}
+#page-alatbahan .scroll{overflow:auto;display:flex;align-items:center;justify-content:center;padding:0;-webkit-overflow-scrolling:touch;}
+#page-prosedur .scroll{overflow:auto;display:flex;align-items:center;justify-content:center;padding:0;-webkit-overflow-scrolling:touch;}
+#page-alatbahan .scroll img,#page-prosedur .scroll img{height:100%;width:auto;max-width:none;object-fit:contain;display:block;margin:auto;}
+@media (max-width:640px), ((pointer:coarse) and (max-width:1024px)){
+  #page-alatbahan .scroll,#page-prosedur .scroll{display:block;}
+  #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:auto;max-width:100%;max-height:none;margin:0 auto;}
+}
 .scroll::-webkit-scrollbar{width:4px;}
 @media (max-width:600px){
   .disc-grid{grid-template-columns:1fr!important;}
