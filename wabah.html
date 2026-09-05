@@ -141,7 +141,7 @@ nav::-webkit-scrollbar{display:none;}
 .step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 /* SIMULASI */
-.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:hidden;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
 .cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
 select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23dc2626' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
@@ -246,7 +246,7 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 
   /* SIMULASI: tetap sejajar (panel kiri + grafik kanan) seperti tampilan desktop; lembar kerja tetap di bawah dan bisa discroll */
   .sim-wrap{flex-direction:row!important;overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;}
-  .sim-wrap .ctrl-panel{width:150px!important;flex-shrink:0;height:135%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  .sim-wrap .ctrl-panel{width:150px!important;flex-shrink:0;height:135%!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch;}
   .sim-wrap .sim-right{overflow:visible!important;min-height:auto!important;}
   #sirCanvas{min-height:198px!important;}
   .sim-stats-row{flex-wrap:wrap!important;}
