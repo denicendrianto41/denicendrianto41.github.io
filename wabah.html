@@ -244,14 +244,20 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
   #page-prosedur .scroll{overflow-y:auto!important;overflow-x:hidden!important;padding:0!important;-webkit-overflow-scrolling:touch;}
   .prosedur-img{width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;object-fit:contain!important;margin:0;}
 
-  /* SIMULASI: susun vertikal & bisa discroll */
-  .sim-wrap{flex-direction:column!important;overflow-y:auto!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;}
-  .sim-wrap .ctrl-panel{width:100%!important;flex-shrink:0;overflow:visible!important;}
+  /* SIMULASI: tetap sejajar (panel kiri + grafik kanan) seperti tampilan desktop; lembar kerja tetap di bawah dan bisa discroll */
+  .sim-wrap{flex-direction:row!important;overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;}
+  .sim-wrap .ctrl-panel{width:150px!important;flex-shrink:0;overflow-y:auto!important;}
   .sim-wrap .sim-right{overflow:visible!important;min-height:auto!important;}
-  .sim-wrap .sim-right .card:first-child{min-height:260px;flex:none!important;}
-  #sirCanvas{min-height:220px;}
+  #sirCanvas{min-height:180px!important;}
   .sim-stats-row{flex-wrap:wrap!important;}
-  .sim-stats-row .sbox{min-width:80px;}
+  .sim-stats-row .sbox{min-width:70px;}
+
+  @media (max-width:640px){
+    .sim-wrap .ctrl-panel{width:130px!important;padding:9px!important;}
+    .ctrl-panel h3{font-size:12px!important;}
+    .ctrl-panel label{font-size:9.5px!important;}
+    .ctrl-panel select,.ctrl-panel .btn{font-size:11px!important;padding:6px!important;}
+  }
 
   /* DISKUSI: satu kolom, bisa discroll, tombol tidak terpotong */
   .diskusi-wrap{overflow-y:auto!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px 10px!important;}
@@ -269,8 +275,8 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
 /* Layar landscape sangat pendek (misal HP kecil rebah) tetap bisa scroll penuh */
 @media (max-width:1024px) and (max-height:420px){
   :root{--h:42px;}
-  .sim-wrap .sim-right .card:first-child{min-height:200px;}
-  #sirCanvas{min-height:180px;}
+  .sim-wrap .sim-right .card:first-child{min-height:200px!important;}
+  #sirCanvas{min-height:180px!important;}
 }
 </style>
 </head>
