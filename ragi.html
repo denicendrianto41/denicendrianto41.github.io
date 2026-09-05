@@ -46,18 +46,6 @@ nav::-webkit-scrollbar{display:none;}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
   .disc-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(140px,auto)!important;}
 }
-/* HP/tablet orientasi landscape: lebar bisa >640px tapi tinggi pendek, sehingga menu & logo
-   bisa bertumpuk kalau tetap pakai tampilan menu mendatar. Pakai menu dropdown seperti di atas. */
-@media (orientation:landscape) and (max-width:1024px){
-  header{flex-wrap:nowrap;padding:0 10px;}
-  .logo-text{font-size:16px;}.logo-sub{display:none;}
-  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow-y:auto;max-height:calc(100vh - var(--h));max-height:calc(100dvh - var(--h));gap:0;flex:none;}
-  nav.open{display:flex;}
-  .nb{height:48px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
-  .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
-  .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
-}
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .page{display:none;flex:1;overflow:hidden;}
@@ -371,6 +359,31 @@ nav::-webkit-scrollbar{display:none;}
 }
 .rot-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,5vw,20px);font-weight:800;}
 .rot-sub{font-size:clamp(12px,3.6vw,14px);color:rgba(226,232,240,0.85);max-width:320px;line-height:1.6;}
+
+/* Perkecil khusus font di bagian Tujuan & Teori saat dibuka di desktop/laptop,
+   agar konten pasti muat tanpa perlu scroll. Tidak berlaku di HP/tablet. */
+@media (min-width:901px){
+  #page-tujuan [style*="clamp(10.5px,0.9vw,11.5px)"],#page-teori [style*="clamp(10.5px,0.9vw,11.5px)"]{font-size:clamp(10px,0.85vw,10.5px)!important;}
+  #page-tujuan [style*="clamp(11.5px,1vw,12.5px)"],#page-teori [style*="clamp(11.5px,1vw,12.5px)"]{font-size:clamp(11px,0.95vw,11.5px)!important;}
+  #page-tujuan [style*="clamp(11px,1vw,12.5px)"],#page-teori [style*="clamp(11px,1vw,12.5px)"]{font-size:clamp(10.5px,0.9vw,11.5px)!important;}
+  #page-tujuan [style*="clamp(11px,1vw,12px)"],#page-teori [style*="clamp(11px,1vw,12px)"]{font-size:clamp(10.5px,0.9vw,11px)!important;}
+  #page-tujuan [style*="clamp(12px,1.05vw,13px)"],#page-teori [style*="clamp(12px,1.05vw,13px)"]{font-size:clamp(11.5px,1vw,12px)!important;}
+  #page-tujuan [style*="clamp(12px,1.15vw,13.5px)"],#page-teori [style*="clamp(12px,1.15vw,13.5px)"]{font-size:clamp(11.5px,1.05vw,12.5px)!important;}
+  #page-tujuan [style*="clamp(12px,1.1vw,13.5px)"],#page-teori [style*="clamp(12px,1.1vw,13.5px)"]{font-size:clamp(11.5px,1vw,12.5px)!important;}
+  #page-tujuan [style*="clamp(12px,1.1vw,13px)"],#page-teori [style*="clamp(12px,1.1vw,13px)"]{font-size:clamp(11.5px,1vw,12px)!important;}
+  #page-tujuan [style*="clamp(13px,1.15vw,14px)"],#page-teori [style*="clamp(13px,1.15vw,14px)"]{font-size:clamp(12.5px,1.05vw,13px)!important;}
+  #page-tujuan [style*="clamp(14px,1.6vw,17px)"],#page-teori [style*="clamp(14px,1.6vw,17px)"]{font-size:clamp(13px,1.4vw,15px)!important;}
+  #page-tujuan [style*="clamp(14px,1.6vw,18px)"],#page-teori [style*="clamp(14px,1.6vw,18px)"]{font-size:clamp(13px,1.4vw,16px)!important;}
+  #page-tujuan [style*="font-size:11.5px"],#page-teori [style*="font-size:11.5px"]{font-size:10.5px!important;}
+  #page-tujuan [style*="font-size:11px"],#page-teori [style*="font-size:11px"]{font-size:10px!important;}
+  #page-tujuan [style*="font-size:14.5px"],#page-teori [style*="font-size:14.5px"]{font-size:13px!important;}
+  #page-tujuan [style*="font-size:15px"],#page-teori [style*="font-size:15px"]{font-size:13.5px!important;}
+  #page-tujuan [style*="font-size:16px"],#page-teori [style*="font-size:16px"]{font-size:14.5px!important;}
+  #page-tujuan [style*="font-size:18px"],#page-teori [style*="font-size:18px"]{font-size:16px!important;}
+  #page-tujuan [style*="font-size:22px"],#page-teori [style*="font-size:22px"]{font-size:19px!important;}
+  #page-tujuan [style*="line-height:1.4"],#page-teori [style*="line-height:1.4"]{line-height:1.3!important;}
+  #page-tujuan [style*="line-height:1.45"],#page-teori [style*="line-height:1.45"]{line-height:1.3!important;}
+}
 </style>
 
 <style>
@@ -525,15 +538,15 @@ document.addEventListener('click',function(e){
      TUJUAN
 ══════════════════════════════════════════ -->
 <div id="page-tujuan" class="page active">
-  <div class="scroll" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 20px;">
+  <div class="scroll" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:11px 13px 15px;">
   <div class="fit-inner">
 
     <!-- Hero Banner -->
     <div style="
       background: linear-gradient(135deg, #0f2460 0%, #1a3a8f 45%, #2563eb 100%);
       border-radius: 16px;
-      padding: 22px 24px 18px;
-      margin-bottom: 14px;
+      padding:16px 20px 14px;
+      margin-bottom:9px;
       position: relative;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(15,36,96,0.28);
@@ -542,43 +555,43 @@ document.addEventListener('click',function(e){
       <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
       <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
       <div style="position:relative;z-index:1;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;">
        
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Reproduksi Sel Ragi</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.6vw,18px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Maya – Reproduksi Sel Ragi</div>
            
           </div>
         </div>
-        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
-        <p style="font-size:clamp(12.5px,1.2vw,14.5px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:7px;"></div>
+        <p style="font-size:clamp(12px,1.1vw,13.5px);color:rgba(226,232,240,0.88);line-height:1.45;margin:0;max-width:620px;">
           Selamat datang di laboratorium maya. Pelajari proses <strong style="color:#93c5fd;">pertunasan (budding)</strong> ragi secara interaktif — dari teori, simulasi, hingga pengamatan di bawah mikroskop.
         </p>
       </div>
     </div>
 
     <!-- 2 Main Objective Cards -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;">
 
       <!-- Card 1: Tujuan Pembelajaran -->
       <div style="
         background: #fff;
         border: 1px solid #dde3ec;
         border-radius: 14px;
-        padding: 16px 18px;
+        padding:13px 15px;
         position: relative;
         overflow: hidden;
         box-shadow: 0 2px 12px rgba(30,41,59,0.07);
         transition: box-shadow .2s, transform .2s;
       " onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
         <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;margin-top:4px;">
           <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
           <div>
             <div style="font-size:11px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13.5px,1.3vw,15px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.15vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
           </div>
         </div>
-        <p style="font-size:clamp(12.5px,1.2vw,14.5px);color:#475569;line-height:1.7;margin:0;">
+        <p style="font-size:clamp(12px,1.1vw,13.5px);color:#475569;line-height:1.45;margin:0;">
           Mendeskripsikan <strong style="color:#1d4ed8;">peranan jamur</strong> dalam kehidupan sehari-hari.
         </p>
       </div>
@@ -588,21 +601,21 @@ document.addEventListener('click',function(e){
         background: #fff;
         border: 1px solid #dde3ec;
         border-radius: 14px;
-        padding: 16px 18px;
+        padding:13px 15px;
         position: relative;
         overflow: hidden;
         box-shadow: 0 2px 12px rgba(30,41,59,0.07);
         transition: box-shadow .2s, transform .2s;
       " onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
         <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;margin-top:4px;">
           <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
           <div>
             <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13.5px,1.3vw,15px);font-weight:700;color:#1e293b;">Percobaan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.15vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
           </div>
         </div>
-        <p style="font-size:clamp(12.5px,1.2vw,14.5px);color:#475569;line-height:1.7;margin:0;">
+        <p style="font-size:clamp(12px,1.1vw,13.5px);color:#475569;line-height:1.45;margin:0;">
           Mempelajari <strong style="color:#059669;">cara reproduksi sel ragi</strong> (<em>Saccharomyces cerevisiae</em>) secara aseksual melalui <strong style="color:#059669;">pertunasan (budding)</strong> dan mengamatinya di bawah mikroskop.
         </p>
       </div>
@@ -613,38 +626,38 @@ document.addEventListener('click',function(e){
       background: #fff;
       border: 1px solid #dde3ec;
       border-radius: 14px;
-      padding: 16px 18px;
+      padding:13px 15px;
       box-shadow: 0 2px 12px rgba(30,41,59,0.07);
     ">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
         <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
         <div>
           <div style="font-size:11px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13.5px,1.3vw,15px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.15vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
         </div>
       </div>
-      <p style="font-size:clamp(12.5px,1.2vw,14px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <p style="font-size:clamp(12px,1.1vw,13px);color:#94a3b8;margin-bottom:8px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+        <div style="display:flex;align-items:flex-start;gap:7px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
           <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14.5px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
-          <span style="font-size:clamp(12.5px,1.2vw,14.5px);color:#334155;line-height:1.6;">Memahami istilah <strong style="color:#1d4ed8;">reproduksi</strong> dan jenis-jenisnya pada makhluk hidup</span>
+          <span style="font-size:clamp(12px,1.1vw,13.5px);color:#334155;line-height:1.4;">Memahami istilah <strong style="color:#1d4ed8;">reproduksi</strong> dan jenis-jenisnya pada makhluk hidup</span>
         </div>
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+        <div style="display:flex;align-items:flex-start;gap:7px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
           <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14.5px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
-          <span style="font-size:clamp(12.5px,1.2vw,14.5px);color:#334155;line-height:1.6;">Memahami proses <strong style="color:#059669;">budding</strong> dan perbedaannya dengan pembelahan biner</span>
+          <span style="font-size:clamp(12px,1.1vw,13.5px);color:#334155;line-height:1.4;">Memahami proses <strong style="color:#059669;">budding</strong> dan perbedaannya dengan pembelahan biner</span>
         </div>
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+        <div style="display:flex;align-items:flex-start;gap:7px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
           <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14.5px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
-          <span style="font-size:clamp(12.5px,1.2vw,14.5px);color:#334155;line-height:1.6;">Menjelaskan <strong style="color:#7c3aed;">tahapan budding</strong> pada ragi secara urut dan tepat</span>
+          <span style="font-size:clamp(12px,1.1vw,13.5px);color:#334155;line-height:1.4;">Menjelaskan <strong style="color:#7c3aed;">tahapan budding</strong> pada ragi secara urut dan tepat</span>
         </div>
 
-        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+        <div style="display:flex;align-items:flex-start;gap:7px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
           <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14.5px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
-          <span style="font-size:clamp(12.5px,1.2vw,14.5px);color:#334155;line-height:1.6;">Mengidentifikasi <strong style="color:#dc2626;">sel ragi</strong> dan strukturnya di bawah mikroskop</span>
+          <span style="font-size:clamp(12px,1.1vw,13.5px);color:#334155;line-height:1.4;">Mengidentifikasi <strong style="color:#dc2626;">sel ragi</strong> dan strukturnya di bawah mikroskop</span>
         </div>
       </div>
     </div>
@@ -657,18 +670,18 @@ document.addEventListener('click',function(e){
      TEORI
 ══════════════════════════════════════════ -->
 <div id="page-teori" class="page">
-  <div class="scroll" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 14px;">
+  <div class="scroll" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 12px 11px;">
   <div class="fit-inner">
 
     <!-- Teori Header -->
     <div style="
       background: linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);
       border-radius: 14px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
+      padding:13px 17px;
+      margin-bottom:8px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap:10px;
       box-shadow: 0 6px 24px rgba(15,36,96,0.22);
       position: relative;
       overflow: hidden;
@@ -676,44 +689,44 @@ document.addEventListener('click',function(e){
       <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
       <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
       <div style="position:relative;z-index:1;">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(15px,1.8vw,19px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
-        <div style="font-size:clamp(11.5px,1.1vw,13px);color:rgba(147,197,253,0.85);margin-top:2px;">Reproduksi Sel Ragi · <em>Saccharomyces cerevisiae</em></div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.6vw,17px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(11px,1vw,12px);color:rgba(147,197,253,0.85);margin-top:2px;">Reproduksi Sel Ragi · <em>Saccharomyces cerevisiae</em></div>
       </div>
     </div>
 
     <!-- 2-column theory grid -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;">
 
       <!-- Left: Reproduksi -->
-      <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;flex-direction:column;gap:7px;">
 
         <div style="
           background:#fff;border:1px solid #e2e8f0;border-radius:14px;
-          padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+          padding:11px 13px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
           position:relative;overflow:hidden;
           transition:box-shadow .2s,transform .2s;
         " onmouseover="this.style.boxShadow='0 6px 20px rgba(37,99,235,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
           <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;margin-top:4px;">
             <div style="width:30px;height:30px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔁</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12.5px,1.3vw,14.5px);font-weight:700;color:#1d4ed8;">Reproduksi Makhluk Hidup</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.15vw,13.5px);font-weight:700;color:#1d4ed8;">Reproduksi Makhluk Hidup</div>
           </div>
-          <p style="font-size:clamp(12.5px,1.15vw,14px);color:#475569;line-height:1.75;margin-bottom:8px;">
+          <p style="font-size:clamp(12px,1.05vw,13px);color:#475569;line-height:1.45;margin-bottom:6px;">
             Reproduksi adalah kemampuan dasar makhluk hidup untuk menghasilkan individu baru guna menjaga kelangsungan spesies. Terbagi menjadi dua jenis:
           </p>
           <div style="display:flex;flex-direction:column;gap:5px;">
-            <div style="display:flex;align-items:flex-start;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:7px 10px;">
+            <div style="display:flex;align-items:flex-start;gap:6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px 9px;">
               <span style="font-size:14.5px;flex-shrink:0;margin-top:1px;">⚤</span>
               <div>
                 <div style="font-size:11.5px;font-weight:700;color:#1d4ed8;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Seksual</div>
-                <div style="font-size:clamp(11.5px,1.1vw,13px);color:#334155;line-height:1.6;">Melibatkan dua induk & peleburan gamet → menghasilkan variasi genetik</div>
+                <div style="font-size:clamp(11px,1vw,12px);color:#334155;line-height:1.4;">Melibatkan dua induk & peleburan gamet → menghasilkan variasi genetik</div>
               </div>
             </div>
-            <div style="display:flex;align-items:flex-start;gap:8px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:7px 10px;">
+            <div style="display:flex;align-items:flex-start;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:6px 9px;">
               <span style="font-size:14.5px;flex-shrink:0;margin-top:1px;">🔄</span>
               <div>
                 <div style="font-size:11.5px;font-weight:700;color:#059669;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Aseksual</div>
-                <div style="font-size:clamp(11.5px,1.1vw,13px);color:#334155;line-height:1.6;">Satu induk tanpa gamet → keturunan identik secara genetik dengan induknya</div>
+                <div style="font-size:clamp(11px,1vw,12px);color:#334155;line-height:1.4;">Satu induk tanpa gamet → keturunan identik secara genetik dengan induknya</div>
               </div>
             </div>
           </div>
@@ -722,22 +735,22 @@ document.addEventListener('click',function(e){
         <!-- Yeast Card -->
         <div style="
           background:#fff;border:1px solid #e2e8f0;border-radius:14px;
-          padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+          padding:11px 13px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
           position:relative;overflow:hidden;flex:1;
           transition:box-shadow .2s,transform .2s;
         " onmouseover="this.style.boxShadow='0 6px 20px rgba(124,58,237,0.1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
           <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:14px 14px 0 0;"></div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;margin-top:4px;">
             <div style="width:30px;height:30px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍞</div>
             <div>
-              <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12.5px,1.3vw,14.5px);font-weight:700;color:#6d28d9;">Ragi (Yeast)</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.15vw,13.5px);font-weight:700;color:#6d28d9;">Ragi (Yeast)</div>
               <div style="font-size:11.5px;color:#8b5cf6;font-style:italic;">Saccharomyces cerevisiae</div>
             </div>
           </div>
-          <p style="font-size:clamp(12.5px,1.15vw,14px);color:#475569;line-height:1.75;margin-bottom:8px;">
+          <p style="font-size:clamp(12px,1.05vw,13px);color:#475569;line-height:1.45;margin-bottom:6px;">
             Mikroorganisme <strong style="color:#6d28d9;">eukariotik bersel tunggal</strong> dari Kingdom Fungi. Memiliki inti bermembran, organel lengkap, dan dinding sel berbahan kitin.
           </p>
-          <p style="font-size:clamp(12.5px,1.15vw,14px);color:#475569;line-height:1.75;margin:0;">
+          <p style="font-size:clamp(12px,1.05vw,13px);color:#475569;line-height:1.45;margin:0;">
             Mampu mengubah gula menjadi CO₂ & etanol melalui <strong style="color:#6d28d9;">fermentasi anaerob</strong>
           </p>
           <!-- Fakta menarik -->
@@ -748,19 +761,19 @@ document.addEventListener('click',function(e){
       <!-- Right: Budding -->
       <div style="
         background:#fff;border:1px solid #e2e8f0;border-radius:14px;
-        padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
+        padding:11px 13px;box-shadow:0 2px 10px rgba(30,41,59,0.06);
         position:relative;overflow:hidden;
         transition:box-shadow .2s,transform .2s;
       " onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
         <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;margin-top:4px;">
           <div style="width:30px;height:30px;border-radius:8px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🌱</div>
           <div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12.5px,1.3vw,14.5px);font-weight:700;color:#059669;">Budding (Pertunasan) pada Ragi</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.15vw,13.5px);font-weight:700;color:#059669;">Budding (Pertunasan) pada Ragi</div>
             <div style="font-size:11.5px;color:#10b981;">Mekanisme reproduksi aseksual utama</div>
           </div>
         </div>
-        <p style="font-size:clamp(12.5px,1.15vw,14px);color:#475569;line-height:1.7;margin-bottom:10px;">
+        <p style="font-size:clamp(12px,1.05vw,13px);color:#475569;line-height:1.45;margin-bottom:7px;">
           Pembelahan asimetris di mana <strong style="color:#059669;">sel anak</strong> tumbuh sebagai tonjolan kecil dari sel induk. Berikut tahapannya:
         </p>
 
@@ -772,7 +785,7 @@ document.addEventListener('click',function(e){
               <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">1</div>
               <div style="width:2px;flex:1;background:linear-gradient(180deg,#10b981,#a7f3d0);min-height:8px;"></div>
             </div>
-            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11.5px,1.1vw,13.5px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Sel induk membentuk <strong style="color:#059669;">tonjolan kecil (tunas/bud)</strong> pada permukaan dindingnya</p></div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11px,1vw,12.5px);color:#334155;line-height:1.4;margin:0;padding-top:2px;">Sel induk membentuk <strong style="color:#059669;">tonjolan kecil (tunas/bud)</strong> pada permukaan dindingnya</p></div>
           </div>
 
           <div style="display:flex;align-items:stretch;gap:0;position:relative;">
@@ -780,7 +793,7 @@ document.addEventListener('click',function(e){
               <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">2</div>
               <div style="width:2px;flex:1;background:linear-gradient(180deg,#2dd4bf,#99f6e4);min-height:8px;"></div>
             </div>
-            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11.5px,1.1vw,13.5px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Inti sel induk mengalami <strong style="color:#0d9488;">mitosis</strong>; salah satu inti bermigrasi masuk ke dalam tunas</p></div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11px,1vw,12.5px);color:#334155;line-height:1.4;margin:0;padding-top:2px;">Inti sel induk mengalami <strong style="color:#0d9488;">mitosis</strong>; salah satu inti bermigrasi masuk ke dalam tunas</p></div>
           </div>
 
           <div style="display:flex;align-items:stretch;gap:0;position:relative;">
@@ -788,7 +801,7 @@ document.addEventListener('click',function(e){
               <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">3</div>
               <div style="width:2px;flex:1;background:linear-gradient(180deg,#38bdf8,#bae6fd);min-height:8px;"></div>
             </div>
-            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11.5px,1.1vw,13.5px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Sitoplasma beserta <strong style="color:#0891b2;">organel terbagi</strong>; tunas terus membesar mendekati ukuran sel induk</p></div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11px,1vw,12.5px);color:#334155;line-height:1.4;margin:0;padding-top:2px;">Sitoplasma beserta <strong style="color:#0891b2;">organel terbagi</strong>; tunas terus membesar mendekati ukuran sel induk</p></div>
           </div>
 
           <div style="display:flex;align-items:stretch;gap:0;position:relative;">
@@ -796,25 +809,25 @@ document.addEventListener('click',function(e){
               <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">4</div>
               <div style="width:2px;flex:1;background:linear-gradient(180deg,#60a5fa,#bfdbfe);min-height:8px;"></div>
             </div>
-            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11.5px,1.1vw,13.5px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Terbentuk <strong style="color:#2563eb;">sekat pemisah (septum)</strong> di antara sel induk dan tunas</p></div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(11px,1vw,12.5px);color:#334155;line-height:1.4;margin:0;padding-top:2px;">Terbentuk <strong style="color:#2563eb;">sekat pemisah (septum)</strong> di antara sel induk dan tunas</p></div>
           </div>
 
           <div style="display:flex;align-items:flex-start;gap:0;position:relative;">
             <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
               <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">5</div>
             </div>
-            <div style="flex:1;padding:0 0 0 10px;"><p style="font-size:clamp(11.5px,1.1vw,13.5px);color:#334155;line-height:1.6;margin:0;padding-top:2px;">Tunas memisah menjadi <strong style="color:#7c3aed;">sel anak mandiri</strong>, meninggalkan bekas <em>bud scar</em> pada sel induk</p></div>
+            <div style="flex:1;padding:0 0 0 10px;"><p style="font-size:clamp(11px,1vw,12.5px);color:#334155;line-height:1.4;margin:0;padding-top:2px;">Tunas memisah menjadi <strong style="color:#7c3aed;">sel anak mandiri</strong>, meninggalkan bekas <em>bud scar</em> pada sel induk</p></div>
           </div>
         </div>
 
-        <p style="font-size:clamp(12px,1.1vw,13.5px);color:#475569;line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;">
+        <p style="font-size:clamp(11.5px,1vw,12.5px);color:#475569;line-height:1.45;margin-top:7px;padding-top:7px;border-top:1px dashed #e2e8f0;">
           💡 Bila kondisi sangat mendukung, tunas belum sempat lepas sebelum tunas baru terbentuk → menghasilkan <strong>rantai 3–4 sel</strong> terlihat seperti mata rantai di bawah mikroskop.
         </p>
 
         <!-- Kondisi optimal -->
-        <div style="margin-top:10px;background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;">
+        <div style="margin-top:7px;background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:7px 10px;display:flex;align-items:center;gap:6px;">
           <span style="font-size:15px;">⚗️</span>
-          <code style="font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1vw,12.5px);color:#93c5fd;letter-spacing:0.03em;">suhu ~37°C &nbsp;·&nbsp; larutan sukrosa &nbsp;·&nbsp; inkubasi ≥ 45 menit</code>
+          <code style="font-family:'JetBrains Mono',monospace;font-size:clamp(10.5px,0.9vw,11.5px);color:#93c5fd;letter-spacing:0.03em;">suhu ~37°C &nbsp;·&nbsp; larutan sukrosa &nbsp;·&nbsp; inkubasi ≥ 45 menit</code>
         </div>
       </div>
 
