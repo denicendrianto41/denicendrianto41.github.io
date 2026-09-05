@@ -40,7 +40,7 @@ nav::-webkit-scrollbar{display:none;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
-@media(max-width:640px),(orientation:landscape) and (max-height:500px){
+@media(max-width:640px){
   header{flex-wrap:nowrap;padding:0 8px;gap:6px;}
   .logo{gap:6px;}
   .logo-icon{width:26px;height:26px;}
@@ -48,6 +48,21 @@ nav::-webkit-scrollbar{display:none;}
   .logo-sub{display:none;}
   #menuToggle{display:none;}
   nav{gap:0;justify-content:flex-start!important;}
+  .nb{font-size:11px;padding:0 8px;}
+  .nb img{width:20px!important;height:20px!important;margin-right:4px!important;}
+  .disc-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(140px,auto)!important;}
+}
+/* HP dalam orientasi landscape: perkecil header spy tidak bertumpuk, tapi
+   posisi menu TETAP rata kanan seperti di desktop/laptop (tidak dipaksa
+   rata kiri seperti pada mode potret sempit di atas). */
+@media (orientation:landscape) and (max-height:500px){
+  header{flex-wrap:nowrap;padding:0 8px;gap:6px;}
+  .logo{gap:6px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:13px;}
+  .logo-sub{display:none;}
+  #menuToggle{display:none;}
+  nav{justify-content:flex-end!important;}
   .nb{font-size:11px;padding:0 8px;}
   .nb img{width:20px!important;height:20px!important;margin-right:4px!important;}
   .disc-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-rows:minmax(140px,auto)!important;}
