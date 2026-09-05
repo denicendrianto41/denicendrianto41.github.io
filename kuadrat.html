@@ -99,6 +99,13 @@ nav::-webkit-scrollbar{display:none;}
     overflow:visible !important;height:auto !important;min-height:100%;
   }
 
+  /* Kolom kanan (pembungkus peta) juga tidak boleh ikut memotong (overflow:hidden)
+     kontennya sendiri — biarkan tingginya menyesuaikan konten (.aquarium di
+     dalamnya), supaya yang membungkus scroll cuma #page-simulasi di level atas. */
+  #page-simulasi > div:first-child > div:last-child{
+    overflow:visible !important;height:auto !important;min-height:0 !important;
+  }
+
   /* Perlebar panel "Pilih Lingkungan" supaya legenda spesies muat 3 kolom
      (bukan 2), sehingga tidak perlu discroll vertikal di dalam panel. */
   #page-simulasi .ctrl-panel{width:210px !important;gap:6px;}
@@ -107,10 +114,19 @@ nav::-webkit-scrollbar{display:none;}
   #page-simulasi .sp-name{font-size:8.5px !important;}
   #page-simulasi .sp-card{padding:4px 2px !important;}
 
-  /* Pastikan peta area penelitian punya tinggi minimum yang wajar agar tidak
-     menyusut/terpotong terlalu kecil; jika layar lebih pendek dari ini,
-     halaman akan bisa digulir (lihat aturan overflow di atas). */
-  #page-simulasi .aquarium{min-height:300px;}
+  /* Beri peta area penelitian tinggi TETAP (bukan cuma min-height + flex:1)
+     dan overflow:visible, supaya kotak petanya sendiri tidak lagi memotong
+     kontennya (h3 + kanvas) kalau ruang vertikal sempit. Jika tinggi tetap ini
+     tidak muat di layar, halaman akan digulir lewat #page-simulasi, bukan
+     dipotong diam-diam di dalam .aquarium. */
+  #page-simulasi .aquarium{
+    flex:none !important;height:320px !important;min-height:320px !important;
+    overflow:visible !important;
+  }
+  /* Pembungkus kanvas di dalam .aquarium tetap overflow:hidden (canvas memang
+     dirender pas ukuran wrapper-nya oleh resizeCanvases()), tapi pastikan ia
+     benar-benar dapat tinggi definitif dari .aquarium yang sekarang tetap. */
+  #page-simulasi .aquarium > div{flex:1;min-height:0;}
 }
 /* Mode landscape (HP/tablet diputar mendatar): tetap berdampingan seperti desktop —
    panel "Pilih Lingkungan" di kiri, peta area penelitian di kanan (lihat gambar acuan). */
