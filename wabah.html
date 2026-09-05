@@ -65,7 +65,7 @@ nav::-webkit-scrollbar{display:none;}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .fit-inner{transform-origin:top left;}
-#page-prosedur .scroll{overflow-y:auto;overflow-x:hidden;padding:0;}
+#page-prosedur .scroll{overflow-y:auto;overflow-x:hidden;padding:0;display:flex;flex-direction:column;}
 #page-tujuan .scroll{overflow:hidden;}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
@@ -141,7 +141,7 @@ nav::-webkit-scrollbar{display:none;}
 .step-box-zoom{animation:stepZoom .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes stepZoom{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 /* SIMULASI */
-.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:hidden;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
 .cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
 select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23dc2626' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
@@ -244,11 +244,11 @@ input[type="range"]{accent-color:var(--acc);width:100%;}
   #page-prosedur .scroll{overflow-y:auto!important;overflow-x:hidden!important;padding:0!important;-webkit-overflow-scrolling:touch;}
   .prosedur-img{width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;object-fit:contain!important;margin:0;}
 
-  /* SIMULASI: tetap sejajar (panel kiri + grafik kanan) seperti tampilan desktop; lembar kerja tetap di bawah dan bisa discroll */
-  .sim-wrap{flex-direction:row!important;overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;}
-  .sim-wrap .ctrl-panel{width:150px!important;flex-shrink:0;height:135%!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch;}
-  .sim-wrap .sim-right{overflow:visible!important;min-height:auto!important;}
-  #sirCanvas{min-height:198px!important;}
+  /* SIMULASI: tetap sejajar (panel kiri + grafik kanan) seperti tampilan desktop; panel kontrol dibatasi tinggi wadahnya sendiri (bukan auto/135% yang membuatnya terpotong oleh #page yang overflow:hidden) sehingga sisa kontrol yang tidak muat bisa discroll di dalam panel itu sendiri, bukan terpotong tak terjangkau */
+  .sim-wrap{flex-direction:row!important;overflow:hidden!important;height:100%!important;padding:8px!important;}
+  .sim-wrap .ctrl-panel{width:150px!important;flex-shrink:0;height:100%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  .sim-wrap .sim-right{overflow:hidden!important;min-height:0!important;}
+  #sirCanvas{min-height:150px!important;}
   .sim-stats-row{flex-wrap:wrap!important;}
   .sim-stats-row .sbox{min-width:70px;}
 
@@ -781,7 +781,7 @@ document.addEventListener('click',function(e){
 <!-- ═══ PROSEDUR ═══ -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img class="prosedur-img" src="https://denicendrianto41.github.io/prosedur_virus.webp" alt="Prosedur Simulasi Wabah Virus" style="width:100%;height:auto;object-fit:contain;display:block;">
+    <img class="prosedur-img" src="https://denicendrianto41.github.io/prosedur_virus.webp" alt="Prosedur Simulasi Wabah Virus" style="width:100%;height:100%;flex:1;min-height:0;object-fit:cover;object-position:top;display:block;">
   </div>
 </div>
 
