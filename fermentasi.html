@@ -60,6 +60,15 @@ nav::-webkit-scrollbar{display:none;}
   #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%!important;height:auto!important;object-fit:initial!important;display:block;margin:0 auto;}
 }
 #app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+}
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
 .page.active{display:flex;flex-direction:column;}
 @keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
