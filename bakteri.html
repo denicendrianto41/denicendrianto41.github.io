@@ -114,13 +114,24 @@ nav::-webkit-scrollbar{display:none;}
 #page-teori .card h4{margin:6px 0 3px;}
 #page-teori .two-col{gap:5px;}
 #page-teori .card{margin-bottom:5px;padding:9px 12px;}
-/* Tab menu Teori: tidak discroll (horizontal/vertikal) — melipat ke baris berikutnya
+/* Tab menu Teori: pada desktop tidak discroll, melipat ke baris berikutnya
    agar semua tab tetap terlihat sekaligus */
 #teori-tabbar{overflow:hidden;}
 .teori-tab{margin-bottom:-2px!important;}
+/* Mobile/tablet: semua tab tetap SEJAJAR dalam satu baris (tidak melipat ke bawah).
+   Ukuran tab diperkecil agar muat, dan jika masih kurang muat baris akan bisa
+   digeser (scroll) horizontal tanpa menampilkan scrollbar. */
 @media (max-width:640px),(pointer:coarse){
-  #teori-tabbar{gap:2px;}
-  .teori-tab{padding:7px 10px!important;font-size:11.5px!important;gap:4px!important;}
+  #teori-tabbar{
+    flex-wrap:nowrap!important;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    gap:2px;
+  }
+  #teori-tabbar::-webkit-scrollbar{display:none;}
+  .teori-tab{padding:7px 8px!important;font-size:10.5px!important;gap:3px!important;flex-shrink:0;}
 }
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
 .fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
