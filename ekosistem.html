@@ -104,6 +104,19 @@ nav::-webkit-scrollbar{display:none;}
   #page-teori .formula-box{font-size:13.5px !important;}
   #page-teori .chip{font-size:13px !important;}
   #page-teori .notebox p{font-size:13.5px !important;}
+
+  /* Samakan perilaku scroll Teori dengan Tujuan: satu area scroll untuk
+     seluruh halaman (judul + tab + isi), bukan scroll terpisah di tiap tab. */
+  #teoriBody{
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #teoriBody #tab-rantai,#teoriBody #tab-energi,#teoriBody #tab-daur,#teoriBody #tab-interaksi{
+    flex:none !important;
+    min-height:0 !important;
+    overflow:visible !important;
+  }
 }
 
 /* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
@@ -501,7 +514,7 @@ document.addEventListener('click',function(e){
 
 <!-- ========================= TEORI ========================= -->
 <div id="page-teori" class="page">
-  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 10px;">
+  <div id="teoriBody" style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 10px;">
 
     <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1d4ed8 100%);border-radius:12px;padding:12px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(15,36,96,0.22);position:relative;overflow:hidden;flex-shrink:0;">
       <div style="position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
