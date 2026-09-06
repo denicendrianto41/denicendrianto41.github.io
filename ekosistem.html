@@ -1439,7 +1439,7 @@ function printDiskusi(){
   <h1>🌿 Lembar Diskusi – Interaksi Komponen Ekosistem</h1>
   <div class="sub">LKPD 10.6.2 · Biologi SMA Kelas X · ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>`;
   qs.forEach((q,i)=>{html+=`<div class="q">${i+1}. ${q}</div><div class="a">${(areas[i]?.value||'').replace(/</g,'&lt;')||'(belum dijawab)'}</div>`;});
-  html+=`<div class="footer">Lab Maya Biologi · SMA Negeri 1 Batujajar · Dicetak: ${new Date().toLocaleString('id-ID')}</div></body></html>`;
+  html+=`<div class="footer">Lab Maya Biologi · Dicetak: ${new Date().toLocaleString('id-ID')}</div></body></html>`;
   const w=window.open('','_blank');w.document.write(html);w.document.close();w.print();
 }
 
