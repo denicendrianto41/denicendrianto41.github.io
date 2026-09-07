@@ -79,6 +79,32 @@ nav::-webkit-scrollbar{display:none;}
   #page-prosedur .scroll{align-items:flex-start!important;justify-content:flex-start!important;}
   #page-alatbahan .scroll img,
   #page-prosedur .scroll img{position:static!important;display:block;}
+
+  /* SIMULASI — perkecil & sesuaikan agar seluruh area percobaan tetap
+     muat dalam satu layar penuh saat perangkat mobile dalam mode landscape */
+  #page-simulasi > div{padding:6px 8px!important;gap:6px!important;}
+  #page-simulasi .card{width:clamp(96px,15vw,140px)!important;padding:8px!important;}
+  #page-simulasi .sample-emoji{font-size:22px!important;}
+  .sim-playarea{min-height:0!important;height:100%!important;}
+  .sim-tool img,.sim-tool .icon-wrap{width:clamp(18px,7vh,26px)!important;height:clamp(18px,7vh,26px)!important;}
+  .sim-tool span{font-size:7.5px!important;padding:1px 4px!important;}
+  #tool-pipet img{width:clamp(62px,26vh,92px)!important;height:clamp(62px,26vh,92px)!important;}
+  #tool-jarum img{width:clamp(34px,14vh,50px)!important;height:clamp(34px,14vh,50px)!important;}
+  .sim-dish{width:clamp(58px,22vh,84px)!important;height:clamp(58px,22vh,84px)!important;bottom:calc(40% + 66px)!important;}
+  .sim-dish #simDishEmoji{font-size:clamp(22px,6vh,32px)!important;}
+  .sim-beker{width:clamp(46px,17vh,68px)!important;}
+  .sim-objek{width:clamp(62px,21vh,92px)!important;height:clamp(20px,6.5vh,28px)!important;bottom:calc(11% + 8px)!important;}
+  .sim-micro{width:clamp(110px,36vh,160px)!important;}
+  .sim-dish .lbl,.sim-objek .lbl,.sim-beker .lbl{font-size:7.5px!important;bottom:-13px!important;}
+  .sim-info-box{width:clamp(100px,22vh,140px)!important;padding:5px 7px!important;}
+  .sim-info-box #simMsg{font-size:8.5px!important;padding:4px 6px!important;}
+  .sim-progress span{height:3px!important;}
+  .sim-reset-btn{padding:5px 10px!important;font-size:8.5px!important;}
+
+  /* Panel mikroskop & game label: ramping agar muat di layar landscape sempit */
+  .micro-left{width:130px!important;padding:8px!important;gap:6px!important;}
+  .scope-circle{width:min(78vh,60vw,360px)!important;height:min(78vh,60vw,360px)!important;}
+  .label-panel{width:120px!important;padding:8px!important;}
 }
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
@@ -217,9 +243,50 @@ nav::-webkit-scrollbar{display:none;}
 #btnMulaiPraktikum{display:none;margin:16px auto 0;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(5,150,105,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
 #btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(5,150,105,.5);}
 @keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+
+/* ══ ROTATE OVERLAY (paksa landscape di HP/tablet) ══ */
+#rotateOverlay{display:none;position:fixed;inset:0;z-index:200000;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#2563eb 100%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px;}
+.rotate-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,5vw,24px);font-weight:800;}
+.rotate-text{font-family:'Inter',sans-serif;font-size:clamp(12px,3.5vw,15px);color:rgba(255,255,255,.85);max-width:320px;line-height:1.6;}
+@keyframes rotateHint{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
+@media (pointer:coarse) and (orientation:portrait){
+  #rotateOverlay{display:flex;}
+  header,#app,#loadScreen{visibility:hidden;}
+}
+
+/* Loading screen: ukuran & posisi menyesuaikan layar mobile (breakpoint berbasis
+   tinggi layar/vh), supaya selalu proporsional & tidak terpotong di layar pendek —
+   sama seperti pendekatan pada darah.html */
+@media (max-height:520px), ((pointer:coarse) and (max-width:1024px)){
+  .load-box{padding:12px;}
+  .load-logo{width:clamp(38px,7vh,56px);height:clamp(38px,7vh,56px);margin:0 auto 8px;}
+  .load-title{font-size:clamp(14px,3.6vh,20px);margin-bottom:3px;}
+  .load-sub{font-size:clamp(9px,1.9vh,11px);margin-bottom:12px;}
+  .load-bar-wrap{width:clamp(150px,42vw,240px);height:6px;margin:0 auto 6px;}
+  .load-status{font-size:clamp(9.5px,1.9vh,11px);}
+  #btnMulaiPraktikum{margin-top:12px;padding:7px 20px;font-size:clamp(11px,2.2vh,13px);}
+}
+@media (max-height:400px){
+  .load-logo{width:clamp(32px,6vh,44px);height:clamp(32px,6vh,44px);margin-bottom:5px;}
+  .load-title{font-size:clamp(13px,3.2vh,17px);margin-bottom:2px;}
+  .load-sub{font-size:clamp(8px,1.6vh,9.5px);margin-bottom:8px;}
+  .load-bar-wrap{margin-bottom:4px;}
+  .load-status{margin-bottom:2px;}
+  #btnMulaiPraktikum{margin-top:8px;padding:6px 18px;}
+}
 </style>
 </head>
 <body>
+
+<!-- ROTATE OVERLAY: memaksa pengguna mobile/tablet memutar perangkat ke landscape -->
+<div id="rotateOverlay">
+  <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="animation:rotateHint 1.6s ease-in-out infinite;">
+    <rect x="7" y="2" width="10" height="16" rx="2"/>
+    <line x1="10" y1="20" x2="14" y2="20"/>
+  </svg>
+  <div class="rotate-title">Putar Perangkat Anda</div>
+  <div class="rotate-text">Untuk pengalaman terbaik, gunakan aplikasi ini dalam posisi <b>mendatar (landscape)</b>.</div>
+</div>
 
 <!-- LOADING SCREEN -->
 <div id="loadScreen">
