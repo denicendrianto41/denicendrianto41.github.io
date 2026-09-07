@@ -21,29 +21,38 @@ html,body{height:100%;overflow:hidden;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);}
 /* HEADER */
-header{position:relative;z-index:10;height:var(--h);flex-shrink:0;background:linear-gradient(135deg,#0f2460,#1a3a8f);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;padding:0 14px;gap:12px;box-shadow:0 2px 10px rgba(10,30,80,0.45);}
+header{position:relative;z-index:10;height:var(--h);flex-shrink:0;background:linear-gradient(135deg,#0f172a,#1e3a8a);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;padding:0 14px;gap:12px;box-shadow:0 2px 10px rgba(15,23,42,.45);}
 .logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.logo-icon{width:35px;height:35px;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);overflow:hidden;padding:2px;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:none;display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;padding:2px;}
 .logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1;}
 .logo-sub{font-size:9.5px;color:rgba(255,255,255,0.75);}
 nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
 nav::-webkit-scrollbar{display:none;}
 .nb{position:relative;background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
-.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#fff;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#60a5fa;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
 .nb:hover{color:rgba(255,255,255,0.95);}
 .nb.active{color:#fff;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
 @media(max-width:640px){
   header{flex-wrap:nowrap;padding:0 10px;}
   .logo-text{font-size:16px;}.logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f2460,#1a3a8f);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
   nav.open{display:flex;}
   .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
   .nb::after{display:none;}
   .nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
+}
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
 }
 /* APP */
 #app{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -54,6 +63,23 @@ nav::-webkit-scrollbar{display:none;}
 .scroll{flex:1;overflow-y:auto;padding:10px 14px 14px;}
 .scroll::-webkit-scrollbar{width:4px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.fit-inner{transform-origin:top left;}
+#page-tujuan .scroll{overflow:hidden;}
+#page-teori .scroll{overflow:hidden;}
+#page-alatbahan .scroll{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-prosedur .scroll{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+@media (pointer:coarse){
+  #page-tujuan .scroll,
+  #page-teori .scroll,
+  #page-alatbahan .scroll,
+  #page-prosedur .scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  #page-tujuan .fit-inner,
+  #page-teori .fit-inner{transform:none!important;width:100%!important;}
+  #page-alatbahan .scroll,
+  #page-prosedur .scroll{align-items:flex-start!important;justify-content:flex-start!important;}
+  #page-alatbahan .scroll img,
+  #page-prosedur .scroll img{position:static!important;display:block;}
+}
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
 .card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
@@ -134,32 +160,39 @@ nav::-webkit-scrollbar{display:none;}
 .sample-emoji{font-size:30px;display:block;margin-bottom:4px;}
 /* Sim stage — proportional free-drag play area */
 .sim-playarea{position:relative;flex:1;min-height:clamp(420px,58vh,560px);background:linear-gradient(180deg,#eef2f7,#e2e8f0);border:1.5px dashed var(--border2);border-radius:12px;overflow:hidden;}
-.sim-tool{position:absolute;width:20%;max-width:80px;text-align:center;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;transform:translate(-50%,-50%);z-index:6;}
+.sim-tool{position:absolute;width:auto;max-width:none;display:flex;align-items:center;gap:6px;text-align:left;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;transform:translate(-50%,-50%);z-index:6;}
 .sim-tool.used{opacity:.35;cursor:not-allowed;pointer-events:none;}
-.sim-tool img,.sim-tool .icon-wrap{width:clamp(30px,6vw,40px);height:clamp(30px,6vw,40px);object-fit:contain;margin:0 auto 2px;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.18));font-size:clamp(24px,5vw,32px);line-height:clamp(30px,6vw,40px);}
-#tool-pipet{max-width:140px;}
-#tool-pipet img{width:clamp(90px,18vw,120px);height:clamp(90px,18vw,120px);}
-.sim-tool span{font-size:clamp(8px,1vw,9.5px);color:var(--text2);font-weight:700;display:block;background:rgba(255,255,255,.85);border-radius:4px;padding:1px 3px;}
-.sim-dish{position:absolute;left:12%;bottom:calc(6% + 100px);transform:translate(-50%,0);width:clamp(108px,21vw,156px);height:clamp(108px,21vw,156px);border-radius:50%;background:radial-gradient(circle,#fff,#f1f5f9);border:3px solid #cbd5e1;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:box-shadow .2s;z-index:3;}
+.sim-tool img,.sim-tool .icon-wrap{width:clamp(30px,6vw,40px);height:clamp(30px,6vw,40px);object-fit:contain;margin:0;display:block;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.18));font-size:clamp(24px,5vw,32px);line-height:clamp(30px,6vw,40px);}
+#tool-pipet img{width:clamp(117px,20.25vw,153px);height:clamp(117px,20.25vw,153px);}
+#tool-jarum img{width:clamp(60px,12vw,80px);height:clamp(60px,12vw,80px);}
+.sim-tool span{font-size:clamp(8px,1vw,9.5px);color:var(--text2);font-weight:700;display:block;background:rgba(255,255,255,.85);border-radius:4px;padding:2px 6px;white-space:nowrap;flex-shrink:0;}
+.sim-dish{position:absolute;left:37%;bottom:calc(40% + 134px);transform:translate(-50%,0);width:clamp(108px,21vw,156px);height:clamp(108px,21vw,156px);border-radius:50%;background:radial-gradient(circle,#fff,#f1f5f9);border:3px solid #cbd5e1;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:box-shadow .2s;z-index:3;}
 .sim-dish.target-hover{box-shadow:0 0 0 5px rgba(217,119,6,.35);}
-.sim-dish .lbl{position:absolute;bottom:-18px;font-size:clamp(8px,1vw,9.5px);color:var(--text3);font-weight:600;white-space:nowrap;}
-.sim-objek{position:absolute;left:50%;bottom:calc(8% + 100px);transform:translate(-50%,0);width:clamp(110px,20vw,160px);height:clamp(34px,6vw,48px);background:linear-gradient(135deg,#dbeafe,#eff6ff);border:2px solid #93c5fd;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:box-shadow .2s;z-index:4;cursor:default;}
+.sim-dish .lbl,.sim-objek .lbl,.sim-beker .lbl{position:absolute;bottom:-18px;font-size:clamp(8px,1vw,9.5px);color:var(--text3);font-weight:600;white-space:nowrap;}
+.sim-beker{position:absolute;left:60%;bottom:calc(11% + 4px);transform:translate(-50%,0);width:clamp(88px,16.25vw,120px);display:flex;flex-direction:column;align-items:center;transition:filter .2s;z-index:3;}
+.sim-beker img{width:100%;height:auto;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));}
+.sim-beker.target-hover img{filter:drop-shadow(0 0 9px rgba(217,119,6,.85));}
+#tool-pipet.filled img{filter:drop-shadow(0 2px 4px rgba(0,0,0,.18)) drop-shadow(0 0 6px rgba(59,130,246,.85));}
+.sim-objek{position:absolute;left:37%;bottom:calc(11% + 14px);transform:translate(-50%,0);width:clamp(110px,20vw,160px);height:clamp(34px,6vw,48px);background:linear-gradient(135deg,#dbeafe,#eff6ff);border:2px solid #93c5fd;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:box-shadow .2s;z-index:4;cursor:default;}
 .sim-objek.draggable{cursor:grab;box-shadow:0 0 0 3px rgba(29,78,216,.25);}
 .sim-objek.target-hover{box-shadow:0 0 0 5px rgba(217,119,6,.35);}
 .sim-objek .smear{position:absolute;width:30%;height:26%;border-radius:50%;opacity:0;transition:opacity .3s;}
 .sim-objek .drop{position:absolute;width:13%;height:13%;border-radius:50%;background:rgba(147,197,253,0.85);opacity:0;transition:opacity .3s;left:50%;top:-8%;transform:translateX(-50%);}
-.sim-objek .cover{position:absolute;inset:-2px;background:rgba(255,255,255,0.35);border:1.5px solid rgba(148,163,184,0.7);border-radius:6px;opacity:0;transition:opacity .3s;}
-.sim-micro{position:absolute;left:87%;bottom:5%;transform:translate(-50%,0);width:clamp(180px,34vw,250px);text-align:center;transition:filter .2s;z-index:3;}
+.sim-objek .cover{position:absolute;inset:-4px;background:rgba(255,255,255,0.3) url('https://denicendrianto41.github.io/kaca_penutup.png') center/70% no-repeat;border:1.5px solid rgba(148,163,184,0.7);border-radius:6px;opacity:0;transition:opacity .3s,transform .3s;transform:scale(0.8);transform-origin:center;}
+.sim-micro{position:absolute;left:81%;bottom:6%;transform:translate(-50%,0);width:clamp(210px,37vw,300px);text-align:center;transition:filter .2s;z-index:3;}
 .sim-micro img{width:100%;object-fit:contain;}
 .sim-micro.ready{filter:drop-shadow(0 0 8px rgba(217,119,6,.6));}
 .sim-micro.target-hover img{filter:drop-shadow(0 0 10px rgba(217,119,6,.85));}
-.sim-reset-btn{position:absolute;top:8px;right:10px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;border-radius:7px;padding:7px 14px;font-size:10.5px;font-weight:700;color:#fff;cursor:pointer;z-index:7;box-shadow:0 2px 8px rgba(37,99,235,.25);transition:all .17s;}
+.sim-reset-btn{position:absolute;top:8px;left:10px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;border-radius:7px;padding:7px 14px;font-size:10.5px;font-weight:700;color:#fff;cursor:pointer;z-index:7;box-shadow:0 2px 8px rgba(37,99,235,.25);transition:all .17s;}
 .sim-reset-btn:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);transform:translateY(-1px);}
-.pipet-drop{position:absolute;width:8px;height:11px;background:linear-gradient(180deg,#93c5fd,#3b82f6);border-radius:50% 50% 50% 0;transform:translate(-50%,0) rotate(45deg);opacity:0.95;pointer-events:none;z-index:40;animation:pipetDropFall .6s ease-in forwards;box-shadow:0 1px 3px rgba(37,99,235,.4);}
-@keyframes pipetDropFall{0%{transform:translate(-50%,0) rotate(45deg) scale(1);opacity:1;}80%{opacity:.9;}100%{transform:translate(-50%,34px) rotate(45deg) scale(.7);opacity:0;}}
+.pipet-drop{position:absolute;width:8px;height:11px;background:linear-gradient(180deg,#93c5fd,#3b82f6);border-radius:50% 50% 50% 0;transform:translate(-50%,0) rotate(45deg);opacity:0.95;pointer-events:none;z-index:40;animation:pipetDropFall linear forwards;box-shadow:0 1px 3px rgba(37,99,235,.4);}
+@keyframes pipetDropFall{0%{transform:translate(-50%,0) rotate(45deg) scale(1);opacity:1;}85%{opacity:.9;transform:translate(-50%,var(--fall-dist,34px)) rotate(45deg) scale(.85);}100%{transform:translate(-50%,var(--fall-dist,34px)) rotate(45deg) scale(.6);opacity:0;}}
 .sim-progress{display:flex;gap:4px;margin-top:8px;}
 .sim-progress span{flex:1;height:5px;border-radius:3px;background:var(--border);transition:background .3s;}
 .sim-progress span.on{background:var(--green);}
+.sim-info-box{position:absolute;top:8px;right:10px;z-index:8;width:clamp(150px,24vw,220px);background:rgba(255,255,255,.94);border:1px solid var(--border);border-radius:9px;padding:8px 10px;box-shadow:0 3px 12px rgba(30,41,59,.14);backdrop-filter:blur(3px);}
+.sim-info-box .sim-progress{margin-top:0;margin-bottom:6px;}
+.sim-info-box #simMsg{margin-top:0;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:6px 8px;font-size:10.5px;line-height:1.5;}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
@@ -172,10 +205,10 @@ nav::-webkit-scrollbar{display:none;}
 /* LOADING SCREEN */
 #loadScreen{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 50%,#2563eb 100%);display:flex;align-items:center;justify-content:center;transition:opacity .55s ease;}
 #loadScreen.hide{opacity:0;pointer-events:none;}
-#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_morfologi_jamur.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
-#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.55);z-index:1;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_morfologi_jamur.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(10,28,90,0.15);z-index:1;}
 .load-box{position:relative;z-index:2;text-align:center;padding:20px;}
-.load-logo{width:78px;height:78px;border-radius:16px;background:#fff;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,.4);margin:0 auto 14px;display:block;}
+.load-logo{width:78px;height:78px;background:none;padding:0;filter:drop-shadow(0 8px 24px rgba(0,0,0,.45));margin:0 auto 14px;display:block;}
 .load-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
 .load-sub{font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:18px;}
 .load-bar-wrap{width:260px;height:8px;background:rgba(255,255,255,0.15);border-radius:5px;overflow:hidden;margin:0 auto 8px;}
@@ -279,6 +312,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-tujuan" class="page active">
   <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <div style="background:linear-gradient(135deg,#0f2460 0%,#1a3a8f 55%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(10,30,80,0.28);">
       <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
@@ -354,6 +388,7 @@ document.addEventListener('click',function(e){
     </div>
 
   </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -361,6 +396,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-teori" class="page">
   <div class="scroll" style="padding:14px 16px 20px;">
+  <div class="fit-inner">
 
     <div style="background:linear-gradient(135deg,#1e293b 0%,#0f2460 60%,#1a3a8f 100%);border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(10,30,80,0.22);position:relative;overflow:hidden;">
       <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
@@ -453,6 +489,7 @@ document.addEventListener('click',function(e){
       </div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -460,80 +497,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-      <div class="card" style="margin-bottom:0;">
-        <div class="ch"><div class="ci b">🔧</div><div class="ct">Daftar Alat &amp; Bahan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Drag item ke area <strong>Meja Percobaan</strong> di sebelah kanan.</p>
-        <div id="drag-src" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;">
-          <div class="drag-item" data-id="mikroskop" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/mikroskop.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Mikroskop</div>
-            <div style="font-size:9.5px;color:var(--text3);">Cahaya</div>
-          </div>
-          <div class="drag-item" data-id="kacaobjek" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/kaca_objek.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Kaca Objek</div>
-            <div style="font-size:9.5px;color:var(--text3);">Object Glass</div>
-          </div>
-          <div class="drag-item" data-id="kacapenutup" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/kaca_penutup.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Kaca Penutup</div>
-            <div style="font-size:9.5px;color:var(--text3);">Cover Glass</div>
-          </div>
-          <div class="drag-item" data-id="pipet" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><img src="https://denicendrianto41.github.io/pipet.png" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;"></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Pipet Tetes</div>
-            <div style="font-size:9.5px;color:var(--text3);">Dropper</div>
-          </div>
-          <div class="drag-item" data-id="jarum" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;"><svg viewBox="0 0 60 60" width="30" height="30" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;"><line x1="8" y1="54" x2="48" y2="8" stroke="#94a3b8" stroke-width="3.2" stroke-linecap="round"/><polygon points="4,60 12,50 16,54" fill="#64748b"/><circle cx="50" cy="6" r="7" fill="#dc2626" stroke="#991b1b" stroke-width="1"/></svg></div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Jarum Pentul</div>
-            <div style="font-size:9.5px;color:var(--text3);">Needle</div>
-          </div>
-          <div class="drag-item" data-id="tissue" data-type="alat" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;font-size:26px;">🧻</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tissue Kering</div>
-            <div style="font-size:9.5px;color:var(--text3);">1 pak kecil</div>
-          </div>
-          <div class="drag-item" data-id="tempe" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;font-size:26px;">🫘</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Tempe</div>
-            <div style="font-size:9.5px;color:var(--text3);">Segar</div>
-          </div>
-          <div class="drag-item" data-id="roti" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;font-size:26px;filter:sepia(1) hue-rotate(60deg) saturate(2.4) brightness(.8);">🍞</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Roti Basi</div>
-            <div style="font-size:9.5px;color:var(--text3);">Berjamur</div>
-          </div>
-          <div class="drag-item" data-id="nasi" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;font-size:26px;filter:sepia(.6) hue-rotate(50deg) saturate(2) brightness(.85);">🍚</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Nasi Basi</div>
-            <div style="font-size:9.5px;color:var(--text3);">Berjamur</div>
-          </div>
-          <div class="drag-item" data-id="aquades" data-type="bahan" style="background:#eff6ff;border:1.5px dashed #93c5fd;border-radius:10px;padding:9px;text-align:center;">
-            <div style="margin-bottom:3px;font-size:26px;">💧</div>
-            <div style="font-size:11px;font-weight:600;color:var(--acc3);">Aquades</div>
-            <div style="font-size:9.5px;color:var(--text3);">Air suling</div>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#f8fafc,#f0f4f8);border:2px dashed var(--border2);">
-        <div class="ch"><div class="ci y">🔬</div><div class="ct">Meja Percobaan</div></div>
-        <p style="font-size:11px;color:var(--text3);margin-bottom:8px;">Susun alat dan bahan percobaan di sini.</p>
-        <div style="font-size:10px;font-weight:600;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚙️ Alat</div>
-        <div id="drop-alat" data-zone="alat" style="min-height:110px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s;margin-bottom:10px;position:relative;">
-          <span id="hint-alat" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag alat ke sini</span>
-        </div>
-        <div style="font-size:10px;font-weight:600;color:#1d4ed8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">🧫 Bahan</div>
-        <div id="drop-bahan" data-zone="bahan" style="min-height:110px;border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:background .2s;position:relative;">
-          <span id="hint-bahan" style="color:#93c5fd;font-size:12px;width:100%;text-align:center;padding:8px 0;">← Drag bahan ke sini</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ch"><div class="ci y">💡</div><div class="ct">Catatan Persiapan</div></div>
-      <p>Gunakan <strong>jarum pentul</strong> untuk mengambil sampel jamur secukupnya saja — jangan berlebihan agar preparat tetap tipis dan cahaya bisa menembus saat diamati di mikroskop.</p>
-    </div>
+    <img src="https://denicendrianto41.github.io/meja_lab_morfologi_jamur.webp" alt="Alat dan Bahan Percobaan Morfologi Jamur" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -541,29 +505,8 @@ document.addEventListener('click',function(e){
      PROSEDUR
 ══════════════════════════════════════════ -->
 <div id="page-prosedur" class="page">
-  <div style="flex:1;overflow:hidden;padding:8px 12px 8px;display:flex;flex-direction:column;gap:7px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0;">
-      <div class="card" style="margin-bottom:0;overflow-y:auto;">
-        <div class="ch" style="margin-bottom:5px;"><div class="ci b">📋</div><div class="ct">Langkah Percobaan</div></div>
-        <div id="simSteps"></div>
-      </div>
-      <div class="card" style="margin-bottom:0;overflow-y:auto;">
-        <div class="ch"><div class="ci r">⚠️</div><div class="ct" style="color:var(--red)">Perhatikan!</div></div>
-        <ul class="olist" style="font-size:11px;">
-          <li>Ambil sampel secukupnya saja dengan jarum pentul</li>
-          <li>Oleskan tipis agar tidak menggumpal di kaca objek</li>
-          <li>Tetesi aquades secukupnya jika sampel terlalu kering</li>
-          <li>Tutup dengan kaca penutup secara perlahan, hindari gelembung udara</li>
-          <li>Mulai dengan perbesaran lemah (10×10), lalu perbesaran kuat (10×40)</li>
-          <li>Atur pantulan cahaya — tidak terlalu redup atau terlalu terang</li>
-          <li>Klik ℹ pada mikroskop untuk membaca info struktur yang teramati</li>
-        </ul>
-        <div class="notebox" style="margin-top:10px;">
-          <div class="nt">🔭 Hasil yang Diharapkan</div>
-          <p>Terlihat benang-benang hifa (bersekat/tidak bersekat) dan sporangium berisi spora di ujung sporangiofor/konidiofor — bentuk dan warnanya berbeda pada tiap sampel.</p>
-        </div>
-      </div>
-    </div>
+  <div class="scroll">
+    <img src="https://denicendrianto41.github.io/prosedur_morfologi_jamur.webp" alt="Prosedur Percobaan Morfologi Jamur" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
   </div>
 </div>
 
@@ -571,51 +514,58 @@ document.addEventListener('click',function(e){
      SIMULASI
 ══════════════════════════════════════════ -->
 <div id="page-simulasi" class="page">
-  <div style="flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;padding:10px 12px;gap:8px;">
+  <div style="flex:1;overflow:hidden;position:relative;display:flex;flex-direction:row;padding:10px 12px;gap:10px;">
 
-    <!-- Sample picker -->
-    <div class="card" style="margin-bottom:0;">
-      <div class="ch" style="margin-bottom:6px;"><div class="ci g">🧫</div><div class="ct">1. Pilih Sumber Sampel</div></div>
-      <div style="display:flex;gap:8px;">
-        <div class="sample-btn" id="samplebtn-tempe" onclick="pickSample('tempe')">
+    <!-- Sample picker (left sidebar, vertical stack) -->
+    <div class="card" style="margin-bottom:0;width:clamp(140px,19vw,205px);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto;">
+      <div class="ch" style="margin-bottom:6px;"><div class="ci g">🧫</div><div class="ct">Pilih Sumber Sampel</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;">
+        <div class="sample-btn" id="samplebtn-tempe" onclick="pickSample('tempe')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
           <span class="sample-emoji">🫘</span><div style="font-size:11.5px;font-weight:700;color:var(--text);">Tempe</div><div style="font-size:9.5px;color:var(--text3);">segar</div>
         </div>
-        <div class="sample-btn" id="samplebtn-roti" onclick="pickSample('roti')">
+        <div class="sample-btn" id="samplebtn-roti" onclick="pickSample('roti')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
           <span class="sample-emoji" style="filter:sepia(1) hue-rotate(60deg) saturate(2.4) brightness(.8);">🍞</span><div style="font-size:11.5px;font-weight:700;color:var(--text);">Roti</div><div style="font-size:9.5px;color:var(--text3);">basi/berjamur</div>
         </div>
-        <div class="sample-btn" id="samplebtn-nasi" onclick="pickSample('nasi')">
+        <div class="sample-btn" id="samplebtn-nasi" onclick="pickSample('nasi')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
           <span class="sample-emoji" style="filter:sepia(.6) hue-rotate(50deg) saturate(2) brightness(.85);">🍚</span><div style="font-size:11.5px;font-weight:700;color:var(--text);">Nasi</div><div style="font-size:9.5px;color:var(--text3);">basi</div>
         </div>
       </div>
-      <div class="sim-progress" id="simProgress">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <div id="simMsg" style="margin-top:7px;font-size:11.5px;color:var(--text2);background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;">Pilih salah satu sumber sampel untuk memulai.</div>
     </div>
 
     <!-- Play area: toolbox tray + stage merged so alat bisa di-drag bebas -->
-    <div class="sim-playarea" id="simPlayArea">
+    <div class="sim-playarea" id="simPlayArea" style="flex:1;">
       <button class="sim-reset-btn" onclick="resetSim()">↺ Ulangi Sampel Ini</button>
-      <div class="sim-tool" id="tool-jarum" data-id="jarum" style="left:16.5%;top:15%;">
-        <div class="icon-wrap"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100%;"><line x1="6" y1="55" x2="50" y2="7" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"/><polygon points="2,60 11,49 15,53" fill="#64748b"/><circle cx="52" cy="5" r="8" fill="#dc2626" stroke="#991b1b" stroke-width="1.2"/></svg></div>
-        <span>Jarum Pentul</span>
-      </div>
-      <div class="sim-tool" id="tool-pipet" data-id="pipet" style="left:50%;top:15%;">
-        <img src="https://denicendrianto41.github.io/pipet.png" alt="pipet">
-        <span>Pipet+Aquades</span>
-      </div>
-      <div class="sim-tool" id="tool-tutup" data-id="tutup" style="left:83.5%;top:15%;">
-        <img src="https://denicendrianto41.github.io/kaca_penutup.png" alt="kaca penutup">
-        <span>Kaca Penutup</span>
+
+      <!-- Keterangan tiap tahap dipindahkan ke pojok kanan atas area percobaan -->
+      <div class="sim-info-box">
+        <div class="sim-progress" id="simProgress">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div id="simMsg">Pilih salah satu sumber sampel untuk memulai.</div>
       </div>
 
-      <div class="sim-dish" id="simDish"><span style="font-size:clamp(39px,7.5vw,54px);" id="simDishEmoji">🧫</span><span class="lbl">Sampel</span></div>
+      <div class="sim-tool" id="tool-jarum" data-id="jarum" style="left:18%;top:14%;">
+        <img src="https://denicendrianto41.github.io/jarum_pentul.png" alt="jarum pentul">
+      </div>
+      <div class="sim-tool" id="tool-pipet" data-id="pipet" style="left:18%;top:46%;">
+        <img src="https://denicendrianto41.github.io/pipet2.png" alt="pipet">
+      </div>
+      <div class="sim-tool" id="tool-tutup" data-id="tutup" style="left:18%;top:80%;">
+        <img src="https://denicendrianto41.github.io/kaca_penutup.png" alt="kaca penutup">
+      </div>
+
+      <div class="sim-dish" id="simDish"><span style="font-size:clamp(39px,7.5vw,54px);" id="simDishEmoji"></span><span class="lbl">Sampel</span></div>
       <div class="sim-objek" id="simObjek">
         <div class="smear" id="simSmear"></div>
         <div class="drop" id="simDrop"></div>
         <div class="cover" id="simCover"></div>
+        <span class="lbl">Kaca Objek</span>
       </div>
-      <div class="sim-micro" id="simMicro"><img src="https://denicendrianto41.github.io/mikroskop.png" alt="mikroskop"></div>
+      <div class="sim-beker" id="simBeker">
+        <img src="https://denicendrianto41.github.io/beker_glass.png" alt="beker glass aquades">
+        <span class="lbl">Aquades</span>
+      </div>
+      <div class="sim-micro" id="simMicro"><img src="https://denicendrianto41.github.io/mikroskop.png" alt="mikroskop"><div style="font-size:clamp(9px,1.1vw,11px);color:var(--text2);font-weight:700;margin-top:5px;">Mikroskop</div></div>
     </div>
   </div>
 
@@ -727,65 +677,110 @@ function show(id,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
+  if(id==='tujuan'||id==='teori'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
+  if(id==='alatbahan'||id==='prosedur'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitScrollableImage(id)));
+  }
 }
 document.addEventListener('click',function(e){
   if(!e.target.closest('nav')&&!e.target.closest('#menuToggle'))
     document.getElementById('mainNav').classList.remove('open');
 });
 
-// ══════════════════════════════════════════
-//  PROSEDUR — animated roadmap
-// ══════════════════════════════════════════
-const simSteps=[
-  {svg:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="5" r="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.3V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 21h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 17l-3 4M12 17l3 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,text:'Ambil sampel jamur dari <strong>tempe, roti basi, atau nasi basi</strong> menggunakan jarum pentul.'},
-  {svg:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect x="3" y="9" width="18" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M7 12.5c1-.6 2-.6 3 0s2 .6 3 0 2-.6 3 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10 4l2 2 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,text:'Oleskan tipis sampel di atas <strong>kaca objek</strong>. Tetesi aquades bila perlu, lalu tutup dengan <strong>kaca penutup</strong>.'},
-  {svg:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.2"/></svg>`,text:'Amati di bawah mikroskop, mulai perbesaran <strong>lemah (10×10)</strong> lalu <strong>kuat (10×40)</strong>. Amati hifa (bersekat/tidak) dan sporangium.'},
-  {svg:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,text:'Gambar morfologi yang terlihat, beri keterangan, dan identifikasi jenis jamurnya (misal <em>Rhizopus stolonifer</em>, <em>Aspergillus niger</em>, <em>Rhizopus oryzae</em>).'},
-  {svg:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M4 19h16M6 19V9l6-5 6 5v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 19v-5h4v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,text:'Diskusikan hasil dalam kelompok dan susun laporan/portofolio untuk diasesmen guru.'},
-];
-(function(){
-  const colors=['#1d4ed8','#2563eb','#d97706','#7c3aed','#dc2626'];
-  document.getElementById('simSteps').innerHTML=`<div style="position:relative;padding:4px 0;">${simSteps.map((s,i)=>{
-    const c=colors[i%colors.length],nc=colors[(i+1)%colors.length],last=i===simSteps.length-1,right=i%2===0;
-    return `<div style="display:flex;align-items:flex-start;gap:0;margin-bottom:0;position:relative;" class="map-step">
-      ${right?`
-      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-right:10px;">
-        <button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;">
-          <span style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#fff;pointer-events:none;">${s.svg}</span>
-        </button>
-        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
-      </div>
-      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
-        <div style="position:absolute;left:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid ${c}40;"></div>
-        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
-      </div>`:`
-      <div style="flex:1;background:${c}10;border:1.5px solid ${c}40;border-radius:10px;padding:6px 10px;position:relative;margin-bottom:0;" class="step-box">
-        <div style="position:absolute;right:-8px;top:12px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid ${c}40;"></div>
-        <div style="font-size:8.5px;font-weight:700;color:${c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">Langkah ${i+1}</div>
-        <p style="font-size:11.5px;color:var(--text2);margin:0;line-height:1.5;">${s.text}</p>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;z-index:1;margin-left:10px;">
-        <button onclick="zoomStep(this)" style="width:40px;height:40px;border-radius:50%;background:${c};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px ${c}55;flex-shrink:0;cursor:pointer;padding:4px;transition:transform .15s;">
-          <span style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#fff;pointer-events:none;">${s.svg}</span>
-        </button>
-        ${!last?`<div style="width:0;flex:1;min-height:14px;border-left:3px dashed ${nc}88;margin-top:3px;margin-bottom:3px;"></div>`:''}
-      </div>`}
-    </div>`;
-  }).join('')}</div>`;
-})();
-function zoomStep(btn){
-  const row=btn.closest('.map-step');if(!row)return;
-  const box=row.querySelector('.step-box');if(!box)return;
-  box.classList.remove('step-box-zoom');void box.offsetWidth;box.classList.add('step-box-zoom');
-  box.addEventListener('animationend',()=>box.classList.remove('step-box-zoom'),{once:true});
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar tanpa sisa ruang kosong ══
+// Pada perangkat sentuh (HP/tablet), skala otomatis DINONAKTIFKAN — konten memakai
+// ukuran font normal dan halaman cukup discroll (lihat CSS @media(pointer:coarse)).
+function isTouchDevice(){
+  return window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
 }
+function fitToContainer(container, reserveBottom){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  if(isTouchDevice()){
+    inner.style.transform = 'none';
+    inner.style.width = '100%';
+    return;
+  }
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom - (reserveBottom||0);
+  if(availH <= 0) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  const naturalH = inner.scrollHeight;
+  if(naturalH <= 0) return;
+  let scale = Math.min(Math.max(availH / naturalH, 0.45), 3);
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'none';
+  const reflowedH = inner.scrollHeight;
+  if(reflowedH > 0){
+    scale = Math.min(Math.max(availH / reflowedH, 0.45), 3);
+  }
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
+}
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'), 15);
+  }else if(id==='teori'){
+    fitToContainer(document.querySelector('#page-teori > .scroll'), 15);
+  }
+}
+// ══ Gambar besar (Alat & Bahan / Prosedur) di perangkat mobile: pilih otomatis
+// arah "cover" (lebar-penuh ATAU tinggi-penuh) mana yang membuat gambar menutupi
+// seluruh area tanpa sisa ruang kosong ══
+function fitScrollableImage(pageId){
+  if(!isTouchDevice()) return;
+  const container = document.querySelector('#page-'+pageId+' .scroll');
+  if(!container) return;
+  const img = container.querySelector('img');
+  if(!img) return;
+  const apply = ()=>{
+    if(!img.naturalWidth || !img.naturalHeight) return;
+    const cw = container.clientWidth, ch = container.clientHeight;
+    if(cw<=0||ch<=0) return;
+    const naturalRatio = img.naturalWidth/img.naturalHeight;
+    const heightIfFitWidth = cw/naturalRatio;
+    if(heightIfFitWidth >= ch - 0.5){
+      img.style.width='100%';img.style.height='auto';img.style.maxWidth='none';img.style.maxHeight='none';
+      container.style.overflowX='hidden';container.style.overflowY='auto';
+    }else{
+      img.style.height='100%';img.style.width='auto';img.style.maxWidth='none';img.style.maxHeight='none';
+      container.style.overflowX='auto';container.style.overflowY='hidden';
+      requestAnimationFrame(()=>{
+        container.scrollLeft = Math.max(0,(img.offsetWidth - container.clientWidth)/2);
+      });
+    }
+  };
+  if(img.complete && img.naturalWidth){ apply(); }
+  else{ img.addEventListener('load', apply, {once:true}); }
+}
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori') fitPage(id);
+    if(id==='alatbahan'||id==='prosedur') fitScrollableImage(id);
+  });
+}
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer=setTimeout(fitActivePages, 120);
+});
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
+  document.addEventListener(evt, ()=>setTimeout(fitActivePages,120));
+});
+document.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(fitActivePages, 150);
+});
 
 // ══════════════════════════════════════════
-//  ALAT & BAHAN — Drag & Drop classification
+//  ALAT & BAHAN / PROSEDUR — kini berupa gambar statis
 // ══════════════════════════════════════════
-const CORRECT_ALAT=new Set(['mikroskop','kacaobjek','kacapenutup','pipet','jarum','tissue']);
-const CORRECT_BAHAN=new Set(['tempe','roti','nasi','aquades']);
 let abGhost=null,abGOffX=0,abGOffY=0;
 function abCreateGhost(el,cx,cy){
   const g=document.getElementById('dragGhost');
@@ -808,76 +803,6 @@ function toastMsg(text,ok){
   requestAnimationFrame(()=>{toast.style.opacity='1';toast.style.transform='translate(-50%,-50%) scale(1)';});
   setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(()=>toast.remove(),300);},1400);
 }
-function abShowBenar(zone){_playSfx(_sfxBenar);toastMsg('✅ Kamu Benar!',true);zone.style.borderColor='#10b981';zone.style.boxShadow='0 0 0 4px rgba(16,185,129,0.3)';setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},1400);}
-function abShowSalah(zone){_playSfx(_sfxSalah);toastMsg('❌ Salah! Coba lagi.',false);zone.style.borderColor='#ef4444';zone.style.boxShadow='0 0 0 4px rgba(239,68,68,0.3)';zone.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});setTimeout(()=>{zone.style.borderColor='';zone.style.boxShadow='';},800);}
-function abPlace(zone,srcEl){
-  const id=srcEl.dataset.id;
-  if(zone.querySelector('[data-id="'+id+'"]'))return;
-  const isAlat=CORRECT_ALAT.has(id),isBahan=CORRECT_BAHAN.has(id);
-  const zt=zone.dataset.zone;
-  if((zt==='alat'&&!isAlat)||(zt==='bahan'&&!isBahan)){abShowSalah(zone);return;}
-  const hint=document.getElementById(zt==='alat'?'hint-alat':'hint-bahan');
-  if(hint)hint.style.display='none';
-  const clone=srcEl.cloneNode(true);
-  clone.removeAttribute('draggable');
-  clone.style.cursor='default';clone.style.position='relative';
-  clone.style.transform='scale(0.85)';clone.style.transition='transform .2s';
-  requestAnimationFrame(()=>{clone.style.transform='scale(1)';});
-  const rm=document.createElement('button');
-  rm.textContent='✕';rm.title='Hapus';
-  rm.style.cssText='position:absolute;top:2px;right:2px;background:rgba(220,38,38,0.2);border:none;border-radius:50%;width:20px;height:20px;font-size:10px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;padding:0;touch-action:manipulation;';
-  rm.addEventListener('pointerdown',e=>e.stopPropagation());
-  rm.addEventListener('click',e=>{e.stopPropagation();clone.remove();if(!zone.querySelector('[data-id]')){const h2=document.getElementById(zt==='alat'?'hint-alat':'hint-bahan');if(h2)h2.style.display='';}});
-  clone.appendChild(rm);
-  zone.appendChild(clone);
-  abShowBenar(zone);
-  abCheckComplete();
-}
-function abCheckComplete(){
-  const a=document.querySelectorAll('#drop-alat [data-id]').length;
-  const b=document.querySelectorAll('#drop-bahan [data-id]').length;
-  if(a>=CORRECT_ALAT.size&&b>=CORRECT_BAHAN.size)setTimeout(abShowSelamat,400);
-}
-function abShowSelamat(){
-  new Audio('https://denicendrianto41.github.io/tring.wav').play().catch(()=>{});
-  const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease;';
-  ov.className='ab-selamat';
-  const box=document.createElement('div');
-  box.style.cssText='background:#fff;border-radius:20px;padding:36px 44px;text-align:center;max-width:380px;box-shadow:0 16px 48px rgba(0,0,0,0.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);font-family:Space Grotesk,sans-serif;';
-  box.innerHTML=`<div style="font-size:52px;margin-bottom:10px;">🎉</div>
-    <div style="font-size:22px;font-weight:800;color:#059669;margin-bottom:8px;">Selamat!</div>
-    <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:22px;">Semua alat dan bahan tersusun benar!<br>Lanjutkan ke <strong>Prosedur</strong> lalu <strong>Simulasi</strong> untuk praktikum virtual.</div>
-    <button onclick="this.closest('.ab-selamat').remove();document.querySelectorAll('.nb')[4].click();"
-      style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:Space Grotesk,sans-serif;box-shadow:0 4px 16px rgba(5,150,105,0.35);transition:transform .18s,box-shadow .18s;" onmouseover="this.style.transform='translateY(-2px) scale(1.03)';this.style.boxShadow='0 8px 28px rgba(5,150,105,.5)';" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(5,150,105,0.35)';">🔬 Mulai Simulasi →</button>`;
-  ov.appendChild(box);document.body.appendChild(ov);
-}
-(function(){
-  let dragSrc=null;
-  document.getElementById('drag-src').addEventListener('pointerdown',e=>{
-    const el=e.target.closest('.drag-item');if(!el)return;
-    dragSrc=el;abCreateGhost(el,e.clientX,e.clientY);
-    el.style.opacity='0.35';
-    e.preventDefault();
-  });
-  window.addEventListener('pointermove',e=>{
-    if(!dragSrc)return;
-    abMoveGhost(e.clientX,e.clientY);
-    ['drop-alat','drop-bahan'].forEach(id=>{
-      const z=document.getElementById(id);
-      if(z)z.style.background=abHitTest(z,e.clientX,e.clientY)?(id==='drop-alat'?'#dbeafe':'#dbeafe'):(id==='drop-alat'?'#eff6ff':'#eff6ff');
-    });
-  });
-  window.addEventListener('pointerup',e=>{
-    if(!dragSrc)return;
-    dragSrc.style.opacity='';
-    ['drop-alat','drop-bahan'].forEach(id=>{
-      const z=document.getElementById(id);
-      if(z){z.style.background=(id==='drop-alat'?'#eff6ff':'#eff6ff');if(abHitTest(z,e.clientX,e.clientY))abPlace(z,dragSrc);}
-    });
-    abRemoveGhost();dragSrc=null;
-  });
-})();
 
 // ══════════════════════════════════════════
 //  SIMULASI — Pengambilan sampel & mikroskop
@@ -906,16 +831,16 @@ const SPECIES={
   }
 };
 let currentSample=null;
-let stageState={taken:false,smeared:false,watered:false,covered:false};
+let stageState={taken:false,smeared:false,filled:false,watered:false,covered:false};
 let currentMag='lemah';
 let labelState={placed:{},total:0};
 
-const TOOL_HOME={jarum:{left:'16.5%',top:'15%'},pipet:{left:'50%',top:'15%'},tutup:{left:'83.5%',top:'15%'}};
-const OBJEK_HOME={left:'50%',top:null}; // top controlled by CSS bottom offset by default
+const TOOL_HOME={jarum:{left:'18%',top:'14%'},pipet:{left:'18%',top:'46%'},tutup:{left:'18%',top:'80%'}};
+const OBJEK_HOME={left:'37%',top:null}; // top controlled by CSS bottom offset by default
 
 function pickSample(key){
   currentSample=key;
-  stageState={taken:false,smeared:false,watered:false,covered:false};
+  stageState={taken:false,smeared:false,filled:false,watered:false,covered:false};
   ['tempe','roti','nasi'].forEach(k=>document.getElementById('samplebtn-'+k).classList.toggle('active',k===key));
   const sp=SPECIES[key];
   document.getElementById('simDishEmoji').textContent=sp.emoji;
@@ -929,7 +854,7 @@ function pickSample(key){
   objek.classList.remove('draggable');
   objek.style.left='';objek.style.top='';objek.style.bottom='';
   document.querySelectorAll('.sim-tool').forEach(t=>{
-    t.classList.remove('used');
+    t.classList.remove('used','filled');
     t.style.opacity='';
     const home=TOOL_HOME[t.dataset.id];
     if(home){t.style.left=home.left;t.style.top=home.top;}
@@ -941,7 +866,7 @@ function resetSim(){ if(currentSample) pickSample(currentSample); }
 function setSimMsg(html){ document.getElementById('simMsg').innerHTML=html; }
 function updateSimProgress(){
   const dots=document.querySelectorAll('#simProgress span');
-  const steps=[stageState.taken,stageState.smeared,stageState.watered,stageState.covered,stageState.covered&&stageState.smeared];
+  const steps=[stageState.taken,stageState.smeared,stageState.filled,stageState.watered,stageState.covered];
   dots.forEach((d,i)=>d.classList.toggle('on',!!steps[i]));
 }
 
@@ -950,6 +875,7 @@ function updateSimProgress(){
 //    Klik singkat (tanpa drag) pada pipet → efek tetesan air.
 (function(){
   const area=document.getElementById('simPlayArea');
+  const beker=document.getElementById('simBeker');
   document.querySelectorAll('.sim-tool').forEach(tool=>{
     tool.addEventListener('pointerdown',e=>{
       if(tool.classList.contains('used'))return;
@@ -968,15 +894,23 @@ function updateSimProgress(){
         const dish=document.getElementById('simDish'),objek=document.getElementById('simObjek');
         dish.classList.toggle('target-hover',abHitTest(dish,ev.clientX,ev.clientY));
         objek.classList.toggle('target-hover',abHitTest(objek,ev.clientX,ev.clientY));
+        if(tool.dataset.id==='pipet'){
+          beker.classList.toggle('target-hover',abHitTest(beker,ev.clientX,ev.clientY));
+        }
       };
       const up=ev=>{
         window.removeEventListener('pointermove',move);
         window.removeEventListener('pointerup',up);
         tool.style.zIndex='';
         const dish=document.getElementById('simDish'),objek=document.getElementById('simObjek');
-        dish.classList.remove('target-hover');objek.classList.remove('target-hover');
+        dish.classList.remove('target-hover');objek.classList.remove('target-hover');beker.classList.remove('target-hover');
         if(tool.dataset.id==='pipet'&&moved<6){
-          spawnDroplet(tool);
+          if(!stageState.filled){
+            _playSfx(_sfxSalah);
+            setSimMsg('⚠️ Pipet masih kosong. Drag <strong>pipet</strong> ke <strong>beker glass</strong> dahulu untuk mengambil aquades.');
+          } else {
+            spawnDroplet(tool);
+          }
           return;
         }
         handleToolDrop(tool,ev.clientX,ev.clientY);
@@ -988,21 +922,47 @@ function updateSimProgress(){
 })();
 function spawnDroplet(tool){
   const area=document.getElementById('simPlayArea');
-  const ar=area.getBoundingClientRect(),tr=tool.getBoundingClientRect();
-  const x=tr.left+tr.width/2-ar.left, y=tr.top+tr.height*0.72-ar.top;
+  const objek=document.getElementById('simObjek');
+  const ar=area.getBoundingClientRect(),tr=tool.getBoundingClientRect(),orct=objek.getBoundingClientRect();
+  // Titik keluar tetesan: ujung bawah pipet
+  const startX=tr.left+tr.width/2, startY=tr.top+tr.height*0.82;
+  // Tetesan hanya benar-benar menuju kaca objek jika pipet sejajar & berada di atas kaca objek
+  const alignedX=startX>=orct.left-6 && startX<=orct.right+6;
+  const aboveObjek=alignedX && orct.top>startY;
+  const willReachObjek=aboveObjek && !!currentSample && stageState.filled;
+  const endY=willReachObjek ? (orct.top+orct.height*0.45) : (startY+40);
+  const fallDist=Math.max(20,endY-startY);
+  const x=startX-ar.left, y=startY-ar.top;
   const d=document.createElement('div');
   d.className='pipet-drop';
   d.style.left=x+'px';d.style.top=y+'px';
+  d.style.setProperty('--fall-dist',fallDist+'px');
+  const duration=Math.max(350,Math.min(1100,fallDist*3));
+  d.style.animationDuration=duration+'ms';
   area.appendChild(d);
-  setTimeout(()=>d.remove(),650);
+  // Interaksi baru terjadi TEPAT saat tetesan sampai/menyentuh kaca objek (di akhir animasi jatuh)
+  setTimeout(()=>{
+    d.remove();
+    if(willReachObjek) tryWaterObjek();
+  },duration);
+}
+function tryWaterObjek(){
+  if(stageState.smeared&&!stageState.watered){
+    stageState.watered=true;_playSfx(_sfxBenar);
+    document.getElementById('simDrop').style.opacity='1';
+    setSimMsg('✅ Tetesan aquades sampai di kaca objek. Sekarang drag <strong>kaca penutup</strong> untuk menutup preparat.');
+    updateSimProgress();
+    return true;
+  }
+  return false;
 }
 function handleToolDrop(tool,clientX,clientY){
   const id=tool.dataset.id;
-  const dish=document.getElementById('simDish'),objek=document.getElementById('simObjek');
-  const onDish=abHitTest(dish,clientX,clientY), onObjek=abHitTest(objek,clientX,clientY);
+  const dish=document.getElementById('simDish'),objek=document.getElementById('simObjek'),beker=document.getElementById('simBeker');
+  const onDish=abHitTest(dish,clientX,clientY), onObjek=abHitTest(objek,clientX,clientY), onBeker=id==='pipet'&&abHitTest(beker,clientX,clientY);
   // alat yang aksinya sudah selesai, atau dijatuhkan di area kosong → hanya berpindah posisi, tanpa umpan balik
-  const consumed=(id==='jarum'&&stageState.smeared)||(id==='pipet'&&stageState.watered);
-  if(consumed||(!onDish&&!onObjek)){
+  const consumed=(id==='jarum'&&stageState.smeared)||(id==='pipet'&&stageState.watered)||(id==='pipet'&&onBeker&&stageState.filled);
+  if(consumed||(!onDish&&!onObjek&&!onBeker)){
     updateSimProgress();
     return;
   }
@@ -1012,11 +972,26 @@ function handleToolDrop(tool,clientX,clientY){
   } else if(id==='jarum'&&onObjek&&stageState.taken&&!stageState.smeared){
     stageState.smeared=true;_playSfx(_sfxBenar);
     document.getElementById('simSmear').style.opacity='1';
-    setSimMsg('✅ Sampel dioleskan tipis di kaca objek. Kamu bisa drag <strong>pipet</strong> untuk menetesi aquades (opsional), lalu drag <strong>kaca penutup</strong>.');
+    setSimMsg('✅ Sampel dioleskan tipis di kaca objek. Sekarang drag <strong>pipet</strong> ke <strong>beker glass</strong> untuk mengambil aquades (opsional), lalu teteskan ke kaca objek, atau langsung tutup dengan <strong>kaca penutup</strong>.');
+  } else if(id==='pipet'&&onBeker&&!stageState.filled){
+    stageState.filled=true;_playSfx(_sfxBenar);
+    tool.classList.add('filled');
+    // Posisikan ujung pipet hanya menyentuh permukaan/tepi atas beker, tidak masuk terlalu dalam
+    const area=document.getElementById('simPlayArea');
+    const ar=area.getBoundingClientRect(), br=beker.getBoundingClientRect(), tr=tool.getBoundingClientRect();
+    const tipFraction=0.82; // sama dgn titik ujung pipet pada spawnDroplet
+    const gap=6;
+    const centerY=br.top-gap-tr.height*(tipFraction-0.5);
+    tool.style.left=((br.left+br.width/2)-ar.left)+'px';
+    tool.style.top=(centerY-ar.top)+'px';
+    setSimMsg('✅ Aquades diambil dengan pipet. Sekarang drag <strong>pipet</strong> ke atas <strong>kaca objek</strong>, lalu ketuk singkat untuk meneteskannya.');
   } else if(id==='pipet'&&onObjek&&stageState.smeared&&!stageState.watered){
-    stageState.watered=true;_playSfx(_sfxBenar);
-    document.getElementById('simDrop').style.opacity='1';
-    setSimMsg('✅ Aquades ditambahkan. Sekarang drag <strong>kaca penutup</strong> untuk menutup preparat.');
+    if(!stageState.filled){
+      _playSfx(_sfxSalah);
+      setSimMsg('⚠️ Pipet masih kosong. Ambil dulu aquades dari <strong>beker glass</strong> sebelum meneteskannya ke kaca objek.');
+    } else {
+      tryWaterObjek();
+    }
   } else if(id==='tutup'&&onObjek&&stageState.smeared&&!stageState.covered){
     stageState.covered=true;_playSfx(_sfxBenar);
     document.getElementById('simCover').style.opacity='1';
@@ -1026,7 +1001,7 @@ function handleToolDrop(tool,clientX,clientY){
     setSimMsg('✅ Preparat siap! Drag <strong>kaca objek (preparat)</strong> ke <strong>mikroskop</strong> untuk mulai mengamati.');
   } else {
     _playSfx(_sfxSalah);
-    setSimMsg('❌ Belum tepat — ikuti urutan: ambil sampel → oleskan ke kaca objek → (opsional) tetesi aquades → tutup dengan kaca penutup.');
+    setSimMsg('❌ Belum tepat — ikuti urutan: ambil sampel → oleskan ke kaca objek → (opsional) ambil aquades dari beker glass lalu teteskan → tutup dengan kaca penutup.');
   }
   // posisi alat menetap di titik terakhir drag (tidak kembali ke posisi awal)
   updateSimProgress();
@@ -1057,7 +1032,7 @@ function handleToolDrop(tool,clientX,clientY){
       const hit=abHitTest(micro,ev.clientX,ev.clientY);
       micro.classList.remove('target-hover');
       objek.style.transition='left .35s ease, top .35s ease, bottom .35s ease';
-      objek.style.left=OBJEK_HOME.left;objek.style.top='';objek.style.bottom='calc(8% + 100px)';
+      objek.style.left=OBJEK_HOME.left;objek.style.top='';objek.style.bottom='calc(11% + 14px)';
       setTimeout(()=>{objek.style.transition='';},380);
       if(hit&&stageState.covered){ openMicroscope(); }
       else if(!hit){ setSimMsg('⚠️ Preparat belum tepat di atas mikroskop. Coba drag lagi ke arah mikroskop.'); }
