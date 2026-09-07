@@ -100,6 +100,9 @@ nav::-webkit-scrollbar{display:none;}
   .sim-info-box #simMsg{font-size:8.5px!important;padding:4px 6px!important;}
   .sim-progress span{height:3px!important;}
   .sim-reset-btn{padding:5px 10px!important;font-size:8.5px!important;}
+  .sim-controls-topleft{gap:4px!important;}
+  .sim-fullscreen-btn{padding:5px 10px!important;font-size:8.5px!important;}
+  .sim-fullscreen-btn svg{width:12px!important;height:12px!important;}
 
   /* Panel mikroskop & game label: ramping agar muat di layar landscape sempit */
   .micro-left{width:130px!important;padding:8px!important;gap:6px!important;}
@@ -209,8 +212,19 @@ nav::-webkit-scrollbar{display:none;}
 .sim-micro img{width:100%;object-fit:contain;}
 .sim-micro.ready{filter:drop-shadow(0 0 8px rgba(217,119,6,.6));}
 .sim-micro.target-hover img{filter:drop-shadow(0 0 10px rgba(217,119,6,.85));}
-.sim-reset-btn{position:absolute;top:8px;left:10px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;border-radius:7px;padding:7px 14px;font-size:10.5px;font-weight:700;color:#fff;cursor:pointer;z-index:7;box-shadow:0 2px 8px rgba(37,99,235,.25);transition:all .17s;}
+.sim-controls-topleft{position:absolute;top:8px;left:10px;z-index:7;display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
+.sim-reset-btn{background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;border-radius:7px;padding:7px 14px;font-size:10.5px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.25);transition:all .17s;}
 .sim-reset-btn:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);transform:translateY(-1px);}
+.sim-fullscreen-btn{display:flex;align-items:center;gap:5px;background:var(--surf);border:1px solid var(--border);border-radius:7px;padding:7px 14px;font-size:10.5px;font-weight:700;color:var(--acc3);cursor:pointer;box-shadow:0 2px 8px rgba(30,41,59,.1);transition:all .17s;}
+.sim-fullscreen-btn:hover{border-color:var(--acc);background:#eff6ff;box-shadow:0 4px 14px rgba(37,99,235,.18);transform:translateY(-1px);}
+.sim-fullscreen-btn svg{flex-shrink:0;display:block;}
+/* Mode layar penuh: play area mengisi seluruh layar */
+#page-simulasi:fullscreen .sim-playarea,
+#page-simulasi:-webkit-full-screen .sim-playarea{border-radius:0;}
+#page-simulasi:fullscreen,
+#page-simulasi:-webkit-full-screen{background:var(--bg);padding:10px 12px;overflow:auto;}
+#page-simulasi:fullscreen > div,
+#page-simulasi:-webkit-full-screen > div{height:100%;}
 .pipet-drop{position:absolute;width:8px;height:11px;background:linear-gradient(180deg,#93c5fd,#3b82f6);border-radius:50% 50% 50% 0;transform:translate(-50%,0) rotate(45deg);opacity:0.95;pointer-events:none;z-index:40;animation:pipetDropFall linear forwards;box-shadow:0 1px 3px rgba(37,99,235,.4);}
 @keyframes pipetDropFall{0%{transform:translate(-50%,0) rotate(45deg) scale(1);opacity:1;}85%{opacity:.9;transform:translate(-50%,var(--fall-dist,34px)) rotate(45deg) scale(.85);}100%{transform:translate(-50%,var(--fall-dist,34px)) rotate(45deg) scale(.6);opacity:0;}}
 .sim-progress{display:flex;gap:4px;margin-top:8px;}
@@ -601,7 +615,13 @@ document.addEventListener('click',function(e){
 
     <!-- Play area: toolbox tray + stage merged so alat bisa di-drag bebas -->
     <div class="sim-playarea" id="simPlayArea" style="flex:1;">
-      <button class="sim-reset-btn" onclick="resetSim()">↺ Ulangi Sampel Ini</button>
+      <div class="sim-controls-topleft">
+        <button class="sim-reset-btn" onclick="resetSim()">↺ Ulangi Sampel Ini</button>
+        <button class="sim-fullscreen-btn" id="simFullscreenBtn" onclick="toggleSimFullscreen()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+          <span id="simFullscreenLabel">Layar Penuh</span>
+        </button>
+      </div>
 
       <!-- Keterangan tiap tahap dipindahkan ke pojok kanan atas area percobaan -->
       <div class="sim-info-box">
@@ -930,6 +950,26 @@ function pickSample(key){
   setSimMsg('Sampel dipilih: <strong>'+sp.label+'</strong>. Sekarang drag <strong>jarum pentul</strong> ke cawan sampel untuk mengambil sedikit sampel.');
 }
 function resetSim(){ if(currentSample) pickSample(currentSample); }
+
+// ══ FULLSCREEN SIMULASI ══
+function toggleSimFullscreen(){
+  const el=document.getElementById('page-simulasi');
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(!isFs){
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  }else{
+    if(document.exitFullscreen) document.exitFullscreen();
+    else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+function updateFullscreenBtnLabel(){
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  const lbl=document.getElementById('simFullscreenLabel');
+  if(lbl) lbl.textContent=isFs?'Keluar Layar Penuh':'Layar Penuh';
+}
+document.addEventListener('fullscreenchange',updateFullscreenBtnLabel);
+document.addEventListener('webkitfullscreenchange',updateFullscreenBtnLabel);
 function setSimMsg(html){ document.getElementById('simMsg').innerHTML=html; }
 function updateSimProgress(){
   const dots=document.querySelectorAll('#simProgress span');
