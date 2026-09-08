@@ -229,6 +229,15 @@ nav::-webkit-scrollbar{display:none;}
 #page-simulasi:-webkit-full-screen{background:var(--bg);padding:10px 12px;overflow:auto;}
 #page-simulasi:fullscreen > div,
 #page-simulasi:-webkit-full-screen > div{height:100%;}
+/* Mode layar penuh untuk seluruh halaman (target: <html>) */
+html:fullscreen,html:-webkit-full-screen{background:var(--bg);}
+html:fullscreen body,html:-webkit-full-screen body{height:100vh;}
+:fullscreen header,:-webkit-full-screen header{display:none;}
+:fullscreen #app,:-webkit-full-screen #app{height:100vh;}
+/* Cadangan (fallback) bila Fullscreen API tidak tersedia, mis. di dalam WebView aplikasi */
+body.sim-fs-fallback{position:fixed;inset:0;width:100vw;height:100vh;z-index:99999;overflow:hidden;}
+body.sim-fs-fallback header{display:none;}
+body.sim-fs-fallback #app{height:100vh;}
 .pipet-drop{position:absolute;width:8px;height:11px;background:linear-gradient(180deg,#93c5fd,#3b82f6);border-radius:50% 50% 50% 0;transform:translate(-50%,0) rotate(45deg);opacity:0.95;pointer-events:none;z-index:40;animation:pipetDropFall linear forwards;box-shadow:0 1px 3px rgba(37,99,235,.4);}
 @keyframes pipetDropFall{0%{transform:translate(-50%,0) rotate(45deg) scale(1);opacity:1;}85%{opacity:.9;transform:translate(-50%,var(--fall-dist,34px)) rotate(45deg) scale(.85);}100%{transform:translate(-50%,var(--fall-dist,34px)) rotate(45deg) scale(.6);opacity:0;}}
 .sim-progress{display:flex;gap:4px;margin-top:8px;}
@@ -960,24 +969,39 @@ function pickSample(key){
 function resetSim(){ if(currentSample) pickSample(currentSample); }
 
 // ══ FULLSCREEN SIMULASI ══
+function _isFullscreenNow(){
+  return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement);
+}
 function toggleSimFullscreen(){
-  const el=document.getElementById('page-simulasi');
-  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
-  if(!isFs){
-    if(el.requestFullscreen) el.requestFullscreen();
-    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  const el=document.documentElement; // target seluruh halaman, lebih konsisten lintas browser/webview
+  if(!_isFullscreenNow()){
+    const req=el.requestFullscreen||el.webkitRequestFullscreen||el.webkitRequestFullScreen||el.mozRequestFullScreen||el.msRequestFullscreen;
+    if(req){
+      const p=req.call(el);
+      if(p&&p.catch) p.catch(()=>{ document.body.classList.add('sim-fs-fallback'); });
+    }else{
+      // Fullscreen API tidak tersedia (mis. di dalam webview tanpa izin) -> pakai mode layar penuh CSS sebagai cadangan
+      document.body.classList.add('sim-fs-fallback');
+      updateFullscreenBtnLabel();
+    }
   }else{
-    if(document.exitFullscreen) document.exitFullscreen();
-    else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+    const exit=document.exitFullscreen||document.webkitExitFullscreen||document.webkitCancelFullScreen||document.mozCancelFullScreen||document.msExitFullscreen;
+    if(exit) exit.call(document);
+    document.body.classList.remove('sim-fs-fallback');
+    updateFullscreenBtnLabel();
   }
 }
 function updateFullscreenBtnLabel(){
-  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  const isFs=_isFullscreenNow()||document.body.classList.contains('sim-fs-fallback');
   const lbl=document.getElementById('simFullscreenLabel');
   if(lbl) lbl.textContent=isFs?'Keluar Layar Penuh':'Layar Penuh';
 }
-document.addEventListener('fullscreenchange',updateFullscreenBtnLabel);
-document.addEventListener('webkitfullscreenchange',updateFullscreenBtnLabel);
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
+  document.addEventListener(evt,updateFullscreenBtnLabel);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.body.classList.contains('sim-fs-fallback')) toggleSimFullscreen();
+});
 function setSimMsg(html){ document.getElementById('simMsg').innerHTML=html; }
 function updateSimProgress(){
   const dots=document.querySelectorAll('#simProgress span');
