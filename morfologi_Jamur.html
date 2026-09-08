@@ -103,8 +103,6 @@ nav::-webkit-scrollbar{display:none;}
   .sim-controls-topleft{gap:4px!important;}
   .sim-fullscreen-btn{padding:5px 10px!important;font-size:8.5px!important;}
   .sim-fullscreen-btn svg{width:12px!important;height:12px!important;}
-  /* Posisi awal jarum pentul digeser agar tidak tertutup tombol reset/layar penuh di pojok kiri atas */
-  #tool-jarum{left:34%!important;top:24%!important;}
 
   /* Panel mikroskop & game label: ramping agar muat di layar landscape sempit */
   .micro-left{width:130px!important;padding:8px!important;gap:6px!important;}
@@ -647,14 +645,14 @@ document.addEventListener('click',function(e){
         <div id="simMsg">Pilih salah satu sumber sampel untuk memulai.</div>
       </div>
 
-      <div class="sim-tool" id="tool-jarum" data-id="jarum" style="left:18%;top:14%;">
+      <div class="sim-tool" id="tool-jarum" data-id="jarum" style="left:18%;top:34%;">
         <img src="https://denicendrianto41.github.io/jarum_pentul.png" alt="jarum pentul">
         <span class="jarum-tip-sample" id="jarumTipSample"></span>
       </div>
-      <div class="sim-tool" id="tool-pipet" data-id="pipet" style="left:18%;top:46%;">
+      <div class="sim-tool" id="tool-pipet" data-id="pipet" style="left:18%;top:50%;">
         <img src="https://denicendrianto41.github.io/pipet2.png" alt="pipet">
       </div>
-      <div class="sim-tool" id="tool-tutup" data-id="tutup" style="left:18%;top:80%;">
+      <div class="sim-tool" id="tool-tutup" data-id="tutup" style="left:18%;top:66%;">
         <img src="https://denicendrianto41.github.io/kaca_penutup.png" alt="kaca penutup">
       </div>
 
@@ -939,7 +937,7 @@ let stageState={taken:false,smeared:false,filled:false,watered:false,covered:fal
 let currentMag='lemah';
 let labelState={placed:{},total:0};
 
-const TOOL_HOME={jarum:{left:'18%',top:'14%'},pipet:{left:'18%',top:'46%'},tutup:{left:'18%',top:'80%'}};
+const TOOL_HOME={jarum:{left:'18%',top:'34%'},pipet:{left:'18%',top:'50%'},tutup:{left:'18%',top:'66%'}};
 const OBJEK_HOME={left:'37%',top:null}; // top controlled by CSS bottom offset by default
 
 function pickSample(key){
