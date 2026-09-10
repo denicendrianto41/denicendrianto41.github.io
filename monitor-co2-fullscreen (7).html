@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Si IBi — Monitor Laju Produksi CO2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary: #1e3a8a;
+  --primary-mid: #1d4ed8;
+  --primary-light: #3b82f6;
+  --primary-pale: #dbeafe;
+  --primary-dark: #0f2460;
+  --accent: #f59e0b;
+  --accent-dark: #d97706;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --shadow: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.14);
+  --radius: 1rem;
+  --green: #16a34a;
+  --red: #dc2626;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html, body{ height:100%; }
+body{
+  font-family: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size:14px; line-height:1.5; overflow:hidden;
+}
+
+.app{ height:100vh; display:flex; flex-direction:column; }
+
+/* ---------- NAVBAR (gaya Si IBi) ---------- */
+.navbar{
+  background: linear-gradient(135deg, rgb(15,36,96) 0%, rgb(30,58,138) 50%, rgb(26,52,114) 100%);
+  padding: 0 24px; display:flex; align-items:center; justify-content:space-between;
+  box-shadow: rgba(0,0,0,0.28) 0 4px 20px; min-height:68px; gap:16px; flex-shrink:0; z-index:10;
+}
+.navbar-brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+.brand-icon{
+  width:44px; height:44px; background: linear-gradient(135deg, rgb(245,158,11), rgb(217,119,6));
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  box-shadow: rgba(245,158,11,0.4) 0 4px 12px; flex-shrink:0;
+}
+.brand-text{ line-height:1.2; }
+.brand-title{ font-family:Outfit, sans-serif; font-size:16px; font-weight:900; color:#fff; letter-spacing:0.5px; }
+.brand-title em{ color:var(--accent); font-style:normal; }
+.brand-sub{ font-size:9.5px; color:rgba(255,255,255,0.5); font-weight:600; letter-spacing:1.8px; text-transform:uppercase; }
+
+.navbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+.status-pill{
+  display:flex; align-items:center; gap:7px; padding:7px 13px; border-radius:20px;
+  background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  font-size:11.5px; color:rgba(255,255,255,0.85); font-weight:600;
+}
+.status-dot{ width:7px; height:7px; border-radius:50%; background:var(--red); flex-shrink:0; }
+.status-dot.on{ background:#4ade80; box-shadow:0 0 8px #4ade80; animation:pulseDot 1.8s ease-in-out infinite; }
+.status-dot.paused{ background:var(--accent); box-shadow:0 0 8px var(--accent); animation:none; }
+@keyframes pulseDot{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+
+.btn-base{
+  border:none; border-radius:10px; font-weight:700; font-size:12.5px; cursor:pointer;
+  transition:0.2s; display:inline-flex; align-items:center; gap:6px; padding:10px 16px;
+  font-family:"Plus Jakarta Sans", sans-serif; white-space:nowrap;
+}
+.btn-primary{
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: rgb(12,26,58); box-shadow: rgba(245,158,11,0.45) 0 4px 18px;
+}
+.btn-primary:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.btn-primary:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
+.btn-outline{
+  background: rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.22);
+}
+.btn-outline:hover{ background: rgba(255,255,255,0.16); }
+.btn-outline:disabled{ opacity:0.4; cursor:not-allowed; }
+.btn-outline.is-paused{ background: rgba(245,158,11,0.22); border-color: rgba(245,158,11,0.5); color:#fde68a; }
+
+/* ---------- DASHBOARD ---------- */
+.dashboard{
+  flex:1; display:grid; grid-template-columns: 1fr 320px;
+  grid-template-rows: auto 1fr; gap:18px; padding:18px 22px 22px; overflow:hidden;
+}
+.stats-row{
+  grid-column: 1 / -1; display:grid; grid-template-columns: repeat(5, 1fr); gap:16px;
+}
+.stat-card{
+  background: var(--card); border:1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding:16px 18px; display:flex; flex-direction:column; gap:4px;
+  position:relative; overflow:hidden;
+}
+.stat-card::before{
+  content:""; position:absolute; top:0; left:0; width:4px; height:100%; background: var(--accent);
+}
+.stat-card.blue::before{ background: var(--primary-mid); }
+.stat-label{
+  font-size:10px; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); font-weight:700;
+}
+.stat-value{
+  font-family:Outfit, sans-serif; font-size:28px; font-weight:800; color:var(--primary-dark);
+}
+.stat-value span{ font-size:13px; color:var(--text-muted); font-weight:600; font-family:"Plus Jakarta Sans",sans-serif; }
+.stat-value.mono{ font-family:"Space Mono", monospace; }
+.stat-sub{ font-size:10.5px; color:var(--text-muted); font-weight:600; margin-top:2px; }
+.stat-debug{ font-size:9.5px; color:var(--primary); font-family:"Space Mono", monospace; margin-top:4px; background:var(--primary-pale); padding:3px 6px; border-radius:5px; }
+.stat-card.warn::before{ background: var(--red); }
+.stat-card.warn .stat-sub{ color: var(--red); font-weight:700; }
+.stat-card.done-mode::before{ background: var(--green); }
+.stat-card.done-mode .stat-sub{ color: var(--green); font-weight:700; }
+
+.chart-panel{
+  background: var(--card); border:1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding:20px 22px; display:flex; flex-direction:column; overflow:hidden;
+}
+.chart-panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.chart-panel-head h2{ font-family:Outfit, sans-serif; font-size:15px; font-weight:800; color:var(--primary-dark); }
+.chart-panel-head .badge-pill{
+  display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:20px;
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+  background: var(--primary-pale); color: var(--primary);
+}
+.chart-wrap{ flex:1; position:relative; min-height:0; }
+
+.sidebar{ display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+.side-panel{
+  background: var(--card); border:1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding:16px 18px; display:flex; flex-direction:column; overflow:hidden;
+}
+.side-panel h3{
+  font-family:Outfit, sans-serif; font-size:12.5px; font-weight:800; color:var(--primary-dark);
+  text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; flex-shrink:0;
+}
+.hint-box{
+  font-size:11.5px; color:var(--text-muted); line-height:1.6; background: var(--primary-pale);
+  border-left:3px solid var(--primary-light); padding:10px 12px; border-radius:8px;
+}
+.hint-box b{ color:var(--primary-dark); }
+
+.log-panel{ flex:1; }
+.log-list{ flex:1; overflow-y:auto; display:flex; flex-direction:column-reverse; gap:0; }
+.log-row{
+  display:flex; justify-content:space-between; align-items:center; padding:6px 4px;
+  border-bottom:1px solid var(--border); font-family:"Space Mono", monospace; font-size:11px;
+}
+.log-name{ font-weight:700; padding:1px 7px; border-radius:6px; font-size:9.5px; text-transform:uppercase; }
+.log-name.vol{ background: rgba(245,158,11,0.15); color: var(--accent-dark); }
+.log-name.nol{ background: var(--primary-pale); color: var(--primary); }
+.log-name.skrg{ background: rgba(22,163,74,0.12); color: var(--green); }
+.log-value{ color: var(--text); font-weight:600; }
+.log-empty{ color: var(--text-muted); font-size:11.5px; text-align:center; padding:20px 0; }
+
+.unsupported{
+  display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); z-index:999;
+  align-items:center; justify-content:center; padding:24px;
+}
+.unsupported-box{
+  background:#fff; border-radius:16px; padding:28px 32px; max-width:420px; text-align:center;
+  box-shadow: var(--shadow-lg);
+}
+.unsupported-box h3{ font-family:Outfit,sans-serif; color:var(--primary-dark); margin-bottom:8px; font-size:16px; }
+.unsupported-box p{ color:var(--text-muted); font-size:13px; line-height:1.6; }
+
+@media (max-width: 980px){
+  .dashboard{ grid-template-columns: 1fr; grid-template-rows:auto auto 1fr; overflow-y:auto; }
+  .stats-row{ grid-template-columns: repeat(2, 1fr); }
+  .sidebar{ flex-direction: row; overflow-x:auto; }
+  .side-panel{ min-width: 260px; }
+  body{ overflow:auto; }
+}
+
+/* ---------- HP (LAYAR SEMPIT) ---------- */
+@media (max-width: 640px){
+  body{ font-size:13px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .app{ height:auto; min-height:100vh; }
+
+  .navbar{
+    flex-direction:column; align-items:stretch; min-height:auto;
+    padding:12px 14px; gap:10px;
+  }
+  .navbar-brand{ justify-content:center; }
+  .brand-title{ font-size:14.5px; }
+  .brand-sub{ font-size:8.5px; }
+  .navbar-right{ justify-content:center; gap:8px; }
+  .status-pill{ width:100%; justify-content:center; order:-1; }
+
+  /* Bluetooth jadi aksi utama & lebar penuh di HP */
+  #btnConnectBLE{
+    order:1; flex: 1 1 100%; justify-content:center; padding:13px 16px; font-size:14px;
+  }
+  #btnConnectUSB{ order:5; flex:1 1 auto; font-size:11px; padding:9px 10px; }
+  #btnCalibrate, #btnPause, #btnReset, #btnExport{
+    flex: 1 1 auto; justify-content:center; padding:10px 10px; font-size:11.5px;
+  }
+
+  .dashboard{ padding:14px; gap:14px; grid-template-rows:auto auto auto; }
+  .stats-row{ grid-template-columns: repeat(2, 1fr); gap:10px; }
+  .stat-card{ padding:12px 13px; }
+  .stat-value{ font-size:21px; }
+  .stat-label{ font-size:9px; }
+
+  .chart-panel{ padding:14px 14px 10px; }
+  .chart-panel-head h2{ font-size:13px; }
+  .chart-wrap{ min-height:280px; height:280px; }
+
+  .sidebar{ flex-direction:column; overflow-x:visible; }
+  .side-panel{ min-width:0; }
+  .log-panel{ max-height:260px; }
+  .log-list{ max-height:220px; overflow-y:auto; }
+
+  .modal-box{ padding:20px 18px; max-width:100%; border-radius:14px; }
+  .modal-head h2{ font-size:16px; }
+  .calib-row{ flex-direction:column; align-items:stretch; gap:10px; }
+  .calib-row .btn-base{ width:100%; justify-content:center; }
+  .modal-actions{ flex-direction:column-reverse; }
+  .modal-actions .btn-base{ width:100%; justify-content:center; }
+}
+
+/* ---------- MODAL KALIBRASI ---------- */
+.modal-overlay{
+  display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); z-index:500;
+  align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.open{ display:flex; }
+.modal-box{
+  background:#fff; border-radius:18px; padding:28px 30px; max-width:560px; width:100%;
+  box-shadow: var(--shadow-lg); max-height:90vh; overflow-y:auto;
+}
+.modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.modal-head h2{ font-family:Outfit, sans-serif; font-size:19px; font-weight:800; color:var(--primary-dark); }
+.modal-close{
+  background:var(--bg); border:none; width:30px; height:30px; border-radius:50%;
+  cursor:pointer; font-size:14px; color:var(--text-muted); flex-shrink:0;
+}
+.modal-close:hover{ background:var(--border); color:var(--text); }
+.modal-desc{ font-size:12.5px; color:var(--text-muted); line-height:1.6; margin-bottom:20px; }
+.modal-desc b{ color:var(--primary-dark); }
+
+.calib-step{
+  border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:14px;
+}
+.calib-step-head{ display:flex; gap:12px; margin-bottom:14px; }
+.calib-step-num{
+  width:26px; height:26px; border-radius:50%; background:var(--primary-pale); color:var(--primary);
+  font-family:Outfit, sans-serif; font-weight:800; font-size:13px; display:flex; align-items:center;
+  justify-content:center; flex-shrink:0;
+}
+.calib-step-title{ font-family:Outfit, sans-serif; font-weight:800; font-size:14px; color:var(--primary-dark); }
+.calib-step-sub{ font-size:11.5px; color:var(--text-muted); margin-top:2px; line-height:1.5; }
+.calib-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.calib-progress{ display:flex; align-items:center; gap:10px; }
+.calib-timer{
+  font-family:"Space Mono", monospace; font-size:18px; font-weight:700; color:var(--accent-dark);
+  background: rgba(245,158,11,0.12); padding:4px 12px; border-radius:8px; min-width:52px; text-align:center;
+}
+.calib-samples{ font-size:11px; color:var(--text-muted); font-family:"Space Mono", monospace; }
+.calib-result{ font-size:12.5px; color:var(--text-muted); font-weight:600; }
+.calib-result.done{ color:var(--green); }
+.calib-step.done{ border-color: rgba(22,163,74,0.35); background: rgba(22,163,74,0.03); }
+
+.modal-actions{ display:flex; justify-content:space-between; gap:10px; margin-top:8px; }
+.btn-ghost{ background:transparent; color:var(--text-muted); border:1px solid var(--border); }
+.btn-ghost:hover{ background:var(--bg); color:var(--text); }
+</style>
+</head>
+<body>
+
+<div class="unsupported" id="unsupportedOverlay">
+  <div class="unsupported-box">
+    <h3>Browser Belum Didukung</h3>
+    <p>Buka halaman ini di <b>Google Chrome</b> (Android) atau <b>Chrome/Edge</b> di laptop. <b>iPhone/iPad tidak didukung sama sekali</b> untuk fitur Bluetooth ini (pembatasan dari Apple) — gunakan HP Android atau laptop.</p>
+  </div>
+</div>
+
+<div class="app">
+
+  <nav class="navbar">
+    <a href="#" class="navbar-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="#0c1a3a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"></path>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">Si <em>IBi</em> — Monitor CO₂</div>
+        <div class="brand-sub">Laju Produksi Fermentasi Ragi</div>
+      </div>
+    </a>
+
+    <div class="navbar-right">
+      <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Belum terhubung</span></div>
+      <button class="btn-base btn-outline" id="btnCalibrate">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="7" x2="12" y2="12"></line><line x1="12" y1="12" x2="15" y2="14"></line></svg>
+        Kalibrasi
+      </button>
+      <button class="btn-base btn-outline" id="btnPause" disabled>
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+        Jeda
+      </button>
+      <button class="btn-base btn-outline" id="btnReset">Reset</button>
+      <button class="btn-base btn-outline" id="btnExport">Ekspor CSV</button>
+      <button class="btn-base btn-outline" id="btnConnectUSB">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"></path><path d="M4 7v10a2 2 0 0 0 2 2h3"></path><path d="M20 7v10a2 2 0 0 1-2 2h-3"></path><path d="M12 3v12"></path><path d="M9 6l3-3 3 3"></path></svg>
+        USB
+      </button>
+      <button class="btn-base btn-primary" id="btnConnectBLE">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polygon></svg>
+        Bluetooth
+      </button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+
+    <div class="stats-row">
+      <div class="stat-card" id="cardCurrent">
+        <div class="stat-label">Volume Saat Ini</div>
+        <div class="stat-value mono" id="statCurrent">– <span>mL</span></div>
+        <div class="stat-sub" id="statCapacity">dari kapasitas 100 mL</div>
+        <div class="stat-debug" id="statDebug" style="display:none;"></div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Laju per Menit</div>
+        <div class="stat-value mono" id="statRate">– <span>mL/min</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Waktu Berjalan</div>
+        <div class="stat-value mono" id="statTime">00:00</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Titik Data</div>
+        <div class="stat-value mono" id="statCount">0</div>
+      </div>
+      <div class="stat-card" id="cardCalibMode">
+        <div class="stat-label">Sumber Volume</div>
+        <div class="stat-value" style="font-size:15px;" id="statCalibMode">Rumus micro:bit</div>
+        <div class="stat-sub" id="statCalibSub">belum dikalibrasi 2 titik</div>
+      </div>
+    </div>
+
+    <div class="chart-panel">
+      <div class="chart-panel-head">
+        <h2>Grafik Volume CO₂ terhadap Waktu</h2>
+        <span class="badge-pill" id="chartBadge">● 00:00</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="side-panel">
+        <h3>Petunjuk</h3>
+        <div class="hint-box">
+          Di HP, gunakan tombol <b>Bluetooth</b> (pastikan Bluetooth di HP dalam keadaan menyala). Tekan tombol, pilih micro:bit dari daftar perangkat yang muncul. Kalau Android meminta izin <b>Lokasi/Nearby devices</b>, izinkan — ini syarat sistem Android untuk pemindaian Bluetooth, bukan untuk melacak lokasi Kang. Tombol <b>USB</b> hanya berguna di laptop/PC. Tombol <b>Jeda</b> menghentikan pencatatan sementara tanpa memutus koneksi.
+        </div>
+      </div>
+      <div class="side-panel log-panel">
+        <h3>Log Data Mentah</h3>
+        <div class="log-list" id="logList">
+          <div class="log-empty">Belum ada data masuk</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="calibModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>Kalibrasi 2 Titik</h2>
+      <button class="modal-close" id="btnCalibClose">✕</button>
+    </div>
+    <p class="modal-desc">Alat akan merekam pembacaan jarak sensor selama <b>30 detik</b> di tiap titik, lalu dirata-ratakan sebagai referensi. Cara ini lebih akurat daripada rumus tetap karena langsung memakai jarak asli sensor Kang.</p>
+
+    <div class="calib-step" id="calibStepZero">
+      <div class="calib-step-head">
+        <div class="calib-step-num">1</div>
+        <div>
+          <div class="calib-step-title">Titik 0 mL</div>
+          <div class="calib-step-sub">Posisikan piston syringe tepat di titik awal (volume 0 mL), lalu diamkan.</div>
+        </div>
+      </div>
+      <div class="calib-row">
+        <button class="btn-base btn-primary" id="btnRecZero">Rekam 30 Detik</button>
+        <div class="calib-progress" id="progZero" style="display:none;">
+          <div class="calib-timer" id="timerZero">30s</div>
+          <div class="calib-samples" id="sampleZero">0 data</div>
+        </div>
+        <div class="calib-result" id="resultZero">Belum direkam</div>
+      </div>
+    </div>
+
+    <div class="calib-step" id="calibStepHundred">
+      <div class="calib-step-head">
+        <div class="calib-step-num">2</div>
+        <div>
+          <div class="calib-step-title">Titik 100 mL</div>
+          <div class="calib-step-sub">Dorong/isi piston hingga tepat di tanda 100 mL (volume maksimum), lalu diamkan.</div>
+        </div>
+      </div>
+      <div class="calib-row">
+        <button class="btn-base btn-primary" id="btnRecHundred">Rekam 30 Detik</button>
+        <div class="calib-progress" id="progHundred" style="display:none;">
+          <div class="calib-timer" id="timerHundred">30s</div>
+          <div class="calib-samples" id="sampleHundred">0 data</div>
+        </div>
+        <div class="calib-result" id="resultHundred">Belum direkam</div>
+      </div>
+    </div>
+
+    <div class="hint-box" id="calibWarn" style="display:none; background:#fee2e2; border-left-color:#dc2626; color:#991b1b;"></div>
+
+    <div class="modal-actions">
+      <button class="btn-base btn-ghost" id="btnCalibReset">Reset Kalibrasi</button>
+      <button class="btn-base btn-primary" id="btnCalibApply" disabled>Terapkan Kalibrasi</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let port, reader, keepReading = false, isPaused = false;
+let readBuffer = "";
+let connectionType = null; // 'usb' | 'ble' | null
+let dataPoints = [];      // semua data mentah {t (detik), v}
+let startTime = null;
+let chart;
+let logHasData = false;
+
+// --- Bluetooth UART (Nordic UART Service, dipakai micro:bit) ---
+const UART_SVC = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+const UART_TX_CHAR = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'; // micro:bit -> browser (notify)
+const UART_RX_CHAR = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // browser -> micro:bit (write)
+let bleDevice = null, bleServer = null, bleTxChar = null;
+let bleReadBuffer = "";
+
+const btnConnectUSB = document.getElementById('btnConnectUSB');
+const btnConnectBLE = document.getElementById('btnConnectBLE');
+const btnPause = document.getElementById('btnPause');
+const btnReset = document.getElementById('btnReset');
+const btnExport = document.getElementById('btnExport');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const VOLUME_MAX_ML = 100;
+
+const statCurrent = document.getElementById('statCurrent');
+const statCapacity = document.getElementById('statCapacity');
+const statDebug = document.getElementById('statDebug');
+const cardCurrent = document.getElementById('cardCurrent');
+const statRate = document.getElementById('statRate');
+const statTime = document.getElementById('statTime');
+const statCount = document.getElementById('statCount');
+const chartBadge = document.getElementById('chartBadge');
+const logList = document.getElementById('logList');
+const statCalibMode = document.getElementById('statCalibMode');
+const statCalibSub = document.getElementById('statCalibSub');
+const cardCalibMode = document.getElementById('cardCalibMode');
+
+const btnCalibrate = document.getElementById('btnCalibrate');
+const calibModal = document.getElementById('calibModal');
+const btnCalibClose = document.getElementById('btnCalibClose');
+const btnRecZero = document.getElementById('btnRecZero');
+const btnRecHundred = document.getElementById('btnRecHundred');
+const progZero = document.getElementById('progZero');
+const progHundred = document.getElementById('progHundred');
+const timerZero = document.getElementById('timerZero');
+const timerHundred = document.getElementById('timerHundred');
+const sampleZero = document.getElementById('sampleZero');
+const sampleHundred = document.getElementById('sampleHundred');
+const resultZero = document.getElementById('resultZero');
+const resultHundred = document.getElementById('resultHundred');
+const calibStepZero = document.getElementById('calibStepZero');
+const calibStepHundred = document.getElementById('calibStepHundred');
+const calibWarn = document.getElementById('calibWarn');
+const btnCalibApply = document.getElementById('btnCalibApply');
+const btnCalibReset = document.getElementById('btnCalibReset');
+
+let latestSkrg = null;
+let skrgWindow = [];
+function medianOf(arr){
+  const s = [...arr].sort((a,b) => a-b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 !== 0 ? s[mid] : (s[mid-1] + s[mid]) / 2;
+}
+let calibration = { d0: null, d100: null, active: false };
+let recording = null; // 'zero' | 'hundred' | null
+let recordBuffer = [];
+let recordSecondsLeft = 0;
+let recordIntervalId = null;
+
+if (!('serial' in navigator) && !('bluetooth' in navigator)) {
+  document.getElementById('unsupportedOverlay').style.display = 'flex';
+}
+if (!('serial' in navigator)) { btnConnectUSB.disabled = true; btnConnectUSB.title = 'Web Serial tidak didukung browser ini'; }
+if (!('bluetooth' in navigator)) { btnConnectBLE.disabled = true; btnConnectBLE.title = 'Web Bluetooth tidak didukung browser ini'; }
+
+function initChart(){
+  const ctx = document.getElementById('chart').getContext('2d');
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        label: 'Volume CO2 (mL)',
+        data: [],
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.12)',
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: '#d97706',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        tension: 0.3,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Waktu (detik)', color: '#64748b', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } },
+          ticks: { color: '#64748b', font: { family: 'Space Mono', size: 11 } },
+          grid: { color: '#e2e8f0' }
+        },
+        y: {
+          title: { display: true, text: 'Volume CO2 (mL)', color: '#64748b', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } },
+          ticks: { color: '#64748b', font: { family: 'Space Mono', size: 11 }, stepSize: 10 },
+          grid: { color: '#e2e8f0' },
+          min: 0,
+          max: 100
+        }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+
+function formatTime(sec){
+  const m = Math.floor(sec / 60).toString().padStart(2,'0');
+  const s = Math.floor(sec % 60).toString().padStart(2,'0');
+  return m + ':' + s;
+}
+
+function addVolumePoint(volume){
+  if (startTime === null) startTime = performance.now();
+  const t = (performance.now() - startTime) / 1000;
+  dataPoints.push({ t, v: volume });
+
+  statCurrent.innerHTML = volume.toFixed(1) + ' <span>mL</span>';
+  const pct = (volume / VOLUME_MAX_ML) * 100;
+  if (pct >= 90){
+    statCapacity.textContent = '⚠ ' + pct.toFixed(0) + '% dari kapasitas 100 mL — hampir penuh';
+    cardCurrent.classList.add('warn');
+  } else {
+    statCapacity.textContent = pct.toFixed(0) + '% dari kapasitas 100 mL';
+    cardCurrent.classList.remove('warn');
+  }
+  statTime.textContent = formatTime(t);
+
+  // --- Grafik: tambahkan setiap titik langsung, real-time ---
+  chart.data.datasets[0].data.push({ x: Math.round(t * 10) / 10, y: volume });
+  chart.update('none');
+  statCount.textContent = dataPoints.length;
+  chartBadge.textContent = '● ' + formatTime(t);
+
+  if (dataPoints.length >= 2){
+    const recent = dataPoints.slice(-6);
+    const dv = recent[recent.length - 1].v - recent[0].v;
+    const dtMin = (recent[recent.length - 1].t - recent[0].t) / 60;
+    if (dtMin > 0){
+      statRate.innerHTML = (dv / dtMin).toFixed(2) + ' <span>mL/min</span>';
+    }
+  }
+}
+
+function logRaw(name, value){
+  if (!logHasData){ logList.innerHTML = ''; logHasData = true; }
+  const row = document.createElement('div');
+  row.className = 'log-row';
+  const key = name.toLowerCase();
+  const cls = key === 'vol' ? 'vol' : (key === 'nol' ? 'nol' : (key === 'skrg' ? 'skrg' : ''));
+  row.innerHTML = `<span class="log-name ${cls}">${name}</span><span class="log-value">${value}</span>`;
+  logList.prepend(row);
+  while (logList.children.length > 80) logList.removeChild(logList.lastChild);
+}
+
+function handleLine(line){
+  line = line.trim();
+  if (!line || isPaused) return;
+  const idx = line.indexOf(':');
+  if (idx < 0) return;
+  const name = line.slice(0, idx).trim();
+  const val = parseFloat(line.slice(idx + 1));
+  if (isNaN(val)) return;
+  const key = name.toLowerCase();
+
+  if (key === 'skrg' && val < 2){
+    logRaw(name + ' ⚠', val.toFixed(2) + 'cm — diabaikan (di luar jangkauan sensor)');
+    latestSkrg = val;
+    return;
+  }
+
+  logRaw(name, val);
+
+  if (key === 'skrg'){
+    latestSkrg = val;
+    skrgWindow.push(val);
+    if (skrgWindow.length > 3) skrgWindow.shift();
+    const smoothed = medianOf(skrgWindow);
+
+    if (recording){
+      recordBuffer.push(smoothed);
+      const el = recording === 'zero' ? sampleZero : sampleHundred;
+      el.textContent = recordBuffer.length + ' data';
+    }
+    if (calibration.active){
+      const pctRaw = ((calibration.d0 - smoothed) / (calibration.d0 - calibration.d100)) * 100;
+      const clamped = Math.max(0, Math.min(VOLUME_MAX_ML, pctRaw));
+      statDebug.style.display = 'block';
+      statDebug.textContent = `skrg=${val.toFixed(2)}cm (halus=${smoothed.toFixed(2)}cm) · mentah=${pctRaw.toFixed(0)}%`;
+      addVolumePoint(clamped);
+    }
+  }
+
+  if (key === 'vol' && !calibration.active){
+    addVolumePoint(val);
+  }
+}
+
+function startRecording(which){
+  if (recording) return;
+  recording = which;
+  recordBuffer = [];
+  recordSecondsLeft = 30;
+
+  const btn = which === 'zero' ? btnRecZero : btnRecHundred;
+  const prog = which === 'zero' ? progZero : progHundred;
+  const timerEl = which === 'zero' ? timerZero : timerHundred;
+  const sampleEl = which === 'zero' ? sampleZero : sampleHundred;
+
+  btn.disabled = true;
+  btn.style.display = 'none';
+  prog.style.display = 'flex';
+  timerEl.textContent = recordSecondsLeft + 's';
+  sampleEl.textContent = '0 data';
+
+  recordIntervalId = setInterval(() => {
+    recordSecondsLeft--;
+    timerEl.textContent = recordSecondsLeft + 's';
+    if (recordSecondsLeft <= 0){
+      clearInterval(recordIntervalId);
+      finishRecording(which);
+    }
+  }, 1000);
+}
+
+function finishRecording(which){
+  const btn = which === 'zero' ? btnRecZero : btnRecHundred;
+  const prog = which === 'zero' ? progZero : progHundred;
+  const resultEl = which === 'zero' ? resultZero : resultHundred;
+  const stepEl = which === 'zero' ? calibStepZero : calibStepHundred;
+
+  prog.style.display = 'none';
+  btn.style.display = 'inline-flex';
+  btn.disabled = false;
+  btn.textContent = 'Rekam Ulang';
+
+  if (recordBuffer.length === 0){
+    resultEl.textContent = '⚠ Tidak ada data masuk — pastikan micro:bit terhubung & mengirim data "skrg"';
+    resultEl.classList.remove('done');
+  } else {
+    const avg = recordBuffer.reduce((a,b) => a+b, 0) / recordBuffer.length;
+    if (which === 'zero'){ calibration.d0 = avg; } else { calibration.d100 = avg; }
+    resultEl.textContent = `Jarak referensi: ${avg.toFixed(2)} cm  (dari ${recordBuffer.length} pembacaan)`;
+    resultEl.classList.add('done');
+    stepEl.classList.add('done');
+  }
+  recording = null;
+  checkCalibReady();
+}
+
+function checkCalibReady(){
+  calibWarn.style.display = 'none';
+  if (calibration.d0 !== null && calibration.d100 !== null){
+    const span = Math.abs(calibration.d0 - calibration.d100);
+    if (span < 1.5){
+      calibWarn.textContent = `Rentang cuma ${span.toFixed(2)} cm — terlalu sempit (minimal ~1.5 cm). Pastikan piston benar-benar dipindah jauh antara titik 0 mL dan 100 mL, lalu rekam ulang salah satu/kedua titik.`;
+      calibWarn.style.display = 'block';
+      btnCalibApply.disabled = true;
+    } else {
+      btnCalibApply.disabled = false;
+    }
+  } else {
+    btnCalibApply.disabled = true;
+  }
+}
+
+btnCalibrate.addEventListener('click', () => { calibModal.classList.add('open'); });
+btnCalibClose.addEventListener('click', () => { calibModal.classList.remove('open'); });
+calibModal.addEventListener('click', (e) => { if (e.target === calibModal) calibModal.classList.remove('open'); });
+
+btnRecZero.addEventListener('click', () => startRecording('zero'));
+btnRecHundred.addEventListener('click', () => startRecording('hundred'));
+
+btnCalibApply.addEventListener('click', () => {
+  calibration.active = true;
+  statCalibMode.textContent = 'Kalibrasi 2 Titik';
+  statCalibSub.textContent = `0mL=${calibration.d0.toFixed(1)}cm · 100mL=${calibration.d100.toFixed(1)}cm`;
+  cardCalibMode.classList.add('done-mode');
+  calibModal.classList.remove('open');
+});
+
+btnCalibReset.addEventListener('click', () => {
+  calibration = { d0: null, d100: null, active: false };
+  recordBuffer = []; recording = null;
+  if (recordIntervalId) clearInterval(recordIntervalId);
+  [btnRecZero, btnRecHundred].forEach(b => { b.style.display='inline-flex'; b.disabled=false; b.textContent='Rekam 30 Detik'; });
+  [progZero, progHundred].forEach(p => p.style.display='none');
+  resultZero.textContent = 'Belum direkam'; resultZero.classList.remove('done');
+  resultHundred.textContent = 'Belum direkam'; resultHundred.classList.remove('done');
+  calibStepZero.classList.remove('done'); calibStepHundred.classList.remove('done');
+  calibWarn.style.display = 'none';
+  btnCalibApply.disabled = true;
+  statCalibMode.textContent = 'Rumus micro:bit';
+  statCalibSub.textContent = 'belum dikalibrasi 2 titik';
+  cardCalibMode.classList.remove('done-mode');
+  statDebug.style.display = 'none';
+});
+
+function setConnectedUI(type){
+  connectionType = type;
+  statusDot.classList.add('on');
+  statusText.textContent = type === 'ble' ? 'Terhubung (Bluetooth) — menerima data' : 'Terhubung (USB) — menerima data';
+  btnPause.disabled = false;
+  isPaused = false;
+  startTime = null;
+  // kunci tombol yang sedang tidak dipakai supaya tidak dobel-konek
+  if (type === 'ble'){
+    btnConnectBLE.textContent = 'Putuskan Bluetooth';
+    btnConnectUSB.disabled = true;
+  } else {
+    btnConnectUSB.textContent = 'Putuskan USB';
+    btnConnectBLE.disabled = true;
+  }
+}
+
+function setDisconnectedUI(){
+  statusDot.classList.remove('on');
+  statusDot.classList.remove('paused');
+  statusText.textContent = 'Belum terhubung';
+  btnConnectUSB.textContent = 'USB';
+  btnConnectBLE.innerHTML = btConnectLabel('Bluetooth');
+  btnConnectUSB.disabled = !('serial' in navigator);
+  btnConnectBLE.disabled = !('bluetooth' in navigator);
+  btnPause.disabled = true;
+  btnPause.classList.remove('is-paused');
+  btnPause.innerHTML = pauseIconHTML('Jeda');
+  isPaused = false;
+  connectionType = null;
+}
+
+function btConnectLabel(text){
+  return `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polygon></svg> ${text}`;
+}
+
+// ---------- USB (Web Serial) ----------
+async function connectUSB(){
+  try{
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 115200 });
+    keepReading = true;
+    setConnectedUI('usb');
+    readLoopUSB();
+  } catch(err){
+    statusText.textContent = 'Gagal terhubung (USB)';
+  }
+}
+
+async function disconnectUSB(){
+  keepReading = false;
+  try{
+    if (reader){ await reader.cancel(); }
+    if (port){ await port.close(); }
+  } catch(e){}
+  setDisconnectedUI();
+}
+
+async function readLoopUSB(){
+  const textDecoder = new TextDecoderStream();
+  const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+  reader = textDecoder.readable.getReader();
+  try{
+    while (keepReading){
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (value){
+        readBuffer += value;
+        let idx;
+        while ((idx = readBuffer.indexOf('\n')) >= 0){
+          const line = readBuffer.slice(0, idx);
+          readBuffer = readBuffer.slice(idx + 1);
+          handleLine(line);
+        }
+      }
+    }
+  } catch(err){
+    statusText.textContent = 'Koneksi USB terputus';
+  } finally {
+    try{ reader.releaseLock(); } catch(e){}
+  }
+}
+
+// ---------- Bluetooth (BLE UART / Nordic UART Service) ----------
+async function connectBLE(){
+  try{
+    bleDevice = await navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: 'BBC micro:bit' }, { services: [UART_SVC] }],
+      optionalServices: [UART_SVC]
+    });
+    bleDevice.addEventListener('gattserverdisconnected', onBLEDisconnected);
+    bleServer = await bleDevice.gatt.connect();
+    const service = await bleServer.getPrimaryService(UART_SVC);
+    bleTxChar = await service.getCharacteristic(UART_TX_CHAR);
+    await bleTxChar.startNotifications();
+    bleTxChar.addEventListener('characteristicvaluechanged', handleBLEData);
+    bleReadBuffer = "";
+    setConnectedUI('ble');
+  } catch(err){
+    statusText.textContent = 'Gagal terhubung (Bluetooth)';
+  }
+}
+
+function handleBLEData(event){
+  const decoder = new TextDecoder();
+  const chunk = decoder.decode(event.target.value);
+  bleReadBuffer += chunk;
+  let idx;
+  while ((idx = bleReadBuffer.indexOf('\n')) >= 0){
+    const line = bleReadBuffer.slice(0, idx);
+    bleReadBuffer = bleReadBuffer.slice(idx + 1);
+    handleLine(line);
+  }
+}
+
+function onBLEDisconnected(){
+  setDisconnectedUI();
+}
+
+async function disconnectBLE(){
+  try{
+    if (bleDevice && bleDevice.gatt.connected){ bleDevice.gatt.disconnect(); }
+  } catch(e){}
+  setDisconnectedUI();
+}
+
+function pauseIconHTML(label){
+  if (label === 'Jeda'){
+    return `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg> Jeda`;
+  }
+  return `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg> Lanjutkan`;
+}
+
+btnConnectUSB.addEventListener('click', () => {
+  if (connectionType === 'usb'){ disconnectUSB(); } else { connectUSB(); }
+});
+
+btnConnectBLE.addEventListener('click', () => {
+  if (connectionType === 'ble'){ disconnectBLE(); } else { connectBLE(); }
+});
+
+btnPause.addEventListener('click', () => {
+  isPaused = !isPaused;
+  if (isPaused){
+    statusDot.classList.add('paused');
+    statusDot.classList.remove('on');
+    statusText.textContent = 'Dijeda';
+    btnPause.classList.add('is-paused');
+    btnPause.innerHTML = pauseIconHTML('Lanjutkan');
+  } else {
+    statusDot.classList.remove('paused');
+    statusDot.classList.add('on');
+    statusText.textContent = connectionType === 'ble' ? 'Terhubung (Bluetooth) — menerima data' : 'Terhubung (USB) — menerima data';
+    btnPause.classList.remove('is-paused');
+    btnPause.innerHTML = pauseIconHTML('Jeda');
+  }
+});
+
+btnReset.addEventListener('click', () => {
+  dataPoints = [];
+  startTime = null;
+  skrgWindow = [];
+  chart.data.datasets[0].data = [];
+  chart.update();
+  logList.innerHTML = '<div class="log-empty">Belum ada data masuk</div>';
+  logHasData = false;
+  statCurrent.innerHTML = '– <span>mL</span>';
+  statCapacity.textContent = 'dari kapasitas 100 mL';
+  cardCurrent.classList.remove('warn');
+  statRate.innerHTML = '– <span>mL/min</span>';
+  statTime.textContent = '00:00';
+  statCount.textContent = '0';
+  chartBadge.textContent = '● 00:00';
+});
+
+btnExport.addEventListener('click', () => {
+  if (dataPoints.length === 0) return;
+  let csv = 'waktu_detik,menit,volume_ml\n';
+  dataPoints.forEach(p => { csv += `${p.t.toFixed(2)},${(p.t/60).toFixed(2)},${p.v.toFixed(2)}\n`; });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data-co2-' + new Date().toISOString().slice(0,19).replace(/[:T]/g,'-') + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+initChart();
+</script>
+
+</body>
+</html>
