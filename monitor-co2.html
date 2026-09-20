@@ -89,7 +89,7 @@ body{
   grid-template-rows: auto 1fr; gap:18px; padding:18px 22px 22px; overflow:hidden;
 }
 .stats-row{
-  grid-column: 1 / -1; display:grid; grid-template-columns: repeat(5, 1fr); gap:16px;
+  grid-column: 1 / -1; display:grid; grid-template-columns: repeat(6, 1fr); gap:16px;
 }
 .stat-card{
   background: var(--card); border:1px solid var(--border); border-radius: var(--radius);
@@ -100,6 +100,7 @@ body{
   content:""; position:absolute; top:0; left:0; width:4px; height:100%; background: var(--accent);
 }
 .stat-card.blue::before{ background: var(--primary-mid); }
+.stat-card.temp::before{ background: #ef4444; }
 .stat-label{
   font-size:10px; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); font-weight:700;
 }
@@ -153,6 +154,7 @@ body{
 .log-name.vol{ background: rgba(245,158,11,0.15); color: var(--accent-dark); }
 .log-name.nol{ background: var(--primary-pale); color: var(--primary); }
 .log-name.skrg{ background: rgba(22,163,74,0.12); color: var(--green); }
+.log-name.suhu{ background: rgba(239,68,68,0.12); color: #dc2626; }
 .log-value{ color: var(--text); font-weight:600; }
 .log-empty{ color: var(--text-muted); font-size:11.5px; text-align:center; padding:20px 0; }
 
@@ -338,6 +340,11 @@ body{
         <div class="stat-label">Titik Data</div>
         <div class="stat-value mono" id="statCount">0</div>
       </div>
+      <div class="stat-card temp">
+        <div class="stat-label">Suhu Ruangan</div>
+        <div class="stat-value mono" id="statSuhu">– <span>°C</span></div>
+        <div class="stat-sub">sensor internal micro:bit</div>
+      </div>
       <div class="stat-card" id="cardCalibMode">
         <div class="stat-label">Sumber Volume</div>
         <div class="stat-value" style="font-size:15px;" id="statCalibMode">Rumus micro:bit</div>
@@ -347,7 +354,7 @@ body{
 
     <div class="chart-panel">
       <div class="chart-panel-head">
-        <h2>Grafik Volume CO₂ terhadap Waktu</h2>
+        <h2>Grafik Volume CO₂ dan Suhu Ruangan terhadap Waktu</h2>
         <span class="badge-pill" id="chartBadge">● 00:00</span>
       </div>
       <div class="chart-wrap">
@@ -431,6 +438,7 @@ let port, reader, keepReading = false, isPaused = false;
 let readBuffer = "";
 let connectionType = null; // 'usb' | 'ble' | null
 let dataPoints = [];      // semua data mentah {t (detik), v}
+let suhuPoints = [];      // data suhu {t (detik), s (°C)}
 let startTime = null;
 let chart;
 let logHasData = false;
@@ -458,6 +466,7 @@ const cardCurrent = document.getElementById('cardCurrent');
 const statRate = document.getElementById('statRate');
 const statTime = document.getElementById('statTime');
 const statCount = document.getElementById('statCount');
+const statSuhu = document.getElementById('statSuhu');
 const chartBadge = document.getElementById('chartBadge');
 const logList = document.getElementById('logList');
 const statCalibMode = document.getElementById('statCalibMode');
@@ -519,6 +528,21 @@ function initChart(){
         pointBorderWidth: 1.5,
         tension: 0.3,
         fill: true,
+        yAxisID: 'y',
+      },
+      {
+        label: 'Suhu Ruangan (°C)',
+        data: [],
+        borderColor: '#dc2626',
+        backgroundColor: 'rgba(220,38,38,0.08)',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        pointBackgroundColor: '#dc2626',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        tension: 0.2,
+        fill: false,
+        yAxisID: 'y1',
       }]
     },
     options: {
@@ -538,10 +562,22 @@ function initChart(){
           grid: { color: '#e2e8f0' },
           min: 0,
           max: 100
+        },
+        y1: {
+          position: 'right',
+          title: { display: true, text: 'Suhu Ruangan (°C)', color: '#dc2626', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } },
+          ticks: { color: '#dc2626', font: { family: 'Space Mono', size: 11 } },
+          grid: { drawOnChartArea: false },
+          suggestedMin: 20,
+          suggestedMax: 40
         }
       },
       plugins: {
-        legend: { display: false }
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { usePointStyle: true, boxWidth: 8, color: '#0f172a', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } }
+        }
       }
     }
   });
@@ -553,9 +589,22 @@ function formatTime(sec){
   return m + ':' + s;
 }
 
-function addVolumePoint(volume){
+// Waktu (detik) sejak data pertama masuk — dipakai bersama oleh volume dan suhu
+function currentT(){
   if (startTime === null) startTime = performance.now();
-  const t = (performance.now() - startTime) / 1000;
+  return (performance.now() - startTime) / 1000;
+}
+
+function addSuhuPoint(suhu){
+  const t = currentT();
+  suhuPoints.push({ t, s: suhu });
+  statSuhu.innerHTML = suhu.toFixed(1) + ' <span>°C</span>';
+  chart.data.datasets[1].data.push({ x: Math.round(t * 10) / 10, y: suhu });
+  chart.update('none');
+}
+
+function addVolumePoint(volume){
+  const t = currentT();
   dataPoints.push({ t, v: volume });
 
   statCurrent.innerHTML = volume.toFixed(1) + ' <span>mL</span>';
@@ -590,7 +639,7 @@ function logRaw(name, value){
   const row = document.createElement('div');
   row.className = 'log-row';
   const key = name.toLowerCase();
-  const cls = key === 'vol' ? 'vol' : (key === 'nol' ? 'nol' : (key === 'skrg' ? 'skrg' : ''));
+  const cls = key === 'vol' ? 'vol' : (key === 'nol' ? 'nol' : (key === 'skrg' ? 'skrg' : (key === 'suhu' ? 'suhu' : '')));
   row.innerHTML = `<span class="log-name ${cls}">${name}</span><span class="log-value">${value}</span>`;
   logList.prepend(row);
   while (logList.children.length > 80) logList.removeChild(logList.lastChild);
@@ -636,6 +685,10 @@ function handleLine(line){
 
   if (key === 'vol' && !calibration.active){
     addVolumePoint(val);
+  }
+
+  if (key === 'suhu'){
+    addSuhuPoint(val);
   }
 }
 
@@ -899,10 +952,13 @@ btnPause.addEventListener('click', () => {
 
 btnReset.addEventListener('click', () => {
   dataPoints = [];
+  suhuPoints = [];
   startTime = null;
   skrgWindow = [];
   chart.data.datasets[0].data = [];
+  chart.data.datasets[1].data = [];
   chart.update();
+  statSuhu.innerHTML = '– <span>°C</span>';
   logList.innerHTML = '<div class="log-empty">Belum ada data masuk</div>';
   logHasData = false;
   statCurrent.innerHTML = '– <span>mL</span>';
@@ -916,8 +972,17 @@ btnReset.addEventListener('click', () => {
 
 btnExport.addEventListener('click', () => {
   if (dataPoints.length === 0) return;
-  let csv = 'waktu_detik,menit,volume_ml\n';
-  dataPoints.forEach(p => { csv += `${p.t.toFixed(2)},${(p.t/60).toFixed(2)},${p.v.toFixed(2)}\n`; });
+  let csv = 'waktu_detik,menit,volume_ml,suhu_c\n';
+  dataPoints.forEach(p => {
+    // pasangkan dengan pembacaan suhu terdekat dalam waktu
+    let suhu = '';
+    if (suhuPoints.length){
+      let best = suhuPoints[0];
+      suhuPoints.forEach(q => { if (Math.abs(q.t - p.t) < Math.abs(best.t - p.t)) best = q; });
+      suhu = best.s.toFixed(1);
+    }
+    csv += `${p.t.toFixed(2)},${(p.t/60).toFixed(2)},${p.v.toFixed(2)},${suhu}\n`;
+  });
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
