@@ -471,6 +471,58 @@ const statusDot = document.getElementById('statusDot');
 const statusText = document.getElementById('statusText');
 const VOLUME_MAX_ML = 100;
 
+// ---------- Penyaring data anomali ----------
+// Lompatan lebih besar dari batas per pembacaan dianggap anomali dan TIDAK direkam,
+// kecuali nilai baru itu bertahan konsisten selama ANOMALI_KONFIRMASI pembacaan berturut-turut
+// (artinya perubahan nyata, bukan gangguan sesaat). Sesuaikan batas di bawah bila perlu.
+const ANOMALI_STEP_VOLUME = 5;   // mL maksimum perubahan wajar antar pembacaan
+const ANOMALI_STEP_SUHU   = 3;   // °C maksimum perubahan wajar antar pembacaan
+const ANOMALI_KONFIRMASI  = 3;   // jumlah pembacaan konsisten agar lompatan diterima
+
+function makeAnomalyFilter(maxStep){
+  let last = null, pending = [];
+  return {
+    reset(){ last = null; pending = []; },
+    accept(v){
+      if (last === null){ last = v; return v; }
+      if (Math.abs(v - last) <= maxStep){ last = v; pending = []; return v; }
+      pending.push(v);
+      if (pending.length >= ANOMALI_KONFIRMASI){
+        const spread = Math.max(...pending) - Math.min(...pending);
+        if (spread <= maxStep){ last = v; pending = []; return v; }
+        pending.shift();
+      }
+      return null; // anomali: jangan direkam
+    }
+  };
+}
+const volFilter   = makeAnomalyFilter(ANOMALI_STEP_VOLUME);
+const suhuFilter  = makeAnomalyFilter(ANOMALI_STEP_SUHU);
+const larFilter   = makeAnomalyFilter(ANOMALI_STEP_SUHU);
+let anomaliCount = 0;
+
+function logAnomali(name, val){
+  anomaliCount++;
+  logRaw(name + ' ⚠', (isFinite(val) ? val.toFixed(2) : val) + ' — anomali, diabaikan');
+}
+
+function acceptVolume(val, label){
+  if (!isFinite(val) || val < 0 || val > VOLUME_MAX_ML){ logAnomali(label, val); return; }
+  const v = volFilter.accept(val);
+  if (v === null){ logAnomali(label, val); return; }
+  addVolumePoint(v);
+}
+
+function acceptSuhu(kind, val, label){
+  const isLar = kind === 'lar';
+  // DS18B20 mengirim 85.0 saat baru menyala/reset — bukan suhu sebenarnya
+  const powerOnGlitch = isLar && val === 85 && larPoints.length === 0;
+  if (!isFinite(val) || val < -10 || val > 100 || powerOnGlitch){ logAnomali(label, val); return; }
+  const v = (isLar ? larFilter : suhuFilter).accept(val);
+  if (v === null){ logAnomali(label, val); return; }
+  if (isLar) addSuhuLarPoint(v); else addSuhuPoint(v);
+}
+
 const statCurrent = document.getElementById('statCurrent');
 const statCapacity = document.getElementById('statCapacity');
 const statDebug = document.getElementById('statDebug');
@@ -722,20 +774,17 @@ function handleLine(line){
       const clamped = Math.max(0, Math.min(VOLUME_MAX_ML, pctRaw));
       statDebug.style.display = 'block';
       statDebug.textContent = `skrg=${val.toFixed(2)}cm (halus=${smoothed.toFixed(2)}cm) · mentah=${pctRaw.toFixed(0)}%`;
-      addVolumePoint(clamped);
+      acceptVolume(clamped, 'volume (kalibrasi)');
     }
   }
 
   if (key === 'vol' && !calibration.active){
-    addVolumePoint(val);
+    acceptVolume(val, name);
   }
 
   const kind = suhuKind(key);
   if (kind){
-    // abaikan pembacaan error (mis. -Infinity dari probe) dan nilai tak wajar
-    if (!isFinite(val) || val < -50 || val > 150) return;
-    if (kind === 'lar') addSuhuLarPoint(val);
-    else addSuhuPoint(val);
+    acceptSuhu(kind, val, name);
   }
 }
 
@@ -816,6 +865,7 @@ btnRecHundred.addEventListener('click', () => startRecording('hundred'));
 
 btnCalibApply.addEventListener('click', () => {
   calibration.active = true;
+  volFilter.reset();
   statCalibMode.textContent = 'Kalibrasi 2 Titik';
   statCalibSub.textContent = `0mL=${calibration.d0.toFixed(1)}cm · 100mL=${calibration.d100.toFixed(1)}cm`;
   cardCalibMode.classList.add('done-mode');
@@ -824,6 +874,7 @@ btnCalibApply.addEventListener('click', () => {
 
 btnCalibReset.addEventListener('click', () => {
   calibration = { d0: null, d100: null, active: false };
+  volFilter.reset();
   recordBuffer = []; recording = null;
   if (recordIntervalId) clearInterval(recordIntervalId);
   [btnRecZero, btnRecHundred].forEach(b => { b.style.display='inline-flex'; b.disabled=false; b.textContent='Rekam 30 Detik'; });
@@ -846,6 +897,7 @@ function setConnectedUI(type){
   btnPause.disabled = false;
   isPaused = false;
   startTime = null;
+  volFilter.reset(); suhuFilter.reset(); larFilter.reset();
   // kunci tombol yang sedang tidak dipakai supaya tidak dobel-konek
   if (type === 'ble'){
     btnConnectBLE.innerHTML = btConnectLabel('Putuskan Bluetooth');
@@ -1007,6 +1059,7 @@ btnReset.addEventListener('click', () => {
   larPoints = [];
   startTime = null;
   skrgWindow = [];
+  volFilter.reset(); suhuFilter.reset(); larFilter.reset(); anomaliCount = 0;
   chart.data.datasets[0].data = [];
   chart.data.datasets[1].data = [];
   chart.data.datasets[2].data = [];
