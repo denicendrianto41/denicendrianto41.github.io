@@ -329,32 +329,57 @@
   /* ---------------- sub-page: Ruang Kepala Sekolah / Ruang Guru ---------------- */
 
   .visi-card{
-    background:var(--white);border:1px solid var(--line);border-radius:18px;
-    box-shadow:var(--shadow-card);padding:38px 40px;max-width:900px;margin:0 auto 20px;
+    background:var(--white);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow-card);padding:26px 28px;max-width:900px;margin:0 auto;
   }
-  .visi-card h3{font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--orange-dark);margin:0 0 14px;}
-  .visi-card p{font-size:15.5px;line-height:1.85;color:var(--ink);margin:0 0 22px;}
-  .satria-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:6px;}
+  .visi-card h3{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--orange-dark);margin:0 0 12px;}
+  .visi-card p{font-size:14.5px;line-height:1.7;color:var(--ink);margin:0 0 16px;}
+  .satria-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:2px;}
   .satria-item:last-child:nth-child(odd){grid-column:1 / -1;}
-  .satria-item{display:flex;gap:12px;align-items:flex-start;background:var(--bg-light);border-radius:12px;padding:12px 14px;}
-  .satria-letter{width:32px;height:32px;border-radius:9px;background:var(--navy-800);color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;}
-  .satria-item div p{margin:0;font-size:13.3px;line-height:1.55;color:var(--muted);}
-  .satria-item div b{color:var(--ink);font-family:'Poppins',sans-serif;font-size:13.5px;}
-  @media (max-width:700px){ .satria-grid{grid-template-columns:1fr;} .visi-card{padding:28px 22px;} }
+  .satria-item{display:flex;gap:10px;align-items:flex-start;background:var(--bg-light);border-radius:10px;padding:10px 12px;}
+  .satria-letter{width:28px;height:28px;border-radius:8px;background:var(--navy-800);color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;}
+  .satria-item div p{margin:0;font-size:12.5px;line-height:1.5;color:var(--muted);}
+  .satria-item div b{color:var(--ink);font-family:'Poppins',sans-serif;font-size:13px;}
+  @media (max-width:700px){ .satria-grid{grid-template-columns:1fr;} .visi-card{padding:22px 18px;} }
 
-  .misi-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
-  .misi-list li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.65;color:var(--ink);}
-  .misi-num{width:26px;height:26px;border-radius:50%;background:#FFF1DC;color:var(--orange-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;margin-top:1px;}
-  .tujuan-indikator{font-size:12.5px;line-height:1.6;color:var(--muted);margin-top:4px;}
+  .misi-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .misi-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.3px;line-height:1.55;color:var(--ink);}
+  .misi-num{width:22px;height:22px;border-radius:50%;background:#FFF1DC;color:var(--orange-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:11.5px;margin-top:1px;}
+  .tujuan-indikator{font-size:11.8px;line-height:1.5;color:var(--muted);margin-top:3px;}
 
   .tujuan-note{border-left:3px solid var(--orange);background:#FFF8EC;border-radius:0 12px 12px 0;padding:14px 18px;font-size:13.2px;line-height:1.7;color:var(--muted);margin-top:22px;}
   .tujuan-note b{color:var(--ink);font-family:'Poppins',sans-serif;}
+
+  /* --- compact tab switcher: Visi / Misi / Tujuan --- */
+  .vmt-wrap{max-width:900px;margin:0 auto;}
+  .vmt-tabs{display:flex;justify-content:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .vmt-tab{
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:12.8px;
+    padding:9px 22px;border-radius:999px;border:1px solid var(--line);
+    background:var(--white);color:var(--muted);cursor:pointer;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .vmt-tab:hover{border-color:var(--orange);color:var(--orange-dark);}
+  .vmt-tab.active{background:var(--navy-800);border-color:var(--navy-800);color:#fff;}
+  .vmt-panel{display:none;}
+  .vmt-panel.active{display:block;animation:vmtIn .3s ease;}
+  @keyframes vmtIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
   .subpage-cards{display:grid;grid-template-columns:repeat(4, 1fr);gap:16px;}
   .subpage-cards.five{grid-template-columns:repeat(5, 1fr);}
   @media (max-width:1080px){ .subpage-cards.five{grid-template-columns:repeat(3, 1fr);} }
   @media (max-width:900px){ .subpage-cards{grid-template-columns:repeat(2, 1fr);} }
   @media (max-width:460px){ .subpage-cards{grid-template-columns:1fr;} }
+
+  /* --- card thumbnail (Ruang Layanan & Laboratorium) --- */
+  .card-thumb{
+    margin:-18px -18px 14px;
+    aspect-ratio:16/9;
+    border-radius:14px 14px 0 0;
+    overflow:hidden;
+    background:linear-gradient(135deg,var(--bg-light),#e7e9f5);
+  }
+  .card-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
 </style>
 </head>
 <body>
@@ -416,6 +441,7 @@
 
     <div class="card-grid">
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_kepsek.webp" alt="Ruang Kepala Sekolah" loading="lazy"></div>
         <div class="card-head">
           <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7" width="16" height="13" rx="1"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M4 12h16"/></svg></div>
           <h3>Ruang Kepala Sekolah</h3>
@@ -425,6 +451,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_guru.webp" alt="Ruang Guru" loading="lazy"></div>
         <div class="card-head">
           <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M9 20h6M12 16v4"/></svg></div>
           <h3>Ruang Guru</h3>
@@ -434,6 +461,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_tu.webp" alt="Ruang Tata Usaha" loading="lazy"></div>
         <div class="card-head">
           <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h9l2 3h5v10H4z"/></svg></div>
           <h3>Ruang Tata Usaha</h3>
@@ -443,6 +471,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_bk.webp" alt="Ruang BK" loading="lazy"></div>
         <div class="card-head">
           <div class="badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 5.5 6 5c2-.3 3.7.8 4.5 2.2C11.3 5.8 13 4.7 15 5c3.5.5 5 4 3.5 7.5C16 16.65 12 21 12 21Z"/></svg></div>
           <h3>Ruang BK</h3>
@@ -452,6 +481,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_perpus.webp" alt="Ruang Perpustakaan" loading="lazy"></div>
         <div class="card-head">
           <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5v-13Z"/></svg></div>
           <h3>Ruang Perpustakaan</h3>
@@ -472,6 +502,7 @@
 
     <div class="card-grid">
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/lab_biologi.webp" alt="Laboratorium Biologi" loading="lazy"></div>
         <div class="card-head">
           <div class="badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M8 15h8"/></svg></div>
           <h3>Laboratorium Biologi</h3>
@@ -481,6 +512,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/lab_fisika.webp" alt="Laboratorium Fisika" loading="lazy"></div>
         <div class="card-head">
           <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/></svg></div>
           <h3>Laboratorium Fisika</h3>
@@ -490,6 +522,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/lab_kimia.webp" alt="Laboratorium Kimia" loading="lazy"></div>
         <div class="card-head">
           <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 2h4M10 2v6l-6 11a1.6 1.6 0 0 0 1.4 2.4h13.2A1.6 1.6 0 0 0 20 19L14 8V2"/><path d="M8.5 15h7"/></svg></div>
           <h3>Laboratorium Kimia</h3>
@@ -499,6 +532,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/lab_bahasa.webp" alt="Laboratorium Bahasa" loading="lazy"></div>
         <div class="card-head">
           <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.8 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.8-3.8-9S9.5 5.6 12 3Z"/></svg></div>
           <h3>Laboratorium Bahasa</h3>
@@ -508,6 +542,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/lab_komputer.webp" alt="Laboratorium Komputer" loading="lazy"></div>
         <div class="card-head">
           <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></div>
           <h3>Laboratorium Komputer</h3>
@@ -629,45 +664,53 @@
       <p>Arah dan cita-cita SMA Negeri 1 Batujajar sebagaimana dirumuskan dalam dokumen profil sekolah.</p>
     </div>
 
-    <div class="visi-card">
-      <h3>Visi Sekolah</h3>
-      <p>Mewujudkan SMA Negeri 1 Batujajar yang <b>"HEBAT"</b> — Humanis, Edukatif, Berakhlak Mulia, Adaptif, dan Tangguh.</p>
-
-      <div class="satria-grid">
-        <div class="satria-item"><div class="satria-letter">H</div><div><b>Humanis</b><p>Mengedepankan sikap saling menghormati dan peduli.</p></div></div>
-        <div class="satria-item"><div class="satria-letter">E</div><div><b>Edukatif</b><p>Proses pembelajaran berpusat pada peserta didik.</p></div></div>
-        <div class="satria-item"><div class="satria-letter">B</div><div><b>Berakhlak Mulia</b><p>Menjunjung nilai-nilai akhlak dan religiusitas.</p></div></div>
-        <div class="satria-item"><div class="satria-letter">A</div><div><b>Adaptif</b><p>Tanggap terhadap perkembangan ilmu dan teknologi.</p></div></div>
-        <div class="satria-item"><div class="satria-letter">T</div><div><b>Tangguh</b><p>Memiliki daya juang tinggi dalam belajar dan berkarya.</p></div></div>
+    <div class="vmt-wrap">
+      <div class="vmt-tabs" role="tablist" aria-label="Visi, Misi, dan Tujuan Sekolah">
+        <button class="vmt-tab active" onclick="showVMT('visi')" data-vmt="visi">Visi</button>
+        <button class="vmt-tab" onclick="showVMT('misi')" data-vmt="misi">Misi</button>
+        <button class="vmt-tab" onclick="showVMT('tujuan')" data-vmt="tujuan">Tujuan</button>
       </div>
-    </div>
 
-    <div class="visi-card">
-      <h3>Misi Sekolah</h3>
-      <ul class="misi-list">
-        <li><span class="misi-num">1</span>Menyelenggarakan proses pembelajaran yang edukatif dan berpusat pada peserta didik untuk mengoptimalkan pencapaian kompetensi akademik.</li>
-        <li><span class="misi-num">2</span>Mengembangkan program penguatan literasi dan numerasi secara berkelanjutan untuk meningkatkan mutu lulusan.</li>
-        <li><span class="misi-num">3</span>Menanamkan nilai-nilai akhlak mulia dan religius dalam setiap kegiatan sekolah untuk membentuk karakter peserta didik yang beriman dan bertakwa.</li>
-        <li><span class="misi-num">4</span>Membekali peserta didik dengan keterampilan adaptif terhadap perkembangan ilmu pengetahuan dan teknologi melalui pembelajaran berbasis inovasi.</li>
-        <li><span class="misi-num">5</span>Melatih ketangguhan dan daya juang peserta didik melalui kegiatan kokurikuler dan ekstrakurikuler yang menantang dan mendidik.</li>
-        <li><span class="misi-num">6</span>Membudayakan sikap humanis melalui penguatan rasa saling menghormati, empati, dan kepedulian antarwarga sekolah.</li>
-        <li><span class="misi-num">7</span>Membangun lingkungan sekolah yang nyaman, aman, dan mendukung tumbuh kembang peserta didik secara humanis.</li>
-        <li><span class="misi-num">8</span>Menjalin kemitraan dengan orang tua, masyarakat, dan dunia usaha/industri untuk mendukung pengembangan sekolah yang adaptif dan tangguh.</li>
-      </ul>
-    </div>
+      <div class="visi-card vmt-panel active" id="vmt-visi">
+        <h3>Visi Sekolah</h3>
+        <p>Mewujudkan SMA Negeri 1 Batujajar yang <b>"HEBAT"</b> — Humanis, Edukatif, Berakhlak Mulia, Adaptif, dan Tangguh.</p>
 
-    <div class="visi-card">
-      <h3>Tujuan Sekolah</h3>
-      <ul class="misi-list">
-        <li><span class="misi-num">1</span><div><div>Meningkatnya kompetensi akademik peserta didik pada seluruh mata pelajaran.</div><div class="tujuan-indikator">Indikator (4 tahun): rata-rata nilai asesmen sumatif naik menjadi minimal 80 dan tingkat kelulusan mencapai 100%.</div></div></li>
-        <li><span class="misi-num">2</span><div><div>Meningkatnya kemampuan literasi dan numerasi peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): skor literasi &amp; numerasi ANBK kategori "Baik" atau lebih, naik minimal 10%.</div></div></li>
-        <li><span class="misi-num">3</span><div><div>Terbentuknya karakter peserta didik yang religius dan berakhlak mulia.</div><div class="tujuan-indikator">Indikator (4 tahun): minimal 90% peserta didik aktif dalam pembiasaan keagamaan harian, tanpa pelanggaran berat tata tertib.</div></div></li>
-        <li><span class="misi-num">4</span><div><div>Meningkatnya kemampuan adaptasi peserta didik dan pendidik terhadap perkembangan IPTEK.</div><div class="tujuan-indikator">Indikator (4 tahun): seluruh guru menerapkan pembelajaran berbasis TIK/digital, minimal 70% peserta didik mandiri memanfaatkan platform digital.</div></div></li>
-        <li><span class="misi-num">5</span><div><div>Meningkatnya ketangguhan, kemandirian, dan daya juang peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): partisipasi kokurikuler/ekstrakurikuler minimal 80%, prestasi non-akademik meningkat tiap tahun.</div></div></li>
-        <li><span class="misi-num">6</span><div><div>Terwujudnya budaya sekolah yang humanis dan bebas perundungan.</div><div class="tujuan-indikator">Indikator (4 tahun): kasus perundungan nol, survei iklim sekolah kategori "aman dan nyaman" minimal 90%.</div></div></li>
-        <li><span class="misi-num">7</span><div><div>Terwujudnya lingkungan sekolah yang aman, nyaman, dan mendukung tumbuh kembang peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): standar sarana-prasarana ramah anak terpenuhi, hasil audit keselamatan sekolah kategori "baik" setiap tahun.</div></div></li>
-        <li><span class="misi-num">8</span><div><div>Terjalinnya kemitraan yang efektif dengan orang tua, masyarakat, dan dunia usaha/industri.</div><div class="tujuan-indikator">Indikator (4 tahun): minimal 4 program kemitraan aktif per tahun (magang/PKL, beasiswa, forum orang tua, kunjungan industri).</div></div></li>
-      </ul>
+        <div class="satria-grid">
+          <div class="satria-item"><div class="satria-letter">H</div><div><b>Humanis</b><p>Mengedepankan sikap saling menghormati dan peduli.</p></div></div>
+          <div class="satria-item"><div class="satria-letter">E</div><div><b>Edukatif</b><p>Proses pembelajaran berpusat pada peserta didik.</p></div></div>
+          <div class="satria-item"><div class="satria-letter">B</div><div><b>Berakhlak Mulia</b><p>Menjunjung nilai-nilai akhlak dan religiusitas.</p></div></div>
+          <div class="satria-item"><div class="satria-letter">A</div><div><b>Adaptif</b><p>Tanggap terhadap perkembangan ilmu dan teknologi.</p></div></div>
+          <div class="satria-item"><div class="satria-letter">T</div><div><b>Tangguh</b><p>Memiliki daya juang tinggi dalam belajar dan berkarya.</p></div></div>
+        </div>
+      </div>
+
+      <div class="visi-card vmt-panel" id="vmt-misi">
+        <h3>Misi Sekolah</h3>
+        <ul class="misi-list">
+          <li><span class="misi-num">1</span>Menyelenggarakan proses pembelajaran yang edukatif dan berpusat pada peserta didik untuk mengoptimalkan pencapaian kompetensi akademik.</li>
+          <li><span class="misi-num">2</span>Mengembangkan program penguatan literasi dan numerasi secara berkelanjutan untuk meningkatkan mutu lulusan.</li>
+          <li><span class="misi-num">3</span>Menanamkan nilai-nilai akhlak mulia dan religius dalam setiap kegiatan sekolah untuk membentuk karakter peserta didik yang beriman dan bertakwa.</li>
+          <li><span class="misi-num">4</span>Membekali peserta didik dengan keterampilan adaptif terhadap perkembangan ilmu pengetahuan dan teknologi melalui pembelajaran berbasis inovasi.</li>
+          <li><span class="misi-num">5</span>Melatih ketangguhan dan daya juang peserta didik melalui kegiatan kokurikuler dan ekstrakurikuler yang menantang dan mendidik.</li>
+          <li><span class="misi-num">6</span>Membudayakan sikap humanis melalui penguatan rasa saling menghormati, empati, dan kepedulian antarwarga sekolah.</li>
+          <li><span class="misi-num">7</span>Membangun lingkungan sekolah yang nyaman, aman, dan mendukung tumbuh kembang peserta didik secara humanis.</li>
+          <li><span class="misi-num">8</span>Menjalin kemitraan dengan orang tua, masyarakat, dan dunia usaha/industri untuk mendukung pengembangan sekolah yang adaptif dan tangguh.</li>
+        </ul>
+      </div>
+
+      <div class="visi-card vmt-panel" id="vmt-tujuan">
+        <h3>Tujuan Sekolah</h3>
+        <ul class="misi-list">
+          <li><span class="misi-num">1</span><div><div>Meningkatnya kompetensi akademik peserta didik pada seluruh mata pelajaran.</div><div class="tujuan-indikator">Indikator (4 tahun): rata-rata nilai asesmen sumatif naik menjadi minimal 80 dan tingkat kelulusan mencapai 100%.</div></div></li>
+          <li><span class="misi-num">2</span><div><div>Meningkatnya kemampuan literasi dan numerasi peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): skor literasi &amp; numerasi ANBK kategori "Baik" atau lebih, naik minimal 10%.</div></div></li>
+          <li><span class="misi-num">3</span><div><div>Terbentuknya karakter peserta didik yang religius dan berakhlak mulia.</div><div class="tujuan-indikator">Indikator (4 tahun): minimal 90% peserta didik aktif dalam pembiasaan keagamaan harian, tanpa pelanggaran berat tata tertib.</div></div></li>
+          <li><span class="misi-num">4</span><div><div>Meningkatnya kemampuan adaptasi peserta didik dan pendidik terhadap perkembangan IPTEK.</div><div class="tujuan-indikator">Indikator (4 tahun): seluruh guru menerapkan pembelajaran berbasis TIK/digital, minimal 70% peserta didik mandiri memanfaatkan platform digital.</div></div></li>
+          <li><span class="misi-num">5</span><div><div>Meningkatnya ketangguhan, kemandirian, dan daya juang peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): partisipasi kokurikuler/ekstrakurikuler minimal 80%, prestasi non-akademik meningkat tiap tahun.</div></div></li>
+          <li><span class="misi-num">6</span><div><div>Terwujudnya budaya sekolah yang humanis dan bebas perundungan.</div><div class="tujuan-indikator">Indikator (4 tahun): kasus perundungan nol, survei iklim sekolah kategori "aman dan nyaman" minimal 90%.</div></div></li>
+          <li><span class="misi-num">7</span><div><div>Terwujudnya lingkungan sekolah yang aman, nyaman, dan mendukung tumbuh kembang peserta didik.</div><div class="tujuan-indikator">Indikator (4 tahun): standar sarana-prasarana ramah anak terpenuhi, hasil audit keselamatan sekolah kategori "baik" setiap tahun.</div></div></li>
+          <li><span class="misi-num">8</span><div><div>Terjalinnya kemitraan yang efektif dengan orang tua, masyarakat, dan dunia usaha/industri.</div><div class="tujuan-indikator">Indikator (4 tahun): minimal 4 program kemitraan aktif per tahun (magang/PKL, beasiswa, forum orang tua, kunjungan industri).</div></div></li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -841,6 +884,15 @@
     document.getElementById('page-kepsek').style.display = (name === 'kepsek') ? '' : 'none';
     document.getElementById('page-guru').style.display = (name === 'guru') ? '' : 'none';
     window.scrollTo(0, 0);
+  }
+
+  function showVMT(name){
+    document.querySelectorAll('.vmt-panel').forEach(p=>{
+      p.classList.toggle('active', p.id === 'vmt-' + name);
+    });
+    document.querySelectorAll('.vmt-tab').forEach(t=>{
+      t.classList.toggle('active', t.dataset.vmt === name);
+    });
   }
 
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
