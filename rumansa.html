@@ -350,6 +350,18 @@
   .tujuan-note{border-left:3px solid var(--orange);background:#FFF8EC;border-radius:0 12px 12px 0;padding:14px 18px;font-size:13.2px;line-height:1.7;color:var(--muted);margin-top:22px;}
   .tujuan-note b{color:var(--ink);font-family:'Poppins',sans-serif;}
 
+  /* --- profil foto kepala sekolah --- */
+  .principal-profile{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:38px;}
+  .principal-photo{
+    width:128px;height:128px;border-radius:50%;overflow:hidden;flex-shrink:0;
+    border:4px solid var(--white);box-shadow:0 10px 26px rgba(16,24,64,0.16);
+    background:var(--bg-light);
+  }
+  .principal-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .principal-name{text-align:center;}
+  .principal-name b{display:block;font-family:'Poppins',sans-serif;font-weight:700;font-size:16.5px;color:var(--navy-800);}
+  .principal-name span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;}
+
   /* --- compact tab switcher: Visi / Misi / Tujuan --- */
   .vmt-wrap{max-width:900px;margin:0 auto;}
   .vmt-tabs{display:flex;justify-content:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
@@ -659,6 +671,14 @@
 
 <section class="section">
   <div class="wrap">
+    <div class="principal-profile">
+      <div class="principal-photo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReSrPX-zHAo4weGIGodUV1Z2Ct5SEeejuQmwntUbr0wQ&s=10" alt="H. Husni Mubarok, S.Ag., M.Pd." loading="lazy"></div>
+      <div class="principal-name">
+        <b>H. Husni Mubarok, S.Ag., M.Pd.</b>
+        <span>Kepala SMA Negeri 1 Batujajar</span>
+      </div>
+    </div>
+
     <div class="section-head">
       <h2>Visi, Misi & <span>Tujuan</span> Sekolah</h2>
       <p>Arah dan cita-cita SMA Negeri 1 Batujajar sebagaimana dirumuskan dalam dokumen profil sekolah.</p>
@@ -724,6 +744,7 @@
 
     <div class="subpage-cards">
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_kurikulum.webp" alt="Kurikulum" loading="lazy"></div>
         <div class="card-head">
           <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
           <h3>Kurikulum</h3>
@@ -733,6 +754,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_kesiswaan.webp" alt="Kesiswaan" loading="lazy"></div>
         <div class="card-head">
           <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 13.2a5.2 5.2 0 0 1 6 6.8"/></svg></div>
           <h3>Kesiswaan</h3>
@@ -742,6 +764,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_sarana.webp" alt="Sarana Prasarana" loading="lazy"></div>
         <div class="card-head">
           <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
           <h3>Sarana Prasarana</h3>
@@ -751,6 +774,7 @@
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_humas.webp" alt="Humas" loading="lazy"></div>
         <div class="card-head">
           <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11a9 9 0 0 1 18 0v6a2 2 0 0 1-2 2h-1v-7h3M3 17v-6h3v7H4a1 1 0 0 1-1-1Z"/></svg></div>
           <h3>Humas</h3>
@@ -791,48 +815,53 @@
 
     <div class="subpage-cards five">
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/agenda_guru.webp" alt="Agenda Guru" loading="lazy"></div>
         <div class="card-head">
           <div class="badge orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
           <h3>Agenda Guru</h3>
         </div>
         <p>Rekap agenda kegiatan guru sepanjang tahun ajaran.</p>
-        <a class="card-btn orange" href="https://kangcen.my.canva.site/recap-agenda-guru-2025" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn orange" href="https://kangcen.my.canva.site/recap-agenda-guru-2025" target="_blank" rel="noopener">Buka Layanan <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/administrasi_guru.webp" alt="Administrasi Guru" loading="lazy"></div>
         <div class="card-head">
           <div class="badge blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
           <h3>Administrasi Guru</h3>
         </div>
         <p>Perangkat dan dokumen administrasi pembelajaran guru.</p>
-        <a class="card-btn blue" href="https://adm-guru-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn blue" href="https://adm-guru-saba.blogspot.com/" target="_blank" rel="noopener">Buka Layanan <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/absensi_siswa.webp" alt="Absensi Siswa" loading="lazy"></div>
         <div class="card-head">
           <div class="badge purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></div>
           <h3>Absensi Siswa</h3>
         </div>
         <p>Rekap kehadiran siswa untuk kebutuhan pembelajaran.</p>
-        <a class="card-btn purple" href="https://absensi-siswa-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn purple" href="https://absensi-siswa-saba.blogspot.com/" target="_blank" rel="noopener">Buka Layanan <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/guru_wali.webp" alt="Guru Wali" loading="lazy"></div>
         <div class="card-head">
           <div class="badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 13.2a5.2 5.2 0 0 1 6 6.8"/></svg></div>
           <h3>Guru Wali</h3>
         </div>
         <p>Dokumen dan pendampingan wali kelas untuk siswa binaan.</p>
-        <a class="card-btn green" href="https://wali-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn green" href="https://wali-saba.blogspot.com/" target="_blank" rel="noopener">Buka Layanan <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
 
       <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/7kaih.webp" alt="7 KAIH" loading="lazy"></div>
         <div class="card-head">
           <div class="badge teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5v-13Z"/></svg></div>
           <h3>7 KAIH</h3>
         </div>
         <p>Ruang khusus kelas 7 KAIH untuk dokumen dan kegiatan terkait.</p>
-        <a class="card-btn teal" href="https://saba7kaih.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+        <a class="card-btn teal" href="https://saba7kaih.blogspot.com/" target="_blank" rel="noopener">Buka Layanan <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
     </div>
   </div>
