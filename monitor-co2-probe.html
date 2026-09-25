@@ -139,6 +139,18 @@ body{
 }
 .chart-wrap{ flex:1; position:relative; min-height:0; }
 
+.chart-tabs{ display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+.chart-tab{
+  border:1px solid var(--border); background:var(--bg); color:var(--text-muted);
+  font-family:"Plus Jakarta Sans", sans-serif; font-size:11.5px; font-weight:700;
+  padding:8px 14px; border-radius:9px; cursor:pointer; transition:0.15s;
+}
+.chart-tab:hover{ background:var(--primary-pale); color:var(--primary); }
+.chart-tab.active{
+  background: var(--primary-mid); border-color:var(--primary-mid); color:#fff;
+  box-shadow: rgba(29,78,216,0.35) 0 3px 10px;
+}
+
 .sidebar{ display:flex; flex-direction:column; gap:16px; overflow:hidden; }
 .side-panel{
   background: var(--card); border:1px solid var(--border); border-radius: var(--radius);
@@ -365,8 +377,13 @@ body{
 
     <div class="chart-panel">
       <div class="chart-panel-head">
-        <h2>Grafik Volume CO₂, Suhu Ruangan, dan Suhu Larutan terhadap Waktu</h2>
+        <h2 id="chartTitle">Grafik Volume CO₂, Suhu Ruangan, dan Suhu Larutan terhadap Waktu</h2>
         <span class="badge-pill" id="chartBadge">● 00:00</span>
+      </div>
+      <div class="chart-tabs" id="chartTabs">
+        <button class="chart-tab active" data-view="all">Semua Variabel</button>
+        <button class="chart-tab" data-view="suhuLar">Suhu Larutan → Volume CO₂</button>
+        <button class="chart-tab" data-view="suhuRuang">Suhu Ruangan → Volume CO₂</button>
       </div>
       <div class="chart-wrap">
         <canvas id="chart"></canvas>
@@ -576,9 +593,36 @@ if (!('serial' in navigator) && !('bluetooth' in navigator)) {
 if (!('serial' in navigator)) { btnConnectUSB.disabled = true; btnConnectUSB.title = 'Web Serial tidak didukung browser ini'; }
 if (!('bluetooth' in navigator)) { btnConnectBLE.disabled = true; btnConnectBLE.title = 'Web Bluetooth tidak didukung browser ini'; }
 
-function initChart(){
-  const ctx = document.getElementById('chart').getContext('2d');
-  chart = new Chart(ctx, {
+// ---------- Konfigurasi 3 mode tampilan grafik ----------
+const CHART_TITLES = {
+  all: 'Grafik Volume CO₂, Suhu Ruangan, dan Suhu Larutan terhadap Waktu',
+  suhuLar: 'Pengaruh Suhu Larutan terhadap Volume CO₂',
+  suhuRuang: 'Pengaruh Suhu Ruangan terhadap Volume CO₂'
+};
+let currentView = 'all';
+const chartTitleEl = document.getElementById('chartTitle');
+const chartTabsEl = document.getElementById('chartTabs');
+
+function legendFont(){ return { family: 'Plus Jakarta Sans', size: 12, weight: 600 }; }
+function tickFont(){ return { family: 'Space Mono', size: 11 }; }
+
+function baseOptions(){
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: { usePointStyle: true, boxWidth: 8, color: '#0f172a', font: legendFont() }
+      }
+    }
+  };
+}
+
+function buildAllVariablesConfig(){
+  return {
     type: 'line',
     data: {
       datasets: [{
@@ -624,43 +668,130 @@ function initChart(){
         yAxisID: 'y1',
       }]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
+    options: Object.assign(baseOptions(), {
       scales: {
         x: {
           type: 'linear',
-          title: { display: true, text: 'Waktu (detik)', color: '#64748b', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } },
-          ticks: { color: '#64748b', font: { family: 'Space Mono', size: 11 } },
+          title: { display: true, text: 'Waktu (detik)', color: '#64748b', font: legendFont() },
+          ticks: { color: '#64748b', font: tickFont() },
           grid: { color: '#e2e8f0' }
         },
         y: {
-          title: { display: true, text: 'Volume CO2 (mL)', color: '#475569', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } },
-          ticks: { color: '#475569', font: { family: 'Space Mono', size: 11 } },
+          title: { display: true, text: 'Volume CO2 (mL)', color: '#475569', font: legendFont() },
+          ticks: { color: '#475569', font: tickFont() },
           grid: { color: '#e2e8f0' },
           beginAtZero: true,
           suggestedMax: 20
         },
         y1: {
           position: 'right',
-          title: { display: true, text: 'Suhu (°C)', color: '#475569', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } },
-          ticks: { color: '#475569', font: { family: 'Space Mono', size: 11 } },
+          title: { display: true, text: 'Suhu (°C)', color: '#475569', font: legendFont() },
+          ticks: { color: '#475569', font: tickFont() },
           grid: { drawOnChartArea: false },
           suggestedMin: 20,
           suggestedMax: 40
         }
-      },
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          labels: { usePointStyle: true, boxWidth: 8, color: '#0f172a', font: { family: 'Plus Jakarta Sans', size: 12, weight: 600 } }
+      }
+    })
+  };
+}
+
+function buildCorrelationConfig(label, color, xTitle){
+  return {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label,
+        data: [],
+        borderColor: color,
+        backgroundColor: color,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        showLine: false,
+      }]
+    },
+    options: Object.assign(baseOptions(), {
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: xTitle, color: '#64748b', font: legendFont() },
+          ticks: { color: '#64748b', font: tickFont() },
+          grid: { color: '#e2e8f0' }
+        },
+        y: {
+          title: { display: true, text: 'Volume CO2 (mL)', color: '#475569', font: legendFont() },
+          ticks: { color: '#475569', font: tickFont() },
+          grid: { color: '#e2e8f0' },
+          beginAtZero: true,
+          suggestedMax: 20
         }
       }
-    }
-  });
+    })
+  };
 }
+
+function initChart(){
+  const ctx = document.getElementById('chart').getContext('2d');
+  let config;
+  if (currentView === 'suhuLar'){
+    config = buildCorrelationConfig('Volume CO2 vs Suhu Larutan', '#7c3aed', 'Suhu Larutan (°C)');
+  } else if (currentView === 'suhuRuang'){
+    config = buildCorrelationConfig('Volume CO2 vs Suhu Ruangan', '#dc2626', 'Suhu Ruangan (°C)');
+  } else {
+    config = buildAllVariablesConfig();
+  }
+  chart = new Chart(ctx, config);
+  chartTitleEl.textContent = CHART_TITLES[currentView];
+  refreshChartData();
+}
+
+// Cari pembacaan suhu terdekat secara waktu terhadap titik volume p
+function nearestReading(arr, t){
+  if (!arr.length) return null;
+  let best = arr[0];
+  arr.forEach(q => { if (Math.abs(q.t - t) < Math.abs(best.t - t)) best = q; });
+  return best;
+}
+
+function correlationData(tempArr){
+  return dataPoints
+    .map(p => {
+      const near = nearestReading(tempArr, p.t);
+      return near ? { x: near.s, y: p.v } : null;
+    })
+    .filter(Boolean);
+}
+
+// Isi ulang data chart yang sedang aktif dari array mentah (dataPoints/suhuPoints/larPoints)
+function refreshChartData(){
+  if (!chart) return;
+  if (currentView === 'all'){
+    chart.data.datasets[0].data = dataPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.v }));
+    chart.data.datasets[1].data = suhuPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.s }));
+    chart.data.datasets[2].data = larPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.s }));
+  } else if (currentView === 'suhuLar'){
+    chart.data.datasets[0].data = correlationData(larPoints);
+  } else if (currentView === 'suhuRuang'){
+    chart.data.datasets[0].data = correlationData(suhuPoints);
+  }
+  chart.update('none');
+}
+
+function switchChartView(view){
+  if (view === currentView) return;
+  currentView = view;
+  chartTabsEl.querySelectorAll('.chart-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === view);
+  });
+  if (chart) chart.destroy();
+  initChart();
+}
+
+chartTabsEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.chart-tab');
+  if (!btn) return;
+  switchChartView(btn.dataset.view);
+});
 
 function formatTime(sec){
   const m = Math.floor(sec / 60).toString().padStart(2,'0');
@@ -678,16 +809,14 @@ function addSuhuPoint(suhu){
   const t = currentT();
   suhuPoints.push({ t, s: suhu });
   statSuhu.innerHTML = suhu.toFixed(1) + ' <span>°C</span>';
-  chart.data.datasets[1].data.push({ x: Math.round(t * 10) / 10, y: suhu });
-  chart.update('none');
+  refreshChartData();
 }
 
 function addSuhuLarPoint(suhu){
   const t = currentT();
   larPoints.push({ t, s: suhu });
   statSuhuLar.innerHTML = suhu.toFixed(1) + ' <span>°C</span>';
-  chart.data.datasets[2].data.push({ x: Math.round(t * 10) / 10, y: suhu });
-  chart.update('none');
+  refreshChartData();
 }
 
 function addVolumePoint(volume){
@@ -706,8 +835,7 @@ function addVolumePoint(volume){
   statTime.textContent = formatTime(t);
 
   // --- Grafik: tambahkan setiap titik langsung, real-time ---
-  chart.data.datasets[0].data.push({ x: Math.round(t * 10) / 10, y: volume });
-  chart.update('none');
+  refreshChartData();
   statCount.textContent = dataPoints.length;
   chartBadge.textContent = '● ' + formatTime(t);
 
@@ -1060,9 +1188,7 @@ btnReset.addEventListener('click', () => {
   startTime = null;
   skrgWindow = [];
   volFilter.reset(); suhuFilter.reset(); larFilter.reset(); anomaliCount = 0;
-  chart.data.datasets[0].data = [];
-  chart.data.datasets[1].data = [];
-  chart.data.datasets[2].data = [];
+  chart.data.datasets.forEach(ds => { ds.data = []; });
   chart.update();
   statSuhu.innerHTML = '– <span>°C</span>';
   statSuhuLar.innerHTML = '– <span>°C</span>';
