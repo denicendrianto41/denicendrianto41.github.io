@@ -382,7 +382,7 @@ body{
       </div>
       <div class="chart-tabs" id="chartTabs">
         <button class="chart-tab active" data-view="all">Semua Variabel</button>
-        <button class="chart-tab" data-view="laju">Laju Volume CO₂</button>
+        <button class="chart-tab" data-view="volume">Volume CO₂</button>
         <button class="chart-tab" data-view="suhuLar">Suhu Larutan → Volume CO₂</button>
         <button class="chart-tab" data-view="suhuRuang">Suhu Ruangan → Volume CO₂</button>
       </div>
@@ -597,7 +597,7 @@ if (!('bluetooth' in navigator)) { btnConnectBLE.disabled = true; btnConnectBLE.
 // ---------- Konfigurasi 3 mode tampilan grafik ----------
 const CHART_TITLES = {
   all: 'Grafik Volume CO₂, Suhu Ruangan, dan Suhu Larutan terhadap Waktu',
-  laju: 'Laju Volume CO₂ terhadap Waktu',
+  volume: 'Grafik Volume CO₂ terhadap Waktu',
   suhuLar: 'Pengaruh Suhu Larutan terhadap Volume CO₂',
   suhuRuang: 'Pengaruh Suhu Ruangan terhadap Volume CO₂'
 };
@@ -682,8 +682,8 @@ function buildAllVariablesConfig(){
           title: { display: true, text: 'Volume CO2 (mL)', color: '#475569', font: legendFont() },
           ticks: { color: '#475569', font: tickFont() },
           grid: { color: '#e2e8f0' },
-          beginAtZero: true,
-          suggestedMax: 20
+          min: 0,
+          max: 100
         },
         y1: {
           position: 'right',
@@ -698,22 +698,22 @@ function buildAllVariablesConfig(){
   };
 }
 
-function buildRateConfig(){
+function buildVolumeOnlyConfig(){
   return {
     type: 'line',
     data: {
       datasets: [{
-        label: 'Laju Volume CO2 (mL/menit)',
+        label: 'Volume CO2 (mL)',
         data: [],
-        borderColor: '#1d4ed8',
-        backgroundColor: 'rgba(29,78,216,0.08)',
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.08)',
         borderWidth: 2.5,
-        pointRadius: 2.5,
-        pointBackgroundColor: '#1d4ed8',
+        pointRadius: 3,
+        pointBackgroundColor: '#f59e0b',
         pointBorderColor: '#fff',
-        pointBorderWidth: 1.2,
+        pointBorderWidth: 1.5,
         tension: 0.2,
-        fill: true,
+        fill: false,
       }]
     },
     options: Object.assign(baseOptions(), {
@@ -725,10 +725,11 @@ function buildRateConfig(){
           grid: { color: '#e2e8f0' }
         },
         y: {
-          title: { display: true, text: 'Laju (mL/menit)', color: '#475569', font: legendFont() },
+          title: { display: true, text: 'Volume CO2 (mL)', color: '#475569', font: legendFont() },
           ticks: { color: '#475569', font: tickFont() },
           grid: { color: '#e2e8f0' },
-          beginAtZero: true
+          min: 0,
+          max: 100
         }
       }
     })
@@ -761,36 +762,19 @@ function buildCorrelationConfig(label, color, xTitle){
           title: { display: true, text: 'Volume CO2 (mL)', color: '#475569', font: legendFont() },
           ticks: { color: '#475569', font: tickFont() },
           grid: { color: '#e2e8f0' },
-          beginAtZero: true,
-          suggestedMax: 20
+          min: 0,
+          max: 100
         }
       }
     })
   };
 }
 
-// Deret laju (mL/menit) di tiap titik waktu, dihitung dari jendela geser
-// beberapa titik terakhir — konsisten dengan kalkulasi "Laju per Menit"
-function rateSeries(){
-  const result = [];
-  for (let i = 1; i < dataPoints.length; i++){
-    const start = Math.max(0, i - 5);
-    const p0 = dataPoints[start];
-    const p1 = dataPoints[i];
-    const dtMin = (p1.t - p0.t) / 60;
-    if (dtMin > 0){
-      const rate = (p1.v - p0.v) / dtMin;
-      result.push({ x: Math.round(p1.t * 10) / 10, y: rate });
-    }
-  }
-  return result;
-}
-
 function initChart(){
   const ctx = document.getElementById('chart').getContext('2d');
   let config;
-  if (currentView === 'laju'){
-    config = buildRateConfig();
+  if (currentView === 'volume'){
+    config = buildVolumeOnlyConfig();
   } else if (currentView === 'suhuLar'){
     config = buildCorrelationConfig('Volume CO2 vs Suhu Larutan', '#7c3aed', 'Suhu Larutan (°C)');
   } else if (currentView === 'suhuRuang'){
@@ -827,8 +811,8 @@ function refreshChartData(){
     chart.data.datasets[0].data = dataPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.v }));
     chart.data.datasets[1].data = suhuPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.s }));
     chart.data.datasets[2].data = larPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.s }));
-  } else if (currentView === 'laju'){
-    chart.data.datasets[0].data = rateSeries();
+  } else if (currentView === 'volume'){
+    chart.data.datasets[0].data = dataPoints.map(p => ({ x: Math.round(p.t * 10) / 10, y: p.v }));
   } else if (currentView === 'suhuLar'){
     chart.data.datasets[0].data = correlationData(larPoints);
   } else if (currentView === 'suhuRuang'){
