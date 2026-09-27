@@ -365,25 +365,27 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
     grid-template-columns:1fr!important;
     grid-template-areas:"ctrl" "aquarium" "rekap"!important;
     grid-template-rows:none!important;
-    flex:none!important;min-height:0;gap:10px;
+    flex:none!important;min-height:0;min-width:0;gap:10px;
+    width:100%;
   }
   .ctrl-panel{
     display:flex!important;flex-direction:column!important;
     padding:12px;gap:9px;
     overflow:visible!important;max-height:none!important;min-height:0;
+    min-width:0!important;width:100%!important;box-sizing:border-box;
   }
   .ctrl-panel h3{font-size:12px;margin-bottom:0;}
   .cg label{font-size:9.5px;margin-bottom:4px;white-space:normal;overflow:visible;text-overflow:clip;}
   .ctrl-panel .btn{padding:9px 10px;font-size:12px;}
   .ctrl-panel .tipinfo{font-size:11px;padding:7px 9px;margin-top:6px;}
-  .aquarium{padding:10px;}
+  .aquarium{padding:10px;min-width:0!important;width:100%!important;box-sizing:border-box;}
   .aquarium h3{font-size:12px;margin-bottom:6px;}
-  #simCanvas{height:190px!important;}
+  #simCanvas{height:190px!important;max-width:100%!important;}
   .statsrow{padding-top:10px;gap:6px;flex-wrap:wrap;}
-  .sbox{padding:6px 4px;min-width:70px;}
+  .sbox{padding:6px 4px;min-width:0;flex:1 1 60px;}
   .sv{font-size:14px;}
   .sl{font-size:9px;}
-  .rekap-card{max-height:none!important;overflow:visible!important;margin-bottom:0;}
+  .rekap-card{max-height:none!important;overflow:hidden!important;margin-bottom:0;min-width:0!important;width:100%!important;box-sizing:border-box;}
   .rekap-card>div[style*="overflow"]{max-height:280px!important;overflow:auto!important;}
   .wstable th,.wstable td{padding:6px 8px;font-size:10.5px;white-space:nowrap;}
 
@@ -426,6 +428,26 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .proc-body:hover{transform:translateX(4px);box-shadow:0 5px 16px rgba(37,99,235,.14);border-color:var(--border2);}
 .proc-tag{font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
 .proc-body p{margin:0;font-size:clamp(11px,1.2vw,13px);line-height:1.6;color:var(--text2);}
+/* ═══ DATA PRAKTIKUM (desktop): banner judul disembunyikan supaya iframe monitor
+   dapat ruang vertikal penuh, digantikan tombol kecil melayang di pojok kanan atas
+   iframe. Di HP/tablet banner tetap tampil seperti semula. ═══ */
+.data-header{display:none;}
+.data-open-btn-float{
+  position:absolute;bottom:14px;right:14px;z-index:5;
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(15,23,42,.72);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.25);color:#fff;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+  padding:7px 12px;border-radius:8px;text-decoration:none;
+  box-shadow:0 4px 14px rgba(15,23,42,.35);
+  transition:background .15s,transform .15s;
+}
+.data-open-btn-float:hover{background:rgba(30,58,138,.9);transform:translateY(-1px);}
+@media (pointer:coarse){
+  .data-header{display:flex;}
+  .data-open-btn-float{display:none;}
+}
 </style>
 </head>
 <body>
@@ -1001,14 +1023,15 @@ function startPraktikum(){
 <!-- ===== DATA PRAKTIKUM ===== -->
 <div id="page-data" class="page">
   <div class="scroll" style="overflow:hidden;padding:10px 14px 14px;display:flex;flex-direction:column;">
-    <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:10px;padding:9px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;box-shadow:0 4px 16px rgba(15,36,96,.22);">
+    <div class="data-header" style="background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:10px;padding:9px 16px;margin-bottom:8px;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;box-shadow:0 4px 16px rgba(15,36,96,.22);">
       <div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.5vw,15px);font-weight:700;color:#fff;">📡 Data Praktikum Real-Time</div>
         <div style="font-size:10.5px;color:#93c5fd;margin-top:1px;">Halaman pemantau volume CO₂ &amp; suhu dari rangkaian micro:bit — denicendrianto41.github.io</div>
       </div>
       <a href="https://denicendrianto41.github.io/monitor-co2-probe.html" target="_blank" rel="noopener" style="flex-shrink:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:600;padding:7px 12px;border-radius:7px;text-decoration:none;white-space:nowrap;">⤢ Buka Tab Baru</a>
     </div>
-    <div style="flex:1;min-height:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 3px rgba(30,41,59,.06);">
+    <div style="flex:1;min-height:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 3px rgba(30,41,59,.06);position:relative;">
+      <a href="https://denicendrianto41.github.io/monitor-co2-probe.html" target="_blank" rel="noopener" class="data-open-btn-float" title="Buka di tab baru">⤢ Buka Tab Baru</a>
       <iframe src="https://denicendrianto41.github.io/monitor-co2-probe.html" title="Monitor Data Praktikum" style="width:100%;height:100%;border:none;display:block;" allow="serial; bluetooth; usb"></iframe>
     </div>
   </div>
