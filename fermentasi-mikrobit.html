@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Lab Virtual – Fermentasi Alkohol</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f8fafc;
+  --border:#dde3ec;--border2:#c5cfe0;
+  --acc:#2563eb;--acc2:#3b82f6;--acc3:#1d4ed8;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --yellow:#d97706;--red:#dc2626;--green:#059669;
+  --h:56px;
+  --fbase:14px;
+}
+@media (max-width:768px){:root{--fbase:13px;--h:46px;}}
+@media (min-width:1200px){:root{--fbase:15px;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(37,99,235,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 90% 100%,rgba(37,99,235,0.05) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,0.08) 40px);
+}
+/* HEADER */
+header{position:relative;z-index:10;height:var(--h);flex-shrink:0;background:linear-gradient(135deg,#0f172a,#1e3a8a);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;padding:0 14px;gap:12px;box-shadow:0 2px 10px rgba(15,23,42,.45);}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-icon{width:35px;height:35px;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);overflow:hidden;padding:2px;}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1;}
+.logo-sub{font-size:9.5px;color:rgba(255,255,255,.75);}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.nb{position:relative;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-family:'Inter',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:500;padding:0 13px;height:var(--h);white-space:nowrap;transition:color .2s;}
+.nb::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#60a5fa;transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.nb:hover{color:rgba(255,255,255,.95);}
+.nb.active{color:#fff;}
+.nb.active::after{transform:scaleX(1);}
+#menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
+#menuToggle svg{display:block;}
+@media(max-width:640px){
+  header{flex-wrap:nowrap;padding:0 10px;}
+  .logo-text{font-size:16px;}.logo-sub{display:none;}
+  #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav.open{display:flex;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
+  .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
+  /* Alat & Bahan / Prosedur: di HP gambar ditampilkan penuh lebar (tidak dipotong)
+     dan halaman ini boleh discroll vertikal supaya seluruh gambar tetap terlihat. */
+  #page-alatbahan .scroll{overflow-y:auto!important;overflow-x:hidden!important;display:block!important;-webkit-overflow-scrolling:touch;}
+  #page-prosedur .scroll{overflow-y:auto!important;overflow-x:hidden!important;display:block!important;-webkit-overflow-scrolling:touch;}
+  #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%!important;height:auto!important;object-fit:initial!important;display:block;margin:0 auto;}
+  .ab-grid{grid-template-columns:1fr!important;}
+}
+#app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+/* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
+@media (pointer:coarse) and (orientation:landscape){
+  :root{--h:42px;}
+  .logo-icon{width:26px;height:26px;}
+  .logo-text{font-size:14px;}
+  .logo-sub{display:none;}
+  .nb{font-size:11.5px;padding:0 9px;}
+  .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+}
+.page{display:none;flex:1;min-height:0;overflow:hidden;}
+.page.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.page.active{animation:fu .22s ease;}
+.scroll{flex:1;min-height:0;overflow-y:auto;padding:10px 14px 14px;-webkit-overflow-scrolling:touch;}
+.scroll::-webkit-scrollbar{width:4px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0f172a,#2563eb);border:none;border-radius:9px;padding:10px 16px;margin-bottom:8px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 4px 18px rgba(37,99,235,.2);}
+.hero::after{content:'🍺';position:absolute;right:12px;top:-8px;font-size:60px;opacity:.08;pointer-events:none;}
+.h-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;color:#93c5fd;text-transform:uppercase;margin-bottom:2px;}
+.h-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,2vw,18px);font-weight:700;color:#fff;line-height:1.2;}
+.h-title span{color:#bfdbfe;}
+.h-desc{font-size:11px;color:#bfdbfe;line-height:1.5;max-width:480px;}
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:7px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.fit-inner{transform-origin:top left;}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 10px rgba(30,41,59,0.09);}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ci{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ci.b{background:rgba(22,163,74,.1);}
+.ci.y{background:rgba(217,119,6,.1);}
+.ci.g{background:rgba(5,150,105,.1);}
+.ci.r{background:rgba(220,38,38,.1);}
+.ci.p{background:rgba(124,58,237,.1);}
+.ct{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,1.5vw,15px);font-weight:700;color:var(--acc3);}
+.card p{font-size:clamp(12px,1.3vw,14px);line-height:1.7;color:var(--text2);margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:clamp(10px,1.1vw,12px);font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+#page-teori .scroll{overflow:hidden;display:flex;flex-direction:column;}
+#page-teori .card p{font-size:clamp(11px,1.1vw,13px);line-height:1.55;margin-bottom:4px;}
+#page-teori .card h4{margin:6px 0 3px;}
+#page-teori .two-col{gap:5px;}
+#page-teori .card{margin-bottom:5px;padding:9px 12px;}
+#page-alatbahan .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-prosedur .scroll{overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;}
+#page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%;height:100%;object-fit:cover;display:block;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:5px;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.fi strong{display:block;font-size:clamp(11px,1.2vw,13px);color:var(--acc3);margin-bottom:3px;}
+.fi span{font-size:clamp(11px,1.2vw,13px);color:var(--text2);line-height:1.5;}
+.olist{list-style:none;}
+.olist li{display:flex;align-items:flex-start;gap:7px;font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;padding:4px 0;border-bottom:1px solid var(--border);}
+.olist li:last-child{border-bottom:none;}
+.olist li::before{content:'›';color:var(--acc);font-weight:700;font-size:15px;margin-top:-1px;}
+.chips{display:flex;gap:5px;margin:6px 0;flex-wrap:wrap;}
+.chip{border-radius:5px;padding:3px 8px;font-size:clamp(11px,1.2vw,13px);font-weight:500;}
+.chip-b{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:#1d4ed8;}
+.chip-r{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#b91c1c;}
+.chip-g{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:#047857;}
+.chip-p{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#6d28d9;}
+/* PROSEDUR */
+.steps{display:flex;flex-direction:column;gap:5px;}
+.step{display:flex;gap:10px;align-items:flex-start;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;transition:border-color .17s;}
+.step:hover{border-color:var(--acc2);background:#eff6ff;}
+.snum{min-width:20px;height:20px;border-radius:50%;background:rgba(22,163,74,.1);border:1px solid rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);flex-shrink:0;}
+.step p{font-size:clamp(12px,1.3vw,14px);color:var(--text2);line-height:1.6;margin:0;}
+.notebox{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:7px;}
+.notebox .nt{font-size:9.5px;font-weight:600;color:var(--yellow);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.notebox p{font-size:clamp(12px,1.2vw,13px);color:#92400e;line-height:1.6;margin:0;}
+.sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px;}
+.sep span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:600;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
+/* SIMULASI */
+.sim-wrap{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  grid-template-areas:
+    "ctrl aquarium"
+    "rekap rekap";
+  grid-template-rows:auto auto;
+  gap:8px;
+}
+.ctrl-panel{grid-area:ctrl;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.ctrl-panel h3{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--acc3);}
+.cg label{display:block;font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+select{width:100%;background:#fff;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 26px 6px 8px;font-family:'Inter',sans-serif;font-size:11.5px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%232563eb' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .17s;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+.btn{width:100%;border:none;border-radius:6px;padding:8px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-start{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-start:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-stop{background:#fff1f2;border:1px solid #fecdd3;color:var(--red);}
+.btn-stop:hover{background:#ffe4e6;}
+.btn-stop:disabled{opacity:.35;cursor:not-allowed;}
+.btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.aquarium{grid-area:aquarium;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;}
+.aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;}
+#simCanvas{width:100%;border-radius:6px;display:block;background:#0f172a;border:1px solid var(--border);}
+.statsrow{display:flex;gap:6px;margin-top:auto;padding-top:16px;}
+.sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
+.sv{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;color:var(--acc);display:block;}
+.sl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.tipinfo{background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:7px 10px;margin-top:6px;font-size:11px;color:#1e3a8a;display:none;line-height:1.6;}
+.tipinfo.on{display:block;}
+.rekap-card{grid-area:rekap;}
+.wstable{width:100%;border-collapse:collapse;font-size:11px;}
+.wstable th{background:#eff6ff;color:var(--acc3);padding:6px 9px;text-align:left;border:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+.wstable td{padding:5px 9px;border:1px solid var(--border);color:var(--text2);}
+.wstable tr:nth-child(even) td{background:#f8fafc;}
+.wstable tr:hover td{background:#eff6ff;}
+/* DISKUSI */
+.disc-area{width:100%;border:1px solid var(--border);border-radius:8px;padding:13px 15px;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);background:var(--surf2);resize:vertical;outline:none;transition:border-color .17s;line-height:1.75;margin-top:8px;}
+.disc-area:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+/* DRAG CARDS */
+/* QUIZ */
+.quiz-nav-header{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--surf);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;flex-shrink:0;box-shadow:0 1px 3px rgba(30,41,59,0.05);}
+.qprog{display:flex;gap:3px;flex-wrap:wrap;}
+.qprog-dot{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surf2);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .17s;}
+.qprog-dot.answered{border-color:var(--acc2);color:var(--acc);background:#eff6ff;}
+.qprog-dot.current{background:var(--acc);color:#fff;border-color:var(--acc);}
+.q-card{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:16px;flex:1;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(30,41,59,0.06);}
+.qnum{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc);letter-spacing:.1em;margin-bottom:6px;}
+.qtype-badge{display:inline-block;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;margin-bottom:7px;letter-spacing:.04em;}
+.badge-mc{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;}
+.badge-tf{background:#eff6ff;border:1px solid #93c5fd;color:#1e3a8a;}
+.qtext{font-size:16px;color:var(--text);line-height:1.6;font-weight:600;margin-bottom:10px;}
+.opts{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.opt{display:flex;align-items:flex-start;gap:8px;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:8px 11px;cursor:pointer;transition:all .16s;font-size:12px;color:var(--text2);}
+.opt:hover{border-color:var(--acc2);background:#eff6ff;color:var(--text);}
+.opt input{margin-top:1px;accent-color:var(--acc);cursor:pointer;}
+.opt.sel{border-color:var(--acc);background:#eff6ff;color:var(--acc3);}
+.opt.correct{background:#eff6ff;border-color:#3b82f6;color:#1e3a8a;}
+.opt.wrong{background:#fff1f2;border-color:#f87171;color:#b91c1c;}
+.qfb{margin-top:8px;padding:7px 10px;border-radius:6px;font-size:11.5px;display:none;}
+.qfb.on{display:block;}
+.qfb.ok{background:#eff6ff;color:#1e3a8a;border:1px solid #93c5fd;}
+.qfb.bad{background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3;}
+.quiz-foot{display:flex;align-items:center;gap:9px;padding-top:9px;flex-shrink:0;}
+.btn-qnav{padding:10px 20px;border-radius:7px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .17s;border:none;}
+.btn-prev{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-prev:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-next{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+.btn-next:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-submit-q{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;}
+.btn-submit-q:hover{box-shadow:0 3px 12px rgba(37,99,235,.3);}
+.btn-reset-q{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-reset-q:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.qcounter{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text3);}
+/* SCORE */
+.score-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(8px);}
+.score-overlay.on{display:flex;}
+.score-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:32px 44px;text-align:center;box-shadow:0 20px 60px rgba(30,41,59,.18);animation:fu .28s ease;min-width:280px;}
+.score-big{font-family:'Space Grotesk',sans-serif;font-size:68px;font-weight:700;color:var(--acc);line-height:1;}
+.score-pct{font-size:20px;color:var(--text3);margin-top:2px;}
+.score-sub{font-size:12.5px;color:var(--text2);margin:8px 0 4px;}
+.score-grade{font-size:15px;font-weight:600;margin-top:8px;}
+.score-actions{display:flex;gap:8px;justify-content:center;margin-top:18px;}
+.btn-score{padding:10px 24px;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .17s;}
+.btn-review{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
+.btn-review:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
+.btn-ulangi{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;}
+.btn-ulangi:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+/* LOADING */
+#loadScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .6s ease;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+#loadScreen::before{content:'';position:absolute;inset:0;background-image:url('https://denicendrianto41.github.io/bg_lab_fermentasi.webp');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;}
+#loadScreen::after{content:'';position:absolute;inset:0;background:rgba(8,15,35,0.12);z-index:1;}
+#loadScreen > *{position:relative;z-index:2;}
+.load-logo{width:clamp(60px,8vw,90px);margin-bottom:16px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}
+.load-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2.5vw,28px);font-weight:800;color:#ffffff;text-align:center;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.85),0 0 24px rgba(0,0,0,.5);}
+.load-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.1vw,12px);color:#bfdbfe;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:28px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.5);}
+.load-bar-wrap{width:clamp(220px,28vw,340px);height:6px;background:rgba(255,255,255,.28);border-radius:6px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);}
+.load-bar-slide{height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#3b82f6,#93c5fd);border-radius:6px;transition:width .1s linear;}
+.load-percent{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.4vw,15px);color:#ffffff;font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:.05em;text-shadow:0 2px 8px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.5);}
+.load-status{font-size:clamp(11px,1.1vw,12px);color:#e0e7ff;font-family:'Inter',sans-serif;margin-bottom:32px;min-height:16px;text-align:center;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.5);}
+#btnMulaiPraktikum{display:none;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;cursor:pointer;letter-spacing:.03em;box-shadow:0 4px 18px rgba(37,99,235,.4);animation:btnPop .4s cubic-bezier(.34,1.56,.64,1) forwards;transition:transform .18s,box-shadow .18s;}
+#btnMulaiPraktikum:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(37,99,235,.5);}
+@keyframes btnPop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+/* Loading screen di HP: layar landscape HP pendek (tinggi terbatas) & lebar terbatas,
+   jadi semua elemen disusutkan menyesuaikan tinggi & lebar layar sekaligus (bukan cuma lebar),
+   supaya logo/judul/tombol tidak tampil kebesaran atau terpotong. Posisi & ukuran disesuaikan
+   sama seperti pada lab kunci determinasi. */
+@media (max-height:520px), ((pointer:coarse) and (max-width:1024px)){
+  .load-logo{width:clamp(38px,7vh,56px);margin-bottom:8px;}
+  .load-title{font-size:clamp(14px,3.6vh,20px);margin-bottom:3px;}
+  .load-sub{font-size:clamp(8.5px,1.8vh,10.5px);letter-spacing:.1em;margin-bottom:12px;}
+  .load-bar-wrap{width:clamp(150px,42vw,240px);height:5px;margin-bottom:6px;}
+  .load-percent{font-size:clamp(11px,2.4vh,13px);margin-bottom:8px;}
+  .load-status{font-size:clamp(9.5px,1.9vh,11px);margin-bottom:14px;min-height:14px;}
+  #btnMulaiPraktikum{padding:7px 20px;font-size:clamp(11px,2.2vh,13px);}
+}
+@media (max-height:400px){
+  .load-logo{width:clamp(32px,6vh,44px);margin-bottom:5px;}
+  .load-title{font-size:clamp(13px,3.2vh,17px);margin-bottom:2px;}
+  .load-sub{font-size:clamp(8px,1.6vh,9.5px);margin-bottom:8px;}
+  .load-bar-wrap{margin-bottom:4px;}
+  .load-percent{margin-bottom:5px;}
+  .load-status{margin-bottom:9px;min-height:12px;}
+  #btnMulaiPraktikum{padding:6px 18px;}
+}
+
+/* ═══ PAKSA ROTASI KE LANDSCAPE (HP/perangkat sentuh) ═══ */
+#rotateOverlay{display:none;}
+@media (orientation:portrait) and (pointer:coarse), (orientation:portrait) and (max-width:900px){
+  #rotateOverlay{
+    display:flex;position:fixed;inset:0;z-index:2147483647;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    padding:32px 24px;text-align:center;
+    background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);
+    color:#fff;
+  }
+  #loadScreen,header,#app{display:none!important;}
+}
+.rot-icon{width:64px;height:64px;animation:rotHint 1.6s ease-in-out infinite;}
+@keyframes rotHint{
+  0%,100%{transform:rotate(0deg);}
+  50%{transform:rotate(-90deg);}
+}
+.rot-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,5vw,20px);font-weight:800;}
+.rot-sub{font-size:clamp(12px,3.6vw,14px);color:rgba(226,232,240,0.85);max-width:320px;line-height:1.6;}
+/* CELEBRATION */
+@keyframes starFloat{0%{opacity:0;transform:translateY(0) scale(0);}15%{opacity:1;}85%{opacity:.8;}100%{opacity:0;transform:translateY(-120px) scale(1.2) rotate(180deg);}}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+@media(max-width:700px){
+  #page-simulasi>.scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
+  .sim-wrap{grid-template-columns:1fr!important;grid-template-areas:"ctrl" "aquarium" "rekap"!important;}
+  .ctrl-panel{max-height:none;overflow:visible;}
+  .aquarium canvas{max-width:100%;}
+}
+/* ═══ CHART MODE TABS (menggantikan dropdown) ═══ */
+.chart-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+.ctab{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:5px 9px;cursor:pointer;transition:all .16s;white-space:nowrap;}
+.ctab:hover{border-color:#bfdbfe;color:#1d4ed8;background:#eff6ff;}
+.ctab.active{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+/* ═══ PROSEDUR — timeline animatif ═══ */
+.proc-timeline{position:relative;display:flex;flex-direction:column;}
+.proc-step{position:relative;display:flex;gap:12px;padding-bottom:14px;opacity:0;animation:procIn .5s ease forwards;}
+.proc-step:last-child{padding-bottom:0;}
+.proc-step:nth-child(1){animation-delay:.04s;}
+.proc-step:nth-child(2){animation-delay:.12s;}
+.proc-step:nth-child(3){animation-delay:.20s;}
+.proc-step:nth-child(4){animation-delay:.28s;}
+.proc-step:nth-child(5){animation-delay:.36s;}
+.proc-step:nth-child(6){animation-delay:.44s;}
+.proc-step:nth-child(7){animation-delay:.52s;}
+@keyframes procIn{from{opacity:0;transform:translateX(-16px);}to{opacity:1;transform:translateX(0);}}
+.proc-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px;}
+.proc-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;position:relative;z-index:1;}
+.proc-num::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px solid currentColor;opacity:.35;animation:procPulse 2.2s ease-in-out infinite;}
+@keyframes procPulse{0%{transform:scale(0.85);opacity:.5;}70%{transform:scale(1.25);opacity:0;}100%{transform:scale(1.25);opacity:0;}}
+.proc-line{width:2px;flex:1;min-height:10px;background:linear-gradient(180deg,rgba(37,99,235,.45),rgba(37,99,235,.06));margin-top:3px;border-radius:2px;}
+.proc-body{flex:1;background:var(--surf);border:1px solid var(--border);border-radius:11px;padding:10px 13px;box-shadow:0 1px 3px rgba(30,41,59,0.06);transition:transform .2s,box-shadow .2s,border-color .2s;}
+.proc-body:hover{transform:translateX(4px);box-shadow:0 5px 16px rgba(37,99,235,.14);border-color:var(--border2);}
+.proc-tag{font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
+.proc-body p{margin:0;font-size:clamp(11px,1.2vw,13px);line-height:1.6;color:var(--text2);}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY: memaksa pengguna memutar perangkat ke mode landscape -->
+<div id="rotateOverlay">
+  <svg class="rot-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2.2"></rect>
+    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+  </svg>
+  <div class="rot-title">Putar Perangkat Anda</div>
+  <div class="rot-sub">Aplikasi Lab Maya Biologi ditampilkan dalam mode <strong>landscape</strong> (mendatar) agar semua fitur terlihat dengan baik. Silakan putar HP/tablet Anda.</div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div id="loadScreen">
+  <div class="load-content" style="display:flex;flex-direction:column;align-items:center;gap:0;">
+  <img class="load-logo" src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo">
+  <div class="load-title">Lab Maya Biologi</div>
+  <div class="load-sub">Fermentasi Alkohol</div>
+  <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
+  <div class="load-percent" id="loadPercent">0%</div>
+  <div class="load-status" id="loadStatus">Memuat laboratorium virtual…</div>
+  <button id="btnMulaiPraktikum" onclick="startPraktikum()">Mulai Praktikum</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const bar=document.getElementById('loadBar');
+  const pct=document.getElementById('loadPercent');
+  const status=document.getElementById('loadStatus');
+  let current=0;
+  const total=3000;const step=20;const inc=100/(total/step);
+  const iv=setInterval(()=>{
+    current=Math.min(100,current+inc);
+    const v=Math.floor(current);
+    bar.style.width=v+'%';
+    pct.textContent=v+'%';
+    if(current>=100){
+      clearInterval(iv);
+      pct.textContent='100%';
+      status.textContent='✅ Laboratorium siap digunakan!';
+      document.getElementById('btnMulaiPraktikum').style.display='block';
+    }
+  },step);
+})();
+function startPraktikum(){
+  const sfx=new Audio('https://denicendrianto41.github.io/tring.wav');
+  sfx.play().catch(()=>{});
+  const ls=document.getElementById('loadScreen');
+  ls.classList.add('hide');
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-tujuan').classList.add('active');
+    const tujuanBtn=document.querySelector('.nb[onclick*="tujuan"]');
+    if(tujuanBtn) tujuanBtn.classList.add('active');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('tujuan')));
+  },650);
+}</script>
+
+<audio id="clickSfx" src="https://denicendrianto41.github.io/jump.wav" preload="auto"></audio>
+<audio id="sndBenar" src="https://denicendrianto41.github.io/benar.wav" preload="auto"></audio>
+<audio id="sndSalah" src="https://denicendrianto41.github.io/salah.wav" preload="auto"></audio>
+<audio id="sndBerhasil" src="https://denicendrianto41.github.io/berhasil.wav" preload="auto"></audio>
+<audio id="sndBerhasil2" src="https://denicendrianto41.github.io/berhasil.wav" preload="auto"></audio>
+<audio id="sndBlup" src="https://denicendrianto41.github.io/blup.wav" preload="auto"></audio>
+<script>
+  document.addEventListener('click',function(e){
+    const el=e.target.closest('button, .nb, .btn, select, input[type="range"]');
+    if(!el) return;
+    if(el.id==='btnMulaiPraktikum') return;
+    const sfx=document.getElementById('clickSfx');
+    if(!sfx) return;
+    sfx.currentTime=0;
+    sfx.play().catch(()=>{});
+  });
+</script>
+
+<header style="justify-content:space-between;">
+  <div class="logo">
+    <div class="logo-icon" style="background:#fff;overflow:hidden;padding:2px;">
+      <img src="https://denicendrianto41.github.io/logo_vlab.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+    </div>
+    <div>
+      <div class="logo-text">Lab Maya Biologi</div>
+      <div class="logo-sub">Fermentasi Alkohol</div>
+    </div>
+  </div>
+  <button id="menuToggle" onclick="toggleNav()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line id="mL1" x1="3" y1="6" x2="21" y2="6"/><line id="mL2" x1="3" y1="12" x2="21" y2="12"/><line id="mL3" x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
+    <button class="nb active" onclick="show('tujuan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+    <button class="nb" onclick="show('teori',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+    <button class="nb" onclick="show('alatbahan',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+    <button class="nb" onclick="show('prosedur',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+    <button class="nb" onclick="show('simulasi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+    <button class="nb" onclick="show('data',this);closeNav()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M3 3v18h18"></path><path d="M7 15l3.5-5 3 3L18 7"></path></svg>Data Praktikum</button>
+    <button class="nb" onclick="show('diskusi',this);closeNav()">
+      <img src="https://denicendrianto41.github.io/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+  </nav>
+</header>
+
+<div id="app">
+
+<!-- ===== TUJUAN ===== -->
+<div id="page-tujuan" class="page active">
+  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="fit-inner">
+
+    <!-- Hero Banner -->
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#2563eb 100%);border-radius:16px;padding:22px 24px 18px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(15,36,96,0.28);">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,20px);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.2;">Lab Virtual – Fermentasi Alkohol</div>
+          </div>
+        </div>
+        <div style="width:48px;height:3px;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;margin-bottom:10px;"></div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:rgba(226,232,240,0.88);line-height:1.7;margin:0;max-width:620px;">
+          Selamat datang di laboratorium virtual. Pelajari proses <strong style="color:#93c5fd;">fermentasi alkohol</strong> secara interaktif — dari teori, simulasi, hingga diskusi dan evaluasi hasil percobaan.
+        </p>
+      </div>
+    </div>
+
+    <!-- 2 Objective Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Card 1: Tujuan Pembelajaran -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(37,99,235,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Pembelajaran</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Mendeskripsikan <strong style="color:#1d4ed8;">peranan ragi</strong> (<em>Saccharomyces cerevisiae</em>) dalam proses fermentasi alkohol dan kaitannya dengan kehidupan sehari-hari.
+        </p>
+      </div>
+
+      <!-- Card 2: Tujuan Percobaan -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(30,41,59,0.07);transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 24px rgba(5,150,105,0.13)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(30,41,59,0.07)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d1fae5,#ecfdf5);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔬</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#059669;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tujuan</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Percobaan</div>
+          </div>
+        </div>
+        <p style="font-size:clamp(11px,1.2vw,13px);color:#475569;line-height:1.7;margin:0;">
+          Membuktikan bahwa <strong style="color:#059669;">fermentasi alkohol</strong> menghasilkan gas CO₂ dan energi panas, serta membandingkan perangkat dengan ragi dan tanpa ragi sebagai kontrol.
+        </p>
+      </div>
+    </div>
+
+    <!-- Hasil Belajar Section -->
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px 18px;box-shadow:0 2px 12px rgba(30,41,59,0.07);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#fef3c7,#fffbeb);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Indikator Pencapaian</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#1e293b;">Hasil Belajar yang Diharapkan</div>
+        </div>
+      </div>
+      <p style="font-size:clamp(11px,1.2vw,12.5px);color:#94a3b8;margin-bottom:12px;margin-top:-6px;">Setelah menyelesaikan kegiatan ini, peserta didik diharapkan mampu:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#93c5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;">1</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menjelaskan konsep <strong style="color:#1d4ed8;">respirasi anaerob</strong> dan fermentasi alkohol</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#059669;font-family:'JetBrains Mono',monospace;">2</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menuliskan <strong style="color:#059669;">reaksi kimia</strong> fermentasi alkohol dengan benar</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#c4b5fd'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#7c3aed;font-family:'JetBrains Mono',monospace;">3</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Mengidentifikasi <strong style="color:#7c3aed;">produk fermentasi</strong>: CO₂, etanol, dan energi (ATP)</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;transition:border-color .2s;" onmouseover="this.style.borderColor='#fca5a5'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;color:#dc2626;font-family:'JetBrains Mono',monospace;">4</div>
+          <span style="font-size:clamp(11px,1.2vw,13px);color:#334155;line-height:1.6;">Menghubungkan fermentasi dengan <strong style="color:#dc2626;">kehidupan sehari-hari</strong></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ===== TEORI ===== -->
+<div id="page-teori" class="page">
+  <div class="scroll" style="overflow:hidden;padding:14px 16px 20px;">
+  <div class="fit-inner">
+
+    <!-- Teori Header -->
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f172a 60%,#1d4ed8 100%);border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(15,36,96,0.22);position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📚</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,19px);font-weight:800;color:#fff;letter-spacing:-0.01em;">Dasar Teori</div>
+        <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.85);margin-top:2px;">Fermentasi Alkohol · <em>Saccharomyces cerevisiae</em></div>
+      </div>
+    </div>
+
+    <!-- 2-column theory grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Respirasi Anaerob -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(37,99,235,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">⚗️</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#1d4ed8;">Respirasi Anaerob</div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Reaksi pemecahan karbohidrat untuk mendapatkan energi <strong style="color:#b91c1c;">tanpa menggunakan oksigen (O₂)</strong>. Ketika oksigen tidak tersedia, organisme melakukan fermentasi.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🌬️</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#1d4ed8;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Aerob</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Menggunakan O₂ → menghasilkan CO₂, H₂O, dan banyak ATP</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:7px 10px;">
+              <span style="font-size:13px;flex-shrink:0;margin-top:1px;">🍺</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#c2410c;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px;">Anaerob (Fermentasi)</div>
+                <div style="font-size:clamp(10px,1.1vw,11.5px);color:#334155;line-height:1.6;">Tanpa O₂ → menghasilkan etanol, CO₂, dan sedikit ATP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saccharomyces cerevisiae -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;flex:1;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(124,58,237,0.1)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+          <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:14px 14px 0 0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🦠</div>
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#6d28d9;">Ragi (Yeast)</div>
+              <div style="font-size:10px;color:#8b5cf6;font-style:italic;">Saccharomyces cerevisiae</div>
+            </div>
+          </div>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin-bottom:8px;">
+            Mikroorganisme <strong style="color:#6d28d9;">eukariotik bersel tunggal</strong> dari Kingdom Fungi. Memiliki inti bermembran, organel lengkap, dan dinding sel berbahan kitin.
+          </p>
+          <p style="font-size:clamp(11px,1.15vw,12.5px);color:#475569;line-height:1.75;margin:0;">
+            Bekerja optimal pada suhu <strong style="color:#6d28d9;">25–30°C</strong>. Dimanfaatkan dalam pembuatan roti, tape, bir, dan produk fermentasi lainnya.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right column: Tahapan Fermentasi -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);border-radius:14px 14px 0 0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🔄</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:#059669;">Tahapan Fermentasi Alkohol</div>
+            <div style="font-size:10px;color:#10b981;">Mekanisme reaksi anaerob</div>
+          </div>
+        </div>
+
+        <!-- Reaksi -->
+        <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:9px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,1vw,11px);color:#93c5fd;letter-spacing:0.03em;">C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP</code>
+        </div>
+
+        <!-- Steps -->
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">1</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#10b981,#a7f3d0);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#059669;">Glikolisis:</strong> Glukosa (C₆H₁₂O₆) dipecah menjadi 2 asam piruvat + 2 ATP di sitoplasma</p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">2</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#2dd4bf,#99f6e4);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#0d9488;">Dekarboksilasi:</strong> Asam piruvat diubah menjadi asetaldehida, melepaskan CO₂</p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">3</div>
+              <div style="width:2px;flex:1;background:linear-gradient(180deg,#38bdf8,#bae6fd);min-height:8px;"></div>
+            </div>
+            <div style="flex:1;padding:0 0 8px 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#0891b2;">Reduksi:</strong> Asetaldehida direduksi oleh NADH menjadi <strong>etanol (C₂H₅OH)</strong></p></div>
+          </div>
+          <div style="display:flex;align-items:stretch;gap:0;position:relative;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0;">4</div>
+            </div>
+            <div style="flex:1;padding:0 0 0 10px;"><p style="font-size:clamp(10px,1.1vw,12px);color:#334155;line-height:1.6;margin:0;padding-top:2px;"><strong style="color:#2563eb;">Regenerasi NAD⁺</strong> memungkinkan glikolisis terus berlanjut menghasilkan ATP</p></div>
+          </div>
+        </div>
+
+        <p style="font-size:clamp(10.5px,1.1vw,12px);color:#475569;line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;">
+          💡 CO₂ yang dihasilkan terdeteksi saat air kapur Ca(OH)₂ berubah menjadi <strong>keruh (CaCO₃)</strong> dan warna PP memudar.
+        </p>
+
+        <!-- Image -->
+        <div style="margin-top:10px;display:flex;justify-content:center;">
+          <div style="position:relative;cursor:zoom-in;" onclick="openImgZoom(this.querySelector('img'))">
+            <img src="https://denicendrianto41.github.io/elenmeyer_fermentasi.png" alt="Perangkat Fermentasi Alkohol"
+              style="height:clamp(80px,12vw,120px);width:auto;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);background:var(--surf2);padding:7px;transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s;display:block;"
+              onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 20px rgba(37,99,235,0.18)'"
+              onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
+            <div style="position:absolute;bottom:10px;right:10px;background:rgba(37,99,235,0.75);border-radius:5px;padding:3px 6px;font-size:9px;color:#fff;pointer-events:none;backdrop-filter:blur(3px);">🔍 Zoom</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ===== ALAT DAN BAHAN ===== -->
+<div id="page-alatbahan" class="page">
+  <div class="scroll" style="overflow:hidden;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:10px 14px 14px;">
+  <div class="fit-inner">
+
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#1d4ed8 100%);border-radius:14px;padding:12px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(15,36,96,0.22);position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:44px;height:44px;border-radius:11px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">🧰</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,1.9vw,20px);font-weight:800;color:#fff;">Alat dan Bahan</div>
+        <div style="font-size:clamp(11.5px,1.2vw,13px);color:rgba(147,197,253,0.9);margin-top:2px;">Rangkaian sensor volume digital: suntikan + sensor ultrasonik + micro:bit + probe suhu</div>
+      </div>
+    </div>
+
+    <div class="ab-grid" style="display:grid;grid-template-columns:1.05fr 0.95fr 0.85fr;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:11px 13px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;display:flex;flex-direction:column;height:100%;">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#2563eb,#60a5fa);"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:3px;">
+          <div style="width:26px;height:26px;border-radius:7px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔧</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,1.9vw,19px);font-weight:700;color:#1d4ed8;">Alat</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:7px;flex:1;">
+          <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#1d4ed8;margin-bottom:3px;">📏 Sensor Ultrasonik</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Mengukur jarak piston suntikan untuk menghitung volume CO₂</div></div>
+          <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#6d28d9;margin-bottom:3px;">🔌 Micro:bit</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Memproses data sensor dan mengirimkannya ke halaman pemantau</div></div>
+          <div style="background:#fff7ed;border:1px solid #fdba74;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#c2410c;margin-bottom:3px;">💉 Suntikan 100 cc</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Piston pengukur volume gas yang terhubung ke botol reaksi</div></div>
+          <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#b91c1c;margin-bottom:3px;">🌡️ Probe Suhu (DS18B20)</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Mengukur suhu larutan tahan air, dicelupkan ke dalam botol reaksi</div></div>
+          <div style="background:#f0fdfa;border:1px solid #5eead4;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#0f766e;margin-bottom:3px;">💻 Kabel USB</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Penghubung micro:bit ke laptop/komputer</div></div>
+          <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#047857;margin-bottom:3px;">🧪 Botol Reaksi</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Fermentor kaca dengan selang penghubung ke suntikan</div></div>
+          <div style="background:#fdf4ff;border:1px solid #f0abfc;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#a21caf;margin-bottom:3px;">🥃 Gelas Kimia &amp; Gelas Ukur</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">250 mL dan 100 mL, untuk menyiapkan larutan gula</div></div>
+          <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:clamp(11px,1.3vw,12.5px);font-weight:700;color:#b45309;margin-bottom:3px;">🥄 Spatula, Cawan Petri, Corong</div><div style="font-size:clamp(10px,1.15vw,12px);color:#334155;line-height:1.4;">Alat bantu mencampur dan memindahkan larutan</div></div>
+        </div>
+      </div>
+
+      <!-- Gambar rangkaian alat — panel tersendiri di antara Alat dan Bahan, ukuran besar & jelas -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:11px 13px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;margin-top:3px;">
+          <div style="width:26px;height:26px;border-radius:7px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">📷</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.5vw,16.5px);font-weight:700;color:#6d28d9;">Rangkaian Sensor</div>
+        </div>
+        <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:transparent;border:none;padding:8px;">
+          <div style="position:relative;cursor:zoom-in;width:59%;height:59%;display:flex;align-items:center;justify-content:center;" onclick="openImgZoom(this.querySelector('img'))">
+            <img src="https://denicendrianto41.github.io/fermentasi-mikrobit.png" alt="Rangkaian sensor fermentasi berbasis micro:bit"
+              style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:9px;border:1.5px solid var(--border);background:#fff;padding:5px;display:block;transition:transform .2s;"
+              onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" title="Lihat ukuran penuh" onclick="event.stopPropagation();openImgZoom(this.previousElementSibling)"
+              style="position:absolute;bottom:4px;right:4px;width:26px;height:26px;border-radius:50%;background:#7c3aed;border:2px solid #fff;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:zoom-in;box-shadow:0 2px 6px rgba(124,58,237,.4);padding:0;">🔍</button>
+          </div>
+        </div>
+        <div style="font-size:clamp(10px,1vw,11.5px);color:#475569;line-height:1.4;margin-top:7px;">Susunan micro:bit, sensor ultrasonik &amp; suntikan — klik gambar atau tombol 🔍 untuk memperbesar.</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:11px 13px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#059669,#34d399);"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;margin-top:3px;">
+          <div style="width:26px;height:26px;border-radius:7px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🧪</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,1.9vw,19px);font-weight:700;color:#059669;">Bahan</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:11px 14px;"><span style="font-size:19px;">🦠</span><span style="font-size:clamp(15px,1.75vw,18px);color:#334155;line-height:1.55;">Ragi instan (<em>Saccharomyces cerevisiae</em> / Fermipan)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:11px 14px;"><span style="font-size:19px;">🍬</span><span style="font-size:clamp(15px,1.75vw,18px);color:#334155;line-height:1.55;">Gula pasir (sukrosa)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:11px 14px;"><span style="font-size:19px;">💧</span><span style="font-size:clamp(15px,1.75vw,18px);color:#334155;line-height:1.55;">Air hangat (37–40°C)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:11px 14px;"><span style="font-size:19px;">🧴</span><span style="font-size:clamp(15px,1.75vw,18px);color:#334155;line-height:1.55;">Selotip pipa air (mencegah kebocoran udara)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:11px 14px;"><span style="font-size:19px;">🏷️</span><span style="font-size:clamp(15px,1.75vw,18px);color:#334155;line-height:1.55;">Label kertas &amp; spidol</span></div>
+        </div>
+        <div style="margin-top:9px;padding-top:0;">
+          <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:8px;padding:8px 10px;font-size:clamp(12px,1.3vw,13.5px);color:#93c5fd;line-height:1.5;">💡 Volume CO₂ dihitung otomatis dari kenaikan piston suntikan: rumus volume tabung (πr²t), dikirim oleh micro:bit ke halaman <strong>Data Praktikum</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ===== PROSEDUR ===== -->
+<div id="page-prosedur" class="page">
+  <div class="scroll" style="overflow:hidden;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:14px 16px 20px;">
+  <div class="fit-inner">
+
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#1d4ed8 100%);border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(15,36,96,0.22);position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;"></div>
+      <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.18);">📋</div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(14px,1.8vw,19px);font-weight:800;color:#fff;">Prosedur Kerja</div>
+        <div style="font-size:clamp(10px,1.1vw,11.5px);color:rgba(147,197,253,0.85);margin-top:2px;">Pengukuran volume CO₂ dan suhu secara digital</div>
+      </div>
+    </div>
+
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:11px 14px;margin-bottom:10px;">
+      <div style="font-size:10px;font-weight:700;color:#c2410c;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">⚠️ Petunjuk Keselamatan</div>
+      <div style="font-size:clamp(10.5px,1.1vw,12px);color:#7c2d12;line-height:1.7;">Suhu air 37–40°C (jangan &gt;50°C, merusak enzim ragi). Jaga sambungan micro:bit dan probe tetap kering. Jangan paksa suntikan melebihi 100 cc.</div>
+    </div>
+
+    <div class="proc-timeline">
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#2563eb,#60a5fa);color:#60a5fa;">1</div><div class="proc-line"></div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#1d4ed8;">🔌 Persiapan Rangkaian Sensor</div><p>Siapkan rangkaian sensor (suntikan + sensor ultrasonik + micro:bit), hubungkan micro:bit ke laptop/komputer via USB, lalu tekan tombol koneksi (hijau) pada halaman <strong>Data Praktikum</strong> hingga status "Terhubung".</p></div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#059669,#34d399);color:#34d399;">2</div><div class="proc-line"></div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#059669;">🥤 Menyiapkan Larutan Gula</div><p>Masukkan 100 mL air hangat ke gelas kimia, lalu tambahkan gula sesuai sampel: <strong>A</strong> 0 g (kontrol), <strong>B</strong> 5 g, <strong>C</strong> 10 g, <strong>D</strong> 15 g. Aduk hingga larut.</p></div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#d97706,#fbbf24);color:#fbbf24;">3</div><div class="proc-line"></div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#d97706;">⏳ Aktivasi Ragi</div><p>Tambahkan 1 gram ragi instan, aduk perlahan, tutup dengan plastik/cawan petri, dan biarkan 15 menit untuk aktivasi ragi.</p></div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#a78bfa;">4</div><div class="proc-line"></div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#7c3aed;">🧪 Merakit Sistem Fermentasi</div><p>Masukkan 40 mL larutan ke botol reaksi, celupkan ujung probe suhu ke larutan, tutup rapat, dan olesi vaselin bila perlu agar tidak ada kebocoran udara.</p></div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#0891b2,#38bdf8);color:#38bdf8;">5</div><div class="proc-line"></div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#0891b2;">🎯 Kalibrasi Nol</div><p>Pasang selang penghubung dari botol ke suntikan, pastikan piston berada di posisi awal (0 mL), lalu tekan tombol "Siap!" pada micro:bit untuk kalibrasi nol.</p></div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#dc2626,#f87171);color:#f87171;">6</div><div class="proc-line"></div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#dc2626;">👁️ Pengamatan Data</div><p>Amati kenaikan volume CO₂ pada halaman Data Praktikum setiap 0,5–1 menit sebanyak 5 kali pengulangan. Catat pula suhu ruangan dan suhu larutan pada kartu suhu di halaman yang sama.</p></div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num-col"><div class="proc-num" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#3b82f6;">7</div></div>
+        <div class="proc-body"><div class="proc-tag" style="color:#1d4ed8;">🔁 Pengulangan Sampel</div><p>Ulangi langkah 2–6 untuk sampel A, B, C, dan D. Tekan tombol Reset pada halaman pemantau sebelum memulai sampel berikutnya, lalu hitung laju fermentasi (mL/menit) setiap sampel.</p></div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ===== SIMULASI ===== -->
+<div id="page-simulasi" class="page">
+  <div class="scroll" style="overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;-webkit-overflow-scrolling:touch;">
+    <div class="sim-wrap">
+      <div class="ctrl-panel">
+        <h3>⚙️ Pengaturan Simulasi</h3>
+
+        <div class="cg">
+          <label>Suhu Awal Larutan</label>
+          <select id="simSuhu">
+            <option value="10">10°C – Rendah</option>
+            <option value="20">20°C – Sejuk</option>
+            <option value="30" selected>30°C – Optimal</option>
+            <option value="40">40°C – Hangat</option>
+            <option value="60">60°C – Tinggi (ragi mati)</option>
+          </select>
+        </div>
+
+        <div class="cg">
+          <label>Konsentrasi Gula</label>
+          <select id="simGula">
+            <option value="10">10% – Rendah</option>
+            <option value="30" selected>30% – Standar</option>
+            <option value="50">50% – Tinggi</option>
+            <option value="70">70% – Sangat Tinggi</option>
+          </select>
+        </div>
+
+        <div class="cg">
+          <label>Jumlah Ragi</label>
+          <select id="simRagi">
+            <option value="0">0 gram – Kontrol</option>
+            <option value="2">2 gram – Sedikit</option>
+            <option value="4" selected>4 gram – Standar</option>
+            <option value="8">8 gram – Banyak</option>
+          </select>
+        </div>
+
+        <div class="cg">
+          <label>Mode Sampel</label>
+          <select id="simPerangkat">
+            <option value="I" selected>Eksperimen (dengan ragi)</option>
+            <option value="II">Sampel A – Kontrol (tanpa ragi)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-start" id="btnStart" onclick="startSim()">▶ Mulai Simulasi</button>
+        <button class="btn btn-stop" id="btnStop" onclick="stopSim()" disabled>⏹ Hentikan</button>
+        <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
+
+        <div class="tipinfo" id="simTip"></div>
+      </div>
+
+      <div class="aquarium">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+          <h3 style="margin-bottom:0;">🔬 Visualisasi Perangkat Fermentasi</h3>
+          <div class="chart-tabs" id="chartTabs">
+            <button type="button" class="ctab active" data-mode="semua" onclick="setChartMode('semua',this)" title="Ketiga variabel (Volume CO₂, Suhu Larutan, Suhu Ruangan) digabung dalam satu grafik waktu, dinormalisasi ke skala 0–100% dengan legenda warna, dengan animasi bertahap">📊 Semua Variabel</button>
+            <button type="button" class="ctab" data-mode="volume" onclick="setChartMode('volume',this)" title="Grafik waktu Volume CO₂ dengan animasi bertahap">📈 Volume CO₂</button>
+            <button type="button" class="ctab" data-mode="suhu_larutan" onclick="setChartMode('suhu_larutan',this)" title="Grafik korelasi/lintasan Suhu Larutan → Volume CO₂ dengan animasi bertahap">🌡️ Suhu Larutan</button>
+            <button type="button" class="ctab" data-mode="suhu_ruang" onclick="setChartMode('suhu_ruang',this)" title="Grafik korelasi/lintasan Suhu Ruangan → Volume CO₂ dengan animasi bertahap">🏠 Suhu Ruangan</button>
+          </div>
+        </div>
+        <canvas id="simCanvas" height="200"></canvas>
+        <div class="statsrow">
+          <div class="sbox"><span class="sv" id="svCO2">0</span><span class="sl">Volume CO₂ (mL)</span></div>
+          <div class="sbox"><span class="sv" id="svSuhu">--°C</span><span class="sl">Suhu Larutan</span></div>
+          <div class="sbox"><span class="sv" id="svSuhuRuang">--°C</span><span class="sl">Suhu Ruangan</span></div>
+          <div class="sbox"><span class="sv" id="svWaktu">0:00</span><span class="sl">Waktu (mnt)</span></div>
+          <div class="sbox"><span class="sv" id="svStatus">⏸</span><span class="sl">Status</span></div>
+        </div>
+      </div>
+
+      <div class="card rekap-card" style="margin-bottom:0;">
+        <div class="ch"><div class="ci b">📊</div><div class="ct">Rekap Hasil Pengamatan</div></div>
+        <div style="overflow:auto;max-height:280px;">
+          <table class="wstable" id="hasilTable">
+            <thead><tr><th>Waktu</th><th>Sampel</th><th>Suhu Ruangan (°C)</th><th>Suhu Larutan (°C)</th><th>Gula (%)</th><th>Ragi (g)</th><th>Volume CO₂ (mL)</th><th>Laju (mL/mnt)</th><th>Keterangan</th></tr></thead>
+            <tbody id="hasilBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DATA PRAKTIKUM ===== -->
+<div id="page-data" class="page">
+  <div class="scroll" style="overflow:hidden;padding:10px 14px 14px;display:flex;flex-direction:column;">
+    <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:10px;padding:9px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;box-shadow:0 4px 16px rgba(15,36,96,.22);">
+      <div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:clamp(12px,1.5vw,15px);font-weight:700;color:#fff;">📡 Data Praktikum Real-Time</div>
+        <div style="font-size:10.5px;color:#93c5fd;margin-top:1px;">Halaman pemantau volume CO₂ &amp; suhu dari rangkaian micro:bit — denicendrianto41.github.io</div>
+      </div>
+      <a href="https://denicendrianto41.github.io/monitor-co2-probe.html" target="_blank" rel="noopener" style="flex-shrink:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:600;padding:7px 12px;border-radius:7px;text-decoration:none;white-space:nowrap;">⤢ Buka Tab Baru</a>
+    </div>
+    <div style="flex:1;min-height:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 3px rgba(30,41,59,.06);">
+      <iframe src="https://denicendrianto41.github.io/monitor-co2-probe.html" title="Monitor Data Praktikum" style="width:100%;height:100%;border:none;display:block;" allow="serial; bluetooth; usb"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DISKUSI ===== -->
+<div id="page-diskusi" class="page">
+  <div class="scroll" style="overflow:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;">
+    <!-- Completion Overlay (di luar .fit-inner supaya tidak ikut di-scale/terkunci saat halaman di-fit) -->
+    <div class="score-overlay" id="scoreOverlay">
+      <div class="score-box">
+        <div class="score-big" id="scoreBig">📝</div>
+        <div class="score-pct">Jawaban Tersimpan</div>
+        <div class="score-sub" id="scoreSub"></div>
+        <div class="score-actions">
+          <button class="btn-score btn-review" onclick="document.getElementById('scoreOverlay').classList.remove('on')">Tinjau Jawaban</button>
+          <button class="btn-score btn-ulangi" onclick="printDiskusi()">🖨️ Cetak Jawaban</button>
+        </div>
+      </div>
+    </div>
+
+  <div class="fit-inner">
+
+    <div class="quiz-nav-header">
+      <div class="qprog" id="qprog"></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-score btn-ulangi" style="font-size:13px;padding:8px 16px;" onclick="resetQuiz()">↺ Kosongkan Semua</button>
+        <button class="btn-score btn-review" style="font-size:13px;padding:8px 16px;" onclick="printDiskusi()">🖨️ Cetak PDF</button>
+      </div>
+    </div>
+
+    <div id="qContainer" style="display:flex;flex-direction:column;gap:6px;"></div>
+
+    <div class="quiz-foot">
+      <button class="btn-qnav btn-prev" id="btnPrev" onclick="prevQ()">← Sebelumnya</button>
+      <span class="qcounter" id="qCounter">1 / 8</span>
+      <button class="btn-qnav btn-next" id="btnNext" onclick="nextQ()">Selanjutnya →</button>
+      <button class="btn-qnav btn-submit-q" id="btnSubmit" onclick="submitQuiz()" style="display:none;">Selesai ✓</button>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</div><!-- end #app -->
+
+<!-- Image zoom overlay (global — di luar #app/.page & .fit-inner manapun, agar tidak ikut
+     tersembunyi/di-scale saat halaman tertentu tidak aktif, dan tetap berfungsi dari tab manapun,
+     termasuk dari Alat & Bahan) -->
+<div id="imgZoomOverlay" onclick="closeImgZoom()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;cursor:zoom-out;">
+  <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <img id="imgZoomSrc" src="" alt="" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:14px;border:2px solid rgba(255,255,255,0.2);box-shadow:0 24px 80px rgba(0,0,0,0.6);transform:scale(0.8);opacity:0;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),opacity 0.25s;">
+    <span style="font-size:12px;color:rgba(255,255,255,0.7);">Klik di mana saja untuk menutup</span>
+  </div>
+</div>
+<script>
+function openImgZoom(imgEl){
+  const overlay=document.getElementById('imgZoomOverlay');
+  const zoomImg=document.getElementById('imgZoomSrc');
+  zoomImg.src=imgEl.src; zoomImg.alt=imgEl.alt;
+  overlay.style.display='flex';
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+    zoomImg.style.transform='scale(1)';
+    zoomImg.style.opacity='1';
+  });});
+}
+function closeImgZoom(){
+  const overlay=document.getElementById('imgZoomOverlay');
+  const zoomImg=document.getElementById('imgZoomSrc');
+  zoomImg.style.transform='scale(0.8)';
+  zoomImg.style.opacity='0';
+  setTimeout(()=>{ overlay.style.display='none'; },280);
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeImgZoom(); });
+</script>
+
+<script>
+// ── Navigation ──
+function show(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
+  }
+  if(id==='simulasi'){
+    // Kanvas simulasi sempat digambar saat halaman masih tersembunyi (lebar terbaca 0,
+    // jatuh ke nilai fallback), lalu di-stretch CSS ke lebar asli → tampak buram/zoom.
+    // Gambar ulang dengan lebar yang benar begitu halaman ini benar-benar terlihat,
+    // supaya tampilan sebelum & sesudah "Mulai Simulasi" selalu identik.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(typeof drawSim==='function') drawSim(); }));
+  }
+}
+
+// ══ AUTO-FIT: skala konten agar pas memenuhi tinggi layar; di perangkat sentuh (HP/tablet,
+// termasuk mode landscape) skala minimum dinaikkan agar font tetap terbaca jelas, dan jika
+// konten masih belum muat pada skala minimum tersebut, halaman diizinkan discroll. ══
+function fitToContainer(container,bottomGap){
+  if(!container) return;
+  const inner = container.querySelector(':scope > .fit-inner');
+  if(!inner) return;
+  inner.style.transform = 'none';
+  inner.style.width = '100%';
+  container.style.overflowY = 'hidden';
+  const cs = getComputedStyle(container);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const availH = container.clientHeight - padTop - padBottom - (bottomGap||0);
+  const naturalH = inner.scrollHeight;
+  if(availH <= 0 || naturalH <= 0) return;
+  let scale = availH / naturalH;
+  const isTouch = window.matchMedia('(pointer:coarse)').matches;
+  const isLandscape = window.matchMedia('(orientation:landscape)').matches;
+  let minScale = 0.45;
+  if(isTouch){ minScale = isLandscape ? 0.78 : 0.65; }
+  scale = Math.min(Math.max(scale, minScale), 1.8);
+  inner.style.width = (100/scale) + '%';
+  inner.style.transform = 'scale(' + scale + ')';
+  if(naturalH*scale > availH + 2){
+    container.style.overflowY = 'auto';
+  }
+}
+
+function fitPage(id){
+  if(id==='tujuan'){
+    fitToContainer(document.querySelector('#page-tujuan > .scroll'),20);
+  }else if(id==='teori'){
+    fitToContainer(document.querySelector('#page-teori > .scroll'),20);
+  }else if(id==='alatbahan'){
+    fitToContainer(document.querySelector('#page-alatbahan > .scroll'),20);
+  }else if(id==='prosedur'){
+    fitToContainer(document.querySelector('#page-prosedur > .scroll'),20);
+  }else if(id==='diskusi'){
+    fitToContainer(document.querySelector('#page-diskusi > .scroll'),20);
+  }
+}
+
+function fitActivePages(){
+  document.querySelectorAll('.page.active').forEach(p=>{
+    const id = p.id.replace('page-','');
+    if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi') fitPage(id);
+  });
+}
+
+let _fitResizeTimer=null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 120);
+});
+// saat perangkat diputar (portrait -> landscape), overlay hilang & ukuran berubah;
+// hitung ulang skala konten setelah transisi orientasi selesai.
+window.addEventListener('orientationchange', ()=>{
+  clearTimeout(_fitResizeTimer);
+  _fitResizeTimer = setTimeout(fitActivePages, 350);
+});
+if(window.screen && window.screen.orientation){
+  window.screen.orientation.addEventListener('change', ()=>{
+    clearTimeout(_fitResizeTimer);
+    _fitResizeTimer = setTimeout(fitActivePages, 350);
+  });
+}
+let navOpen=false;
+function toggleNav(){
+  navOpen=!navOpen;
+  const nav=document.getElementById('mainNav');
+  if(navOpen) nav.classList.add('open'); else nav.classList.remove('open');
+}
+function closeNav(){
+  navOpen=false;
+  document.getElementById('mainNav').classList.remove('open');
+}
+
+// ── SIMULATION ──
+let simRunning=false,simTimer=null,simSeconds=0;
+let bubbles=[],simAnimFrame=null;
+let co2Count=0;
+let simVolHistory=[];
+let simSuhuLarutanHistory=[];
+let simSuhuRuangHistory=[];
+let chartMode='semua'; // 'semua' | 'volume' | 'suhu_larutan' | 'suhu_ruang'
+let chartAnimFrom={vol:0,suhuL:0,suhuR:0}, chartAnimTo={vol:0,suhuL:0,suhuR:0}, chartAnimStart=0;
+let chartHistShifted=false; // true saat data terlama baru saja "didorong keluar" dari histori (buffer penuh) — dipakai untuk animasi geser grafik seperti tab korelasi suhu
+const CHART_ANIM_MS=650; // durasi animasi "tumbuh" tiap titik data baru (ms)
+const CHART_WINDOW_SEC=60; // rentang jendela grafik waktu: menampilkan hingga 60 detik data terakhir
+window.setChartMode=function(m,btn){
+  chartMode=m;
+  document.querySelectorAll('#chartTabs .ctab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  drawSim();
+};
+
+const canvas=document.getElementById('simCanvas');
+const ctx2=canvas.getContext('2d');
+
+function calcRate(){
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const gula=parseInt(document.getElementById('simGula').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  if(perangkat==='II'||ragi===0) return 0;
+  let rate=1;
+  // Temperature effect
+  if(suhu<=10) rate*=0.1;
+  else if(suhu===20) rate*=0.5;
+  else if(suhu===30) rate*=1.0;
+  else if(suhu===40) rate*=0.7;
+  else if(suhu>=60) rate*=0.0; // ragi mati
+  // Sugar concentration
+  if(gula===10) rate*=0.4;
+  else if(gula===30) rate*=1.0;
+  else if(gula===50) rate*=1.3;
+  else if(gula===70) rate*=0.8; // osmotik inhibisi
+  // Yeast amount
+  rate*=(ragi/4);
+  return Math.max(0,Math.min(3,rate));
+}
+
+function getTip(){
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  if(perangkat==='II') return '🔬 Sampel A adalah kontrol: tanpa ragi, tidak ada gas CO₂ yang mendorong piston suntikan.';
+  if(ragi===0) return '⚠️ Tanpa ragi tidak ada fermentasi — setara Sampel A (kontrol).';
+  if(suhu>=60) return '🌡️ Suhu 60°C terlalu tinggi! Ragi (protein) mengalami denaturasi dan mati — fermentasi terhenti.';
+  if(suhu<=10) return '❄️ Suhu rendah memperlambat metabolisme ragi secara drastis. Fermentasi hampir tidak terjadi.';
+  if(suhu===30) return '✅ Suhu 30°C adalah suhu optimal untuk Saccharomyces cerevisiae. Fermentasi berlangsung paling aktif!';
+  return '📊 Amati kenaikan volume CO₂ pada suntikan dan pembacaan suhu pada panel monitor selama simulasi berlangsung.';
+}
+
+function drawSim(){
+  const w=canvas.offsetWidth||440;
+  const h=320;
+  canvas.width=w;canvas.height=h;
+  canvas.style.height=h+'px'; // kunci tinggi tampil = tinggi gambar, cegah melar/area kosong
+
+  const rate=calcRate();
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  const vol=getVolumeML();
+
+  // Background
+  ctx2.fillStyle='#0f172a';ctx2.fillRect(0,0,w,h);
+  ctx2.strokeStyle='rgba(148,163,184,0.08)';ctx2.lineWidth=1;
+  for(let gx=0;gx<w;gx+=28){ctx2.beginPath();ctx2.moveTo(gx,0);ctx2.lineTo(gx,h);ctx2.stroke();}
+
+  const pad=8;
+  const gap=Math.max(8,w*0.02);
+  const rigW=Math.max(70,w*0.19);
+  const sideW=Math.max(120,w*0.30); // lebar grafik & monitor DISAMAKAN
+  const lapW=sideW, monW=sideW;
+
+  // ── posisikan ketiga bagian (grafik–rig–monitor) rata tengah horizontal ──
+  const contentW=lapW+gap+rigW+gap+monW;
+  const startX=Math.max(pad,(w-contentW)/2);
+  const lapX=startX;
+  const rigX=lapX+lapW+gap;
+  const monX=rigX+rigW+gap;
+
+  const sectH=Math.min(260,h*0.84); // tinggi grafik & monitor DISAMAKAN
+  const sectY=h*0.5-sectH/2;
+  drawChartPanel(ctx2,lapX,sectY,lapW,sectH);
+  drawDigitalRig(ctx2,rigX,h,rigW,rate,suhu,ragi,perangkat,vol,simSeconds);
+  drawMonitorPanel(ctx2,monX,sectY,Math.min(monW,w-monX-pad),sectH,vol,suhu,rate,perangkat);
+}
+
+function easeOutCubic(t){return 1-Math.pow(1-t,3);}
+function chartAnimT(){return Math.max(0,Math.min(1,(performance.now()-chartAnimStart)/CHART_ANIM_MS));}
+
+// Bingkai dasar kartu grafik — mengembalikan koordinat area plot
+function chartFrame(ctx,x,y,w,h,title){
+  ctx.fillStyle='#111827';ctx.strokeStyle='rgba(148,163,184,0.4)';ctx.lineWidth=1.2;
+  roundRect(ctx,x,y,w,h,10);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#93c5fd';ctx.font='bold 9px JetBrains Mono';ctx.textAlign='left';
+  ctx.fillText(title,x+10,y+15);
+  ctx.strokeStyle='rgba(148,163,184,0.25)';ctx.beginPath();ctx.moveTo(x+8,y+21);ctx.lineTo(x+w-8,y+21);ctx.stroke();
+  return {plX0:x+30,plX1:x+w-10,plY0:y+h-18,plY1:y+30};
+}
+
+// ── Dispatcher: pilih mode grafik aktif (Volume CO₂ / Suhu→Volume / Semua Variabel) ──
+function drawChartPanel(ctx,x,y,w,h){
+  const vol=getVolumeML();
+  if(chartMode==='suhu_larutan'){
+    drawCorrelationChart(ctx,x,y,w,h,'🌡️ SUHU LARUTAN → VOLUME CO₂',simSuhuLarutanHistory,simVolHistory,'suhuL','vol','°C','#f87171');
+  } else if(chartMode==='suhu_ruang'){
+    drawCorrelationChart(ctx,x,y,w,h,'🏠 SUHU RUANGAN → VOLUME CO₂',simSuhuRuangHistory,simVolHistory,'suhuR','vol','°C','#a78bfa');
+  } else if(chartMode==='semua'){
+    drawSeriesChart(ctx,x,y,w,h,'📊 SEMUA VARIABEL (dinormalisasi)',[
+      {hist:simVolHistory,animKey:'vol',color:'#fbbf24',max:100,unit:'mL',name:'Volume CO₂'},
+      {hist:simSuhuLarutanHistory,animKey:'suhuL',color:'#f87171',max:50,unit:'°C',name:'Suhu Larutan'},
+      {hist:simSuhuRuangHistory,animKey:'suhuR',color:'#a78bfa',max:50,unit:'°C',name:'Suhu Ruangan'},
+    ],vol,true);
+  } else {
+    drawSeriesChart(ctx,x,y,w,h,'📈 GRAFIK VOLUME CO₂',[
+      {hist:simVolHistory,animKey:'vol',color:'#fbbf24',fill:'rgba(251,191,36,0.16)',max:100,unit:'mL',name:'Volume CO₂'},
+    ],vol,false);
+  }
+}
+
+// ── Grafik deret waktu (satu atau beberapa variabel) — titik baru "tumbuh" bertahap tiap detik ──
+function drawSeriesChart(ctx,x,y,w,h,title,series,vol,showLegend){
+  const {plX0,plX1,plY0,plY1}=chartFrame(ctx,x,y,w,h,title);
+  const t=chartAnimT(), e=easeOutCubic(t);
+
+  // Gunakan array terpanjang sebagai acuan jumlah titik & jarak antar-titik di sumbu-x
+  const n=Math.max(1,...series.map(s=>(s.hist&&s.hist.length)||1));
+  const stepX=n>1?(plX1-plX0)/(n-1):0;
+  // saat buffer histori penuh (titik terlama baru saja terdorong keluar), seluruh grafik
+  // "digeser" masuk dari kanan selama animasi berjalan — meniru pergerakan pada grafik korelasi suhu
+  const shiftOffset=chartHistShifted?stepX*(1-e):0;
+
+  // grid & label sumbu-y (persentase bila multi-variabel, satuan asli bila satu variabel)
+  ctx.strokeStyle='rgba(148,163,184,0.18)';ctx.lineWidth=1;ctx.font='7px JetBrains Mono';ctx.textAlign='right';ctx.fillStyle='rgba(148,163,184,0.7)';
+  [0,0.5,1].forEach(f=>{
+    const gy=plY0-(plY0-plY1)*f;
+    ctx.beginPath();ctx.moveTo(plX0,gy);ctx.lineTo(plX1,gy);ctx.stroke();
+    const lbl=series.length===1?Math.round(series[0].max*f):Math.round(f*100)+'%';
+    ctx.fillText(lbl,plX0-4,gy+2.5);
+  });
+  ctx.strokeStyle='rgba(148,163,184,0.4)';ctx.beginPath();ctx.moveTo(plX0,plY1-2);ctx.lineTo(plX0,plY0);ctx.lineTo(plX1,plY0);ctx.stroke();
+
+  // Label detik pada sumbu-x: jendela tampil hingga 60 detik data terakhir; begitu waktu
+  // berjalan melewati 60 detik, angka detik pada label ini otomatis bergeser mengikuti
+  // waktu berjalan (skala waktu menyesuaikan tiap tampilan berikutnya).
+  {
+    const minSec=simSeconds-(n-1), maxSec=simSeconds;
+    const tickStep=CHART_WINDOW_SEC<=30?5:10;
+    const firstTick=Math.ceil(minSec/tickStep)*tickStep;
+    ctx.font='7px JetBrains Mono';ctx.textAlign='center';ctx.fillStyle='rgba(148,163,184,0.7)';
+    ctx.strokeStyle='rgba(148,163,184,0.35)';ctx.lineWidth=1;
+    for(let sec=Math.max(0,firstTick); sec<=maxSec; sec+=tickStep){
+      const idx=sec-minSec;
+      if(idx<-0.001||idx>n-1+0.001) continue;
+      const tx=plX0+stepX*idx+shiftOffset;
+      ctx.beginPath();ctx.moveTo(tx,plY0);ctx.lineTo(tx,plY0+3);ctx.stroke();
+      ctx.fillText(sec+'s',tx,plY0+11);
+    }
+  }
+
+  series.forEach(s=>{
+    const raw=(s.hist&&s.hist.length)?s.hist:[0];
+    const pts=raw.slice();
+    // titik terakhir dianimasikan tumbuh dari nilai sebelumnya menuju nilai baru (durasi ±0.65s)
+    if(pts.length>0) pts[pts.length-1]=chartAnimFrom[s.animKey]+(chartAnimTo[s.animKey]-chartAnimFrom[s.animKey])*e;
+    const toY=(v)=>plY0-(plY0-plY1)*Math.min(1,Math.max(0,v/s.max));
+    const toX=(i)=>plX0+stepX*i+shiftOffset;
+
+    if(s.fill){
+      ctx.beginPath();
+      pts.forEach((v,i)=>{ i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v)); });
+      ctx.lineTo(toX(pts.length-1),plY0);ctx.lineTo(plX0,plY0);ctx.closePath();
+      ctx.fillStyle=s.fill;ctx.fill();
+    }
+    ctx.beginPath();
+    pts.forEach((v,i)=>{ i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v)); });
+    ctx.strokeStyle=s.color;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();
+
+    // titik data tiap detik yang sudah terekam — terlihat jelas satu per satu
+    pts.forEach((v,i)=>{
+      const isLast=i===pts.length-1;
+      ctx.fillStyle=s.color;
+      ctx.globalAlpha=isLast?1:0.55;
+      ctx.beginPath();ctx.arc(toX(i),toY(v),isLast?2.6:1.4,0,7);ctx.fill();
+      ctx.globalAlpha=1;
+    });
+    // kilau nadi di titik yang baru saja bertambah
+    if(t<1&&pts.length>0){
+      const lx=toX(pts.length-1),ly=toY(pts[pts.length-1]);
+      ctx.beginPath();ctx.arc(lx,ly,6*(1-t)+3,0,7);
+      ctx.fillStyle=s.color;ctx.globalAlpha=0.30*(1-t);ctx.fill();ctx.globalAlpha=1;
+    }
+  });
+
+  if(showLegend){
+    let lx=plX0;
+    series.forEach(s=>{
+      ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(lx+3,y+27,2.6,0,7);ctx.fill();
+      ctx.fillStyle='rgba(226,232,240,0.85)';ctx.font='7px Inter';ctx.textAlign='left';
+      ctx.fillText(s.name,lx+8,y+29.5);
+      lx+=ctx.measureText(s.name).width+22;
+    });
+  } else {
+    const last=series[0];
+    const curV=chartAnimFrom[last.animKey]+(chartAnimTo[last.animKey]-chartAnimFrom[last.animKey])*e;
+    ctx.fillStyle=last.color;ctx.font='bold 11px JetBrains Mono';ctx.textAlign='left';
+    ctx.fillText((last.hist.length?curV:vol).toFixed(1)+' '+last.unit,x+10,y+28);
+  }
+}
+
+// ── Grafik korelasi: Suhu (sumbu-x) → Volume CO₂ (sumbu-y), lintasan mengikuti waktu ──
+function drawCorrelationChart(ctx,x,y,w,h,title,xHist,yHist,xKey,yKey,xUnit,color){
+  const {plX0,plX1,plY0,plY1}=chartFrame(ctx,x,y,w,h,title);
+  const t=chartAnimT(), e=easeOutCubic(t);
+  const xs=(xHist&&xHist.length)?xHist.slice():[chartAnimTo[xKey]||0];
+  const ys=(yHist&&yHist.length)?yHist.slice():[0];
+  if(xs.length>0) xs[xs.length-1]=chartAnimFrom[xKey]+(chartAnimTo[xKey]-chartAnimFrom[xKey])*e;
+  if(ys.length>0) ys[ys.length-1]=chartAnimFrom[yKey]+(chartAnimTo[yKey]-chartAnimFrom[yKey])*e;
+
+  const xMinD=Math.min(...xs), xMaxD=Math.max(...xs);
+  const xMin=Math.floor((xMinD-1)*10)/10, xMax=Math.ceil((xMaxD+1)*10)/10;
+  const xSpan=Math.max(0.5,xMax-xMin);
+  const yMax=100; // volume CO₂ tetap 0–100 mL
+
+  ctx.strokeStyle='rgba(148,163,184,0.18)';ctx.lineWidth=1;ctx.font='7px JetBrains Mono';ctx.textAlign='right';ctx.fillStyle='rgba(148,163,184,0.7)';
+  [0,0.5,1].forEach(f=>{
+    const gy=plY0-(plY0-plY1)*f;
+    ctx.beginPath();ctx.moveTo(plX0,gy);ctx.lineTo(plX1,gy);ctx.stroke();
+    ctx.fillText(Math.round(yMax*f),plX0-4,gy+2.5);
+  });
+  ctx.strokeStyle='rgba(148,163,184,0.4)';ctx.beginPath();ctx.moveTo(plX0,plY1-2);ctx.lineTo(plX0,plY0);ctx.lineTo(plX1,plY0);ctx.stroke();
+
+  const toX=(v)=>plX0+(plX1-plX0)*Math.min(1,Math.max(0,(v-xMin)/xSpan));
+  const toY=(v)=>plY0-(plY0-plY1)*Math.min(1,Math.max(0,v/yMax));
+
+  ctx.beginPath();
+  xs.forEach((xv,i)=>{ const px=toX(xv),py=toY(ys[i]||0); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); });
+  ctx.strokeStyle=color;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();
+
+  xs.forEach((xv,i)=>{
+    const isLast=i===xs.length-1;
+    const px=toX(xv),py=toY(ys[i]||0);
+    ctx.globalAlpha=isLast?1:0.6;
+    ctx.fillStyle=color;
+    ctx.beginPath();ctx.arc(px,py,isLast?2.6:1.4,0,7);ctx.fill();
+    ctx.globalAlpha=1;
+  });
+  if(t<1&&xs.length>0){
+    const lx=toX(xs[xs.length-1]),ly=toY(ys[ys.length-1]||0);
+    ctx.beginPath();ctx.arc(lx,ly,6*(1-t)+3,0,7);
+    ctx.fillStyle=color;ctx.globalAlpha=0.30*(1-t);ctx.fill();ctx.globalAlpha=1;
+  }
+
+  ctx.fillStyle='rgba(148,163,184,0.7)';ctx.font='7px Inter';ctx.textAlign='center';
+  ctx.fillText('suhu ('+xUnit+') →',plX0+(plX1-plX0)/2,y+h-6);
+  ctx.fillStyle=color;ctx.font='bold 11px JetBrains Mono';ctx.textAlign='left';
+  ctx.fillText((ys[ys.length-1]||0).toFixed(1)+' mL',x+10,y+28);
+}
+
+
+// ── Rangkaian: micro:bit → sensor ultrasonik → suntikan → selang → botol reaksi ──
+// Proporsi mengikuti foto rangkaian asli: ada jarak (kabel) antara micro:bit dan sensor/suntikan,
+// serta botol larutan proporsional terhadap suntikan.
+// ── Rangkaian digital digambar berskala mengikuti Sketsa Ukuran Alat Praktikum ──
+// Proporsi cm asli: micro:bit 5.2x4.3, sensor HC-SR04 4.5x2, pelat target Ø10 (0.5 tebal),
+// syringe 100cc Ø3.5x17, selang ±7, kran/stopcock 3, botol reaksi Ø6x13, alas 18x14, statif 60.
+function drawDigitalRig(ctx,x0,h,rigW,rate,suhu,ragi,perangkat,vol,secs){
+  const cx=x0+rigW/2;
+  const active=!(perangkat==='II'||ragi===0);
+
+  // ── skala cm→px: cocokkan tinggi & lebar total device ke ruang yang tersedia ──
+  // gap2   = jarak MINIMUM sensor↔pelat saat piston terdorong penuh (vol=100 mL)
+  // travel = jarak TAMBAHAN yang "hilang" saat piston naik — inilah rentang gerak pelat target
+  const CM={mb:4.3,gap1:1.5,sens:2.0,plate:0.5,gap2:3,travel:4.5,syr:17,tube1:6,stop:3,tube2:1.5,bot:13,base:2.2};
+  const totalCmH=Object.values(CM).reduce((a,b)=>a+b,0); // ≈52.7 cm
+  const fillFrac=Math.min(1,vol/100); // 0 = piston di dasar (jarak terjauh), 1 = piston penuh (jarak terdekat)
+  const baseCmW=18; // lebar alas — bagian terlebar
+  const availH=h-36, availW=rigW;
+  const scale=Math.min(availH/totalCmH, availW/baseCmW);
+  const cm=v=>v*scale;
+
+  let y=10; // kursor gambar dari atas
+
+  // 1) micro:bit
+  const mbW=cm(5.2), mbH=cm(CM.mb);
+  const mbX=cx-mbW/2, mbY=y;
+  ctx.fillStyle='#111827';ctx.strokeStyle='#374151';ctx.lineWidth=1;
+  ctx.fillRect(mbX,mbY,mbW,mbH);ctx.strokeRect(mbX,mbY,mbW,mbH);
+  ctx.fillStyle=active&&rate>0?'#f59e0b':'#334155';
+  const dot=mbW/8.5;
+  for(let r=0;r<5;r++)for(let c=0;c<5;c++){
+    if((r+c+Math.floor(Date.now()/300))%4===0){
+      ctx.fillRect(mbX+mbW*0.14+c*dot,mbY+mbH*0.16+r*dot,dot*0.6,dot*0.6);
+    }
+  }
+  y+=mbH;
+
+  // ── statif besi: batang panjang di sisi kanan, dari dekat micro:bit hingga alas ──
+  const standX=cx+Math.min(baseCmW*0.32,baseCmW/2-1.5)*scale;
+  const standTopY=y;
+
+  // 2) kabel penghubung ke sensor
+  const wireTopY=y, sensorY=y+cm(CM.gap1);
+  ctx.strokeStyle='#c2410c';ctx.lineWidth=1.3;
+  ctx.beginPath();ctx.moveTo(cx-4,wireTopY);ctx.bezierCurveTo(cx-8,wireTopY+cm(CM.gap1)*0.5,cx+5,wireTopY+cm(CM.gap1)*0.7,cx-2,sensorY);ctx.stroke();
+  ctx.strokeStyle='#78350f';ctx.lineWidth=1.1;
+  ctx.beginPath();ctx.moveTo(cx+3,wireTopY);ctx.bezierCurveTo(cx+7,wireTopY+cm(CM.gap1)*0.55,cx-3,wireTopY+cm(CM.gap1)*0.75,cx+2,sensorY);ctx.stroke();
+  y=sensorY;
+
+  // 3) sensor ultrasonik HC-SR04
+  const sensW=cm(4.5), sensH=cm(CM.sens);
+  ctx.fillStyle='#334155';
+  ctx.fillRect(cx-sensW/2,y,sensW,sensH);
+  ctx.fillStyle='#60a5fa';
+  ctx.beginPath();ctx.arc(cx-sensW*0.24,y+sensH/2,Math.max(1.8,sensH*0.28),0,7);ctx.fill();
+  ctx.beginPath();ctx.arc(cx+sensW*0.24,y+sensH/2,Math.max(1.8,sensH*0.28),0,7);ctx.fill();
+  if(active&&rate>0){
+    const p=(Date.now()/450)%1;
+    ctx.strokeStyle='rgba(96,165,250,'+(1-p)*0.6+')';ctx.lineWidth=1.1;
+    ctx.beginPath();ctx.arc(cx,y+sensH/2,4+p*9,0.15*Math.PI,0.85*Math.PI);ctx.stroke();
+  }
+  const sensorBottomY=y;
+
+  // 4) pelat target (Ø10 cm, tipis) — bidang pantul sensor, terpasang di ATAS batang piston.
+  // Posisinya BERGERAK: saat vol=0 pelat berada jauh dari sensor (jarak = gap2+travel),
+  // dan saat piston terdorong naik oleh gas CO₂ (vol→100 mL) pelat naik mendekati sensor
+  // (jarak menyusut menuju gap2). Inilah prinsip kerja sensor ultrasonik mengukur volume.
+  const plateW=cm(10), plateH=Math.max(2.2,cm(CM.plate));
+  const curGapCm=CM.gap2+CM.travel*(1-fillFrac);       // jarak sensor↔pelat saat ini (cm)
+  const plateY=sensorBottomY+cm(curGapCm);              // posisi atas pelat (bergerak)
+  const restPlateY=sensorBottomY+cm(CM.gap2+CM.travel);  // posisi pelat saat vol=0 (dasar rentang gerak)
+  const synTopY=restPlateY+plateH+1;                    // ujung atas suntikan (TETAP, tidak ikut bergerak)
+
+  // batang piston (rod) yang memanjang dari mulut suntikan ke pelat — makin panjang saat vol naik
+  ctx.strokeStyle='#94a3b8';ctx.lineWidth=Math.max(1.6,cm(0.25));
+  ctx.beginPath();ctx.moveTo(cx,synTopY);ctx.lineTo(cx,plateY+plateH*0.4);ctx.stroke();
+
+  // garis bantu jarak putus-putus + label nilai jarak (cm) — hasil ukur sensor ultrasonik
+  ctx.save();
+  ctx.strokeStyle='rgba(96,165,250,0.55)';ctx.lineWidth=1;ctx.setLineDash([2,2]);
+  ctx.beginPath();ctx.moveTo(cx+plateW*0.42,sensorBottomY);ctx.lineTo(cx+plateW*0.42,plateY);ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle='#2563eb';ctx.font='bold 8.5px JetBrains Mono';ctx.textAlign='left';
+  ctx.fillText(curGapCm.toFixed(1)+' cm',cx+plateW*0.42+4,(sensorBottomY+plateY)/2+3);
+
+  ctx.fillStyle='#c2843f';ctx.strokeStyle='#78350f';ctx.lineWidth=1;
+  ctx.beginPath();ctx.ellipse(cx,plateY+plateH/2,plateW/2,plateH*1.3,0,0,7);ctx.fill();ctx.stroke();
+
+  // klem statif menjepit suntikan (posisi tetap, tidak ikut bergerak dengan pelat)
+  const clampY=synTopY+2;
+  ctx.strokeStyle='#94a3b8';ctx.lineWidth=2.4;
+  ctx.beginPath();ctx.moveTo(standX,clampY);ctx.lineTo(cx+plateW*0.14,clampY);ctx.stroke();
+
+  // 5) suntikan (syringe) 100 cc, Ø3.5 x 17 cm
+  const synW=cm(3.5), synH=cm(CM.syr), synBotY=synTopY+synH;
+  ctx.strokeStyle='#cbd5e1';ctx.lineWidth=1.6;
+  ctx.strokeRect(cx-synW/2,synTopY,synW,synH);
+  ctx.strokeStyle='rgba(148,163,184,0.35)';ctx.lineWidth=0.7;
+  for(let i=1;i<8;i++){const ty=synTopY+synH*i/8;ctx.beginPath();ctx.moveTo(cx-synW/2,ty);ctx.lineTo(cx-synW/2+4,ty);ctx.stroke();}
+  const pistonY=synBotY-synH*fillFrac;
+  ctx.fillStyle='rgba(96,165,250,0.35)';
+  ctx.fillRect(cx-synW/2+1.5,pistonY,synW-3,synBotY-pistonY-2);
+  ctx.fillStyle='#93c5fd';
+  ctx.fillRect(cx-synW/2-2,pistonY-4,synW+4,4);
+  y=synBotY;
+
+  // 6) selang penghubung (±7 cm) menuju kran
+  const tube1H=cm(CM.tube1), stopY=y+tube1H;
+  ctx.strokeStyle='rgba(226,232,240,0.65)';ctx.lineWidth=2.6;
+  ctx.beginPath();ctx.moveTo(cx,y);ctx.lineTo(cx,stopY);ctx.stroke();
+  y=stopY;
+
+  // 7) kran / stopcock (bentuk-T biru, 3 cm)
+  const stopH=Math.max(6,cm(CM.stop));
+  ctx.strokeStyle='#cbd5e1';ctx.lineWidth=2.6;
+  ctx.beginPath();ctx.moveTo(cx,y);ctx.lineTo(cx,y+stopH);ctx.stroke();
+  ctx.fillStyle='#2563eb';
+  ctx.fillRect(cx-8,y+stopH*0.5-2.5,16,5);
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(cx+8,y+stopH*0.5);ctx.lineTo(cx+15,y+stopH*0.5);ctx.stroke();
+  ctx.fillStyle='#1d4ed8';ctx.beginPath();ctx.arc(cx+16,y+stopH*0.5,2.4,0,7);ctx.fill();
+  y+=stopH;
+
+  // 8) selang pendek menuju tutup botol
+  const tube2H=Math.max(4,cm(CM.tube2));
+  ctx.strokeStyle='rgba(226,232,240,0.65)';ctx.lineWidth=2.4;
+  ctx.beginPath();ctx.moveTo(cx,y);ctx.lineTo(cx,y+tube2H);ctx.stroke();
+  y+=tube2H;
+
+  // 9) botol reaksi / fermentor (Ø6 x 13 cm)
+  const botW=cm(6), botH=cm(CM.bot), neckW=botW*0.34;
+  const botTopY=y, botBotY=y+botH;
+  ctx.fillStyle='rgba(191,219,254,0.14)';
+  ctx.strokeStyle='rgba(148,163,184,0.6)';ctx.lineWidth=1.4;
+  ctx.beginPath();
+  ctx.moveTo(cx-neckW/2,botTopY);
+  ctx.lineTo(cx+neckW/2,botTopY);
+  ctx.lineTo(cx+neckW/2,botTopY+botH*0.14);
+  ctx.bezierCurveTo(cx+neckW/2,botTopY+botH*0.24,cx+botW/2,botTopY+botH*0.26,cx+botW/2,botTopY+botH*0.42);
+  ctx.lineTo(cx+botW/2,botBotY-5);
+  ctx.quadraticCurveTo(cx+botW/2,botBotY,cx+botW/2-5,botBotY);
+  ctx.lineTo(cx-botW/2+5,botBotY);
+  ctx.quadraticCurveTo(cx-botW/2,botBotY,cx-botW/2,botBotY-5);
+  ctx.lineTo(cx-botW/2,botTopY+botH*0.42);
+  ctx.bezierCurveTo(cx-botW/2,botTopY+botH*0.26,cx-neckW/2,botTopY+botH*0.24,cx-neckW/2,botTopY+botH*0.14);
+  ctx.closePath();
+  ctx.fill();ctx.stroke();
+  // tutup botol
+  ctx.fillStyle='#1e293b';ctx.fillRect(cx-neckW/2-1,botTopY-4,neckW+2,6);
+  // larutan (setengah botol)
+  const liqTop=botBotY-botH*0.55;
+  ctx.save();ctx.beginPath();ctx.rect(cx-botW/2,liqTop,botW,botBotY-liqTop);ctx.clip();
+  ctx.fillStyle=active?'rgba(217,119,6,0.55)':'rgba(148,163,184,0.32)';
+  ctx.fillRect(cx-botW/2,liqTop,botW,botBotY-liqTop);
+  if(active&&rate>0){
+    const t=Date.now()/500;
+    for(let i=0;i<4;i++){
+      const bx=cx-botW*0.32+((i*29+t*9)%(botW*0.64));
+      const by=botBotY-((t*13+i*21)%(botBotY-liqTop));
+      ctx.fillStyle='rgba(255,255,255,0.5)';
+      ctx.beginPath();ctx.arc(bx,by,1.5,0,7);ctx.fill();
+    }
+  }
+  ctx.restore();
+  y=botBotY;
+
+  // 10) alas / base statif (18 x tebal, biru)
+  const baseW=Math.min(cm(baseCmW),rigW), baseH=Math.max(6,cm(CM.base));
+  const baseY=y+2;
+  ctx.fillStyle='#2563eb';ctx.strokeStyle='#1e40af';ctx.lineWidth=1;
+  roundRect(ctx,cx-baseW/2,baseY,baseW,baseH,2);ctx.fill();ctx.stroke();
+
+  // batang statif (60 cm, dari dekat micro:bit hingga alas)
+  ctx.strokeStyle='#94a3b8';ctx.lineWidth=2.4;
+  ctx.beginPath();ctx.moveTo(standX,standTopY);ctx.lineTo(standX,baseY+2);ctx.stroke();
+  ctx.fillStyle='#cbd5e1';ctx.beginPath();ctx.arc(standX,standTopY,1.6,0,7);ctx.fill();
+
+  ctx.fillStyle='#fff';ctx.font='bold 9.5px Space Grotesk';ctx.textAlign='center';
+  ctx.fillText(perangkat==='II'?'Sampel A (Kontrol)':'Botol Reaksi',cx,baseY+baseH+11);
+}
+
+// ── Panel monitor digital: ringkas & mudah dibaca (kartu 3 baris besar) ──
+function drawMonitorPanel(ctx,x,y,w,h,vol,suhu,rate,perangkat){
+  const suhuRuang=getSuhuRuang();
+  ctx.fillStyle='#111827';ctx.strokeStyle='rgba(148,163,184,0.4)';ctx.lineWidth=1.2;
+  roundRect(ctx,x,y,w,h,12);ctx.fill();ctx.stroke();
+
+  // header
+  ctx.fillStyle='#93c5fd';ctx.font='bold 9.5px JetBrains Mono';ctx.textAlign='left';
+  ctx.fillText('📡 MONITOR',x+10,y+16);
+  ctx.fillStyle=rate>0&&perangkat!=='II'?'#22c55e':'#64748b';
+  ctx.beginPath();ctx.arc(x+w-12,y+13,4,0,7);ctx.fill();
+  ctx.strokeStyle='rgba(148,163,184,0.25)';ctx.beginPath();ctx.moveTo(x+8,y+23);ctx.lineTo(x+w-8,y+23);ctx.stroke();
+
+  const rows=[
+    ['💧','Volume CO₂',vol.toFixed(1)+' mL','#fbbf24'],
+    ['🌡️','Suhu Larutan',suhu.toFixed(1)+' °C','#f87171'],
+    ['🏠','Suhu Ruangan',suhuRuang.toFixed(1)+' °C','#c4b5fd'],
+  ];
+  const rowH=(h-30)/3;
+  rows.forEach(([icon,label,val,color],i)=>{
+    const ry=y+28+i*rowH;
+    ctx.fillStyle='rgba(255,255,255,0.04)';
+    roundRect(ctx,x+7,ry,w-14,rowH-6,8);ctx.fill();
+    ctx.fillStyle='rgba(226,232,240,0.85)';ctx.font='8.5px Inter';ctx.textAlign='left';
+    ctx.fillText(icon+' '+label,x+14,ry+13);
+    ctx.fillStyle=color;ctx.font='bold '+Math.max(15,Math.min(19,rowH*0.42))+'px JetBrains Mono';ctx.textAlign='right';
+    ctx.fillText(val,x+w-14,ry+rowH*0.72);
+  });
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function getVolumeML(){
+  // Volume CO2 (mL) hasil konversi co2Count menjadi setara pembacaan sensor ultrasonik
+  return Math.min(100, +(co2Count*0.6).toFixed(1));
+}
+
+let _suhuRuangBase=27+Math.random()*2;
+function getSuhuRuang(){
+  // Suhu ruangan relatif stabil dengan sedikit fluktuasi, tidak dipengaruhi laju fermentasi
+  const t=Date.now()/4000;
+  return _suhuRuangBase+Math.sin(t)*0.3;
+}
+
+// Per-bubble sound: track previous bubble phases to detect "pop" moment (phase crosses 0)
+let _prevPhases=[];
+function animLoop(){
+  drawSim();
+  if(simRunning){
+    // Trigger blup sound once per bubble cycle (when phase resets near 0)
+    const rate=calcRate();
+    if(rate>0){
+      const bCount=Math.floor(rate*3);
+      const t=Date.now()/1000;
+      for(let i=0;i<bCount;i++){
+        const phase=(t*0.7+i*0.33)%1;
+        const prev=_prevPhases[i]||0;
+        // Detect phase wrap-around (bubble completed one full rise = one blup)
+        if(prev>0.85&&phase<0.15){
+          try{
+            const b=document.getElementById('sndBlup');
+            if(b){
+              const clone=b.cloneNode();
+              clone.volume=Math.min(1,0.3+rate*0.2);
+              clone.play().catch(()=>{});
+              setTimeout(()=>clone.remove(),2000);
+            }
+          }catch(e){}
+        }
+        _prevPhases[i]=phase;
+      }
+    } else {
+      _prevPhases=[];
+    }
+    simAnimFrame=requestAnimationFrame(animLoop);
+  }
+}
+
+window.startSim=function(){
+  if(simRunning) return;
+  simRunning=true;
+  document.getElementById('btnStart').disabled=true;
+  document.getElementById('btnStop').disabled=false;
+  document.getElementById('svStatus').textContent='▶';
+  const tip=document.getElementById('simTip');
+  tip.textContent=getTip();tip.classList.add('on');
+  // Titik data awal (0 menit, 0 mL) — agar grafik terlihat tumbuh bertahap dari titik nol,
+  // hanya ditambahkan sekali saat mulai dari kondisi kosong (bukan saat lanjut setelah Hentikan).
+  if(simVolHistory.length===0){
+    simVolHistory.push(0);
+    simSuhuLarutanHistory.push(parseInt(document.getElementById('simSuhu').value));
+    simSuhuRuangHistory.push(getSuhuRuang());
+  }
+  updateLiveRow();
+  animLoop();
+  simTimer=setInterval(()=>{
+    simSeconds++;
+    const m=Math.floor(simSeconds/60);const s=simSeconds%60;
+    document.getElementById('svWaktu').textContent=m+':'+(s<10?'0':'')+s;
+    const rate=calcRate();
+    // Update CO2 count (basis internal untuk menghitung volume mL)
+    if(rate>0){co2Count+=Math.round(rate*2);}
+    const newVol=getVolumeML();
+    document.getElementById('svCO2').textContent=newVol.toFixed(1);
+    // Update suhu larutan
+    const suhu=parseInt(document.getElementById('simSuhu').value);
+    const delta=rate*0.5;
+    const dispSuhu=(suhu+delta*(simSeconds/60)).toFixed(1);
+    document.getElementById('svSuhu').textContent=dispSuhu+'°C';
+    // Update suhu ruangan (stabil, tidak dipengaruhi fermentasi)
+    const suhuRuangNow=getSuhuRuang();
+    document.getElementById('svSuhuRuang').textContent=suhuRuangNow.toFixed(1)+'°C';
+    // Catat titik animasi "tumbuh" (dari nilai terakhir → nilai baru) sebelum data ditambahkan,
+    // supaya grafik menampilkan penambahan volume/suhu tiap detik secara bertahap (bukan loncat).
+    chartAnimFrom.vol=simVolHistory.length?simVolHistory[simVolHistory.length-1]:0;
+    chartAnimFrom.suhuL=simSuhuLarutanHistory.length?simSuhuLarutanHistory[simSuhuLarutanHistory.length-1]:parseFloat(dispSuhu);
+    chartAnimFrom.suhuR=simSuhuRuangHistory.length?simSuhuRuangHistory[simSuhuRuangHistory.length-1]:suhuRuangNow;
+    chartAnimTo.vol=newVol; chartAnimTo.suhuL=parseFloat(dispSuhu); chartAnimTo.suhuR=suhuRuangNow;
+    chartAnimStart=performance.now();
+    // jika buffer sudah penuh (rentang 60 detik), titik terlama akan terdorong keluar oleh push berikut —
+    // tandai agar grafik dianimasikan "bergeser" masuk seperti pergerakan pada grafik korelasi suhu
+    chartHistShifted=simVolHistory.length>=CHART_WINDOW_SEC;
+    simVolHistory.push(newVol);
+    if(simVolHistory.length>CHART_WINDOW_SEC) simVolHistory.shift();
+    simSuhuLarutanHistory.push(parseFloat(dispSuhu));
+    if(simSuhuLarutanHistory.length>CHART_WINDOW_SEC) simSuhuLarutanHistory.shift();
+    simSuhuRuangHistory.push(suhuRuangNow);
+    if(simSuhuRuangHistory.length>CHART_WINDOW_SEC) simSuhuRuangHistory.shift();
+    // Update live row every second
+    updateLiveRow();
+    // Snapshot row every 5 min
+    if(simSeconds%300===0) addTableRow();
+  },1000);
+};
+
+window.stopSim=function(){
+  simRunning=false;
+  clearInterval(simTimer);
+  if(simAnimFrame) cancelAnimationFrame(simAnimFrame);
+  document.getElementById('btnStart').disabled=false;
+  document.getElementById('btnStop').disabled=true;
+  document.getElementById('svStatus').textContent='⏸';
+  // Snapshot the live row on stop
+  addTableRow();
+  drawSim();
+};
+
+window.resetSim=function(){
+  stopSim();
+  simSeconds=0;co2Count=0;simVolHistory=[];simSuhuLarutanHistory=[];simSuhuRuangHistory=[];
+  chartAnimFrom={vol:0,suhuL:0,suhuR:0};chartAnimTo={vol:0,suhuL:0,suhuR:0};chartAnimStart=0;chartHistShifted=false;
+  document.getElementById('svCO2').textContent='0';
+  document.getElementById('svSuhu').textContent='--°C';
+  document.getElementById('svSuhuRuang').textContent='--°C';
+  document.getElementById('svWaktu').textContent='0:00';
+  document.getElementById('svStatus').textContent='⏸';
+  const tip=document.getElementById('simTip');tip.classList.remove('on');
+  drawSim();
+};
+
+function getEtanolEst(){
+  const rate=calcRate();
+  if(rate===0) return '0 mL (tidak ada)';
+  // Estimasi: per detik rate*0.01 mL etanol dihasilkan
+  const est=+(rate*0.01*simSeconds).toFixed(2);
+  return est+' mL (est.)';
+}
+
+function getLajuMlMenit(){
+  if(simSeconds===0) return '0.0';
+  return (getVolumeML()/(simSeconds/60)).toFixed(1);
+}
+
+function getKeterangan(rate){
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  if(perangkat==='II') return 'Kontrol: tidak ada fermentasi';
+  if(ragi===0) return 'Kontrol: tanpa ragi, tidak ada fermentasi';
+  if(suhu>=60) return 'Ragi mati (denaturasi), fermentasi terhenti';
+  if(suhu<=10) return 'Fermentasi sangat lambat (suhu terlalu rendah)';
+  if(rate>=1.2) return 'Fermentasi aktif & cepat ✓';
+  if(rate>0) return 'Fermentasi aktif (lambat–sedang)';
+  return 'Tidak ada fermentasi';
+}
+
+function updateLiveRow(){
+  const rate=calcRate();
+  const m=Math.floor(simSeconds/60);const s=simSeconds%60;
+  const suhu=parseInt(document.getElementById('simSuhu').value);
+  const gula=parseInt(document.getElementById('simGula').value);
+  const ragi=parseInt(document.getElementById('simRagi').value);
+  const perangkat=document.getElementById('simPerangkat').value;
+  const deltaTemp=rate>0?+(rate*0.5*(simSeconds/60)).toFixed(1):0;
+  const suhuLarutan=(suhu+deltaTemp).toFixed(1);
+  const suhuRuang=getSuhuRuang().toFixed(1);
+
+  let liveRow=document.getElementById('liveRow');
+  if(!liveRow){
+    liveRow=document.createElement('tr');
+    liveRow.id='liveRow';
+    liveRow.style.background='rgba(37,99,235,0.07)';
+    liveRow.style.fontWeight='600';
+    document.getElementById('hasilBody').prepend(liveRow);
+  }
+  liveRow.innerHTML=`
+    <td>⏱ ${m}:${s<10?'0':''}${s}</td>
+    <td>${perangkat==='II'?'A (Kontrol)':'Eksperimen'}</td>
+    <td>${suhuRuang}°C</td>
+    <td>${suhuLarutan}°C</td>
+    <td>${gula}%</td>
+    <td>${ragi} g</td>
+    <td>${getVolumeML().toFixed(1)}</td>
+    <td>${getLajuMlMenit()}</td>
+    <td>${getKeterangan(rate)}</td>
+  `;
+}
+
+function addTableRow(){
+  // Snapshot baris saat ini: ubah live row menjadi baris tetap, lalu buat live row baru
+  const liveRow=document.getElementById('liveRow');
+  if(liveRow){
+    liveRow.removeAttribute('id');
+    liveRow.style.background='';
+    liveRow.style.fontWeight='';
+  }
+}
+
+
+// Draw initial state
+window.addEventListener('load',()=>{setTimeout(drawSim,100);});
+window.addEventListener('resize',()=>{if(!simRunning) drawSim();});
+
+// ── DISKUSI (esai) — sesuai bagian G. Pertanyaan dan Diskusi pada LKPD ──
+const QUESTIONS=[
+  {text:'Tentukan variabel-variabel dalam percobaan ini:<br>• Variabel Bebas<br>• Variabel Terikat<br>• Variabel Kontrol'},
+  {text:'Mengapa piston pada suntikan dapat terdorong naik pada sampel yang ditambahi gula dan ragi? Gas apakah yang terbentuk di dalamnya, dan tunjukkan reaksinya!'},
+  {text:'Sampel manakah yang menghasilkan kenaikan volume paling cepat berdasarkan grafik yang Anda peroleh? Jelaskan mengapa hal tersebut dapat terjadi!'},
+  {text:'Apakah sampel dengan konsentrasi gula paling tinggi selalu menghasilkan gas paling banyak dengan waktu paling cepat? Jika tidak, jelaskan fenomena biologi yang mendasarinya!'},
+  {text:'Mengapa dalam praktikum ini dianjurkan menggunakan air hangat (37–40°C) dan bukan air dingin atau air mendidih? Kaitkan jawaban Anda dengan data suhu larutan yang tercatat pada halaman pemantau.'},
+  {text:'Apakah suhu ruangan berubah secara berarti selama pengamatan berlangsung? Menurut Anda, apakah suhu ruangan turut memengaruhi laju fermentasi pada percobaan ini?'},
+  {text:'Sebutkan dua keuntungan mengukur volume CO₂ menggunakan sensor ultrasonik dan micro:bit dibandingkan dengan cara manual (misalnya mengamati perpindahan cairan pada pipa berskala)!'},
+  {text:'Tempelkan atau gambarkan grafik hubungan antara waktu (sumbu-x) dan volume CO₂ (sumbu-y) untuk keempat sampel dalam satu grafik. Grafik dapat diunduh langsung dari halaman pemantau (tombol Ekspor CSV), lalu diolah menjadi grafik menggunakan aplikasi pengolah angka. Tuliskan deskripsi/analisis grafik Anda di sini:'},
+];
+
+let currentQ=0;
+const userAns=new Array(QUESTIONS.length).fill('');
+let submitted=false;
+
+function buildQuiz(){
+  const prog=document.getElementById('qprog');
+  prog.innerHTML='';
+  QUESTIONS.forEach((_,i)=>{
+    const dot=document.createElement('div');
+    dot.className='qprog-dot'+(i===currentQ?' current':'')+(userAns[i]&&userAns[i].trim()!==''?' answered':'');
+    dot.textContent=i+1;dot.onclick=()=>goQ(i);
+    prog.appendChild(dot);
+  });
+  const q=QUESTIONS[currentQ];
+  const cont=document.getElementById('qContainer');
+  cont.innerHTML='';
+  const card=document.createElement('div');
+  card.className='q-card';
+  card.innerHTML=`
+    <div class="qnum">PERTANYAAN ${currentQ+1} / ${QUESTIONS.length}</div>
+    <div class="qtext">${q.text}</div>
+    <textarea class="disc-area" id="essayInput" rows="20" style="flex:1;min-height:340px;height:100%;" placeholder="Tulis jawaban Anda di sini..."></textarea>
+  `;
+  cont.appendChild(card);
+  const ta=document.getElementById('essayInput');
+  ta.value=userAns[currentQ]||'';
+  ta.oninput=()=>{ userAns[currentQ]=ta.value; buildProg(); };
+  document.getElementById('qCounter').textContent=`${currentQ+1} / ${QUESTIONS.length}`;
+  document.getElementById('btnPrev').disabled=currentQ===0;
+  document.getElementById('btnNext').style.display=currentQ<QUESTIONS.length-1?'':'none';
+  document.getElementById('btnSubmit').style.display=currentQ===QUESTIONS.length-1?'':'none';
+  // Skalakan ulang agar seluruh kartu pertanyaan (termasuk kotak jawaban) tetap terlihat
+  // penuh di layar tanpa perlu discroll, karena panjang tiap pertanyaan berbeda-beda.
+  if(document.getElementById('page-diskusi').classList.contains('active')){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage('diskusi')));
+  }
+}
+
+function buildProg(){
+  const dots=document.querySelectorAll('.qprog-dot');
+  dots.forEach((d,i)=>{d.className='qprog-dot'+(i===currentQ?' current':'')+(userAns[i]&&userAns[i].trim()!==''?' answered':'');});
+}
+function goQ(i){currentQ=i;buildQuiz();}
+window.nextQ=function(){if(currentQ<QUESTIONS.length-1){currentQ++;buildQuiz();}};
+window.prevQ=function(){if(currentQ>0){currentQ--;buildQuiz();}};
+window.submitQuiz=function(){
+  submitted=true;
+  const answered=userAns.filter(a=>a&&a.trim()!=='').length;
+  const ol=document.getElementById('scoreOverlay');
+  document.getElementById('scoreSub').textContent=`Anda telah mengisi ${answered} dari ${QUESTIONS.length} pertanyaan diskusi.`;
+  ol.classList.add('on');
+};
+window.resetQuiz=function(){
+  submitted=false;currentQ=0;userAns.fill('');
+  document.getElementById('scoreOverlay').classList.remove('on');
+  buildQuiz();
+};
+buildQuiz();
+
+window.printDiskusi=function(){
+  const questions=QUESTIONS.map(q=>q.text.replace(/<br>/g,' '));
+  const esc=(s)=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const now=new Date();
+  const tgl=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const rows=questions.map((q,i)=>`
+    <div class="row">
+      <div class="qnum">${i+1}</div>
+      <div class="qbody">
+        <div class="qtxt">${q}</div>
+        <div class="atxt">${userAns[i]&&userAns[i].trim()!==''?esc(userAns[i]):'<em style="color:#94a3b8;">(Belum diisi)</em>'}</div>
+      </div>
+    </div>`).join('');
+  const html=`<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<title>Diskusi – Lab Virtual Fermentasi Alkohol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1e293b;padding:36px 44px;font-size:13px;}
+  .header{border-bottom:3px solid #2563eb;padding-bottom:14px;margin-bottom:20px;}
+  .lab-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1d4ed8;margin-bottom:3px;}
+  .lab-sub{font-size:11px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;}
+  .meta{margin-top:8px;font-size:12px;color:#475569;}
+  .section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase;}
+  .row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0;}
+  .row:last-child{border-bottom:none;}
+  .qnum{min-width:28px;height:28px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .qbody{flex:1;}
+  .qtxt{font-weight:600;color:#1e293b;margin-bottom:6px;line-height:1.5;}
+  .atxt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;min-height:52px;line-height:1.7;color:#334155;white-space:pre-wrap;}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8;text-align:center;}
+  @media print{body{padding:20px 28px;}@page{margin:1.5cm;size:A4 portrait;}}
+</style>
+</head><body>
+<div class="header">
+  <div class="lab-title">🧪 Lab Virtual – Fermentasi Alkohol</div>
+  <div class="lab-sub">Kelas XII · Pertanyaan Diskusi Hasil Percobaan</div>
+  <div class="meta">📅 Dicetak pada: ${tgl}</div>
+</div>
+<div class="section-title">Pertanyaan Diskusi</div>
+${rows}
+<div class="footer">Lab Maya Biologi · Dicetak dari aplikasi Lab Virtual Fermentasi Alkohol</div>
+<script>window.onload=function(){window.print();}` + `<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+};
+</script>
+</body>
+</html>
