@@ -48,7 +48,7 @@ nav::-webkit-scrollbar{display:none;}
   header{flex-wrap:nowrap;padding:0 10px;}
   .logo-text{font-size:16px;}.logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);gap:0;flex:none;max-height:calc(100vh - var(--h));overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);gap:0;flex:none;max-height:calc(100vh - var(--h));max-height:calc(100dvh - var(--h));max-height:calc(var(--real-vh,100vh) - var(--h));overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
   nav.open{display:flex;}
   .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
   .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
@@ -348,6 +348,57 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
   .quiz-foot{padding-top:5px;}
   .btn-qnav{padding:6px 13px;font-size:12px;}
   .qcounter{font-size:11px;}
+}
+/* ═══ PERBAIKAN HP/TABLET: halaman Simulasi & Data Praktikum dibuat bisa
+   discroll penuh (bukan dipaksa muat satu layar) agar visualisasi perangkat,
+   grafik, monitoring, dan seluruh data terlihat jelas — sama seperti perilaku
+   menu lain (Alat & Bahan / Prosedur). Tampilan desktop tidak diubah. ═══ */
+@media (pointer:coarse){
+  #page-simulasi .scroll{
+    overflow-y:auto!important;overflow-x:hidden!important;
+    display:block!important;
+    padding:10px 12px 24px!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .sim-wrap{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:"ctrl" "aquarium" "rekap"!important;
+    grid-template-rows:none!important;
+    flex:none!important;min-height:0;gap:10px;
+  }
+  .ctrl-panel{
+    display:flex!important;flex-direction:column!important;
+    padding:12px;gap:9px;
+    overflow:visible!important;max-height:none!important;min-height:0;
+  }
+  .ctrl-panel h3{font-size:12px;margin-bottom:0;}
+  .cg label{font-size:9.5px;margin-bottom:4px;white-space:normal;overflow:visible;text-overflow:clip;}
+  .ctrl-panel .btn{padding:9px 10px;font-size:12px;}
+  .ctrl-panel .tipinfo{font-size:11px;padding:7px 9px;margin-top:6px;}
+  .aquarium{padding:10px;}
+  .aquarium h3{font-size:12px;margin-bottom:6px;}
+  #simCanvas{height:190px!important;}
+  .statsrow{padding-top:10px;gap:6px;flex-wrap:wrap;}
+  .sbox{padding:6px 4px;min-width:70px;}
+  .sv{font-size:14px;}
+  .sl{font-size:9px;}
+  .rekap-card{max-height:none!important;overflow:visible!important;margin-bottom:0;}
+  .rekap-card>div[style*="overflow"]{max-height:280px!important;overflow:auto!important;}
+  .wstable th,.wstable td{padding:6px 8px;font-size:10.5px;white-space:nowrap;}
+
+  #page-data .scroll{
+    overflow-y:auto!important;overflow-x:hidden!important;
+    display:block!important;
+    padding:10px 12px 24px!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #page-data .scroll>div:last-child{
+    flex:none!important;
+    height:75vh!important;
+    height:75dvh!important;
+    min-height:340px;
+  }
 }
 /* ═══ CHART MODE TABS (menggantikan dropdown) ═══ */
 .chart-tabs{display:flex;gap:4px;flex-wrap:wrap;}
@@ -1120,11 +1171,23 @@ if(window.screen && window.screen.orientation){
     _fitResizeTimer = setTimeout(fitActivePages, 350);
   });
 }
+// ── Perbaikan tinggi viewport HP (mengatasi bug 100vh di browser mobile:
+// toolbar browser membuat 100vh lebih besar dari tinggi layar yang benar-benar
+// terlihat, sehingga item menu paling bawah seperti "Diskusi" tampak hilang
+// karena halaman tidak bisa discroll). --real-vh diisi tinggi layar sebenarnya. ──
+function setRealVH(){
+  document.documentElement.style.setProperty('--real-vh', window.innerHeight + 'px');
+}
+setRealVH();
+window.addEventListener('resize', setRealVH);
+window.addEventListener('orientationchange', function(){ setRealVH(); setTimeout(setRealVH,350); });
+
 let navOpen=false;
 function toggleNav(){
   navOpen=!navOpen;
   const nav=document.getElementById('mainNav');
-  if(navOpen) nav.classList.add('open'); else nav.classList.remove('open');
+  if(navOpen){ setRealVH(); nav.classList.add('open'); setTimeout(setRealVH,300); }
+  else nav.classList.remove('open');
 }
 function closeNav(){
   navOpen=false;
