@@ -44,17 +44,13 @@ nav::-webkit-scrollbar{display:none;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
-/* Menu hamburger aktif di SEMUA perangkat sentuh (HP & tablet), baik portrait maupun
-   landscape, bukan cuma saat layar sempit — supaya seluruh menu tetap bisa diakses
-   meskipun lebar layar landscape HP/tablet lebih dari 640px. */
-@media(max-width:640px),(pointer:coarse){
+@media (max-width:640px), (pointer:coarse){
   header{flex-wrap:nowrap;padding:0 10px;}
   .logo-text{font-size:16px;}.logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);gap:0;flex:none;
-    max-height:calc(100vh - var(--h));overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);gap:0;flex:none;max-height:calc(100vh - var(--h));overflow-y:auto;-webkit-overflow-scrolling:touch;}
   nav.open{display:flex;}
-  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
   .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
   /* Alat & Bahan / Prosedur: di HP gambar ditampilkan penuh lebar (tidak dipotong)
@@ -63,13 +59,6 @@ nav::-webkit-scrollbar{display:none;}
   #page-prosedur .scroll{overflow-y:auto!important;overflow-x:hidden!important;display:block!important;-webkit-overflow-scrolling:touch;}
   #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%!important;height:auto!important;object-fit:initial!important;display:block;margin:0 auto;}
   .ab-grid{grid-template-columns:1fr!important;}
-}
-/* Landscape HP/tablet: layar pendek, jadi daftar menu dropdown dibuat lebih ringkas
-   (setiap item lebih pendek) supaya ketujuh menu tetap muat / mudah digulir dalam
-   satu layar landscape tanpa memakan terlalu banyak tinggi. */
-@media (pointer:coarse) and (orientation:landscape){
-  .nb{height:40px;font-size:12.5px;padding:0 14px;}
-  .nb img{width:20px!important;height:20px!important;}
 }
 #app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
 /* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
@@ -80,24 +69,7 @@ nav::-webkit-scrollbar{display:none;}
   .logo-sub{display:none;}
   .nb{font-size:11.5px;padding:0 9px;}
   .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
-  /* DISKUSI: kartu pertanyaan, header progres & tombol navigasi dipadatkan supaya
-     satu pertanyaan penuh (termasuk kotak jawaban) selalu terlihat sekaligus. */
-  .quiz-nav-header{padding:5px 9px;margin-bottom:5px;}
-  .qprog-dot{width:22px;height:22px;font-size:9px;}
-  .quiz-nav-header .btn-score{font-size:10px!important;padding:5px 10px!important;}
-  .q-card{padding:10px;}
-  .qnum{font-size:9px;margin-bottom:3px;}
-  .qtext{font-size:12px;margin-bottom:6px;}
-  .disc-area{padding:8px 10px;font-size:12px;}
-  .quiz-foot{padding-top:6px;gap:6px;}
-  .btn-qnav{padding:6px 14px;font-size:11px;}
-  .qcounter{font-size:11px;}
-  /* DATA PRAKTIKUM: header ringkas supaya iframe monitor dapat ruang setinggi mungkin. */
-  #page-data .scroll{padding:6px 10px 10px;}
-  #page-data .scroll>div:first-child{padding:6px 12px!important;margin-bottom:5px!important;}
-  #page-data .scroll>div:first-child div:first-child{font-size:10.5px!important;}
-  #page-data .scroll>div:first-child div:last-child{font-size:9px!important;}
-  #page-data .scroll a{font-size:9.5px!important;padding:5px 9px!important;}
+  nav.open .nb{height:38px;padding:0 14px;}
 }
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
 .page.active{display:flex;flex-direction:column;}
@@ -187,8 +159,19 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 .btn-stop:disabled{opacity:.35;cursor:not-allowed;}
 .btn-reset{background:var(--surf2);border:1px solid var(--border);color:var(--text2);}
 .btn-reset:hover{border-color:var(--acc);color:var(--acc);background:#eff6ff;}
-.aquarium{grid-area:aquarium;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;}
+.aquarium{grid-area:aquarium;background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:9px;box-shadow:0 1px 3px rgba(30,41,59,0.06);display:flex;flex-direction:column;min-height:0;}
 .aquarium h3{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--acc3);margin-bottom:6px;}
+#page-simulasi .scroll{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+/* Dropdown mode grafik ala menu utama (dipakai gantikan tab horizontal di perangkat sentuh) */
+.chart-mode-mobile{display:none;position:relative;flex-shrink:0;}
+.cmm-toggle{display:flex;align-items:center;gap:6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:5px 10px;font-family:'Inter',sans-serif;font-size:10.5px;font-weight:600;color:#1d4ed8;cursor:pointer;white-space:nowrap;}
+.cmm-toggle svg{transition:transform .17s;flex-shrink:0;}
+.cmm-toggle.open svg{transform:rotate(180deg);}
+.cmm-list{display:none;position:absolute;top:100%;right:0;margin-top:4px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(15,23,42,.18);z-index:80;min-width:172px;overflow:hidden;}
+.cmm-list.open{display:block;}
+.cmm-list button{display:block;width:100%;text-align:left;border:none;background:none;padding:8px 12px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);}
+.cmm-list button:last-child{border-bottom:none;}
+.cmm-list button:hover,.cmm-list button.sel{background:#eff6ff;color:#1d4ed8;}
 #simCanvas{width:100%;border-radius:6px;display:block;background:#0f172a;border:1px solid var(--border);}
 .statsrow{display:flex;gap:6px;margin-top:auto;padding-top:16px;}
 .sbox{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:6px;text-align:center;}
@@ -317,43 +300,54 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-@media(max-width:700px) and (orientation:portrait){
+@media(max-width:700px) and (pointer:fine){
   #page-simulasi>.scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
   .sim-wrap{grid-template-columns:1fr!important;grid-template-areas:"ctrl" "aquarium" "rekap"!important;}
   .ctrl-panel{max-height:none;overflow:visible;}
   .aquarium canvas{max-width:100%;}
 }
-/* Landscape HP/tablet: satu baris 3 kolom (kontrol | akuarium | rekap) yang ringkas,
-   lalu diskalakan otomatis oleh fitToContainer supaya SEMUA bagian (pengaturan simulasi,
-   visualisasi, dan rekap tabel) tampil sekaligus dalam satu layar landscape tanpa perlu
-   menggulir halaman. */
-@media (pointer:coarse) and (orientation:landscape){
-  #page-simulasi>.scroll{overflow:hidden!important;display:flex!important;}
-  .sim-wrap{
-    grid-template-columns:145px 1fr 230px!important;
-    grid-template-areas:"ctrl aquarium rekap"!important;
-    grid-template-rows:auto!important;
-    gap:6px;align-items:stretch;
-  }
-  .ctrl-panel{padding:7px;gap:4px;max-height:230px;overflow-y:auto;}
-  .ctrl-panel h3{font-size:10px;margin-bottom:2px;}
-  .cg label{font-size:8px;margin-bottom:1px;}
-  select{font-size:10px;padding:3px 20px 3px 6px;}
-  .btn{padding:5px;font-size:10px;}
-  .aquarium{padding:6px;max-height:230px;overflow:hidden;}
+/* ═══ HP/TABLET: halaman Simulasi ditata agar SELALU pas satu layar (landscape) tanpa
+   perlu discroll — panel Visualisasi Perangkat Fermentasi diberi ruang paling leluasa,
+   sedangkan Rekap Hasil Pengamatan dipadatkan & diletakkan di baris bawah saja. ═══ */
+@media (pointer:coarse){
+  #page-simulasi .scroll{overflow:hidden;display:flex;flex-direction:column;padding:6px 8px;}
+  .sim-wrap{flex:1;min-height:0;grid-template-columns:132px 1fr;grid-template-rows:minmax(0,1fr) auto;gap:5px;}
+  .ctrl-panel{display:grid;grid-template-columns:1fr 1fr;align-content:start;padding:6px 7px;gap:3px 5px;overflow-y:auto;min-height:0;}
+  .ctrl-panel h3{grid-column:1/-1;font-size:9.5px;margin-bottom:0;}
+  .ctrl-panel .cg{margin-bottom:0;min-width:0;}
+  .cg label{font-size:6.8px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  select{padding:3px 16px 3px 5px;font-size:8.3px;background-position:right 5px center;}
+  .ctrl-panel .btn{padding:5px 2px;font-size:8px;}
+  #btnStart,#btnStop{grid-column:span 1;}
+  .ctrl-panel .btn-reset{grid-column:1/-1;}
+  .ctrl-panel .tipinfo{grid-column:1/-1;font-size:8px;padding:4px 6px;margin-top:0;}
+  .aquarium{padding:6px;}
   .aquarium h3{font-size:10px;margin-bottom:3px;}
-  .chart-tabs{gap:2px;}
-  .ctab{font-size:8px;padding:2px 5px;}
-  #simCanvas{height:90px!important;}
-  .statsrow{padding-top:5px;gap:4px;}
-  .sv{font-size:12px;}
+  #chartTabs{display:none;}
+  .chart-mode-mobile{display:block;}
+  .statsrow{padding-top:5px;gap:3px;}
+  .sbox{padding:3px 2px;}
+  .sv{font-size:11px;}
   .sl{font-size:7px;}
-  .rekap-card{overflow:hidden;display:flex;flex-direction:column;padding:7px 8px;margin-bottom:0;max-height:230px;}
-  .rekap-card .ch{margin-bottom:3px;}
-  .rekap-card .ct{font-size:10px;}
-  .rekap-card>div[style*="overflow:auto"]{flex:1;max-height:190px!important;overflow-y:auto!important;}
-  .wstable{font-size:8px;}
-  .wstable th,.wstable td{padding:2px 4px;}
+  .rekap-card{max-height:76px;overflow:hidden;display:flex;flex-direction:column;padding:5px 9px;margin-bottom:0;}
+  .rekap-card .ch{margin-bottom:2px;flex-shrink:0;}
+  .rekap-card .ci{width:18px;height:18px;font-size:9px;}
+  .rekap-card .ct{font-size:9.5px;}
+  .rekap-card>div[style*="overflow"]{flex:1;min-height:0;max-height:none!important;overflow:auto!important;}
+  .wstable th,.wstable td{padding:2px 5px;font-size:8px;white-space:nowrap;}
+  /* Diskusi: padatkan kartu pertanyaan & kotak jawaban supaya satu pertanyaan penuh
+     (termasuk kotak jawaban & navigasi) tetap muat dalam satu layar landscape HP/tablet */
+  .disc-area{flex:none!important;height:88px!important;min-height:0!important;padding:8px 10px;font-size:12.5px;margin-top:5px;}
+  .q-card{flex:none!important;}
+  .q-card{padding:9px 11px;}
+  .qnum{font-size:9.5px;margin-bottom:3px;}
+  .qtext{font-size:12px;line-height:1.45;margin-bottom:5px;}
+  .quiz-nav-header{padding:5px 9px;margin-bottom:4px;}
+  .qprog-dot{width:22px;height:22px;font-size:9.5px;}
+  .quiz-nav-header .btn-score{font-size:11px!important;padding:6px 10px!important;}
+  .quiz-foot{padding-top:5px;}
+  .btn-qnav{padding:6px 13px;font-size:12px;}
+  .qcounter{font-size:11px;}
 }
 /* ═══ CHART MODE TABS (menggantikan dropdown) ═══ */
 .chart-tabs{display:flex;gap:4px;flex-wrap:wrap;}
@@ -857,8 +851,7 @@ function startPraktikum(){
 
 <!-- ===== SIMULASI ===== -->
 <div id="page-simulasi" class="page">
-  <div class="scroll" style="overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;-webkit-overflow-scrolling:touch;">
-  <div class="fit-inner" style="width:100%;">
+  <div class="scroll" style="padding:10px 14px 14px;">
     <div class="sim-wrap">
       <div class="ctrl-panel">
         <h3>⚙️ Pengaturan Simulasi</h3>
@@ -918,6 +911,18 @@ function startPraktikum(){
             <button type="button" class="ctab" data-mode="suhu_larutan" onclick="setChartMode('suhu_larutan',this)" title="Grafik korelasi/lintasan Suhu Larutan → Volume CO₂ dengan animasi bertahap">🌡️ Suhu Larutan</button>
             <button type="button" class="ctab" data-mode="suhu_ruang" onclick="setChartMode('suhu_ruang',this)" title="Grafik korelasi/lintasan Suhu Ruangan → Volume CO₂ dengan animasi bertahap">🏠 Suhu Ruangan</button>
           </div>
+          <div class="chart-mode-mobile" id="chartModeMobile">
+            <button type="button" class="cmm-toggle" id="cmmToggleBtn" onclick="toggleChartModeMenu()" aria-label="Pilih mode grafik">
+              <span id="cmmCurrentLabel">📊 Semua</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="cmm-list" id="cmmList">
+              <button type="button" class="sel" data-mode="semua" onclick="chooseChartModeMobile('semua','📊 Semua',this)">📊 Semua Variabel</button>
+              <button type="button" data-mode="volume" onclick="chooseChartModeMobile('volume','📈 Volume CO₂',this)">📈 Volume CO₂</button>
+              <button type="button" data-mode="suhu_larutan" onclick="chooseChartModeMobile('suhu_larutan','🌡️ Suhu Larutan',this)">🌡️ Suhu Larutan</button>
+              <button type="button" data-mode="suhu_ruang" onclick="chooseChartModeMobile('suhu_ruang','🏠 Suhu Ruangan',this)">🏠 Suhu Ruangan</button>
+            </div>
+          </div>
         </div>
         <canvas id="simCanvas" height="200"></canvas>
         <div class="statsrow">
@@ -939,7 +944,6 @@ function startPraktikum(){
         </div>
       </div>
     </div>
-  </div>
   </div>
 </div>
 
@@ -1037,16 +1041,15 @@ function show(id,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn) btn.classList.add('active');
-  if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'||id==='simulasi'){
+  if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'){
     requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
   }
   if(id==='simulasi'){
     // Kanvas simulasi sempat digambar saat halaman masih tersembunyi (lebar terbaca 0,
     // jatuh ke nilai fallback), lalu di-stretch CSS ke lebar asli → tampak buram/zoom.
-    // Gambar ulang dengan lebar yang benar begitu halaman ini benar-benar terlihat (dan
-    // setelah fitPage menghitung skala/lebar akhirnya), supaya tampilan sebelum & sesudah
-    // "Mulai Simulasi" selalu identik.
-    requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(typeof drawSim==='function') drawSim(); })));
+    // Gambar ulang dengan lebar yang benar begitu halaman ini benar-benar terlihat,
+    // supaya tampilan sebelum & sesudah "Mulai Simulasi" selalu identik.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(typeof drawSim==='function') drawSim(); }));
   }
 }
 
@@ -1089,17 +1092,14 @@ function fitPage(id){
   }else if(id==='prosedur'){
     fitToContainer(document.querySelector('#page-prosedur > .scroll'),20);
   }else if(id==='diskusi'){
-    fitToContainer(document.querySelector('#page-diskusi > .scroll'),20);
-  }else if(id==='simulasi'){
-    fitToContainer(document.querySelector('#page-simulasi > .scroll'),8);
-    if(typeof drawSim==='function') drawSim();
+    fitToContainer(document.querySelector('#page-diskusi > .scroll'),6);
   }
 }
 
 function fitActivePages(){
   document.querySelectorAll('.page.active').forEach(p=>{
     const id = p.id.replace('page-','');
-    if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'||id==='simulasi') fitPage(id);
+    if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi') fitPage(id);
   });
 }
 
@@ -1150,6 +1150,29 @@ window.setChartMode=function(m,btn){
   drawSim();
 };
 
+// ── Dropdown mode grafik untuk perangkat sentuh (mirip pola menu utama) ──
+window.toggleChartModeMenu=function(){
+  document.getElementById('cmmList').classList.toggle('open');
+  document.getElementById('cmmToggleBtn').classList.toggle('open');
+};
+window.chooseChartModeMobile=function(mode,label,btn){
+  document.getElementById('cmmCurrentLabel').textContent=label;
+  document.querySelectorAll('#cmmList button').forEach(b=>b.classList.remove('sel'));
+  if(btn) btn.classList.add('sel');
+  document.getElementById('cmmList').classList.remove('open');
+  document.getElementById('cmmToggleBtn').classList.remove('open');
+  const tabBtn=document.querySelector('#chartTabs .ctab[data-mode="'+mode+'"]');
+  setChartMode(mode, tabBtn);
+};
+document.addEventListener('click',function(e){
+  const wrap=document.getElementById('chartModeMobile');
+  if(!wrap) return;
+  if(!wrap.contains(e.target)){
+    document.getElementById('cmmList').classList.remove('open');
+    document.getElementById('cmmToggleBtn').classList.remove('open');
+  }
+});
+
 const canvas=document.getElementById('simCanvas');
 const ctx2=canvas.getContext('2d');
 
@@ -1190,7 +1213,8 @@ function getTip(){
 
 function drawSim(){
   const w=canvas.offsetWidth||440;
-  const h=320;
+  const isTouchDevice=window.matchMedia('(pointer:coarse)').matches;
+  const h=isTouchDevice?110:320;
   canvas.width=w;canvas.height=h;
   canvas.style.height=h+'px'; // kunci tinggi tampil = tinggi gambar, cegah melar/area kosong
 
@@ -1850,15 +1874,10 @@ function buildQuiz(){
   cont.innerHTML='';
   const card=document.createElement('div');
   card.className='q-card';
-  // Di HP/tablet dalam mode landscape, layar sangat pendek — kotak jawaban dibuat lebih
-  // ringkas (bukan 340px) supaya seluruh kartu pertanyaan tetap muat dalam satu layar
-  // tanpa perlu discroll; auto-fit (fitToContainer) lalu menskalakan sisanya.
-  const isMobileLandscape = window.matchMedia('(pointer:coarse) and (orientation:landscape)').matches;
-  const discMinH = isMobileLandscape ? 70 : 340;
   card.innerHTML=`
     <div class="qnum">PERTANYAAN ${currentQ+1} / ${QUESTIONS.length}</div>
     <div class="qtext">${q.text}</div>
-    <textarea class="disc-area" id="essayInput" rows="20" style="flex:1;min-height:${discMinH}px;height:100%;" placeholder="Tulis jawaban Anda di sini..."></textarea>
+    <textarea class="disc-area" id="essayInput" rows="20" style="flex:1;min-height:340px;height:100%;" placeholder="Tulis jawaban Anda di sini..."></textarea>
   `;
   cont.appendChild(card);
   const ta=document.getElementById('essayInput');
