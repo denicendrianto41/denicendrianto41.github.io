@@ -44,13 +44,17 @@ nav::-webkit-scrollbar{display:none;}
 .nb.active::after{transform:scaleX(1);}
 #menuToggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:#fff;flex-shrink:0;touch-action:manipulation;}
 #menuToggle svg{display:block;}
-@media(max-width:640px){
+/* Menu hamburger aktif di SEMUA perangkat sentuh (HP & tablet), baik portrait maupun
+   landscape, bukan cuma saat layar sempit — supaya seluruh menu tetap bisa diakses
+   meskipun lebar layar landscape HP/tablet lebih dari 640px. */
+@media(max-width:640px),(pointer:coarse){
   header{flex-wrap:nowrap;padding:0 10px;}
   .logo-text{font-size:16px;}.logo-sub{display:none;}
   #menuToggle{display:flex;align-items:center;justify-content:center;margin-left:auto;}
-  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:visible;gap:0;flex:none;}
+  nav{display:none;flex-direction:column;position:fixed;top:var(--h);right:0;left:0;z-index:999;background:linear-gradient(180deg,#0f172a,#1e3a8a);border-bottom:1px solid rgba(255,255,255,.15);box-shadow:0 8px 24px rgba(0,0,0,.35);gap:0;flex:none;
+    max-height:calc(100vh - var(--h));overflow-y:auto;-webkit-overflow-scrolling:touch;}
   nav.open{display:flex;}
-  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;}
+  .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
   .nb::after{display:none;}.nb.active{background:rgba(255,255,255,.08);}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
   /* Alat & Bahan / Prosedur: di HP gambar ditampilkan penuh lebar (tidak dipotong)
@@ -59,6 +63,13 @@ nav::-webkit-scrollbar{display:none;}
   #page-prosedur .scroll{overflow-y:auto!important;overflow-x:hidden!important;display:block!important;-webkit-overflow-scrolling:touch;}
   #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%!important;height:auto!important;object-fit:initial!important;display:block;margin:0 auto;}
   .ab-grid{grid-template-columns:1fr!important;}
+}
+/* Landscape HP/tablet: layar pendek, jadi daftar menu dropdown dibuat lebih ringkas
+   (setiap item lebih pendek) supaya ketujuh menu tetap muat / mudah digulir dalam
+   satu layar landscape tanpa memakan terlalu banyak tinggi. */
+@media (pointer:coarse) and (orientation:landscape){
+  .nb{height:40px;font-size:12.5px;padding:0 14px;}
+  .nb img{width:20px!important;height:20px!important;}
 }
 #app{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
 /* Header/menu/logo lebih ringkas saat mobile dalam mode landscape (tinggi layar terbatas) */
@@ -69,6 +80,24 @@ nav::-webkit-scrollbar{display:none;}
   .logo-sub{display:none;}
   .nb{font-size:11.5px;padding:0 9px;}
   .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
+  /* DISKUSI: kartu pertanyaan, header progres & tombol navigasi dipadatkan supaya
+     satu pertanyaan penuh (termasuk kotak jawaban) selalu terlihat sekaligus. */
+  .quiz-nav-header{padding:5px 9px;margin-bottom:5px;}
+  .qprog-dot{width:22px;height:22px;font-size:9px;}
+  .quiz-nav-header .btn-score{font-size:10px!important;padding:5px 10px!important;}
+  .q-card{padding:10px;}
+  .qnum{font-size:9px;margin-bottom:3px;}
+  .qtext{font-size:12px;margin-bottom:6px;}
+  .disc-area{padding:8px 10px;font-size:12px;}
+  .quiz-foot{padding-top:6px;gap:6px;}
+  .btn-qnav{padding:6px 14px;font-size:11px;}
+  .qcounter{font-size:11px;}
+  /* DATA PRAKTIKUM: header ringkas supaya iframe monitor dapat ruang setinggi mungkin. */
+  #page-data .scroll{padding:6px 10px 10px;}
+  #page-data .scroll>div:first-child{padding:6px 12px!important;margin-bottom:5px!important;}
+  #page-data .scroll>div:first-child div:first-child{font-size:10.5px!important;}
+  #page-data .scroll>div:first-child div:last-child{font-size:9px!important;}
+  #page-data .scroll a{font-size:9.5px!important;padding:5px 9px!important;}
 }
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
 .page.active{display:flex;flex-direction:column;}
@@ -288,11 +317,43 @@ select:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(37,99,235,.1);}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-@media(max-width:700px){
+@media(max-width:700px) and (orientation:portrait){
   #page-simulasi>.scroll{overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
   .sim-wrap{grid-template-columns:1fr!important;grid-template-areas:"ctrl" "aquarium" "rekap"!important;}
   .ctrl-panel{max-height:none;overflow:visible;}
   .aquarium canvas{max-width:100%;}
+}
+/* Landscape HP/tablet: satu baris 3 kolom (kontrol | akuarium | rekap) yang ringkas,
+   lalu diskalakan otomatis oleh fitToContainer supaya SEMUA bagian (pengaturan simulasi,
+   visualisasi, dan rekap tabel) tampil sekaligus dalam satu layar landscape tanpa perlu
+   menggulir halaman. */
+@media (pointer:coarse) and (orientation:landscape){
+  #page-simulasi>.scroll{overflow:hidden!important;display:flex!important;}
+  .sim-wrap{
+    grid-template-columns:145px 1fr 230px!important;
+    grid-template-areas:"ctrl aquarium rekap"!important;
+    grid-template-rows:auto!important;
+    gap:6px;align-items:stretch;
+  }
+  .ctrl-panel{padding:7px;gap:4px;max-height:230px;overflow-y:auto;}
+  .ctrl-panel h3{font-size:10px;margin-bottom:2px;}
+  .cg label{font-size:8px;margin-bottom:1px;}
+  select{font-size:10px;padding:3px 20px 3px 6px;}
+  .btn{padding:5px;font-size:10px;}
+  .aquarium{padding:6px;max-height:230px;overflow:hidden;}
+  .aquarium h3{font-size:10px;margin-bottom:3px;}
+  .chart-tabs{gap:2px;}
+  .ctab{font-size:8px;padding:2px 5px;}
+  #simCanvas{height:90px!important;}
+  .statsrow{padding-top:5px;gap:4px;}
+  .sv{font-size:12px;}
+  .sl{font-size:7px;}
+  .rekap-card{overflow:hidden;display:flex;flex-direction:column;padding:7px 8px;margin-bottom:0;max-height:230px;}
+  .rekap-card .ch{margin-bottom:3px;}
+  .rekap-card .ct{font-size:10px;}
+  .rekap-card>div[style*="overflow:auto"]{flex:1;max-height:190px!important;overflow-y:auto!important;}
+  .wstable{font-size:8px;}
+  .wstable th,.wstable td{padding:2px 4px;}
 }
 /* ═══ CHART MODE TABS (menggantikan dropdown) ═══ */
 .chart-tabs{display:flex;gap:4px;flex-wrap:wrap;}
@@ -797,6 +858,7 @@ function startPraktikum(){
 <!-- ===== SIMULASI ===== -->
 <div id="page-simulasi" class="page">
   <div class="scroll" style="overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 14px 14px;-webkit-overflow-scrolling:touch;">
+  <div class="fit-inner" style="width:100%;">
     <div class="sim-wrap">
       <div class="ctrl-panel">
         <h3>⚙️ Pengaturan Simulasi</h3>
@@ -877,6 +939,7 @@ function startPraktikum(){
         </div>
       </div>
     </div>
+  </div>
   </div>
 </div>
 
@@ -974,15 +1037,16 @@ function show(id,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn) btn.classList.add('active');
-  if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'){
+  if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'||id==='simulasi'){
     requestAnimationFrame(()=>requestAnimationFrame(()=>fitPage(id)));
   }
   if(id==='simulasi'){
     // Kanvas simulasi sempat digambar saat halaman masih tersembunyi (lebar terbaca 0,
     // jatuh ke nilai fallback), lalu di-stretch CSS ke lebar asli → tampak buram/zoom.
-    // Gambar ulang dengan lebar yang benar begitu halaman ini benar-benar terlihat,
-    // supaya tampilan sebelum & sesudah "Mulai Simulasi" selalu identik.
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(typeof drawSim==='function') drawSim(); }));
+    // Gambar ulang dengan lebar yang benar begitu halaman ini benar-benar terlihat (dan
+    // setelah fitPage menghitung skala/lebar akhirnya), supaya tampilan sebelum & sesudah
+    // "Mulai Simulasi" selalu identik.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(typeof drawSim==='function') drawSim(); })));
   }
 }
 
@@ -1026,13 +1090,16 @@ function fitPage(id){
     fitToContainer(document.querySelector('#page-prosedur > .scroll'),20);
   }else if(id==='diskusi'){
     fitToContainer(document.querySelector('#page-diskusi > .scroll'),20);
+  }else if(id==='simulasi'){
+    fitToContainer(document.querySelector('#page-simulasi > .scroll'),8);
+    if(typeof drawSim==='function') drawSim();
   }
 }
 
 function fitActivePages(){
   document.querySelectorAll('.page.active').forEach(p=>{
     const id = p.id.replace('page-','');
-    if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi') fitPage(id);
+    if(id==='tujuan'||id==='teori'||id==='alatbahan'||id==='prosedur'||id==='diskusi'||id==='simulasi') fitPage(id);
   });
 }
 
@@ -1783,10 +1850,15 @@ function buildQuiz(){
   cont.innerHTML='';
   const card=document.createElement('div');
   card.className='q-card';
+  // Di HP/tablet dalam mode landscape, layar sangat pendek — kotak jawaban dibuat lebih
+  // ringkas (bukan 340px) supaya seluruh kartu pertanyaan tetap muat dalam satu layar
+  // tanpa perlu discroll; auto-fit (fitToContainer) lalu menskalakan sisanya.
+  const isMobileLandscape = window.matchMedia('(pointer:coarse) and (orientation:landscape)').matches;
+  const discMinH = isMobileLandscape ? 70 : 340;
   card.innerHTML=`
     <div class="qnum">PERTANYAAN ${currentQ+1} / ${QUESTIONS.length}</div>
     <div class="qtext">${q.text}</div>
-    <textarea class="disc-area" id="essayInput" rows="20" style="flex:1;min-height:340px;height:100%;" placeholder="Tulis jawaban Anda di sini..."></textarea>
+    <textarea class="disc-area" id="essayInput" rows="20" style="flex:1;min-height:${discMinH}px;height:100%;" placeholder="Tulis jawaban Anda di sini..."></textarea>
   `;
   cont.appendChild(card);
   const ta=document.getElementById('essayInput');
