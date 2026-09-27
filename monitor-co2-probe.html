@@ -247,6 +247,56 @@ body{
   .modal-actions .btn-base{ width:100%; justify-content:center; }
 }
 
+/* ---------- HP/TABLET LANDSCAPE (layar pendek, orientasi mendatar) ---------- */
+@media (orientation: landscape) and (max-height: 600px){
+  html, body{ height:auto; }
+  body{ overflow-y:auto; -webkit-overflow-scrolling:touch; font-size:13px; }
+  .app{ height:auto; min-height:100vh; }
+
+  .navbar{
+    flex-direction:row; flex-wrap:wrap; align-items:center; min-height:auto;
+    padding:8px 12px; gap:8px;
+  }
+  .navbar-brand{ justify-content:flex-start; }
+  .brand-icon{ width:32px; height:32px; }
+  .brand-title{ font-size:12.5px; }
+  .brand-sub{ display:none; }
+  .navbar-right{ justify-content:flex-end; gap:6px; }
+  .status-pill{ width:auto; order:0; padding:5px 10px; font-size:10px; }
+  .btn-base{ padding:7px 10px; font-size:11px; }
+  #btnConnectBLE, #btnConnectUSB{ flex:0 0 auto; }
+  #btnCalibrate, #btnPause, #btnReset, #btnExport{ flex:0 0 auto; }
+
+  /* Kunci perbaikan: grafik & sidebar berbagi baris yang sama (seperti desktop),
+     bukan ditumpuk 3-baris (auto/auto/1fr) yang membuat grafik & sidebar collapse. */
+  .dashboard{
+    display:grid;
+    grid-template-columns: 1fr 220px;
+    grid-template-rows: auto auto;
+    padding:10px 12px; gap:10px;
+    overflow:visible;
+  }
+  .stats-row{ grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0,1fr)); gap:8px; }
+  .stat-card{ padding:7px 9px; }
+  .stat-value{ font-size:14px; }
+  .stat-label{ font-size:7.5px; }
+  .stat-sub{ font-size:8.5px; }
+  .stat-debug{ display:none; }
+  .temp-row{ font-size:9.5px; }
+
+  .chart-panel{ grid-column:1; grid-row:2; padding:10px 12px; min-height:220px; }
+  .chart-panel-head h2{ font-size:11px; }
+  .chart-tabs{ margin-bottom:8px; }
+  .chart-tab{ padding:5px 8px; font-size:9.5px; }
+  .chart-wrap{ min-height:180px; height:180px; }
+
+  .sidebar{ grid-column:2; grid-row:2; flex-direction:column; overflow:visible; min-width:0; }
+  .side-panel{ padding:10px 12px; min-width:0; }
+  .hint-box{ font-size:10.5px; }
+  .log-panel{ flex:1; }
+  .log-list{ max-height:140px; overflow-y:auto; }
+}
+
 /* ---------- MODAL KALIBRASI ---------- */
 .modal-overlay{
   display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); z-index:500;
