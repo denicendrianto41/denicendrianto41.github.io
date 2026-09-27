@@ -53,8 +53,11 @@ nav::-webkit-scrollbar{display:none;}
   .nb{height:52px;width:100%;text-align:left;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px;display:flex;align-items:center;gap:10px;border-radius:0;}
   .nb.active{background:linear-gradient(90deg,rgba(245,158,11,.22),transparent);border-left:3px solid var(--accent);padding-left:15px;}
   .nb img{width:24px!important;height:24px!important;margin-right:0!important;}
-  /* Alat & Bahan / Prosedur: di HP gambar ditampilkan penuh lebar (tidak dipotong)
-     dan halaman ini boleh discroll vertikal supaya seluruh gambar tetap terlihat. */
+}
+/* Alat & Bahan / Prosedur di HP/tablet PORTRAIT saja: gambar ditampilkan penuh lebar
+   (tidak dipotong) dan halaman boleh discroll vertikal. Di landscape TIDAK dipakai,
+   supaya layout tetap mengisi penuh layar seperti desktop (tanpa sisa ruang kosong). */
+@media ((max-width:640px) and (orientation:portrait)), ((pointer:coarse) and (orientation:portrait)){
   #page-alatbahan .scroll{overflow-y:auto!important;overflow-x:hidden!important;display:block!important;-webkit-overflow-scrolling:touch;}
   #page-prosedur .scroll{overflow-y:auto!important;overflow-x:hidden!important;display:block!important;-webkit-overflow-scrolling:touch;}
   #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%!important;height:auto!important;object-fit:initial!important;display:block;margin:0 auto;}
@@ -70,6 +73,10 @@ nav::-webkit-scrollbar{display:none;}
   .nb{font-size:11.5px;padding:0 9px;}
   .nb img{width:18px!important;height:18px!important;margin-right:4px!important;}
   nav.open .nb{height:38px;padding:0 14px;}
+  /* Alat & Bahan / Prosedur: kembali ke perilaku default (isi penuh layar tanpa celah),
+     sama seperti tampilan desktop, karena di landscape tinggi layar sudah memadai. */
+  #page-alatbahan .scroll,#page-prosedur .scroll{overflow:hidden!important;display:flex!important;align-items:center;justify-content:center;padding:0;}
+  #page-alatbahan .scroll img,#page-prosedur .scroll img{width:100%!important;height:100%!important;object-fit:cover!important;display:block;}
 }
 .page{display:none;flex:1;min-height:0;overflow:hidden;}
 .page.active{display:flex;flex-direction:column;}
@@ -745,7 +752,7 @@ function startPraktikum(){
       </div>
 
       <!-- Right column: Tahapan Fermentasi -->
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,41,59,0.06);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column;height:100%;" onmouseover="this.style.boxShadow='0 6px 20px rgba(5,150,105,0.11)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(30,41,59,0.06)';this.style.transform=''">
         <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#16a34a,#34d399);border-radius:18px 18px 0 0;"></div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px;">
           <div style="width:30px;height:30px;border-radius:8px;background:#d1fae5;display:flex;align-items:center;justify-content:center;color:#16a34a;flex-shrink:0;">
@@ -801,10 +808,10 @@ function startPraktikum(){
         </p>
 
         <!-- Image -->
-        <div style="margin-top:10px;display:flex;justify-content:center;">
-          <div style="position:relative;cursor:zoom-in;" onclick="openImgZoom(this.querySelector('img'))">
+        <div style="margin-top:10px;display:flex;justify-content:center;align-items:center;flex:1;min-height:0;max-height:230px;overflow:hidden;">
+          <div style="position:relative;cursor:zoom-in;max-height:100%;display:flex;align-items:center;justify-content:center;" onclick="openImgZoom(this.querySelector('img'))">
             <img src="https://denicendrianto41.github.io/elenmeyer_fermentasi.png" alt="Perangkat Fermentasi Alkohol"
-              style="height:clamp(80px,12vw,120px);width:auto;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);background:var(--surf2);padding:7px;transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s;display:block;"
+              style="max-height:230px;height:auto;width:auto;max-width:100%;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);background:var(--surf2);padding:7px;transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s;display:block;"
               onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 20px rgba(37,99,235,0.18)'"
               onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
             <div style="position:absolute;bottom:10px;right:10px;background:rgba(37,99,235,0.75);border-radius:5px;padding:3px 6px;font-size:9px;color:#fff;pointer-events:none;backdrop-filter:blur(3px);">🔍 Zoom</div>
