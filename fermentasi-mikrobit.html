@@ -1187,8 +1187,11 @@ function fitToContainer(container,bottomGap){
   if(isTouch){ minScale = isLandscape ? 0.78 : 0.65; }
   // Batas pembesaran diturunkan (dari 1.8 ke 1.1) agar halaman dengan konten
   // lebih sedikit (mis. Tujuan) tidak "dizoom" berlebihan dibanding halaman
-  // lain seperti Alat & Bahan — ukuran font jadi konsisten antar tab.
-  scale = Math.min(Math.max(scale, minScale), 1.1);
+  // lain seperti Alat & Bahan — ukuran font jadi konsisten antar tab (desktop/non-sentuh).
+  // Khusus HP/tablet dalam orientasi landscape: batas atas dilepas supaya konten selalu
+  // memenuhi tinggi layar sepenuhnya (tidak menyisakan ruang kosong di bagian bawah).
+  const maxScale = (isTouch && isLandscape) ? 999 : 1.1;
+  scale = Math.min(Math.max(scale, minScale), maxScale);
   inner.style.width = (100/scale) + '%';
   inner.style.transform = 'scale(' + scale + ')';
   if(naturalH*scale > availH + 2){
