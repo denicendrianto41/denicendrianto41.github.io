@@ -19,6 +19,7 @@
     --purple:#8B5CF6;
     --green:#16A34A;
     --teal:#0FAE9E;
+    --rose:#E11D74;
     --bg-light:#F4F6FC;
     --white:#FFFFFF;
     --ink:#131C3B;
@@ -210,6 +211,18 @@
     flex-direction:column;
     height:100%;
   }
+  /* --- 6 card dalam satu baris (Ruang Layanan & Laboratorium) --- */
+  .card-grid.six{grid-template-columns:repeat(6, minmax(0, 1fr));gap:12px;}
+  .card-grid.six .card{padding:14px 14px 14px;}
+  .card-grid.six .card-head{gap:9px;margin-bottom:10px;}
+  .card-grid.six .badge{width:32px;height:32px;border-radius:9px;}
+  .card-grid.six .badge svg{width:17px;height:17px;}
+  .card-grid.six .card h3{font-size:13px;}
+  .card-grid.six .card p{font-size:12px;line-height:1.55;margin-bottom:12px;}
+  .card-grid.six .card-btn{font-size:12px;padding:8px 12px;gap:5px;}
+  @media (max-width:1080px){ .card-grid.six{grid-template-columns:repeat(3, minmax(0, 1fr));gap:16px;} }
+  @media (max-width:700px){ .card-grid.six{grid-template-columns:repeat(2, minmax(0, 1fr));} }
+  @media (max-width:460px){ .card-grid.six{grid-template-columns:1fr;} }
   .card.in-view{opacity:1;transform:translateY(0);transition:opacity .55s ease, transform .55s ease;}
   .card:hover{transform:translateY(-6px);box-shadow:var(--shadow-card-hover);border-color:transparent;}
 
@@ -226,6 +239,7 @@
   .badge.purple{background:#F1E9FE;color:var(--purple);}
   .badge.green{background:#E3F7EA;color:var(--green);}
   .badge.teal{background:#DDF6F1;color:var(--teal);}
+  .badge.rose{background:#FDE7F1;color:var(--rose);}
 
   .card h3{font-size:14.5px;font-weight:600;color:var(--ink);margin:0;line-height:1.3;}
   .card p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 16px;flex-grow:1;}
@@ -244,6 +258,7 @@
   .card-btn.purple{background:var(--purple);}
   .card-btn.green{background:var(--green);}
   .card-btn.teal{background:var(--teal);}
+  .card-btn.rose{background:var(--rose);}
 
   /* ---------------- about (dark) ---------------- */
   .about{
@@ -470,7 +485,7 @@
       <p>Akses langsung ke ruang administrasi dan layanan warga sekolah, masing-masing terhubung ke portal resmi ruangnya.</p>
     </div>
 
-    <div class="card-grid">
+    <div class="card-grid six">
       <div class="card">
         <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_kepsek.webp" alt="Ruang Kepala Sekolah" loading="lazy"></div>
         <div class="card-head">
@@ -520,6 +535,16 @@
         <p>Koleksi bacaan dan sumber belajar digital untuk mendukung literasi siswa.</p>
         <a class="card-btn teal" href="https://sites.google.com/sman1batujajar.sch.id/perpus-saba" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
+
+      <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_koperasi.png" alt="Ruang Koperasi" loading="lazy"></div>
+        <div class="card-head">
+          <div class="badge rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0A2.7 2.7 0 0 0 20 9"/><path d="M5 12v8h14v-8"/><path d="M10 20v-5h4v5"/></svg></div>
+          <h3>Ruang Koperasi</h3>
+        </div>
+        <p>Layanan koperasi sekolah untuk kebutuhan perlengkapan belajar dan kewirausahaan warga sekolah.</p>
+        <a class="card-btn rose" href="https://koperasi-saba.blogspot.com/" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
     </div>
   </div>
 </section>
@@ -531,7 +556,7 @@
       <p>Portal masing-masing laboratorium untuk kegiatan praktikum, panduan, dan sumber belajar mata pelajaran terkait.</p>
     </div>
 
-    <div class="card-grid">
+    <div class="card-grid six">
       <div class="card">
         <div class="card-thumb"><img src="https://denicendrianto41.github.io/lab_biologi.webp" alt="Laboratorium Biologi" loading="lazy"></div>
         <div class="card-head">
@@ -580,6 +605,16 @@
         </div>
         <p>Fasilitas dan panduan praktik Informatika serta literasi digital siswa.</p>
         <a class="card-btn orange" href="https://sites.google.com/sman1batujajar.sch.id/labkomputer" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      </div>
+
+      <div class="card">
+        <div class="card-thumb"><img src="https://denicendrianto41.github.io/ruang_seni.png" alt="Laboratorium Seni" loading="lazy"></div>
+        <div class="card-head">
+          <div class="badge rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/></svg></div>
+          <h3>Laboratorium Seni</h3>
+        </div>
+        <p>Ruang berkarya dan apresiasi seni rupa, musik, dan budaya untuk mengasah kreativitas siswa.</p>
+        <a class="card-btn rose" href="https://sites.google.com/sman1batujajar.sch.id/lab-seni/home" target="_blank" rel="noopener">Buka Ruang <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
       </div>
     </div>
   </div>
