@@ -459,7 +459,7 @@ body.is-fullscreen .viewport{padding:0}
 
 <!-- LOADING -->
 <div id="loadScreen">
-  <img class="load-logo" src="logo_kemendikdasmen.png" alt="Logo Kemendikdasmen">
+  <img class="load-logo" src="logo_vlab.png" alt="Logo Kemendikdasmen">
   <div class="load-sub">Laboratorium Maya Biologi</div>
   <div class="load-bar-wrap"><div class="load-bar-slide" id="loadBar"></div></div>
   <div class="load-status" id="loadStatus">Memuat laboratorium maya…</div>
@@ -478,7 +478,7 @@ body.is-fullscreen .viewport{padding:0}
   },step);
 })();
 function startPraktikum(){
-  new Audio('assets/tring.wav').play().catch(()=>{});
+  new Audio('tring.wav').play().catch(()=>{});
   const ls=document.getElementById('loadScreen');
   ls.classList.add('hide');
   setTimeout(()=>{
@@ -493,8 +493,8 @@ function startPraktikum(){
 }
 </script>
 
-<audio id="clickSfx" src="assets/jump.wav" preload="auto"></audio>
-<audio id="blupSfx" src="assets/blup.wav" preload="auto"></audio>
+<audio id="clickSfx" src="jump.wav" preload="auto"></audio>
+<audio id="blupSfx" src="blup.wav" preload="auto"></audio>
 <script>
 document.addEventListener('click',function(e){
   const el=e.target.closest('button,.nb,.btn,select,input[type=range],.adj-btn,.lbl-btn');
@@ -508,7 +508,7 @@ document.addEventListener('click',function(e){
 <header style="justify-content:space-between;">
   <div class="logo">
     <div class="logo-icon">
-      <img src="assets/bio_logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+      <img src="bio_logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;display:block;">
     </div>
     <div>
       <div class="logo-text">Lab Maya Biologi</div>
@@ -522,17 +522,17 @@ document.addEventListener('click',function(e){
   </button>
   <nav id="mainNav" style="margin-left:0;justify-content:flex-end;">
     <button class="nb active" onclick="show('tujuan',this);document.getElementById('mainNav').classList.remove('open')">
-      <img src="assets/tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
+      <img src="tujuan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Tujuan</button>
     <button class="nb" onclick="show('teori',this);document.getElementById('mainNav').classList.remove('open')">
-      <img src="assets/teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
+      <img src="teori.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Teori</button>
     <button class="nb" onclick="show('alatbahan',this);document.getElementById('mainNav').classList.remove('open')">
-      <img src="assets/alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
+      <img src="alat-bahan.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Alat &amp; Bahan</button>
     <button class="nb" onclick="show('prosedur',this);document.getElementById('mainNav').classList.remove('open')">
-      <img src="assets/prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
+      <img src="prosedur.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Prosedur</button>
     <button class="nb" onclick="show('simulasi',this);document.getElementById('mainNav').classList.remove('open')">
-      <img src="assets/simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
+      <img src="simulasi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Simulasi</button>
     <button class="nb" onclick="show('evaluasi',this);document.getElementById('mainNav').classList.remove('open')">
-      <img src="assets/diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
+      <img src="diskusi.png" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-right:6px;">Diskusi</button>
   </nav>
 </header>
 
@@ -848,7 +848,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-alatbahan" class="page">
   <div class="scroll">
-    <img src="assets/mejalab_ragi.webp" alt="Alat dan Bahan Percobaan Reproduksi Sel Ragi">
+    <img src="mejalab_ragi.webp" alt="Alat dan Bahan Percobaan Reproduksi Sel Ragi">
   </div>
 </div>
 
@@ -857,7 +857,7 @@ document.addEventListener('click',function(e){
 ══════════════════════════════════════════ -->
 <div id="page-prosedur" class="page">
   <div class="scroll">
-    <img src="assets/prosedur_ragi.webp" alt="Prosedur Percobaan Reproduksi Sel Ragi">
+    <img src="prosedur_ragi.webp" alt="Prosedur Percobaan Reproduksi Sel Ragi">
   </div>
 </div>
 
@@ -1324,17 +1324,17 @@ button.stepsToggleBtn{display:none}
             &lt;div class=&quot;target droptarget-micro&quot; id=&quot;targetMicro&quot;&gt;&lt;/div&gt;
 
             &lt;div class=&quot;object beaker&quot; id=&quot;beaker&quot;&gt;
-              &lt;img src=&quot;assets/beker_glass.png&quot; alt=&quot;beker glass&quot; style=&quot;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;&quot;&gt;
+              &lt;img src=&quot;beker_glass.png&quot; alt=&quot;beker glass&quot; style=&quot;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;&quot;&gt;
               &lt;div class=&quot;liquid&quot; id=&quot;liquid&quot; style=&quot;position:absolute;left:25px;right:25px;bottom:10px;height:31%;background:rgba(215,245,255,.35);border-radius:0 0 14px 14px;transition:.35s;pointer-events:none;&quot;&gt;&lt;/div&gt;&lt;div class=&quot;swirl&quot;&gt;&lt;/div&gt;&lt;div class=&quot;beaker-bubbles&quot; id=&quot;beakerBubbles&quot;&gt;&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;note&quot; style=&quot;left:73px;top:270px;writing-mode:horizontal-tb;&quot;&gt;Beker berisi air hangat&lt;/div&gt;
 
             &lt;div class=&quot;object powder&quot; id=&quot;sugar&quot; style=&quot;width:146px;height:92px;&quot;&gt;
-              &lt;img src=&quot;assets/gula.png&quot; alt=&quot;Gula&quot; style=&quot;width:100%;height:calc(100% - 30px);object-fit:contain;display:block;pointer-events:none;&quot;&gt;
+              &lt;img src=&quot;gula.png&quot; alt=&quot;Gula&quot; style=&quot;width:100%;height:calc(100% - 30px);object-fit:contain;display:block;pointer-events:none;&quot;&gt;
               &lt;div class=&quot;tag&quot; style=&quot;position:relative;bottom:auto;left:auto;right:auto;&quot;&gt;Gula&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;object powder&quot; id=&quot;yeast&quot; style=&quot;width:146px;height:92px;&quot;&gt;
-              &lt;img src=&quot;assets/ragi.png&quot; alt=&quot;Ragi&quot; style=&quot;width:100%;height:calc(100% - 30px);object-fit:contain;display:block;pointer-events:none;&quot;&gt;
+              &lt;img src=&quot;ragi.png&quot; alt=&quot;Ragi&quot; style=&quot;width:100%;height:calc(100% - 30px);object-fit:contain;display:block;pointer-events:none;&quot;&gt;
               &lt;div class=&quot;tag&quot; style=&quot;position:relative;bottom:auto;left:auto;right:auto;&quot;&gt;Ragi&lt;/div&gt;
             &lt;/div&gt;
 
@@ -1343,11 +1343,11 @@ button.stepsToggleBtn{display:none}
             &lt;/div&gt;
             &lt;div class=&quot;object rod&quot; id=&quot;rod&quot;&gt;&lt;/div&gt;
             &lt;div class=&quot;object dropper&quot; id=&quot;dropper&quot;&gt;
-              &lt;img src=&quot;assets/pipet2.png&quot; alt=&quot;pipet&quot; style=&quot;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;&quot;&gt;&lt;div class=&quot;drop&quot;&gt;&lt;/div&gt;
+              &lt;img src=&quot;pipet2.png&quot; alt=&quot;pipet&quot; style=&quot;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;&quot;&gt;&lt;div class=&quot;drop&quot;&gt;&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;object slide&quot; id=&quot;slide&quot;&gt;&lt;div class=&quot;sample&quot;&gt;&lt;/div&gt;&lt;/div&gt;
             &lt;div class=&quot;object coverslip&quot; id=&quot;coverslip&quot;&gt;&lt;/div&gt;
-            &lt;div class=&quot;object microscope&quot; id=&quot;microscope&quot;&gt;&lt;img src=&quot;assets/mikroskop.png&quot; alt=&quot;mikroskop&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;object microscope&quot; id=&quot;microscope&quot;&gt;&lt;img src=&quot;mikroskop.png&quot; alt=&quot;mikroskop&quot;&gt;&lt;/div&gt;
             &lt;div class=&quot;clock&quot; id=&quot;clockEl&quot;&gt;&lt;div class=&quot;clock-face&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(0deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(30deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(60deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(90deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(120deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(150deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(180deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(210deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(240deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick major&quot; style=&quot;transform:rotate(270deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(300deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-tick&quot; style=&quot;transform:rotate(330deg)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-hand-hour&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-hand-minute&quot;&gt;&lt;/div&gt;&lt;div class=&quot;clock-hand-second&quot;&gt;&lt;/div&gt;&lt;div class=&quot;dot&quot;&gt;&lt;/div&gt;&lt;/div&gt;
             &lt;div class=&quot;message-balloon&quot; id=&quot;messageBalloon&quot;&gt;Mulai dengan menyeret spatula ke bahan gula.&lt;/div&gt;
             &lt;div class=&quot;clock-label&quot; id=&quot;clockLabel&quot;&gt;⏱ 1 jam inkubasi&lt;/div&gt;
@@ -2067,7 +2067,7 @@ function openMicroscope() {
           else{b.style.display=&#x27;none&#x27;;b.style.animation=&#x27;&#x27;;}
           this.style.transform=showing?&#x27;&#x27;:&#x27;scale(1.18)&#x27;;
           var self=this;setTimeout(function(){self.style.transform=&#x27;&#x27;;},200);
-          new Audio(&#x27;assets/tring.wav&#x27;).play().catch(function(){});
+          new Audio(&#x27;tring.wav&#x27;).play().catch(function(){});
         &quot; style=&quot;cursor:pointer;transition:transform .18s;&quot; title=&quot;Klik untuk info&quot;&gt;i&lt;/div&gt;
         &lt;div class=&quot;scope-bubble&quot; id=&quot;scopeBubble&quot; style=&quot;display:none&quot;&gt;Mulai dari lensa objektif 4× dan fokus kasar, lalu naikkan ke 40× (400×) atau 100× (1000×, dengan minyak imersi). Pada 40× dan 100× gunakan fokus halus saja. Kecilkan diafragma sedikit agar kontras. Ragi berkembang biak secara aseksual melalui pertunasan.&lt;/div&gt;
         &lt;div class=&quot;scope-shot&quot; id=&quot;scopeShot&quot; style=&quot;filter:${c.filter}&quot;&gt;
@@ -2088,7 +2088,7 @@ function afterScopeChange() {
     if (state.step === 9) {
       state.step = 10;
       renderSteps();
-      new Audio(&#x27;assets/tring.wav&#x27;).play().catch(()=&gt;{});
+      new Audio(&#x27;tring.wav&#x27;).play().catch(()=&gt;{});
     }
     setMessage(&#x27;✅ Gambar sudah jelas! Klik Inferensi untuk penjelasan, lalu lanjut ke aktivitas label.&#x27;);
   }
@@ -2352,7 +2352,7 @@ window.checkLabels = function() {
     state.labelDone = true;
     els.labelBtn.classList.add(&#x27;hidden&#x27;);
     setMessage(&#x27;Simulasi selesai! Semua label tepat. 🎉&#x27;);
-    new Audio(&#x27;assets/misi-selesai.wav&#x27;).play().catch(()=&gt;{});
+    new Audio(&#x27;misi-selesai.wav&#x27;).play().catch(()=&gt;{});
     setTimeout(() =&gt; {
       closeModal();
       // Festive overlay inside iframe
@@ -2401,7 +2401,7 @@ window.checkLabels = function() {
   } else {
     fb.innerHTML = `&lt;strong style=&quot;color:#dc2626;&quot;&gt;❌ Benar ${ok} dari ${zones.length}.&lt;/strong&gt; Periksa kembali label yang belum tepat.`;
     fb.style.background=&#x27;#fff1f2&#x27;;fb.style.border=&#x27;1px solid #fecdd3&#x27;;fb.style.borderRadius=&#x27;8px&#x27;;fb.style.padding=&#x27;8px 12px&#x27;;
-    new Audio(&#x27;assets/gameover.wav&#x27;).play().catch(()=&gt;{});
+    new Audio(&#x27;gameover.wav&#x27;).play().catch(()=&gt;{});
     // Shake the diagram area
     const diag = els.modalContent.querySelector(&#x27;.diagram-grid&#x27;);
     if(diag){
@@ -2764,8 +2764,8 @@ function abHighlight(on){
   });
 }
 /* ── Audio feedback ── */
-const _sfxBenar = new Audio('assets/benar.wav');
-const _sfxSalah = new Audio('assets/salah.wav');
+const _sfxBenar = new Audio('benar.wav');
+const _sfxSalah = new Audio('salah.wav');
 function _playSfx(sfx){ sfx.currentTime=0; sfx.play().catch(()=>{}); }
 
 function abShowBenar(zone){
@@ -2820,7 +2820,7 @@ function abCheckComplete(){
   if(a>=CORRECT_ALAT.size&&b>=CORRECT_BAHAN.size)setTimeout(abShowSelamat,400);
 }
 function abShowSelamat(){
-  new Audio('assets/tring.wav').play().catch(()=>{});
+  new Audio('tring.wav').play().catch(()=>{});
   const ov=document.createElement('div');
   ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease;';
   const box=document.createElement('div');
@@ -2881,8 +2881,8 @@ const YEAST_B64 = {
 };
 Object.entries(YEAST_B64).forEach(([k,v])=>{const img=new Image();img.src=v;YEAST_IMGS[k]=img;});
 // Load ragi and gula images for simulation
-const _ragiImg=new Image();_ragiImg.crossOrigin='anonymous';_ragiImg.src='assets/ragi.png';_ragiImg.onload=()=>{if(typeof drawSim==='function')drawSim();};_ragiImg.onerror=()=>{const _r2=new Image();_r2.src='assets/ragi.png';_r2.onload=()=>{YEAST_IMGS['ragi_bowl']=_r2;if(typeof drawSim==='function')drawSim();};};YEAST_IMGS['ragi_bowl']=_ragiImg;
-const _gulaImg=new Image();_gulaImg.crossOrigin='anonymous';_gulaImg.src='assets/gula.png';_gulaImg.onload=()=>{if(typeof drawSim==='function')drawSim();};_gulaImg.onerror=()=>{const _g2=new Image();_g2.src='assets/gula.png';_g2.onload=()=>{YEAST_IMGS['gula_bowl']=_g2;if(typeof drawSim==='function')drawSim();};};YEAST_IMGS['gula_bowl']=_gulaImg;
+const _ragiImg=new Image();_ragiImg.crossOrigin='anonymous';_ragiImg.src='ragi.png';_ragiImg.onload=()=>{if(typeof drawSim==='function')drawSim();};_ragiImg.onerror=()=>{const _r2=new Image();_r2.src='ragi.png';_r2.onload=()=>{YEAST_IMGS['ragi_bowl']=_r2;if(typeof drawSim==='function')drawSim();};};YEAST_IMGS['ragi_bowl']=_ragiImg;
+const _gulaImg=new Image();_gulaImg.crossOrigin='anonymous';_gulaImg.src='gula.png';_gulaImg.onload=()=>{if(typeof drawSim==='function')drawSim();};_gulaImg.onerror=()=>{const _g2=new Image();_g2.src='gula.png';_g2.onload=()=>{YEAST_IMGS['gula_bowl']=_g2;if(typeof drawSim==='function')drawSim();};};YEAST_IMGS['gula_bowl']=_gulaImg;
 
 // SIM STATE
 // Steps: 0=initial, 1=yeast_added, 2=sugar_added, 3=stirred, 4=dropper_filled, 5=slide_ready, 6=covered, 7=at_microscope, 8=microscope_view
@@ -3201,7 +3201,7 @@ function checkSimDrop(key,cx,cy){
   
   // hit test on target
   if(mx>=tObj.x-20&&mx<=tObj.x+tObj.w+20&&my>=tObj.y-20&&my<=tObj.y+tObj.h+20){
-    new Audio('assets/tring.wav').play().catch(()=>{});
+    new Audio('tring.wav').play().catch(()=>{});
     drop.action();
   } else {
     // reset object position
@@ -3253,7 +3253,7 @@ function showMicroscope(){
 
 let scopeAdjCount=0;
 function adjustScope(type,dir){
-  new Audio('assets/jump.wav').play().catch(()=>{});
+  new Audio('jump.wav').play().catch(()=>{});
   if(type==='coarse'){
     coarseAdj+=typeof dir==='number'?dir:0;
   } else if(type==='fine'){
@@ -3288,7 +3288,7 @@ function updateScopeDisplay(){
 }
 
 function toggleInfo(){
-  new Audio('assets/tring.wav').play().catch(()=>{});
+  new Audio('tring.wav').play().catch(()=>{});
   document.getElementById('infoPopup').classList.toggle('on');
 }
 
@@ -3333,7 +3333,7 @@ function fillSlot(slotG){
   const textEl=document.getElementById(stId);
   const rect=slotG.querySelector('rect');
   if(selectedLbl===correct){
-    new Audio('assets/tring.wav').play().catch(()=>{});
+    new Audio('tring.wav').play().catch(()=>{});
     if(textEl){textEl.textContent=selectedLbl;textEl.setAttribute('fill','#065f46');}
     if(rect){
       rect.setAttribute('fill','#dcfce7');rect.setAttribute('stroke','#16a34a');
@@ -3347,7 +3347,7 @@ function fillSlot(slotG){
     document.getElementById('labelScoreDisplay').textContent=lblCorrect+' / 4';
     if(lblCorrect===4){
       // Play mission complete sound
-      new Audio('assets/misi-selesai.wav').play().catch(()=>{});
+      new Audio('misi-selesai.wav').play().catch(()=>{});
       setTimeout(()=>{
         const sc=document.getElementById('scoreOv');
         document.getElementById('scoreBig').textContent='100';
@@ -3365,7 +3365,7 @@ function fillSlot(slotG){
     fb.style.borderRadius='8px';fb.style.padding='6px 10px';
     fb.textContent='✅ Benar! '+correct+' sudah ditempatkan.';
   } else {
-    new Audio('assets/gameover.wav').play().catch(()=>{});
+    new Audio('gameover.wav').play().catch(()=>{});
     if(rect){
       rect.setAttribute('fill','#fee2e2');rect.setAttribute('stroke','#f87171');
       setTimeout(()=>{rect.setAttribute('fill','white');rect.setAttribute('stroke','#c5cfe0');},700);
