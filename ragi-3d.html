@@ -2,7 +2,57 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0c1a3a">
+    <script>
+    // Deteksi perangkat layar sentuh (HP/tablet) & paksa tampilan "desktop" pada orientasi landscape
+    (function () {
+        var touch = (navigator.maxTouchPoints > 0) && window.matchMedia('(pointer: coarse)').matches;
+        window.IS_TOUCH = touch;
+        if (!touch) return;
+        document.documentElement.classList.add('is-touch');
+        var meta = document.querySelector('meta[name=viewport]');
+        function designWidth() {
+            var a = Math.max(screen.width, screen.height), b = Math.min(screen.width, screen.height);
+            // Lebar desain minimal 1280px (tata letak desktop), tinggi desain minimal ~620px
+            return Math.max(1280, Math.ceil(620 * a / b));
+        }
+        function applyViewport() {
+            meta.setAttribute('content', 'width=' + designWidth() + ', user-scalable=no, viewport-fit=cover');
+        }
+        applyViewport();
+        function refresh() {
+            meta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+            setTimeout(function () {
+                applyViewport();
+                setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 120);
+            }, 60);
+        }
+        window.addEventListener('orientationchange', function () { setTimeout(refresh, 200); });
+        document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+        document.addEventListener('dblclick', function (e) { e.preventDefault(); });
+
+        // Coba layar penuh + kunci landscape (Android/Chrome). iOS Safari tidak mendukung kunci orientasi.
+        window.lockLandscape = function () {
+            try {
+                var el = document.documentElement;
+                var req = el.requestFullscreen || el.webkitRequestFullscreen;
+                var p = (req && !document.fullscreenElement && !document.webkitFullscreenElement) ? req.call(el) : null;
+                var doLock = function () {
+                    try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) {}
+                };
+                if (p && p.then) { p.then(doLock).catch(doLock); } else { doLock(); }
+            } catch (e) {}
+        };
+        var firstTap = function () {
+            document.removeEventListener('pointerup', firstTap, true);
+            window.lockLandscape();
+        };
+        document.addEventListener('pointerup', firstTap, true);
+    })();
+    </script>
     <title>Lab Maya Biologi 3D — Reproduksi Sel Ragi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -290,6 +340,62 @@
             scrollbar-width: none;
         }
 
+        /* ===== Perangkat sentuh: stabil, tanpa zoom/scroll tak sengaja ===== */
+        html.is-touch, html.is-touch body {
+            overscroll-behavior: none;
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        html.is-touch button,
+        html.is-touch [onclick],
+        html.is-touch input[type=range],
+        html.is-touch select {
+            touch-action: manipulation;
+        }
+        html.is-touch input[type=range] { height: 28px; }
+
+        /* ===== Layar "Putar ke Landscape" (hanya HP/tablet posisi portrait) ===== */
+        #rotateOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #0c1a3a 70%);
+            color: #fff;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 8vw;
+            font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+        @media (orientation: portrait) {
+            html.is-touch #rotateOverlay { display: flex; }
+        }
+        #rotateOverlay .ro-phone {
+            width: 16vw; height: 26vw;
+            border: 1.2vw solid #f59e0b;
+            border-radius: 3vw;
+            position: relative;
+            animation: roTurn 2.4s ease-in-out infinite;
+            margin-bottom: 7vw;
+        }
+        #rotateOverlay .ro-phone::after {
+            content: ''; position: absolute; left: 50%; bottom: 1.6vw;
+            width: 4vw; height: 0.8vw; margin-left: -2vw; border-radius: 1vw; background: #f59e0b;
+        }
+        @keyframes roTurn {
+            0%, 20% { transform: rotate(0deg); }
+            60%, 100% { transform: rotate(-90deg); }
+        }
+        #rotateOverlay h2 { font-size: 5.4vw; font-weight: 900; margin: 0 0 2.4vw; }
+        #rotateOverlay p { font-size: 3.2vw; line-height: 1.55; margin: 0; color: rgba(255,255,255,.78); }
+        #rotateOverlay button {
+            margin-top: 6vw; padding: 2.6vw 6vw; font-size: 3.4vw; font-weight: 800;
+            border-radius: 99px; border: 0; background: #f59e0b; color: #0c1a3a;
+        }
+
         @media (max-width: 768px) {
             .nav-btn {
                 padding: 6px 10px;
@@ -307,6 +413,14 @@
     </style>
 </head>
 <body class="h-[100dvh] w-screen flex flex-col bg-[#f1f5f9] text-[#0f172a] overflow-hidden select-none">
+
+    <!-- ================= PAKSA LANDSCAPE (HP / TABLET) ================= -->
+    <div id="rotateOverlay" role="alert">
+        <div class="ro-phone"></div>
+        <h2>Putar Perangkat ke Landscape</h2>
+        <p>Virtual lab ini hanya dapat digunakan dengan layar mendatar (landscape) agar seluruh fitur tampil seperti di komputer.<br>Matikan kunci rotasi layar bila layar tidak berputar.</p>
+        <button onclick="window.lockLandscape && window.lockLandscape()">Layar Penuh &amp; Kunci Landscape</button>
+    </div>
 
     <!-- ================= HEADER BAR (GAYA SI IBi - RESPONSIF MOBILE & DESKTOP) ================= -->
     <header class="siibi-navbar py-2 px-3 md:px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between z-30 shrink-0 gap-2">
@@ -1329,8 +1443,8 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
             renderer.setSize(w, h);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-            renderer.shadowMap.enabled = true;
+            renderer.setPixelRatio(window.IS_TOUCH ? 1 : Math.min(window.devicePixelRatio, 1.5));
+            renderer.shadowMap.enabled = !window.IS_TOUCH;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
@@ -2392,8 +2506,8 @@
 
             yRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
             yRenderer.setSize(w, h);
-            yRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-            yRenderer.shadowMap.enabled = true;
+            yRenderer.setPixelRatio(window.IS_TOUCH ? 1 : Math.min(window.devicePixelRatio, 1.5));
+            yRenderer.shadowMap.enabled = !window.IS_TOUCH;
             container.innerHTML = '';
             container.appendChild(yRenderer.domElement);
 
@@ -2604,6 +2718,7 @@
             dom.addEventListener('pointerdown', onYeast3DPointerDown);
             window.addEventListener('pointermove', onYeast3DPointerMove);
             window.addEventListener('pointerup', onYeast3DPointerUp);
+            window.addEventListener('pointercancel', onYeast3DPointerUp);
             dom.addEventListener('wheel', onYeast3DWheel, { passive: false });
             window.addEventListener('resize', onYeast3DResize);
         }
@@ -2626,21 +2741,21 @@
             // Material Kaca Fisik Realistis (MeshPhysicalMaterial PBR Clearcoat & Transmisi Kaca Borosilikat)
             const matGlass = new THREE.MeshPhysicalMaterial({
                 color: 0xffffff,
-                transmission: 0.94,
-                opacity: 1.0,
+                transmission: window.IS_TOUCH ? 0 : 0.94,
+                opacity: window.IS_TOUCH ? 0.32 : 1.0,
                 transparent: true,
                 roughness: 0.04,
                 metalness: 0.08,
                 ior: 1.52,
-                clearcoat: 1.0,
+                clearcoat: window.IS_TOUCH ? 0 : 1.0,
                 clearcoatRoughness: 0.04,
                 reflectivity: 0.9,
                 depthWrite: false
             });
             const matSteel = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.2, metalness: 0.85 });
             const matWhite = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
-            // Ragi dengan rona kekuningan alami (kering aktif)
-            const matYeast = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.82 });
+            // Ragi kering berwarna coklat muda
+            const matYeast = new THREE.MeshStandardMaterial({ color: 0xc19a6b, roughness: 0.85 });
             const matDark = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 });
 
             // Tekstur Skala Pengukuran Garis Vertikal (ml) untuk Gelas Beker
@@ -2710,7 +2825,7 @@
             bBottom.position.y = 0.06;
             yBeakerLiquidMesh = new THREE.Mesh(
                 new THREE.CylinderGeometry(1.36, 1.36, 1.9, 36),
-                new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transmission: 0.85, opacity: 0.9, roughness: 0.08, transparent: true, depthWrite: false })
+                new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transmission: window.IS_TOUCH ? 0 : 0.85, opacity: window.IS_TOUCH ? 0.62 : 0.9, roughness: 0.08, transparent: true, depthWrite: false })
             );
             yBeakerLiquidMesh.position.y = 1.0;
             beakerGrp.add(bWall, bScaleCylinder, bBottom, yBeakerLiquidMesh);
@@ -3115,6 +3230,7 @@
 
         function onYeast3DPointerDown(e) {
             if (appMode !== 'yeast') return;
+            if (e.isPrimary === false) return; // abaikan jari kedua agar drag tidak kacau
             const rect = yRenderer.domElement.getBoundingClientRect();
             yMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
             yMouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -3146,12 +3262,33 @@
                 }
             }
 
+            // Bantuan sentuh: jika jari mengenai area dekat alat (hitbox kecil terlewat), alat terdekat otomatis terambil
+            if (window.IS_TOUCH || e.pointerType === 'touch') {
+                const pt = new THREE.Vector3();
+                const assistPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.6);
+                if (yRaycaster.ray.intersectPlane(assistPlane, pt)) {
+                    let best = null, bestD = 1.9;
+                    ['spatula', 'rod', 'dropper', 'coverslip', 'slide'].forEach(k => {
+                        const o = yObjects3D[k];
+                        if (!o || !o.visible) return;
+                        const d = distXZ(o.position, pt);
+                        if (d < bestD) { bestD = d; best = k; }
+                    });
+                    if (best) {
+                        yDraggedKey = best;
+                        playClickSound(540);
+                        return;
+                    }
+                }
+            }
+
             yIsOrbiting = true;
             yPrevPointer = { x: e.clientX, y: e.clientY };
         }
 
         function onYeast3DPointerMove(e) {
             if (appMode !== 'yeast') return;
+            if (e.isPrimary === false) return;
             if (yDraggedKey && yObjects3D[yDraggedKey]) {
                 const rect = yRenderer.domElement.getBoundingClientRect();
                 yMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -3187,6 +3324,7 @@
         }
 
         function onYeast3DPointerUp(e) {
+            if (e.isPrimary === false) return;
             try { if (yRenderer && yRenderer.domElement) yRenderer.domElement.releasePointerCapture(e.pointerId); } catch (err) {}
             if (yDraggedKey) {
                 handleYeast3DDrop(yDraggedKey);
@@ -3248,7 +3386,7 @@
                     setYeastBalloon("Gula larut di air hangat. Sekarang seret Spatula ke Cawan Ragi.");
                 } else if (yState.step === 2 && distXZ(obj.position, yHome3D.yeast) < 3.4) {
                     yState.carry = 'yeast';
-                    ySpatulaPowderMesh.material.color.setHex(0xfacc15);
+                    ySpatulaPowderMesh.material.color.setHex(0xc19a6b);
                     ySpatulaPowderMesh.visible = true;
                     yState.step = 3;
                     playClickSound(700);
@@ -3256,7 +3394,7 @@
                 } else if (yState.step === 3 && yState.carry === 'yeast' && distXZ(obj.position, yHome3D.beaker) < 3.6) {
                     yState.carry = null;
                     ySpatulaPowderMesh.visible = false;
-                    spawnYeastParticles(yHome3D.beaker, 0xfacc15);
+                    spawnYeastParticles(yHome3D.beaker, 0xc19a6b);
                     yState.step = 4;
                     playClickSound(760);
                     setYeastBalloon("Ragi dimasukkan. Seret Batang Pengaduk ke Beker untuk mengaduk campuran.");
@@ -3326,14 +3464,14 @@
                             const prepGroup = new THREE.Group();
                             prepGroup.userData.isYeastPrep = true;
 
-                            const slideMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.94, transparent: true, opacity: 1, roughness: 0.05, ior: 1.52 });
+                            const slideMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: window.IS_TOUCH ? 0 : 0.94, transparent: true, opacity: window.IS_TOUCH ? 0.35 : 1, roughness: 0.05, ior: 1.52 });
                             const baseSlide = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.14, 2.0), slideMat);
 
                             const dropMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3, transparent: true, opacity: 0.85 });
                             const droplet = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.16, 24), dropMat);
                             droplet.position.set(0, 0.08, 0);
 
-                            const coverMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.95, transparent: true, opacity: 0.9, roughness: 0.05, ior: 1.52 });
+                            const coverMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: window.IS_TOUCH ? 0 : 0.95, transparent: true, opacity: window.IS_TOUCH ? 0.35 : 0.9, roughness: 0.05, ior: 1.52 });
                             const cover = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.08, 1.4), coverMat);
                             cover.position.set(0, 0.16, 0);
 
@@ -3385,13 +3523,13 @@
                 setYeastBalloon("Gula masuk ke Beker. Selanjutnya ambil sampel Ragi dengan Spatula.");
             } else if (s === 2) {
                 yState.carry = 'yeast';
-                if (ySpatulaPowderMesh) { ySpatulaPowderMesh.material.color.setHex(0xfacc15); ySpatulaPowderMesh.visible = true; }
+                if (ySpatulaPowderMesh) { ySpatulaPowderMesh.material.color.setHex(0xc19a6b); ySpatulaPowderMesh.visible = true; }
                 yState.step = 3;
                 setYeastBalloon("Ragi diambil. Masukkan ke dalam Beker Air Hangat.");
             } else if (s === 3) {
                 yState.carry = null;
                 if (ySpatulaPowderMesh) ySpatulaPowderMesh.visible = false;
-                spawnYeastParticles(yHome3D.beaker, 0xfacc15);
+                spawnYeastParticles(yHome3D.beaker, 0xc19a6b);
                 yState.step = 4;
                 setYeastBalloon("Ragi masuk ke Beker. Aduk dengan Batang Pengaduk.");
             } else if (s === 4) {
@@ -3435,14 +3573,14 @@
                         const prepGroup = new THREE.Group();
                         prepGroup.userData.isYeastPrep = true;
 
-                        const slideMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.94, transparent: true, opacity: 1, roughness: 0.05, ior: 1.52 });
+                        const slideMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: window.IS_TOUCH ? 0 : 0.94, transparent: true, opacity: window.IS_TOUCH ? 0.35 : 1, roughness: 0.05, ior: 1.52 });
                         const baseSlide = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.14, 2.0), slideMat);
 
                         const dropMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3, transparent: true, opacity: 0.85 });
                         const droplet = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.16, 24), dropMat);
                         droplet.position.set(0, 0.08, 0);
 
-                        const coverMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.95, transparent: true, opacity: 0.9, roughness: 0.05, ior: 1.52 });
+                        const coverMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: window.IS_TOUCH ? 0 : 0.95, transparent: true, opacity: window.IS_TOUCH ? 0.35 : 0.9, roughness: 0.05, ior: 1.52 });
                         const cover = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.08, 1.4), coverMat);
                         cover.position.set(0, 0.16, 0);
 
@@ -3818,7 +3956,7 @@
 
             toolInspRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             toolInspRenderer.setSize(w, h);
-            toolInspRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            toolInspRenderer.setPixelRatio(window.IS_TOUCH ? 1 : Math.min(window.devicePixelRatio, 1.5));
             vp.innerHTML = '';
             vp.appendChild(toolInspRenderer.domElement);
 
@@ -3886,10 +4024,10 @@
 
             toolInspTargetSpherical = { radius: 5.2, theta: 0.45, phi: 1.18 };
 
-            const matGlass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.94, opacity: 1.0, transparent: true, roughness: 0.04, metalness: 0.08, ior: 1.52, clearcoat: 1.0, clearcoatRoughness: 0.04 });
+            const matGlass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: window.IS_TOUCH ? 0 : 0.94, opacity: window.IS_TOUCH ? 0.32 : 1.0, transparent: true, roughness: 0.04, metalness: 0.08, ior: 1.52, clearcoat: window.IS_TOUCH ? 0 : 1.0, clearcoatRoughness: 0.04 });
             const matSteel = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.2, metalness: 0.88 });
             const matWhite = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
-            const matYeast = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.75 });
+            const matYeast = new THREE.MeshStandardMaterial({ color: 0xc19a6b, roughness: 0.85 });
 
             if (toolId === 'beaker') {
                 const bWall = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.25, 2.7, 36, 1, true), matGlass);
@@ -4300,8 +4438,8 @@
 
             yCellRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             yCellRenderer.setSize(w, h);
-            yCellRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            yCellRenderer.shadowMap.enabled = true;
+            yCellRenderer.setPixelRatio(window.IS_TOUCH ? 1.25 : Math.min(window.devicePixelRatio, 2));
+            yCellRenderer.shadowMap.enabled = !window.IS_TOUCH;
             container.innerHTML = '';
             container.appendChild(yCellRenderer.domElement);
 
