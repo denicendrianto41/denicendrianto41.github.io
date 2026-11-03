@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0c1a3a">
@@ -13,45 +13,49 @@
         window.IS_TOUCH = touch;
         if (!touch) return;
         document.documentElement.classList.add('is-touch');
-        var meta = document.querySelector('meta[name=viewport]');
-        function designWidth() {
-            var a = Math.max(screen.width, screen.height), b = Math.min(screen.width, screen.height);
-            // Lebar desain minimal 1280px (tata letak desktop), tinggi desain minimal ~620px
-            return Math.max(1280, Math.ceil(620 * a / b));
-        }
-        function applyViewport() {
-            meta.setAttribute('content', 'width=' + designWidth() + ', user-scalable=no, viewport-fit=cover');
-        }
-        applyViewport();
-
-        // Pastikan lebar tata letak tetap "desktop" (tidak jatuh ke tampilan mobile)
-        function enforce() {
-            applyViewport();
-            var dw = designWidth();
-            if (document.documentElement.clientWidth < dw * 0.9) {
-                // paksa peramban menghitung ulang viewport tanpa pernah memakai device-width
-                meta.setAttribute('content', 'width=' + (dw + 1) + ', user-scalable=no, viewport-fit=cover');
-                setTimeout(applyViewport, 50);
+        // ===== PANGGUNG DESKTOP =====
+        // Seluruh aplikasi digambar pada kanvas desktop (min. 1280 px) lalu diskalakan agar pas di layar.
+        // Cara ini tidak bergantung pada <meta viewport>, sehingga tampilan tetap sama dengan desktop
+        // baik biasa maupun layar penuh (peramban HP sering mengabaikan meta viewport saat fullscreen).
+        var lastKey = '', busy = false;
+        function layoutStage() {
+            var b = document.body;
+            if (!b) return;
+            var iw = window.innerWidth, ih = window.innerHeight;
+            if (!iw || !ih) return;
+            var aspect = iw / ih;
+            var dw = Math.max(1280, Math.ceil(620 * aspect));   // lebar desain >= 1280, tinggi desain >= ~620
+            var dh = Math.round(dw / aspect);
+            var sc = iw / dw;
+            window.STAGE_SCALE = sc;
+            var root = document.documentElement.style;
+            root.setProperty('--stage-w', dw + 'px');
+            root.setProperty('--stage-h', dh + 'px');
+            b.style.width = dw + 'px';
+            b.style.height = dh + 'px';
+            b.style.transform = 'scale(' + sc + ')';
+            var key = dw + 'x' + dh + '@' + sc.toFixed(4);
+            if (key !== lastKey) {
+                lastKey = key;
+                busy = true;
+                try { window.dispatchEvent(new Event('resize')); } finally { busy = false; }
             }
         }
         function settle() {
-            [0, 150, 500, 1200].forEach(function (t) {
-                setTimeout(function () {
-                    enforce();
-                    if (t > 0) window.dispatchEvent(new Event('resize'));
-                }, t);
-            });
+            [0, 100, 300, 700, 1500].forEach(function (t) { setTimeout(layoutStage, t); });
         }
-        var rzTimer = null;
-        window.addEventListener('resize', function () {
-            clearTimeout(rzTimer);
-            rzTimer = setTimeout(function () {
-                if (document.documentElement.clientWidth < designWidth() * 0.9) enforce();
-            }, 120);
-        });
+        window.addEventListener('resize', function () { if (!busy) layoutStage(); });
         window.addEventListener('orientationchange', settle);
         document.addEventListener('fullscreenchange', settle);
         document.addEventListener('webkitfullscreenchange', settle);
+        if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { if (!busy) layoutStage(); });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Layar "putar ke landscape" harus di luar panggung yang diskalakan
+            var ro = document.getElementById('rotateOverlay');
+            if (ro) document.documentElement.appendChild(ro);
+            layoutStage();
+            settle();
+        });
         document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
         document.addEventListener('dblclick', function (e) { e.preventDefault(); });
 
@@ -396,6 +400,9 @@
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
+        html.is-touch { width: 100%; height: 100%; overflow: hidden; background: #0c1a3a; }
+        html.is-touch body { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+        html.is-touch #yModalContent { max-height: calc(var(--stage-h, 100vh) * 0.92); }
         html.is-touch button,
         html.is-touch [onclick],
         html.is-touch input[type=range],
@@ -446,12 +453,12 @@
         }
 
         @media (max-width: 768px) {
-            .nav-btn {
+            html:not(.is-touch) .nav-btn {
                 padding: 6px 10px;
                 font-size: 11px;
                 gap: 5px;
             }
-            .pin-marker {
+            html:not(.is-touch) .pin-marker {
                 width: 30px;
                 height: 30px;
                 margin-left: -15px;
@@ -621,9 +628,8 @@
             <!-- Panel Kontrol Mikroskop (vertikal di kiri mikroskop, minim teks) -->
             <div id="microControlPanel" class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-[118px] max-h-[96%] overflow-y-auto no-scrollbar bg-white/85 backdrop-blur-sm border border-slate-200 rounded-xl shadow-md flex flex-col">
                 <!-- Penanda status (menyatu dengan panel) -->
-                <div id="statusBadge" class="px-2 py-1.5 border-b border-slate-200 flex items-start space-x-1.5 pointer-events-none shrink-0">
-                    <span class="w-2 h-2 mt-[3px] shrink-0 rounded-full bg-[#f59e0b] animate-pulse"></span>
-                    <span id="statusText" class="text-[10px] leading-snug font-semibold text-slate-700">Klik langsung bagian 3D atau Pin Nomor untuk inspeksi</span>
+                <div id="statusBadge" class="p-2 pb-0 pointer-events-none shrink-0">
+                    <span id="statusText" class="block rounded-lg bg-emerald-100 border border-emerald-400 text-emerald-800 px-2 py-1.5 text-[10px] leading-snug font-semibold">Klik langsung bagian 3D atau Pin Nomor untuk inspeksi</span>
                 </div>
                 <div class="p-2 flex flex-col gap-2">
                 <!-- Daya & Dimmer LED -->
@@ -4898,7 +4904,7 @@
                     touchGhost.textContent = label;
                     touchGhost.style.left = `${touch.clientX}px`;
                     touchGhost.style.top = `${touch.clientY}px`;
-                    document.body.appendChild(touchGhost);
+                    document.documentElement.appendChild(touchGhost);
                 }, { passive: true });
 
                 chip.addEventListener('touchmove', (e) => {
