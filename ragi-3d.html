@@ -46,12 +46,33 @@
                 if (p && p.then) { p.then(doLock).catch(doLock); } else { doLock(); }
             } catch (e) {}
         };
-        var firstTap = function () {
-            document.removeEventListener('pointerup', firstTap, true);
-            window.lockLandscape();
-        };
-        document.addEventListener('pointerup', firstTap, true);
     })();
+
+    // Tombol layar penuh (masuk / keluar) + sinkron ikon
+    window.toggleAppFullscreen = function () {
+        var el = document.documentElement;
+        var inFs = document.fullscreenElement || document.webkitFullscreenElement;
+        if (inFs) {
+            try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {}
+            try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+        } else if (window.IS_TOUCH && window.lockLandscape) {
+            window.lockLandscape();
+        } else {
+            try { (el.requestFullscreen || el.webkitRequestFullscreen).call(el); } catch (e) {}
+        }
+    };
+    function syncFsButtons() {
+        var inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        document.querySelectorAll('.js-fs-btn').forEach(function (b) {
+            b.title = inFs ? 'Keluar dari Layar Penuh' : 'Layar Penuh';
+            var i = b.querySelector('.js-fs-icon');
+            if (i) i.className = 'fa-solid js-fs-icon ' + (inFs ? 'fa-compress' : 'fa-expand');
+            b.classList.toggle('bg-rose-500/70', inFs);
+        });
+    }
+    document.addEventListener('fullscreenchange', syncFsButtons);
+    document.addEventListener('webkitfullscreenchange', syncFsButtons);
+    document.addEventListener('DOMContentLoaded', syncFsButtons);
     </script>
     <title>Lab Maya Biologi 3D — Reproduksi Sel Ragi</title>
     <!-- Tailwind CSS -->
@@ -437,7 +458,7 @@
                     <div class="font-outfit font-black text-sm md:text-[17px] tracking-wide text-white">
                         Lab Maya <span class="text-[#f59e0b]">Biologi 3D</span>
                     </div>
-                    <p class="text-[9.5px] md:text-[10px] font-semibold uppercase tracking-[1.2px] text-white/60">
+                    <p class="text-[8px] md:text-[8.5px] font-semibold uppercase tracking-[1px] text-white/60">
                         Reproduksi Sel Ragi – Kelas X Fungi
                     </p>
                 </div>
@@ -449,8 +470,8 @@
                     <i class="fa-solid fa-location-dot"></i>
                     <span>Pin</span>
                 </button>
-                <button onclick="resetCameraView()" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs transition" title="Reset Kamera">
-                    <i class="fa-solid fa-rotate-right"></i>
+                <button onclick="toggleAppFullscreen()" class="js-fs-btn p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs transition" title="Layar Penuh / Keluar Layar Penuh">
+                    <i class="fa-solid fa-expand js-fs-icon"></i>
                 </button>
             </div>
         </div>
@@ -500,18 +521,16 @@
         <!-- Right Quick Actions (Desktop) -->
         <div class="hidden lg:flex items-center space-x-2 shrink-0">
             <!-- Toggle Pins -->
-            <button id="btnTogglePins" onclick="togglePins()" class="px-3 py-2 rounded-lg bg-[#f59e0b] text-[#0c1a3a] hover:bg-[#d97706] text-xs font-bold flex items-center space-x-1.5 transition shadow-sm" title="Tampilkan/Sembunyikan Pin Nomor pada layar">
+            <button id="btnTogglePins" onclick="togglePins()" class="px-3 py-2 rounded-lg bg-white/10 text-white/70 border border-white/20 text-xs font-semibold flex items-center space-x-1.5 transition" title="Tampilkan/Sembunyikan Pin Nomor pada layar">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
                 <span class="hidden xl:inline">Pin Nomor</span>
             </button>
 
-            <!-- Reset Camera -->
-            <button onclick="resetCameraView()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs transition" title="Reset Sudut Kamera">
-                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                </svg>
+            <!-- Layar Penuh / Keluar Layar Penuh -->
+            <button onclick="toggleAppFullscreen()" class="js-fs-btn p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs transition" title="Layar Penuh / Keluar Layar Penuh">
+                <i class="fa-solid fa-expand js-fs-icon"></i>
             </button>
         </div>
     </header>
@@ -565,77 +584,71 @@
         <!-- CENTER VIEWPORT: 3D Canvas Area -->
         <main class="flex-1 flex flex-col relative overflow-hidden bg-gradient-to-b from-[#334155] via-[#1e293b] to-[#0f172a]">
             
-            <!-- Top Floating Status Banner -->
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-2 pointer-events-none">
-                <div id="statusBadge" class="bg-white/95 backdrop-blur px-4 py-1.5 rounded-full border border-slate-200 shadow-md flex items-center space-x-2 pointer-events-auto">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] animate-pulse"></span>
-                    <span id="statusText" class="text-xs font-semibold text-slate-700">Klik langsung bagian 3D atau Pin Nomor untuk inspeksi</span>
-                </div>
-            </div>
 
             <!-- 3D Canvas Container -->
             <div id="canvasContainer" class="w-full h-full relative cursor-grab active:cursor-grabbing">
-                <div id="pinsContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+                <div id="pinsContainer" class="absolute inset-0 pointer-events-none overflow-hidden" style="display:none"></div>
             </div>
 
-            <!-- Bottom Compact Simulation Control Dock -->
-            <div class="h-16 bg-white border-t border-slate-200 px-4 flex items-center justify-between z-20 shrink-0 overflow-x-auto space-x-4 shadow-sm">
-                <!-- Power & Light Dimmer -->
-                <div class="flex items-center space-x-3 shrink-0">
-                    <button id="btnPowerSwitch" onclick="toggleMicroscopePower()" class="px-3.5 py-2 rounded-xl font-bold text-xs flex items-center space-x-2 transition-all bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/25">
-                        <i class="fa-solid fa-power-off"></i>
-                        <span id="powerStatusLabel">ON</span>
-                    </button>
-                    <div class="flex flex-col w-28">
-                        <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
-                            <span>Dimmer LED</span>
-                            <span id="dimmerValLabel" class="text-[#1d4ed8] font-bold">80%</span>
-                        </div>
-                        <input id="sliderDimmer" type="range" min="0" max="100" value="80" oninput="updateSimulationControls()" class="h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#1d4ed8]">
+            <!-- Panel Kontrol Mikroskop (vertikal di kiri mikroskop, minim teks) -->
+            <div id="microControlPanel" class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-[118px] max-h-[96%] overflow-y-auto no-scrollbar bg-white/85 backdrop-blur-sm border border-slate-200 rounded-xl shadow-md flex flex-col">
+                <!-- Penanda status (menyatu dengan panel) -->
+                <div id="statusBadge" class="px-2 py-1.5 border-b border-slate-200 flex items-start space-x-1.5 pointer-events-none shrink-0">
+                    <span class="w-2 h-2 mt-[3px] shrink-0 rounded-full bg-[#f59e0b] animate-pulse"></span>
+                    <span id="statusText" class="text-[10px] leading-snug font-semibold text-slate-700">Klik langsung bagian 3D atau Pin Nomor untuk inspeksi</span>
+                </div>
+                <div class="p-2 flex flex-col gap-2">
+                <!-- Daya & Dimmer LED -->
+                <button id="btnPowerSwitch" onclick="toggleMicroscopePower()" title="Sakelar Daya Mikroskop" class="w-full justify-center px-2 py-1.5 rounded-xl font-bold text-xs flex items-center space-x-1.5 transition-all bg-slate-200 hover:bg-slate-300 text-slate-600 border border-slate-300">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span id="powerStatusLabel">OFF</span>
+                </button>
+                <div title="Dimmer LED">
+                    <div class="flex items-center justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
+                        <i class="fa-solid fa-sun text-[#f59e0b]"></i>
+                        <span id="dimmerValLabel" class="text-[#1d4ed8] font-bold">80%</span>
                     </div>
+                    <input id="sliderDimmer" type="range" min="0" max="100" value="80" oninput="updateSimulationControls()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#1d4ed8]">
                 </div>
 
-                <div class="h-8 w-px bg-slate-200 shrink-0"></div>
+                <div class="h-px bg-slate-200"></div>
 
-                <!-- Revolving Nosepiece (Objective Lenses) -->
-                <div class="flex items-center space-x-1.5 shrink-0">
-                    <span class="text-[10px] font-bold uppercase text-slate-500 mr-1 hidden md:inline">Objektif:</span>
-                    <button onclick="selectObjective(0)" id="objBtn0" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition bg-[#1d4ed8] border-[#1e3a8a] text-white shadow-sm">4x</button>
-                    <button onclick="selectObjective(1)" id="objBtn1" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition bg-slate-100 border-slate-200 text-slate-600 hover:bg-blue-50">10x</button>
-                    <button onclick="selectObjective(2)" id="objBtn2" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition bg-slate-100 border-slate-200 text-slate-600 hover:bg-blue-50">40x</button>
-                    <button onclick="selectObjective(3)" id="objBtn3" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition bg-slate-100 border-slate-200 text-slate-600 hover:bg-blue-50">100x</button>
-                    <button onclick="toggleMainImmersionOil()" id="btnMainOil" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200" title="Teteskan / Bersihkan Minyak Imersi untuk Lensa 100x">
-                        <i class="fa-solid fa-droplet mr-1 text-amber-600"></i><span id="mainOilLabel">Minyak Imersi</span>
-                    </button>
+                <!-- Revolver Lensa Objektif + Minyak Imersi -->
+                <div class="grid grid-cols-2 gap-1" title="Lensa Objektif">
+                    <button onclick="selectObjective(0)" id="objBtn0" class="px-1 py-1.5 rounded-lg text-xs font-bold border transition bg-[#1d4ed8] border-[#1e3a8a] text-white shadow-sm">4x</button>
+                    <button onclick="selectObjective(1)" id="objBtn1" class="px-1 py-1.5 rounded-lg text-xs font-bold border transition bg-slate-100 border-slate-200 text-slate-600 hover:bg-blue-50">10x</button>
+                    <button onclick="selectObjective(2)" id="objBtn2" class="px-1 py-1.5 rounded-lg text-xs font-bold border transition bg-slate-100 border-slate-200 text-slate-600 hover:bg-blue-50">40x</button>
+                    <button onclick="selectObjective(3)" id="objBtn3" class="px-1 py-1.5 rounded-lg text-xs font-bold border transition bg-slate-100 border-slate-200 text-slate-600 hover:bg-blue-50">100x</button>
                 </div>
+                <button onclick="toggleMainImmersionOil()" id="btnMainOil" class="w-full px-2 py-1.5 rounded-lg text-xs font-bold border transition bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200" title="Minyak Imersi (untuk lensa 100x): teteskan / bersihkan">
+                    <i class="fa-solid fa-droplet text-amber-600"></i><span id="mainOilLabel" class="hidden">Minyak Imersi</span>
+                </button>
 
-                <div class="h-8 w-px bg-slate-200 shrink-0"></div>
+                <div class="h-px bg-slate-200"></div>
 
-                <!-- Coarse & Fine Focus + Stage X/Y -->
-                <div class="flex items-center space-x-4 shrink-0">
-                    <div class="flex flex-col w-28">
-                        <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
-                            <span>Makrometer (Z)</span>
-                            <span id="coarseValLabel" class="text-amber-600 font-bold">20%</span>
-                        </div>
-                        <input id="sliderCoarse" type="range" min="0" max="100" value="20" oninput="updateSimulationControls()" class="h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                <!-- Fokus Kasar, Fokus Halus & Meja X-Y -->
+                <div title="Makrometer (fokus kasar / Z)">
+                    <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
+                        <span>Makro</span>
+                        <span id="coarseValLabel" class="text-amber-600 font-bold">20%</span>
                     </div>
-
-                    <div class="flex flex-col w-28">
-                        <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
-                            <span>Mikrometer</span>
-                            <span id="fineValLabel" class="text-emerald-600 font-bold">30%</span>
-                        </div>
-                        <input id="sliderFine" type="range" min="0" max="100" value="30" oninput="updateSimulationControls()" class="h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                    <input id="sliderCoarse" type="range" min="0" max="100" value="20" oninput="updateSimulationControls()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                </div>
+                <div title="Mikrometer (fokus halus)">
+                    <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
+                        <span>Mikro</span>
+                        <span id="fineValLabel" class="text-emerald-600 font-bold">30%</span>
                     </div>
-
-                    <div class="flex flex-col w-24 hidden xl:flex">
-                        <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
-                            <span>Meja X-Y</span>
-                            <span id="stageXYLabel" class="text-indigo-600 font-bold">0,0</span>
-                        </div>
-                        <input id="sliderStageX" type="range" min="-10" max="10" value="0" oninput="updateSimulationControls()" class="h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <input id="sliderFine" type="range" min="0" max="100" value="30" oninput="updateSimulationControls()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                </div>
+                <div title="Meja X-Y: atas = kiri/kanan (X), bawah = depan/belakang (Y)">
+                    <div class="flex justify-between text-[10px] font-semibold text-slate-500 mb-0.5">
+                        <span>X-Y</span>
+                        <span id="stageXYLabel" class="text-indigo-600 font-bold">0,0</span>
                     </div>
+                    <input id="sliderStageX" type="range" min="-10" max="10" value="0" oninput="updateSimulationControls()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-1.5">
+                    <input id="sliderStageY" type="range" min="-10" max="10" value="0" oninput="updateSimulationControls()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                </div>
                 </div>
             </div>
         </main>
@@ -894,41 +907,17 @@
 
                 <!-- Center Interactive 3D Lab Stage -->
                 <div class="flex-1 p-2 md:p-3 flex flex-col relative overflow-hidden bg-[#f1f5f9]">
-                    <!-- Top 3D Lab Toolbar -->
-                    <div class="absolute top-3 md:top-5 left-3 md:left-6 right-3 md:right-6 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-2 pointer-events-none">
-                        <!-- Instruction Banner + Quick Mobile Action -->
-                        <div id="yBalloon" class="bg-white/95 backdrop-blur border-2 border-[#3b82f6] rounded-2xl px-3 py-2 text-xs text-slate-800 shadow-lg max-w-xl pointer-events-auto flex items-center justify-between gap-2">
-                            <div class="flex items-center space-x-2.5 min-w-0">
-                                <button onclick="toggleYeastProcedureSidebar()" class="lg:hidden w-8 h-8 rounded-xl bg-[#1e3a8a] text-white flex items-center justify-center shrink-0 shadow" title="Buka Langkah Prosedur">
-                                    <i class="fa-solid fa-list-check text-xs"></i>
-                                </button>
-                                <div class="hidden lg:flex w-8 h-8 rounded-xl bg-[#dbeafe] text-[#1e3a8a] items-center justify-center shrink-0 font-bold">
-                                    <i class="fa-solid fa-hand-pointer text-sm"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="font-outfit font-extrabold text-[#1e3a8a] text-[10px] uppercase tracking-wider">Langkah <span id="yMobileStepCounter">1/10</span>:</div>
-                                    <span id="yBalloonText" class="text-slate-700 font-semibold text-[11px] md:text-xs block leading-snug">Seret Spatula ke Cawan Gula untuk mengambil sedikit gula.</span>
-                                </div>
-                            </div>
-                            <button onclick="executeCurrentYeastStep()" class="lg:hidden px-2.5 py-1.5 rounded-xl bg-[#f59e0b] text-[#0c1a3a] font-extrabold text-[10.5px] shrink-0 shadow-sm flex items-center gap-1" title="Klik jika sulit menyeret di layar kecil">
-                                <i class="fa-solid fa-bolt"></i>
-                                <span>Lakukan</span>
-                            </button>
-                        </div>
-
-                        <!-- Controls & Inspector Button -->
-                        <div class="flex items-center space-x-1.5 pointer-events-auto self-end sm:self-auto">
-                            <button id="btnToggleYeastLabels" onclick="toggleYeast3DLabels()" class="px-2.5 py-2 rounded-xl bg-white text-[#1e3a8a] border border-slate-200 hover:bg-[#dbeafe] text-[11px] md:text-xs font-bold shadow-md flex items-center space-x-1.5 transition" title="Tampilkan / Sembunyikan Label Alat & Bahan di Meja">
+                    <!-- Toolbar ikon vertikal (kanan) -->
+                    <div class="absolute top-3 md:top-5 right-3 md:right-5 z-20 pointer-events-none">
+                        <div class="flex flex-col items-center gap-2 pointer-events-auto">
+                            <button id="btnToggleYeastLabels" onclick="toggleYeast3DLabels()" class="w-10 h-10 rounded-xl bg-white text-[#1e3a8a] border border-slate-200 hover:bg-[#dbeafe] shadow-md flex items-center justify-center transition" title="Label Alat: ON (ketuk untuk menyembunyikan)">
                                 <i class="fa-solid fa-tags text-[#1d4ed8]"></i>
-                                <span class="hidden sm:inline">Label Alat: ON</span>
                             </button>
-                            <button onclick="open3DToolInspectorModal()" class="px-3 py-2 rounded-xl bg-white hover:bg-amber-50 border border-slate-200 text-slate-800 text-[11px] md:text-xs font-bold shadow-md flex items-center space-x-1.5 transition">
+                            <button onclick="open3DToolInspectorModal()" class="w-10 h-10 rounded-xl bg-white hover:bg-amber-50 border border-slate-200 shadow-md flex items-center justify-center transition" title="Inspeksi 3D Alat & Bahan">
                                 <i class="fa-solid fa-cube text-[#f59e0b]"></i>
-                                <span>Inspeksi 3D Alat & Bahan</span>
                             </button>
-                            <button onclick="resetYeast3DCamera()" class="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-[11px] md:text-xs font-bold shadow-md flex items-center space-x-1.5 transition" title="Reset Sudut Kamera Meja 3D">
+                            <button onclick="resetYeast3DCamera()" class="w-10 h-10 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 shadow-md flex items-center justify-center transition" title="Reset Sudut Kamera Meja 3D">
                                 <i class="fa-solid fa-video text-[#1d4ed8]"></i>
-                                <span class="hidden xl:inline">Reset Kamera</span>
                             </button>
                         </div>
                     </div>
@@ -1387,14 +1376,15 @@
         // -------------------------------------------------------------------------
         let appMode = 'yeast'; // 'yeast' | 'explore'
         let selectedPartId = 1;
-        let showPins = true;
-        let isPowerOn = true;
-        let lightIntensity = 0.8;
+        let showPins = false;      // Pin Nomor default OFF (user dapat menyalakannya manual)
+        let isPowerOn = false;     // Mikroskop default OFF (user dapat menyalakannya manual)
+        let lightIntensity = 0;
         let currentObjectiveIndex = 0; // 0: 4x, 1: 10x, 2: 40x, 3: 100x
         let mainImmersionOil = false;
         let coarseFocus = 20;
         let fineFocus = 30;
         let stageX = 0;
+        let stageY = 0;
 
         // Sound Synthesizer (Tone.js)
         let synth = null;
@@ -1921,7 +1911,8 @@
         // -------------------------------------------------------------------------
         // 6. KONTROL OPTIK & PANDANGAN LENSA OKULER (SEL RAGI PERMANEN SESUAI 4 FOTO)
         // -------------------------------------------------------------------------
-        const yeastMicroCanvases = [];
+        const yeastMicroCanvases = [];   // jendela pandang 512px (dipakai tekstur 3D & modal)
+        const yeastFieldCanvases = [];   // medan preparat yang diperluas (untuk digeser dengan Meja X-Y)
 
         function generateYeastBrightfieldCanvases() {
             const configs = [
@@ -1933,7 +1924,8 @@
 
             configs.forEach((cfg, idx) => {
                 const cv = document.createElement('canvas');
-                const S = 512;
+                const S = 1100;           // medan preparat diperluas (±2,1× jendela pandang)
+                const AREA = (S / 512) * (S / 512);
                 cv.width = S;
                 cv.height = S;
                 const ctx = cv.getContext('2d');
@@ -1954,7 +1946,7 @@
                 };
 
                 // Partikel mikro latar belakang
-                const dustCount = idx < 2 ? 120 : 75;
+                const dustCount = Math.round((idx < 2 ? 120 : 75) * AREA);
                 for (let d = 0; d < dustCount; d++) {
                     const dx = rnd() * S;
                     const dy = rnd() * S;
@@ -2047,14 +2039,13 @@
                 }
 
                 const centers = [];
-                for (let i = 0; i < cfg.count; i++) {
+                const cellCount = Math.round(cfg.count * AREA);
+                for (let i = 0; i < cellCount; i++) {
                     let cx, cy, r;
                     let attempts = 0;
                     do {
-                        const ang = rnd() * Math.PI * 2;
-                        const dist = Math.sqrt(rnd()) * (S * 0.42 - cfg.maxR);
-                        cx = S * 0.5 + Math.cos(ang) * dist;
-                        cy = S * 0.5 + Math.sin(ang) * dist;
+                        cx = cfg.maxR * 2 + rnd() * (S - cfg.maxR * 4);
+                        cy = cfg.maxR * 2 + rnd() * (S - cfg.maxR * 4);
                         r = cfg.minR + rnd() * (cfg.maxR - cfg.minR);
                         attempts++;
                     } while (
@@ -2087,7 +2078,14 @@
                     drawSingleYeastCell(cx, cy, r, baseAngle);
                 }
 
-                yeastMicroCanvases[idx] = cv;
+                yeastFieldCanvases[idx] = cv;
+
+                // Jendela pandang 512px (bagian tengah medan) untuk tekstur 3D & modal
+                const view = document.createElement('canvas');
+                view.width = 512;
+                view.height = 512;
+                view.getContext('2d').drawImage(cv, (S - 512) / 2, (S - 512) / 2, 512, 512, 0, 0, 512, 512);
+                yeastMicroCanvases[idx] = view;
             });
         }
 
@@ -2098,14 +2096,28 @@
             const label = document.getElementById('powerStatusLabel');
 
             if (isPowerOn) {
-                btn.className = "px-3.5 py-2 rounded-xl font-bold text-xs flex items-center space-x-2 transition-all bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/25";
+                btn.className = "w-full justify-center px-2 py-1.5 rounded-xl font-bold text-xs flex items-center space-x-1.5 transition-all bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/25";
                 label.textContent = "ON";
             } else {
-                btn.className = "px-3.5 py-2 rounded-xl font-bold text-xs flex items-center space-x-2 transition-all bg-slate-200 hover:bg-slate-300 text-slate-600 border border-slate-300";
+                btn.className = "w-full justify-center px-2 py-1.5 rounded-xl font-bold text-xs flex items-center space-x-1.5 transition-all bg-slate-200 hover:bg-slate-300 text-slate-600 border border-slate-300";
                 label.textContent = "OFF";
             }
             updateSimulationControls();
+            syncStatusBadge();
         }
+
+        // Petunjuk "Nyalakan sakelar daya" hilang saat mikroskop dinyalakan
+        function syncStatusBadge() {
+            const b = document.getElementById('statusBadge');
+            const t = document.getElementById('statusText');
+            if (!b || !t) return;
+            const hint = t.querySelector('.power-hint');
+            b.style.display = (hint && isPowerOn) ? 'none' : '';
+        }
+        (function () {
+            const t = document.getElementById('statusText');
+            if (t) new MutationObserver(syncStatusBadge).observe(t, { childList: true, characterData: true, subtree: true });
+        })();
 
         function selectObjective(index) {
             currentObjectiveIndex = index;
@@ -2131,7 +2143,7 @@
             document.getElementById('totalMagBadge').textContent = `${mags[index]}x Total`;
 
             if (index === 3 && !mainImmersionOil) {
-                document.getElementById('statusText').innerHTML = `<span class="text-amber-700"><i class="fa-solid fa-droplet mr-1"></i>Objektif 100x aktif: Klik tombol <strong>Minyak Imersi</strong> di bawah agar gambar 1000x tampak tajam!</span>`;
+                document.getElementById('statusText').innerHTML = `<span class="text-amber-700"><i class="fa-solid fa-droplet mr-1"></i>Objektif 100x aktif: Klik tombol <strong>Minyak Imersi</strong> di panel kiri agar gambar 1000x tampak tajam!</span>`;
             }
 
             if (nosepieceAssemblyGroup) {
@@ -2146,11 +2158,13 @@
             const btn = document.getElementById('btnMainOil');
             const lbl = document.getElementById('mainOilLabel');
             if (mainImmersionOil) {
-                btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition bg-emerald-100 border-emerald-400 text-emerald-800 shadow-sm";
+                btn.className = "w-full px-2 py-1.5 rounded-lg text-xs font-bold border transition bg-emerald-100 border-emerald-400 text-emerald-800 shadow-sm";
+                btn.title = "Minyak imersi aktif (ketuk untuk membersihkan)";
                 lbl.textContent = "Minyak Imersi Aktif";
                 document.getElementById('statusText').innerHTML = `<span class="text-emerald-700"><i class="fa-solid fa-check-circle mr-1"></i>Minyak imersi telah diteteskan. Pengamatan 100x (1000x total) kini jernih!</span>`;
             } else {
-                btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200";
+                btn.className = "w-full px-2 py-1.5 rounded-lg text-xs font-bold border transition bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200";
+                btn.title = "Minyak Imersi (untuk lensa 100x): teteskan / bersihkan";
                 lbl.textContent = "Minyak Imersi";
                 document.getElementById('statusText').innerHTML = `<span class="text-slate-700">Minyak imersi telah dibersihkan dengan kertas lensa.</span>`;
             }
@@ -2162,13 +2176,15 @@
             coarseFocus = parseInt(document.getElementById('sliderCoarse').value);
             fineFocus = parseInt(document.getElementById('sliderFine').value);
             stageX = parseInt(document.getElementById('sliderStageX').value);
+            const sy = document.getElementById('sliderStageY');
+            stageY = sy ? parseInt(sy.value) : 0;
 
             lightIntensity = isPowerOn ? dimmer / 100 : 0;
 
             document.getElementById('dimmerValLabel').textContent = `${dimmer}%`;
             document.getElementById('coarseValLabel').textContent = `${coarseFocus}%`;
             document.getElementById('fineValLabel').textContent = `${fineFocus}%`;
-            document.getElementById('stageXYLabel').textContent = `${stageX},0`;
+            document.getElementById('stageXYLabel').textContent = `${stageX},${stageY}`;
 
             if (lightBeamMesh) lightBeamMesh.visible = lightIntensity > 0.02;
             if (lightBeamMesh) lightBeamMesh.material.opacity = lightIntensity * 0.28;
@@ -2177,6 +2193,13 @@
 
             if (stageAssemblyGroup) {
                 stageAssemblyGroup.position.y = 13.5 + (coarseFocus / 100) * 3.0 + (fineFocus / 100) * 0.3;
+                // Meja X-Y: seluruh meja mekanik + preparat tampak bergeser di model 3D
+                if (stageAssemblyGroup.userData.bx === undefined) {
+                    stageAssemblyGroup.userData.bx = stageAssemblyGroup.position.x;
+                    stageAssemblyGroup.userData.bz = stageAssemblyGroup.position.z;
+                }
+                stageAssemblyGroup.position.x = stageAssemblyGroup.userData.bx + stageX * 0.25;
+                stageAssemblyGroup.position.z = stageAssemblyGroup.userData.bz - stageY * 0.2;
             }
             if (coarseKnobsGroup) coarseKnobsGroup.rotation.x = (coarseFocus / 100) * Math.PI * 2;
             if (fineKnobsGroup) fineKnobsGroup.rotation.x = (fineFocus / 100) * Math.PI * 4;
@@ -2219,8 +2242,18 @@
             ctx.save();
             ctx.filter = `blur(${blurAmount.toFixed(1)}px) brightness(${(0.3 + lightIntensity * 0.9).toFixed(2)})`;
 
+            const fieldCv = yeastFieldCanvases[currentObjectiveIndex];
             const srcCanvas = yeastMicroCanvases[currentObjectiveIndex];
-            if (srcCanvas) {
+            if (fieldCv) {
+                // Meja X-Y: jendela pandang bergeser di atas medan preparat yang diperluas (tanpa pengulangan gambar)
+                const SF = fieldCv.width, VIEW = 512;
+                const k = w * 0.025 * (1 + currentObjectiveIndex * 0.35) * (VIEW / w);
+                let sx = (SF - VIEW) / 2 - stageX * k;
+                let sy = (SF - VIEW) / 2 + stageY * k;
+                sx = Math.max(0, Math.min(SF - VIEW, sx));
+                sy = Math.max(0, Math.min(SF - VIEW, sy));
+                ctx.drawImage(fieldCv, sx, sy, VIEW, VIEW, 0, 0, w, h);
+            } else if (srcCanvas) {
                 ctx.drawImage(srcCanvas, 0, 0, w, h);
             }
 
@@ -2241,6 +2274,8 @@
         // -------------------------------------------------------------------------
         function switchMainTab(tab) {
             playClickSound(620);
+            // Menu Simulasi Praktikum 3D: masuk layar penuh + kunci landscape (HP/tablet)
+            if (tab === 'simulasi' && window.IS_TOUCH && window.lockLandscape) window.lockLandscape();
 
             const navButtons = {
                 teori: 'navBtnTeori',
@@ -2360,6 +2395,15 @@
             targetSpherical.radius = offset.length();
             targetSpherical.phi = Math.acos(Math.max(-1, Math.min(1, offset.y / targetSpherical.radius)));
             targetSpherical.theta = Math.atan2(offset.x, offset.z);
+        }
+
+        function resetActiveView() {
+            if (appMode === 'explore') { resetCameraView(); return; }
+            const pgLabel = document.getElementById('yPageLabel');
+            const pgSim = document.getElementById('yPageSimulasi');
+            if (pgLabel && !pgLabel.classList.contains('hidden')) { resetYeastCell3DCamera(); return; }
+            if (pgSim && !pgSim.classList.contains('hidden')) { resetYeast3DCamera(); return; }
+            playClickSound(580);
         }
 
         function resetCameraView() {
@@ -2961,6 +3005,9 @@
             clockFaceCanvas.width = 512;
             clockFaceCanvas.height = 512;
             const cfcCtx = clockFaceCanvas.getContext('2d');
+            // Putar kanvas -90° agar dial tampil tegak (tanda 12 di atas, tulisan terbaca mendatar)
+            cfcCtx.setTransform(0, -1, 1, 0, 256, 256);
+            cfcCtx.translate(-256, -256);
             cfcCtx.fillStyle = '#ffffff';
             cfcCtx.beginPath();
             cfcCtx.arc(256, 256, 250, 0, Math.PI * 2);
@@ -2985,15 +3032,10 @@
                 cfcCtx.stroke();
             }
 
-            // Angka 12, 3, 6, 9 & label waktu
+            // Label waktu (tanpa penanda angka)
             cfcCtx.fillStyle = '#0f172a';
-            cfcCtx.font = 'bold 42px "Outfit", sans-serif';
             cfcCtx.textAlign = 'center';
             cfcCtx.textBaseline = 'middle';
-            cfcCtx.fillText('12', 256, 95);
-            cfcCtx.fillText('3', 420, 256);
-            cfcCtx.fillText('6', 256, 420);
-            cfcCtx.fillText('9', 95, 256);
 
             cfcCtx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
             cfcCtx.fillStyle = '#1e3a8a';
@@ -3007,10 +3049,6 @@
             clFace.rotation.x = Math.PI / 2;
             clFace.position.y = 1.4;
 
-            // Jarum pendek (jam)
-            const hourHand = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.45, 0.05), matDark);
-            hourHand.position.set(0.18, 1.4 + 0.18, 0.24);
-
             yClockHandMin = new THREE.Group();
             yClockHandMin.position.set(0, 1.4, 0.25);
             const handBar = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.72, 0.05), new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3 }));
@@ -3019,7 +3057,7 @@
             handCenterPin.rotation.x = Math.PI / 2;
             yClockHandMin.add(handBar, handCenterPin);
 
-            clockGrp.add(clBody, clFace, hourHand, yClockHandMin);
+            clockGrp.add(clBody, clFace, yClockHandMin);
             tagYeastObject3D(clockGrp, 'clock');
 
             // 10. Mikroskop 3D di Meja Praktikum (Bentuk Identik Lengkap dengan Mode Eksplorasi 3D Mikroskop)
@@ -3196,10 +3234,13 @@
             playClickSound(600);
             const btn = document.getElementById('btnToggleYeastLabels');
             if (btn) {
-                btn.innerHTML = `<i class="fa-solid fa-tags text-[#1d4ed8]"></i><span>Label Alat: ${yShowLabels ? 'ON' : 'OFF'}</span>`;
+                btn.innerHTML = yShowLabels
+                    ? `<i class="fa-solid fa-tags text-[#1d4ed8]"></i>`
+                    : `<i class="fa-solid fa-tags text-slate-400"></i>`;
+                btn.title = yShowLabels ? 'Label Alat: ON (ketuk untuk menyembunyikan)' : 'Label Alat: OFF (ketuk untuk menampilkan)';
                 btn.className = yShowLabels
-                    ? "px-3 py-2 rounded-xl bg-white text-[#1e3a8a] border border-slate-200 hover:bg-[#dbeafe] text-xs font-bold shadow-md flex items-center space-x-1.5 transition"
-                    : "px-3 py-2 rounded-xl bg-slate-200 text-slate-500 border border-slate-300 text-xs font-bold shadow-sm flex items-center space-x-1.5 transition";
+                    ? "w-10 h-10 rounded-xl bg-white text-[#1e3a8a] border border-slate-200 hover:bg-[#dbeafe] shadow-md flex items-center justify-center transition"
+                    : "w-10 h-10 rounded-xl bg-slate-200 text-slate-500 border border-slate-300 shadow-sm flex items-center justify-center transition";
             }
         }
 
@@ -3286,6 +3327,18 @@
             yPrevPointer = { x: e.clientX, y: e.clientY };
         }
 
+        // Apakah kaca objek (posisi pos) menyentuh bagian mikroskop di sisi manapun?
+        let _yMicBox = null;
+        function slideTouchesMicroscope(pos) {
+            const mic = yObjects3D.microscope;
+            if (!mic) return false;
+            if (!_yMicBox) _yMicBox = new THREE.Box3().setFromObject(mic);
+            const b = _yMicBox;
+            const m = 1.3; // setengah ukuran kaca objek
+            const inBox = pos.x > b.min.x - m && pos.x < b.max.x + m && pos.z > b.min.z - m && pos.z < b.max.z + m;
+            return inBox || distXZ(pos, yHome3D.microscope) < 3.8;
+        }
+
         function onYeast3DPointerMove(e) {
             if (appMode !== 'yeast') return;
             if (e.isPrimary === false) return;
@@ -3306,6 +3359,11 @@
                     if (yDraggedKey === 'rod') {
                         dragObj.position.y = 2.4;
                         setRodUpright(dragObj);
+                    }
+
+                    // Kaca objek langsung menempel di meja preparat begitu menyentuh mikroskop
+                    if (yDraggedKey === 'slide' && yState.step === 8 && slideTouchesMicroscope(dragObj.position)) {
+                        onYeast3DPointerUp(e);
                     }
                 }
                 return;
@@ -3444,7 +3502,7 @@
                     obj.position.copy(yHome3D.coverslip);
                 }
             } else if (key === 'slide') {
-                if (yState.step === 8 && distXZ(obj.position, yHome3D.microscope) < 3.8) {
+                if (yState.step === 8 && slideTouchesMicroscope(obj.position)) {
                     // Mendarat presisi di atas meja mekanik dan penjepit preparat mikroskop
                     obj.position.set(yHome3D.microscope.x, 4.38, yHome3D.microscope.z + 0.42);
                     yState.slidePlaced = true;
@@ -3484,7 +3542,7 @@
                     // Buka otomatis tab Eksplorasi 3D Mikroskop
                     setTimeout(() => {
                         switchMainTab('explore');
-                        document.getElementById('statusText').innerHTML = `<span class="text-[#1d4ed8] font-bold"><i class="fa-solid fa-power-off mr-1 text-rose-500"></i>Preparat ragi terpasang! Nyalakan sakelar daya (ON) di dock bawah untuk memulai.</span>`;
+                        document.getElementById('statusText').innerHTML = `<span class="power-hint text-[#1d4ed8] font-bold"><i class="fa-solid fa-power-off mr-1 text-rose-500"></i>Preparat ragi terpasang! Nyalakan sakelar daya (ON) di panel kiri untuk memulai.</span>`;
                     }, 400);
                 } else if (!yState.slidePlaced) {
                     obj.position.copy(yHome3D.slide);
@@ -3592,7 +3650,7 @@
 
                 setTimeout(() => {
                     switchMainTab('explore');
-                    document.getElementById('statusText').innerHTML = `<span class="text-[#1d4ed8] font-bold"><i class="fa-solid fa-power-off mr-1 text-rose-500"></i>Preparat ragi terpasang! Nyalakan sakelar daya (ON) di dock bawah untuk memulai.</span>`;
+                    document.getElementById('statusText').innerHTML = `<span class="power-hint text-[#1d4ed8] font-bold"><i class="fa-solid fa-power-off mr-1 text-rose-500"></i>Preparat ragi terpasang! Nyalakan sakelar daya (ON) di panel kiri untuk memulai.</span>`;
                 }, 400);
             } else if (s >= 9) {
                 switchMainTab('explore');
