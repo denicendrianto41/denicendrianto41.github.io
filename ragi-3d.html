@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=1280, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0c1a3a">
@@ -23,14 +23,35 @@
             meta.setAttribute('content', 'width=' + designWidth() + ', user-scalable=no, viewport-fit=cover');
         }
         applyViewport();
-        function refresh() {
-            meta.setAttribute('content', 'width=device-width, initial-scale=1.0');
-            setTimeout(function () {
-                applyViewport();
-                setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 120);
-            }, 60);
+
+        // Pastikan lebar tata letak tetap "desktop" (tidak jatuh ke tampilan mobile)
+        function enforce() {
+            applyViewport();
+            var dw = designWidth();
+            if (document.documentElement.clientWidth < dw * 0.9) {
+                // paksa peramban menghitung ulang viewport tanpa pernah memakai device-width
+                meta.setAttribute('content', 'width=' + (dw + 1) + ', user-scalable=no, viewport-fit=cover');
+                setTimeout(applyViewport, 50);
+            }
         }
-        window.addEventListener('orientationchange', function () { setTimeout(refresh, 200); });
+        function settle() {
+            [0, 150, 500, 1200].forEach(function (t) {
+                setTimeout(function () {
+                    enforce();
+                    if (t > 0) window.dispatchEvent(new Event('resize'));
+                }, t);
+            });
+        }
+        var rzTimer = null;
+        window.addEventListener('resize', function () {
+            clearTimeout(rzTimer);
+            rzTimer = setTimeout(function () {
+                if (document.documentElement.clientWidth < designWidth() * 0.9) enforce();
+            }, 120);
+        });
+        window.addEventListener('orientationchange', settle);
+        document.addEventListener('fullscreenchange', settle);
+        document.addEventListener('webkitfullscreenchange', settle);
         document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
         document.addEventListener('dblclick', function (e) { e.preventDefault(); });
 
@@ -77,6 +98,13 @@
     <title>Lab Maya Biologi 3D — Reproduksi Sel Ragi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Perangkat sentuh selalu memakai tata letak desktop, berapa pun lebar jendelanya
+        if (window.IS_TOUCH && window.tailwind) {
+            var always = { raw: '(min-width: 0px)' };
+            tailwind.config = { theme: { screens: { sm: always, md: always, lg: always, xl: always, '2xl': '1536px' } } };
+        }
+    </script>
     <!-- Fonts: Plus Jakarta Sans, Outfit, Space Mono (Sesuai Si IBi) -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
