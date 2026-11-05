@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0c1a3a">
+<title>Lab Maya Biologi 3D — Morfologi Jamur (Fungi)</title>
+<script>
+// Perangkat sentuh: paksa tata letak desktop & landscape
+(function () {
+    var touch = (navigator.maxTouchPoints > 0) && window.matchMedia('(pointer: coarse)').matches;
+    window.IS_TOUCH = touch;
+    if (!touch) return;
+    document.documentElement.classList.add('is-touch');
+    var meta = document.querySelector('meta[name=viewport]');
+    function dw() {
+        var a = Math.max(screen.width, screen.height), b = Math.min(screen.width, screen.height);
+        return Math.max(1280, Math.ceil(620 * a / b));
+    }
+    function apply() { meta.setAttribute('content', 'width=' + dw() + ', user-scalable=no, viewport-fit=cover'); }
+    apply();
+    function settle() { [0, 150, 500, 1200].forEach(function (t) { setTimeout(function () { apply(); if (t > 0) window.dispatchEvent(new Event('resize')); }, t); }); }
+    window.addEventListener('orientationchange', settle);
+    document.addEventListener('fullscreenchange', settle);
+    document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+    window.lockLandscape = function () {
+        try {
+            var el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+            var p = (req && !document.fullscreenElement && !document.webkitFullscreenElement) ? req.call(el) : null;
+            var lk = function () { try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) {} };
+            if (p && p.then) p.then(lk).catch(lk); else lk();
+        } catch (e) {}
+    };
+})();
+window.toggleAppFullscreen = function () {
+    var el = document.documentElement, inFs = document.fullscreenElement || document.webkitFullscreenElement;
+    if (inFs) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} }
+    else if (window.IS_TOUCH && window.lockLandscape) window.lockLandscape();
+    else { try { (el.requestFullscreen || el.webkitRequestFullscreen).call(el); } catch (e) {} }
+};
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--primary:#1e3a8a;--mid:#1d4ed8;--light:#3b82f6;--pale:#dbeafe;--accent:#f59e0b;--accent2:#d97706;--bg:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--green:#059669}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;overflow:hidden;display:flex;flex-direction:column;user-select:none;-webkit-user-select:none}
+h1,h2,h3,h4,.fo{font-family:'Outfit',sans-serif}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:rgba(30,136,229,.28);border-radius:3px}
+.hidden{display:none!important}
+header{background:linear-gradient(135deg,#0f2460,#1e3a8a 50%,#1a3472);box-shadow:0 4px 20px rgba(0,0,0,.22);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;z-index:30}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-i{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(245,158,11,.4)}
+.brand b{font-family:'Outfit';font-weight:900;font-size:17px;color:#fff;display:block;line-height:1.1}
+.brand b span{color:var(--accent)}
+.brand small{font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.6)}
+nav{display:flex;gap:4px}
+.nb{background:none;border:none;color:rgba(255,255,255,.75);font:600 12.5px 'Plus Jakarta Sans';padding:8px 13px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:.2s}
+.nb:hover{background:rgba(255,255,255,.12);color:#fff}
+.nb.active{background:var(--accent);color:#0c1a3a;font-weight:800;box-shadow:0 4px 14px rgba(245,158,11,.35)}
+.ib{padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font:700 12px 'Plus Jakarta Sans';cursor:pointer;display:flex;align-items:center;gap:6px}
+.ib:hover{background:rgba(255,255,255,.2)}.ib.on{background:var(--accent);color:#0c1a3a}
+#stage{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;inset:0;display:none;background:var(--bg)}
+.page.active{display:flex}
+.btn{border:none;cursor:pointer;font:700 12px 'Plus Jakarta Sans';border-radius:10px;padding:9px 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
+.btn-a{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0c1a3a;box-shadow:0 4px 14px rgba(245,158,11,.35)}
+.btn-p{background:linear-gradient(135deg,var(--primary),var(--mid));color:#fff;box-shadow:0 4px 14px rgba(29,78,216,.28)}
+.btn-s{background:var(--pale);color:var(--primary);border:1px solid rgba(59,130,246,.25)}
+.btn:hover:not(:disabled){transform:translateY(-1px)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.07);padding:16px}
+.scroll{flex:1;overflow-y:auto;padding:16px 22px}
+.hero{background:linear-gradient(135deg,#0f2460,#1e3a8a 55%,#1d4ed8);border-radius:18px;padding:20px 24px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px}
+.hero h2{font-size:21px;font-weight:900}.hero h2 em{color:var(--accent)}
+.hero p{font-size:12.5px;color:rgba(255,255,255,.82);max-width:820px;margin-top:5px}
+.tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);padding:2px 10px;border-radius:99px;margin-bottom:6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.ct{font:800 11px 'Outfit';letter-spacing:.07em;text-transform:uppercase;color:var(--primary);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card p,.card li{font-size:12.5px;color:#475569}
+.card li{margin-left:16px;margin-bottom:3px}
+#pg-teori{--tf:19px}
+#pg-teori .card p,#pg-teori .card li,#pg-teori .box{font-size:var(--tf);line-height:1.6}
+#pg-teori .box{padding:12px 15px;border-radius:12px}
+#pg-teori .ct{font-size:calc(var(--tf)*.8);margin-bottom:10px}
+#pg-teori .hero h2{font-size:calc(var(--tf)*1.45)}#pg-teori .hero p{font-size:calc(var(--tf)*.85)}
+#teoriTabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.ttb{padding:10px 18px;border-radius:12px;border:2px solid var(--border);background:#fff;font:800 15px 'Outfit';cursor:pointer;color:var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.ttb:hover{border-color:var(--light)}.ttb.on{background:var(--mid);color:#fff;border-color:var(--mid)}
+.ttb.sm{padding:8px 13px;margin-left:6px}.tfs{margin-left:auto}
+.box{border-radius:10px;padding:8px 11px;font-size:12px;margin-top:6px;border:1px solid}
+.bb{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a}.ba{background:#fffbeb;border-color:#fde68a;color:#78350f}.bv{background:#f5f3ff;border-color:#ddd6fe;color:#4c1d95}.bg{background:#ecfdf5;border-color:#a7f3d0;color:#064e3b}
+/* panels */
+.side{width:268px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.side.r{border-right:none;border-left:1px solid var(--border);width:340px}
+.sh{padding:12px 14px;border-bottom:1px solid var(--border);background:#f8fafc;font:800 11px 'Outfit';letter-spacing:.07em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.partbtn{width:100%;text-align:left;padding:7px 9px;border-radius:11px;border:1px solid transparent;background:none;font:12px 'Plus Jakarta Sans';cursor:pointer;display:flex;align-items:center;gap:9px;color:#334155}
+.partbtn:hover{background:#f1f5f9}.partbtn.sel{background:var(--pale);border-color:var(--light);color:var(--primary);font-weight:700}
+.partbtn i{width:24px;height:24px;border-radius:50%;background:#f1f5f9;border:1px solid var(--border);color:var(--mid);font:800 11px 'Outfit';font-style:normal;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.partbtn.sel i{background:var(--accent);color:#0c1a3a;border-color:var(--accent)}
+.canvaswrap{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 35%,#334155,#1e293b 70%,#0f172a)}
+.canvaswrap canvas{display:block;touch-action:none}
+.pin{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--primary);border:2px solid #fff;color:#fff;font:800 11.5px 'Outfit';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(15,36,96,.35);z-index:10}
+.pin:hover{background:var(--mid);transform:scale(1.25)}.pin.active{background:var(--accent);color:#0c1a3a;border-color:#0c1a3a;transform:scale(1.3)}
+.ctrl{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:20;width:124px;max-height:96%;overflow-y:auto;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:7px}
+.ctrl input[type=range]{width:100%;height:6px;accent-color:var(--mid)}
+.ctrl .lb{font-size:10px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between}
+.ob{padding:6px 2px;border-radius:8px;border:1px solid var(--border);background:#f1f5f9;font:700 12px 'Plus Jakarta Sans';cursor:pointer;color:#475569}
+.ob.on{background:var(--mid);color:#fff;border-color:var(--primary)}
+.status{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:99px;padding:5px 14px;font-size:11px;font-weight:700;color:#334155;z-index:20;pointer-events:none;white-space:nowrap}
+.step{padding:8px 10px;border-radius:11px;border:1px solid var(--border);background:#fff;font-size:11.5px;color:#64748b;display:flex;gap:9px;align-items:flex-start;margin-bottom:6px}
+.step.done{background:#ecfdf5;border-color:#6ee7b7;color:#064e3b;font-weight:600}.step.cur{background:var(--pale);border-color:var(--light);color:var(--primary);font-weight:700}
+.step i{width:20px;height:20px;border-radius:50%;background:#f1f5f9;border:1px solid var(--border);font:800 10px 'Outfit';font-style:normal;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step.done i{background:var(--green);color:#fff;border-color:var(--green)}.step.cur i{background:var(--mid);color:#fff;border-color:var(--mid)}
+.opt{font-size:9px;background:#fef3c7;color:#92400e;padding:0 5px;border-radius:5px;margin-left:4px;font-weight:700}
+.sbtn{padding:8px;border-radius:10px;border:2px solid var(--border);background:#fff;font:700 12px 'Plus Jakarta Sans';cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left}
+.sbtn small{display:block;font-weight:500;color:var(--muted);font-size:10px}
+.sbtn.on{border-color:var(--mid);background:#eff6ff}
+.hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);max-width:60%;background:rgba(15,36,96,.92);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 16px;font-size:12px;font-weight:600;z-index:15;text-align:center;pointer-events:none}
+.vtool{position:absolute;top:12px;right:12px;z-index:20;display:flex;flex-direction:column;gap:8px}
+.vtool button{width:40px;height:40px;border-radius:11px;background:#fff;border:1px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,.2);cursor:pointer;font-size:15px;color:var(--mid)}
+.flab{position:absolute;transform:translate(-50%,-100%);background:rgba(15,36,96,.9);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:700;padding:1px 9px;border-radius:6px;white-space:nowrap}
+.zone{position:absolute;transform:translate(-50%,-50%);min-width:44px;min-height:44px;padding:4px 12px;border-radius:99px;background:rgba(15,36,96,.95);border:3px solid #38bdf8;color:#fff;font:800 13px 'Outfit';display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;z-index:30;box-shadow:0 0 18px rgba(56,189,248,.5)}
+.zone .zt{font:700 11px 'Plus Jakarta Sans';white-space:nowrap}
+.zone.ok{background:#047857;border-color:#6ee7b7}.zone.bad{background:#be123c;border-color:#fda4af}.zone.set{background:#1e3a8a;border-color:var(--accent)}
+.chip{padding:11px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--mid));border:2px solid rgba(96,165,250,.4);color:#fff;font:700 12px 'Plus Jakarta Sans';text-align:center;cursor:grab;margin-bottom:8px;touch-action:none}
+.chip.sel{outline:4px solid var(--accent)}
+textarea{width:100%;background:#f8fafc;border:1px solid var(--border);border-radius:11px;padding:9px 11px;font:12px 'Plus Jakarta Sans';resize:vertical;user-select:text;-webkit-user-select:text;color:#1e293b}
+textarea:focus{outline:none;border-color:var(--light);background:#fff}
+#modal{position:fixed;inset:0;z-index:100;background:rgba(15,36,96,.6);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:16px}
+#modalBox{background:#fff;border-radius:18px;max-width:900px;width:100%;max-height:92vh;overflow-y:auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font:800 22px 'Outfit';padding:14px 30px;border-radius:16px;z-index:9999;pointer-events:none;animation:pop 1.3s forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+#rotateOverlay{display:none;position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 30%,#1e3a8a,#0c1a3a 70%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8vw}
+#rotateOverlay h2{font-size:5.4vw;margin-bottom:2vw}#rotateOverlay p{font-size:3.2vw;color:rgba(255,255,255,.78)}
+@media(orientation:portrait){html.is-touch #rotateOverlay{display:flex}}
+</style>
+</head>
+<body>
+<div id="rotateOverlay"><div style="font-size:12vw;margin-bottom:4vw">📱↻</div><h2>Putar Perangkat ke Landscape</h2><p>Lab virtual ini memakai layar mendatar agar semua fitur tampil seperti di komputer.</p></div>
+
+<header>
+  <div class="brand"><div class="brand-i">🍄</div><div><b>Lab Maya <span>Biologi 3D</span></b><small>Morfologi Jamur (Fungi) – Kelas X</small></div></div>
+  <nav>
+    <button class="nb active" id="nb-teori" onclick="switchTab('teori')"><i class="fa-solid fa-book-open"></i>1. Tujuan &amp; Teori</button>
+    <button class="nb" id="nb-sim" onclick="switchTab('sim')"><i class="fa-solid fa-flask"></i>2. Simulasi Praktikum 3D</button>
+    <button class="nb" id="nb-explore" onclick="switchTab('explore')"><i class="fa-solid fa-microscope"></i>3. Eksplorasi 3D Mikroskop</button>
+    <button class="nb" id="nb-label" onclick="switchTab('label')"><i class="fa-solid fa-tags"></i>4. Identifikasi &amp; Label 2D</button>
+    <button class="nb" id="nb-diskusi" onclick="switchTab('diskusi')"><i class="fa-solid fa-file-lines"></i>5. Diskusi &amp; Laporan</button>
+  </nav>
+  <div style="display:flex;gap:8px">
+    <button class="ib" id="btnPins" onclick="togglePins()"><i class="fa-solid fa-location-dot"></i>Pin Nomor</button>
+    <button class="ib" onclick="toggleAppFullscreen()" title="Layar penuh"><i class="fa-solid fa-expand"></i></button>
+  </div>
+</header>
+
+<div id="stage">
+<!-- ============ 1. TUJUAN & TEORI ============ -->
+<section class="page active" id="pg-teori"><div class="scroll">
+  <div class="hero"><div><span class="tag">Laboratorium Virtual Biologi</span>
+    <h2>Praktikum Morfologi Jamur: <em>Hifa &amp; Sporangium</em> Kapang</h2>
+    <p>Amati struktur tubuh kapang pada tempe, roti basi, dan nasi basi secara interaktif — mulai dari pengambilan sampel dengan jarum pentul, pembuatan preparat di meja lab 3D, pengamatan mikroskop 10×10 hingga 10×40, sampai pelabelan struktur hifa dan sporangium.</p></div>
+    <button class="btn btn-a" style="flex-shrink:0;font-size:15px;padding:12px 20px" onclick="switchTab('sim')"><i class="fa-solid fa-play"></i>Mulai Simulasi 3D</button></div>
+  <div id="teoriTabs">
+    <button class="ttb on" onclick="teoriTab(0)">🎯 Tujuan &amp; Indikator</button>
+    <button class="ttb" onclick="teoriTab(1)">🍄 Kingdom Fungi</button>
+    <button class="ttb" onclick="teoriTab(2)">🧵 Hifa &amp; Miselium</button>
+    <button class="ttb" onclick="teoriTab(3)">🌱 Tiga Spesies</button>
+    <span class="tfs"><button class="ttb sm" onclick="teoriFont(-2)" title="Perkecil huruf">A−</button><button class="ttb sm" onclick="teoriFont(2)" title="Perbesar huruf">A+</button></span></div>
+  <div class="tp">
+    <div class="g2">
+      <div class="card" style="border-top:4px solid var(--mid)"><div class="ct">🎯 Tujuan Pembelajaran</div><p>Murid dapat mengetahui <b>struktur tubuh jamur</b> pada sampel tempe, roti basi, dan nasi basi.</p></div>
+      <div class="card" style="border-top:4px solid var(--green)"><div class="ct">🔬 Tujuan Percobaan</div><p>Mengidentifikasi <b>hifa dan sporangium</b> kapang pada tiga sampel, lalu menentukan jenis/spesiesnya melalui studi literatur dan pengamatan mikroskopis.</p></div></div>
+    <div class="card"><div class="ct">🏆 Indikator Pencapaian</div>
+      <div class="g2" style="margin:6px 0 0"><div class="box bb">1. Mengambil dan menyiapkan preparat sampel kapang dengan benar</div><div class="box bv">2. Membedakan <b>hifa bersekat dan tidak bersekat</b></div><div class="box bg">3. Mengaitkan hasil pengamatan dengan <b>nama jenis/spesies</b> kapang</div><div class="box ba">4. Membedakan wujud <b>khamir, kapang, dan jamur (cendawan)</b></div></div></div></div>
+  <div class="tp hidden">
+    <div class="card"><div class="ct">🍄 Kingdom Fungi &amp; Tiga Wujud Morfologi</div>
+      <p>Fungi adalah organisme <b>eukariotik</b>, tidak berklorofil (heterotrof), dinding sel dari <b>kitin</b>, umumnya bereproduksi dengan <b>spora</b>.</p>
+      <div class="g3" style="margin:10px 0 0">
+        <div class="box bb" style="margin:0"><b>Khamir (yeast)</b><br>Uniseluler, bulat/oval, tidak membentuk hifa.</div>
+        <div class="box bv" style="margin:0"><b>Kapang (mold)</b><br>Multiseluler, benang halus (hifa) membentuk miselium. <i>Objek praktikum ini.</i></div>
+        <div class="box ba" style="margin:0"><b>Jamur / cendawan</b><br>Multiseluler, hifa terorganisasi menjadi tubuh buah makroskopis.</div></div></div></div>
+  <div class="tp hidden">
+    <div class="card"><div class="ct">🧵 Hifa &amp; Miselium</div>
+      <p><b>Hifa</b> adalah benang halus penyusun tubuh kapang; kumpulan hifa disebut <b>miselium</b>. Berdasarkan sekatnya:</p>
+      <div class="g2" style="margin:10px 0 0">
+        <div class="box bv" style="margin:0"><b>Hifa bersekat (septat)</b><br>Ada dinding pemisah antarsel; contoh <i>Aspergillus niger</i>.</div>
+        <div class="box bv" style="margin:0"><b>Hifa tak bersekat (senositik)</b><br>Sitoplasma menyatu, inti banyak; contoh <i>Rhizopus</i> sp.</div></div>
+      <div class="box bb" style="margin-top:12px">💧 <b>Aquades</b> melembapkan preparat agar mudah diamati dan tidak cepat kering — namun boleh dibiarkan kering bila sampel sudah cukup tipis dan transparan.</div></div></div>
+  <div class="tp hidden">
+    <div class="card"><div class="ct">🌱 Tiga Spesies yang Diamati (Reproduksi Aseksual dengan Spora)</div>
+      <div class="g3" style="margin:10px 0 0">
+        <div class="box ba" style="margin:0"><b>🫘 Tempe segar → <i>Rhizopus stolonifer</i></b><br>Hifa tidak bersekat; sporangium bulat kehitaman di ujung sporangiofor; ada rizoid (akar semu) &amp; stolon.</div>
+        <div class="box bb" style="margin:0"><b>🍞 Roti basi → <i>Aspergillus niger</i></b><br>Hifa bersekat; konidiofor berujung vesikel seperti "kepala payung" berisi rantai konidia hitam kecokelatan.</div>
+        <div class="box bg" style="margin:0"><b>🍚 Nasi basi → <i>Rhizopus oryzae</i></b><br>Mirip <i>R. stolonifer</i>: hifa tak bersekat, sporangium bulat keabuan hingga kehitaman.</div></div></div></div>
+</div></section>
+
+<!-- ============ 2. SIMULASI ============ -->
+<section class="page" id="pg-sim">
+  <aside class="side">
+    <div class="sh" style="background:linear-gradient(135deg,#0f2460,#1e3a8a);color:#fff"><span>Prosedur Simulator 3D</span><span id="progText" style="color:var(--accent)">0/7</span></div>
+    <div style="height:7px;background:#e2e8f0"><div id="progBar" style="height:100%;width:0;background:linear-gradient(90deg,#f59e0b,#34d399);transition:.3s"></div></div>
+    <div style="padding:10px;border-bottom:1px solid var(--border)">
+      <div style="font:800 10px 'Outfit';letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Sumber sampel</div>
+      <div style="font-size:12px;line-height:1.5;color:var(--text)">🫘 Tempe · 🍞 Roti · 🍚 Nasi sudah tersedia di meja praktikum. Seret <b>Jarum Pentul</b> ke cawan yang ingin diamati.</div></div>
+    <div id="stepList" style="flex:1;overflow-y:auto;padding:10px;background:#f8fafc"></div>
+    <div style="padding:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:7px">
+      <button class="btn btn-a" onclick="quickStep()"><i class="fa-solid fa-wand-magic-sparkles"></i>Jalankan Langkah Aktif</button>
+      <div style="display:flex;gap:7px"><button class="btn btn-p" style="flex:1" id="btnInfSim" onclick="openInference()">Inferensi</button><button class="btn btn-s" onclick="resetBench()" title="Atur ulang"><i class="fa-solid fa-rotate-left"></i></button></div>
+      <button class="btn btn-p hidden" id="btnGoLabel" style="background:var(--green)" onclick="switchTab('label')">Lanjut Identifikasi Label <i class="fa-solid fa-arrow-right"></i></button></div>
+  </aside>
+  <div style="flex:1;padding:10px;display:flex;background:var(--bg)">
+    <div class="canvaswrap" id="benchWrap" style="border-radius:16px;border:1px solid #334155;cursor:grab">
+      <div id="benchCanvas" style="width:100%;height:100%"></div>
+      <div id="benchLabels" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>
+      <div class="hint" id="benchHint">Sampel tempe, roti, dan nasi ada di meja. Seret Jarum Pentul ke salah satu cawan.</div>
+      <div class="vtool">
+        <button onclick="toggleBenchLabels()" title="Label alat"><i class="fa-solid fa-tags"></i></button>
+        <button onclick="openToolInspector()" title="Inspeksi 3D alat &amp; bahan" style="color:var(--accent)"><i class="fa-solid fa-cube"></i></button>
+        <button onclick="B.tsph={r:26,t:0,p:1.02}" title="Reset kamera"><i class="fa-solid fa-video"></i></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. EKSPLORASI MIKROSKOP ============ -->
+<section class="page" id="pg-explore">
+  <aside class="side">
+    <div class="sh"><span>Komponen Mikroskop</span></div>
+    <div style="padding:8px;border-bottom:1px solid var(--border)"><input id="searchPart" oninput="renderParts()" placeholder="Cari bagian mikroskop…" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:9px;font:12px 'Plus Jakarta Sans';background:#f1f5f9"></div>
+    <div id="partsList" style="flex:1;overflow-y:auto;padding:6px"></div>
+    <div style="padding:10px;border-top:1px solid var(--border);background:#f8fafc">
+      <div style="font:800 10px 'Outfit';letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Sudut pandang cepat</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+        <button class="ob" onclick="camAngle('front')">Depan</button><button class="ob" onclick="camAngle('side')">Samping</button><button class="ob" onclick="camAngle('back')">Belakang</button><button class="ob" onclick="camAngle('top')">Atas</button></div></div>
+  </aside>
+  <div class="canvaswrap" id="exWrap" style="cursor:grab">
+    <div id="exCanvas" style="width:100%;height:100%"></div>
+    <div id="pinsLayer" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;display:none"></div>
+    <div class="ctrl">
+      <div id="statusText" style="font-size:10px;font-weight:600;color:#334155;line-height:1.35;border-bottom:1px solid var(--border);padding-bottom:6px">Klik bagian 3D atau pin nomor untuk inspeksi</div>
+      <button class="btn" id="btnPower" onclick="togglePower()" style="background:#e2e8f0;color:#475569;border:1px solid #cbd5e1;padding:7px"><i class="fa-solid fa-power-off"></i><span id="pwLbl">OFF</span></button>
+      <div><div class="lb"><i class="fa-solid fa-sun" style="color:var(--accent)"></i><span id="dimLbl" style="color:var(--mid)">80%</span></div><input type="range" id="sDim" min="0" max="100" value="80" oninput="updateScope()"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><button class="ob on" id="ob0" onclick="selObj(0)">4x</button><button class="ob" id="ob1" onclick="selObj(1)">10x</button><button class="ob" id="ob2" onclick="selObj(2)">40x</button><button class="ob" id="ob3" onclick="selObj(3)">100x</button></div>
+      <button class="ob" id="btnOil" onclick="toggleOil()" style="background:#fef3c7;border-color:#fcd34d;color:#78350f" title="Minyak imersi untuk lensa 100x"><i class="fa-solid fa-droplet"></i> <span id="oilLbl">Minyak</span></button>
+      <div><div class="lb"><span>Makro</span><span id="coLbl" style="color:var(--accent2)">20%</span></div><input type="range" id="sCoarse" min="0" max="100" value="20" oninput="updateScope()"></div>
+      <div><div class="lb"><span>Mikro</span><span id="fiLbl" style="color:var(--green)">30%</span></div><input type="range" id="sFine" min="0" max="100" value="30" oninput="updateScope()"></div>
+      <div><div class="lb"><span>Meja X-Y</span><span id="xyLbl" style="color:#4f46e5">0,0</span></div><input type="range" id="sX" min="-10" max="10" value="0" oninput="updateScope()" style="margin-bottom:5px"><input type="range" id="sY" min="-10" max="10" value="0" oninput="updateScope()"></div>
+    </div>
+  </div>
+  <aside class="side r">
+    <div class="sh"><span>Keterangan &amp; Pandangan Lensa</span></div>
+    <div style="flex:1;overflow-y:auto;padding:12px;background:#f8fafc">
+      <div class="card" style="padding:12px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><div class="ct" style="margin:0"><i class="fa-solid fa-circle-dot" style="color:var(--mid)"></i>Pandangan Okuler</div><span id="magBadge" style="background:var(--pale);color:var(--primary);border:1px solid #bfdbfe;border-radius:99px;font:800 11px 'Outfit';padding:1px 10px">40x Total</span></div>
+        <select id="specSel" onchange="drawOcular()" style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:9px;background:#f1f5f9;font:700 11.5px 'Plus Jakarta Sans';color:var(--primary);margin-bottom:8px">
+          <option value="tempe">Spesimen: Tempe — Rhizopus stolonifer</option><option value="roti">Spesimen: Roti basi — Aspergillus niger</option><option value="nasi">Spesimen: Nasi basi — Rhizopus oryzae</option></select>
+        <div style="width:176px;height:176px;margin:0 auto;border-radius:50%;overflow:hidden;border:4px solid var(--primary);background:#000;box-shadow:0 6px 18px rgba(0,0,0,.3)"><canvas id="ocular" width="220" height="220" style="width:100%;height:100%"></canvas></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px"><span id="focusTxt" style="font-weight:700"></span><span style="color:var(--muted)">Preparat: <b id="prepTxt" style="color:var(--text)">belum dipasang</b></span></div>
+        <button class="btn btn-p" style="width:100%;margin-top:10px" onclick="openInference()"><i class="fa-solid fa-lightbulb" style="color:var(--accent)"></i>Inferensi Hasil Praktikum</button></div>
+      <div class="card" style="padding:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span id="pBadge" style="background:var(--pale);color:var(--primary);border:1px solid #bfdbfe;border-radius:99px;font:700 11px 'Plus Jakarta Sans';padding:1px 10px"></span></div>
+        <h3 id="pTitle" style="font-size:15px;font-weight:800"></h3>
+        <div class="box bb" style="margin-top:8px"><b><i class="fa-solid fa-gears"></i> Fungsi:</b> <span id="pFunc"></span></div>
+        <div class="box ba"><b><i class="fa-solid fa-flask"></i> Cara penggunaan:</b> <span id="pUse"></span></div>
+        <button class="btn btn-p" style="width:100%;margin-top:10px" onclick="partAction()"><i class="fa-solid fa-play"></i><span id="pAct">Demonstrasikan</span></button></div>
+    </div>
+  </aside>
+</section>
+
+<!-- ============ 4. LABEL ============ -->
+<section class="page" id="pg-label"><div class="scroll">
+  <div class="card" style="margin-bottom:12px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">
+    <div><span style="font:800 10px 'Outfit';letter-spacing:.1em;text-transform:uppercase;color:var(--mid)">Evaluasi struktur kapang</span>
+      <h3 style="font-size:18px;font-weight:800" id="lblTitle">Identifikasi Struktur Kapang</h3>
+      <p style="font-size:12px;color:var(--muted)">Ketuk atau seret label ke lingkaran nomor 1–4 pada gambar mikroskopis, lalu tekan Periksa Jawaban.</p></div>
+    <div style="display:flex;gap:8px;align-items:center"><div id="lblTabs" style="display:flex;gap:6px"></div>
+      <button class="btn btn-p" onclick="checkLabels()"><i class="fa-solid fa-check-double"></i>Periksa Jawaban</button><button class="btn btn-s" onclick="resetLabels()">Reset Label</button></div></div></div>
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:14px">
+    <div class="card" style="background:#f8fafc"><div class="ct">Pilihan label (ketuk / seret)</div><div id="chipPool"></div>
+      <div id="lblFeedback" class="box bb" style="font-weight:600">💡 Pilih label di atas, lalu ketuk lingkaran nomor pada gambar.</div></div>
+    <div class="canvaswrap" id="lblWrap" style="height:480px;border-radius:16px;border:1px solid #334155;display:flex;align-items:center;justify-content:center;background:#0f172a">
+      <div style="position:absolute;top:10px;left:10px;background:rgba(15,23,42,.8);border:1px solid #475569;border-radius:10px;padding:5px 12px;font-size:11px;font-weight:700;color:#e2e8f0;pointer-events:none;z-index:31"><i class="fa-solid fa-image" style="color:var(--accent)"></i> Gambar mikroskopis struktur kapang</div>
+      <div id="lblFrame" style="position:relative;display:inline-block;line-height:0;max-width:100%;max-height:100%">
+        <img id="lblImg" alt="Gambar mikroskopis" draggable="false" onerror="this.style.minWidth='560px';this.style.minHeight='420px';this.style.background='#1e293b'" style="display:block;max-width:100%;max-height:480px;width:auto;height:auto;border-radius:10px;user-select:none;-webkit-user-drag:none">
+        <div id="zones" style="position:absolute;inset:0;pointer-events:none">
+          <div class="zone" id="z1" data-num="1" style="pointer-events:auto"><span>1</span><span class="zt hidden"></span></div>
+          <div class="zone" id="z2" data-num="2" style="pointer-events:auto"><span>2</span><span class="zt hidden"></span></div>
+          <div class="zone" id="z3" data-num="3" style="pointer-events:auto"><span>3</span><span class="zt hidden"></span></div>
+          <div class="zone" id="z4" data-num="4" style="pointer-events:auto"><span>4</span><span class="zt hidden"></span></div></div></div>
+    </div></div>
+</div></section>
+
+<!-- ============ 5. DISKUSI ============ -->
+<section class="page" id="pg-diskusi"><div class="scroll">
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+    <div><span style="font:800 10px 'Outfit';letter-spacing:.1em;text-transform:uppercase;color:var(--mid)">Evaluasi pasca-praktikum</span><h3 style="font-size:18px;font-weight:800">Hasil Identifikasi &amp; Pertanyaan Diskusi</h3></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="clearDQ()">↺ Hapus Jawaban</button><button class="btn btn-p" onclick="printDQ()"><i class="fa-solid fa-print"></i>Cetak / Unduh PDF</button></div></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">📝 Hasil identifikasi (pengganti gambar pada LKPD)</div>
+    <p style="margin-bottom:8px;font-size:11.5px">Lengkapi dari hasil pengamatan di menu Simulasi/Eksplorasi. Gambar morfologi tetap digambar tangan pada LKPD cetak.</p>
+    <div class="g3" style="margin:0">
+      <div><b style="font-size:11.5px;color:var(--primary)">🫘 Sampel 1 — Tempe</b><textarea id="id1" rows="3" oninput="saveDQ('id1',this.value)" placeholder="Ciri hifa &amp; sporangium, nama spesies…"></textarea></div>
+      <div><b style="font-size:11.5px;color:var(--primary)">🍞 Sampel 2 — Roti</b><textarea id="id2" rows="3" oninput="saveDQ('id2',this.value)" placeholder="Ciri hifa &amp; sporangium, nama spesies…"></textarea></div>
+      <div><b style="font-size:11.5px;color:var(--primary)">🍚 Sampel 3 — Nasi</b><textarea id="id3" rows="3" oninput="saveDQ('id3',this.value)" placeholder="Ciri hifa &amp; sporangium, nama spesies…"></textarea></div></div></div>
+  <div class="g2">
+    <div class="card"><b style="font-size:12px;color:var(--primary)">1. Apa fungsi aquades/air suling pada percobaan ini? Mengapa aquades boleh ditambahkan atau preparat boleh dibiarkan kering?</b><textarea id="dq1" rows="3" oninput="saveDQ('dq1',this.value)" placeholder="Tuliskan analisis Anda…"></textarea></div>
+    <div class="card"><b style="font-size:12px;color:var(--primary)">2. Tempe diambil dalam keadaan segar, sedangkan roti dan nasi yang sudah basi. Mengapa demikian?</b><textarea id="dq2" rows="3" oninput="saveDQ('dq2',this.value)" placeholder="Tuliskan analisis Anda…"></textarea></div>
+    <div class="card"><b style="font-size:12px;color:var(--primary)">3. Secara morfologi fungi dibedakan menjadi khamir, kapang, dan jamur. Ciri apa yang membedakan ketiganya?</b><textarea id="dq3" rows="3" oninput="saveDQ('dq3',this.value)" placeholder="Tuliskan perbandingan…"></textarea></div>
+    <div class="card"><b style="font-size:12px;color:var(--primary)">4. Buatlah kesimpulan berdasarkan hasil pengamatan dan diskusi kelompok!</b><textarea id="dq4" rows="3" oninput="saveDQ('dq4',this.value)" placeholder="Tuliskan kesimpulan Anda…"></textarea></div></div>
+</div></section>
+</div>
+
+<div id="modal" class="hidden"><div id="modalBox"></div></div>
+
+<script>
+/* ===================================================================
+   0. UTILITAS & DATA
+=================================================================== */
+const $=id=>document.getElementById(id);
+let AC=null;
+function beep(f=600){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.12);o.stop(AC.currentTime+.13);}catch(e){}}
+function toast(t,ok){const d=document.createElement('div');d.className='toast';d.textContent=t;d.style.background=ok?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)';document.body.appendChild(d);setTimeout(()=>d.remove(),1300);}
+const distXZ=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
+
+const SAMPLES={
+ tempe:{name:'Tempe (segar)',icon:'🫘',sp:'Rhizopus stolonifer',group:'Kapang · Zygomycota',type:'rhizopus',hifa:'Tidak bersekat (senositik)',img:'https://denicendrianto41.github.io/tempe.webp',micro:'https://denicendrianto41.github.io/rhizopus_stolonifer.webp',acc:'#e8dcc0',spore:0x2b2015,sporeCss:'#2b2015',
+   zones:['Sporangium','Sporangiofor','Hifa tidak bersekat','Rizoid / Stolon'],
+   desc:'Hifa tampak sebagai benang bercabang tanpa sekat melintang. Sporangium bulat kehitaman muncul di ujung sporangiofor yang tumbuh dari stolon, dilengkapi rizoid (akar semu) yang menancap ke substrat.',
+   struct:'sporangium bulat kehitaman, sporangiofor, stolon, dan rizoid'},
+ roti:{name:'Roti (basi/berjamur)',icon:'🍞',sp:'Aspergillus niger',group:'Kapang · Ascomycota',type:'aspergillus',hifa:'Bersekat (septat)',img:'https://denicendrianto41.github.io/roti.webp',micro:'https://denicendrianto41.github.io/aspergilus.webp',acc:'#d9b77a',spore:0x1b1208,sporeCss:'#1b1208',
+   zones:['Konidia (spora)','Vesikel','Konidiofor','Hifa bersekat'],
+   desc:'Hifa bersekat membentuk miselium halus. Konidiofor berujung vesikel seperti kepala payung/dandelion berisi rantai konidia (spora aseksual) hitam kecokelatan — sumber warna gelap pada permukaan roti.',
+   struct:'konidiofor, vesikel, fialid, dan rantai konidia'},
+ nasi:{name:'Nasi (basi)',icon:'🍚',sp:'Rhizopus oryzae',group:'Kapang · Zygomycota',type:'rhizopus',hifa:'Tidak bersekat (senositik)',img:'https://denicendrianto41.github.io/nasi.webp',micro:'https://denicendrianto41.github.io/rhizopus_oryzae.webp',acc:'#cfd2bd',spore:0x55554a,sporeCss:'#5a5a48',
+   zones:['Sporangium','Sporangiofor','Hifa tidak bersekat','Rizoid'],
+   desc:'Mirip Rhizopus stolonifer: hifa tak bersekat tumbuh cepat membentuk anyaman miselium seperti kapas putih sebelum sporangium bulat keabu-abuan hingga kehitaman terbentuk di ujung sporangiofor tegak.',
+   struct:'sporangium bulat keabuan, sporangiofor, dan rizoid'}
+};
+const MICRO={},SIMG={};
+Object.entries(SAMPLES).forEach(([k,sm])=>{
+  const a=new Image();a.crossOrigin='anonymous';a.onload=()=>{try{if(E.r)drawOcular();}catch(_){}};a.src=sm.micro;MICRO[k]=a;
+  const b=new Image();b.crossOrigin='anonymous';b.onload=()=>{try{if(B.obj&&B.obj['dish_'+k])applyDishImg(B.obj['dish_'+k],k);}catch(_){}};b.src=sm.img;SIMG[k]=b;});
+const imgOK=im=>im&&im.complete&&im.naturalWidth>0;
+
+let CUR='teori';
+
+/* ===================================================================
+   1. NAVIGASI
+=================================================================== */
+function switchTab(t){
+  beep(620);
+  if(t==='sim'&&window.IS_TOUCH&&window.lockLandscape)window.lockLandscape();
+  CUR=t;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  $('pg-'+t).classList.add('active');$('nb-'+t).classList.add('active');
+  requestAnimationFrame(()=>{
+    if(t==='sim'){if(!B.r)initBench();resizeAll();}
+    if(t==='explore'){if(!E.r)initExplore();resizeAll();drawOcular();}
+    if(t==='label'){if(!L.init)initLabel3D();setLabelSample(LBL.sample);}
+  });
+}
+let TF=19;
+function teoriTab(i){beep(620);document.querySelectorAll('#pg-teori .tp').forEach((p,j)=>p.classList.toggle('hidden',j!==i));document.querySelectorAll('#teoriTabs .ttb:not(.sm)').forEach((b,j)=>b.classList.toggle('on',j===i));}
+function teoriFont(d){TF=Math.max(14,Math.min(30,TF+d));$('pg-teori').style.setProperty('--tf',TF+'px');beep(560);}
+function resizeAll(){
+  [[B,'benchCanvas'],[E,'exCanvas']].forEach(([o,id])=>{
+    const c=$(id);if(!o.r||!c)return;const w=c.clientWidth,h=c.clientHeight;if(!w||!h)return;
+    o.cam.aspect=w/h;o.cam.updateProjectionMatrix();o.r.setSize(w,h);});
+}
+window.addEventListener('resize',resizeAll);
+
+/* ===================================================================
+   2. MODEL MIKROSKOP (dipakai di meja lab & eksplorasi)
+=================================================================== */
+const PARTS=[
+ {id:1,name:'Lensa Okuler (10×)',cat:'Sistem Optik',func:'Lensa tempat mata melihat objek; memperbesar bayangan dari objektif 10× sehingga perbesaran total = 10 × perbesaran objektif.',use:'Amati dengan kedua mata terbuka; atur jarak pupil agar kedua lingkaran pandang menyatu.',act:'Efek fokus okuler',pin:[2.8,32.5,6.2],tg:[0,31,4]},
+ {id:2,name:'Tabung Binokuler',cat:'Sistem Optik',func:'Menyangga lensa okuler pada kemiringan ergonomis dan meneruskan cahaya dari prisma ke mata.',use:'Geser kedua tabung mendekat/menjauh hingga cocok dengan jarak antar pupil.',act:'Sesuaikan jarak pupil',pin:[-3.2,30.2,5.0],tg:[0,29,4]},
+ {id:3,name:'Kepala Putar 360°',cat:'Sistem Mekanik',func:'Rumah prisma optik yang meneruskan cahaya dari objektif ke tabung dan dapat diputar 360°.',use:'Kendurkan sekrup pengunci bila ingin memutar kepala untuk berbagi pengamatan.',act:'Putar kepala 360°',pin:[2.2,26.5,2.0],tg:[0,25,1]},
+ {id:4,name:'Lengan Mikroskop',cat:'Sistem Mekanik',func:'Rangka lengkung kokoh yang menyangga komponen optik atas dan mekanisme fokus.',use:'Pegang lengan dengan satu tangan dan sangga alas dengan tangan lain saat memindahkan mikroskop.',act:'Inspeksi lengan',pin:[0,21,-5.8],tg:[0,18,-4]},
+ {id:5,name:'Revolver (Revolving Nosepiece)',cat:'Sistem Optik',func:'Cakram putar tempat 4 lensa objektif untuk mengganti perbesaran dengan cepat.',use:'Putar hingga terdengar "klik" tanda objektif tepat di jalur cahaya.',act:'Putar revolver',pin:[2.1,22.2,2.2],tg:[0,21,1]},
+ {id:6,name:'Lensa Objektif (4×, 10×, 40×, 100×)',cat:'Sistem Optik',func:'Berhadapan langsung dengan preparat; membentuk bayangan nyata, terbalik, dan diperbesar (cincin merah 4×, kuning 10×, biru 40×, putih 100× minyak imersi).',use:'Mulai dari objektif terendah (4×), naikkan ke 10× atau 40× setelah fokus.',act:'Ganti lensa objektif',pin:[1.8,19.2,2.8],tg:[0,19,1]},
+ {id:7,name:'Meja Preparat',cat:'Sistem Mekanik',func:'Tempat meletakkan kaca objek; berlubang di tengah agar cahaya kondensor dapat menembus preparat.',use:'Pastikan permukaan meja bersih dan kering sebelum meletakkan preparat.',act:'Naik/turun meja',pin:[-4.5,15.2,3.5],tg:[0,15,1]},
+ {id:8,name:'Penjepit Preparat',cat:'Sistem Mekanik',func:'Jepitan berpegas yang mengunci kaca objek agar tidak bergeser saat pengamatan.',use:'Tarik tuas ke samping, letakkan kaca objek rata, lepaskan tuas perlahan.',act:'Buka/tutup penjepit',pin:[-2.2,16.0,2.2],tg:[0,16,1]},
+ {id:9,name:'Knop Penggerak Meja X-Y',cat:'Sistem Mekanik',func:'Menggeser preparat maju-mundur (Y) dan kiri-kanan (X) untuk mencari bidang pandang yang diinginkan.',use:'Putar sambil mengamati melalui okuler untuk memusatkan hifa atau sporangium.',act:'Geser preparat',pin:[4.8,11.8,1.5],tg:[4,13,1]},
+ {id:10,name:'Kondensor Abbe',cat:'Sistem Pencahayaan',func:'Mengumpulkan dan memfokuskan kerucut cahaya LED tepat ke spesimen.',use:'Naikkan kondensor mendekati meja saat memakai objektif 40× dan 100×.',act:'Sorot kondensor',pin:[0,12.2,2.2],tg:[0,12,1]},
+ {id:11,name:'Diafragma Iris',cat:'Sistem Pencahayaan',func:'Mengatur diameter bukaan cahaya sehingga mengubah kontras dan kedalaman bidang fokus.',use:'Geser tuas untuk mempersempit (kontras naik) atau melebarkan bukaan.',act:'Atur bukaan',pin:[1.6,11.2,2.8],tg:[0,11,1.5]},
+ {id:12,name:'Iluminator Lampu LED',cat:'Sistem Pencahayaan',func:'Sumber cahaya putih dingin di dasar mikroskop yang menyinari spesimen dari bawah.',use:'Nyalakan sakelar utama, lalu atur kecerahan dengan dimmer.',act:'Toggle iluminator',pin:[0,6.2,3.2],tg:[0,5.5,1.5]},
+ {id:13,name:'Makrometer (Fokus Kasar)',cat:'Sistem Mekanik',func:'Knop besar untuk menaikkan/menurunkan meja secara cepat.',use:'Gunakan makrometer HANYA dengan objektif 4× untuk menemukan fokus awal.',act:'Putar makrometer',pin:[5.5,8.8,-4.5],tg:[0,9,-4]},
+ {id:14,name:'Mikrometer (Fokus Halus)',cat:'Sistem Mekanik',func:'Knop kecil satu poros dengan makrometer untuk penajaman gambar yang sangat halus.',use:'Putar perlahan untuk mempertajam hifa dan sporangium pada 10×, 40×, dan 100×.',act:'Putar mikrometer',pin:[6.8,8.8,-4.5],tg:[0,9,-4]},
+ {id:15,name:'Sakelar Daya & Dimmer',cat:'Sistem Pencahayaan',func:'Sakelar menghubungkan/memutus listrik; roda dimmer mengatur intensitas cahaya LED.',use:'Tekan sakelar untuk menyalakan; matikan setelah praktikum selesai.',act:'Klik sakelar power',pin:[-1.6,4.2,-8.8],tg:[-1.5,4,-8]},
+ {id:16,name:'Kaki & Dasar Mikroskop',cat:'Sistem Mekanik',func:'Pondasi berat berkaki karet anti-selip yang menjaga mikroskop stabil dan bebas getaran.',use:'Letakkan di meja laboratorium yang datar dan kokoh.',act:'Inspeksi dasar',pin:[0,2.5,5.5],tg:[0,3,0]}
+];
+function buildMicroscope(reg){
+  const G=new THREE.Group(),R={};
+  const M=(c,r=.3,m=.2)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+  const white=M(0xf1f5f9,.3,.15),dark=M(0x1e293b,.35,.65),rub=M(0x0f172a,.75,.1),chr=M(0xe2e8f0,.15,.9),blue=M(0x0284c7,.3,.3),brass=M(0xf59e0b,.25,.85);
+  const add=(mesh,id,parent)=>{(parent||G).add(mesh);if(reg&&id)reg(mesh,id);return mesh;};
+  const box=(w,h,d,m,x,y,z,id,p)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);return add(o,id,p);};
+  const cyl=(rt,rb,h,m,x,y,z,id,p,seg=28)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),m);o.position.set(x,y,z);return add(o,id,p);};
+  // dasar
+  box(11,2.4,15,white,0,1.5,0,16);cyl(5.5,5.8,2.4,white,0,1.5,5.2,16,null,32);
+  // iluminator
+  cyl(2.6,3.2,1.6,dark,0,3.4,2,12);
+  R.bulb=new THREE.Mesh(new THREE.SphereGeometry(1.4,24,16),new THREE.MeshStandardMaterial({color:0xe0f2fe,emissive:0x38bdf8,emissiveIntensity:0}));
+  R.bulb.scale.set(1,.4,1);R.bulb.position.set(0,4.1,2);add(R.bulb,12);
+  R.beam=new THREE.Mesh(new THREE.ConeGeometry(2.5,12,32,1,true),new THREE.MeshBasicMaterial({color:0x7dd3fc,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+  R.beam.position.set(0,10,2);R.beam.rotation.x=Math.PI;G.add(R.beam);
+  R.spot=new THREE.PointLight(0x38bdf8,0,25);R.spot.position.set(0,6,2);G.add(R.spot);
+  // dimmer & sakelar & panel
+  const dw=cyl(1.2,1.2,.6,rub,5.6,2.2,-1.5,15,null,24);dw.rotation.z=Math.PI/2;
+  box(1.2,1.6,.6,blue,-2.2,2.2,-7.6,15);box(3.2,2.2,.5,dark,2,2.2,-7.6,15);
+  // lengan
+  box(5.8,14,5.2,white,0,9.2,-4.6,4);
+  const ua=box(4.6,12.5,4.5,white,0,20.5,-3.5,4);ua.rotation.x=.25;
+  const tr=box(4.8,9.5,.8,blue,0,19.5,-1.5,4);tr.rotation.x=.25;
+  box(4.8,2.4,7.5,white,0,25,.2,4);
+  const hd=new THREE.Mesh(new THREE.TorusGeometry(2.2,.45,16,32,Math.PI),dark);hd.rotation.y=Math.PI/2;hd.position.set(0,17.5,-6.8);add(hd,4);
+  // knop fokus
+  R.coarse=new THREE.Group();R.coarse.position.set(0,7.8,-4.5);G.add(R.coarse);
+  [3.6,-3.6].forEach(x=>{const k=cyl(2.1,2.1,1.4,rub,x,0,0,13,R.coarse,32);k.rotation.z=Math.PI/2;});
+  R.fine=new THREE.Group();R.fine.position.set(0,7.8,-4.5);G.add(R.fine);
+  [4.8,-4.8].forEach(x=>{const k=cyl(1.35,1.35,1.2,dark,x,0,0,14,R.fine,28);k.rotation.z=Math.PI/2;});
+  // meja
+  R.stage=new THREE.Group();R.stage.position.set(0,15,1.5);G.add(R.stage);
+  box(10.5,.8,9.5,rub,0,0,0,7,R.stage);
+  R.clip=box(3.8,.25,.6,chr,-1.8,.65,-.8,8,R.stage);
+  box(.8,.35,7.8,chr,4.2,.55,0,9,R.stage);
+  cyl(.65,.65,3.2,dark,4.5,-2,1.5,9,R.stage,20);
+  cyl(2.1,1.8,2.2,dark,0,-1.6,.5,10,R.stage);
+  cyl(2.3,2.3,.6,chr,0,-2.6,.5,11,R.stage);
+  // revolver & objektif
+  R.nose=new THREE.Group();R.nose.position.set(0,22.8,1.5);G.add(R.nose);
+  const nd=cyl(2.8,3.1,1.2,dark,0,0,0,5,R.nose,32);nd.rotation.x=.2;
+  [[0,2.2,0xef4444],[Math.PI/2,2.8,0xf59e0b],[Math.PI,3.4,0x38bdf8],[-Math.PI/2,3.8,0xffffff]].forEach(([a,l,col])=>{
+    const g=new THREE.Group();g.position.set(Math.sin(a)*1.8,-l/2-.4,Math.cos(a)*1.8);R.nose.add(g);
+    cyl(.55,.42,l,chr,0,0,0,6,g,20);cyl(.57,.57,.3,M(col,.3,.1),0,-l*.2,0,6,g,20);});
+  // kepala
+  R.head=new THREE.Group();R.head.position.set(0,26.2,1.5);G.add(R.head);
+  cyl(2.6,2.8,2.5,white,0,0,0,3,R.head,32);
+  const hg=box(5.6,2.2,3.6,dark,0,2.2,1.5,3,R.head);hg.rotation.x=.52;
+  [-1.8,1.8].forEach(x=>{
+    const t=cyl(.95,1.05,4.2,dark,x,4.2,3.2,2,R.head,24);t.rotation.x=.52;
+    const o=cyl(1.15,.95,2,rub,x,6.4,4.5,1,R.head,24);o.rotation.x=.52;});
+  const dr=cyl(1.12,1.12,.7,brass,-1.8,5.2,3.8,2,R.head,24);dr.rotation.x=.52;
+  return {group:G,refs:R};
+}
+
+/* ===================================================================
+   3. SPESIMEN MIKROSKOPIK (kanvas prosedural)
+=================================================================== */
+const fieldCache={};
+function getField(sample,oi){
+  const key=sample+oi;if(fieldCache[key])return fieldCache[key];
+  const S=1100,cv=document.createElement('canvas');cv.width=cv.height=S;const c=cv.getContext('2d');
+  const sp=SAMPLES[sample],asp=sp.type==='aspergillus';
+  let seed=(oi+1)*7919+(sample==='roti'?31:sample==='nasi'?57:3);
+  const rnd=()=>{seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296;};
+  const bg=c.createRadialGradient(S/2,S/2,40,S/2,S/2,S*.6);bg.addColorStop(0,'#dcd6c4');bg.addColorStop(.75,'#cdc5af');bg.addColorStop(1,'#b5ac94');
+  c.fillStyle=bg;c.fillRect(0,0,S,S);
+  for(let i=0;i<220;i++){c.beginPath();c.arc(rnd()*S,rnd()*S,.8+rnd()*1.8,0,7);c.fillStyle=rnd()>.5?'rgba(95,90,75,.2)':'rgba(255,252,235,.25)';c.fill();}
+  const k=[.32,.6,1.15,2.1][oi],hi=oi>=2;
+  c.lineCap='round';c.lineJoin='round';
+  // hifa: garis gelap + inti terang agar tampak seperti tabung
+  function hypha(x,y,ang,len,w,curl,septate){
+    const step=Math.max(7,w*3.4),n=Math.floor(len/step),pts=[[x,y,ang]];let a=ang;
+    for(let i=0;i<n;i++){a+=(rnd()-.5)*curl;x+=Math.cos(a)*step;y+=Math.sin(a)*step;pts.push([x,y,a]);}
+    const path=()=>{c.beginPath();pts.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));};
+    path();c.strokeStyle='rgba(62,54,40,.9)';c.lineWidth=w+1.8;c.stroke();
+    path();c.strokeStyle='rgba(222,218,196,.85)';c.lineWidth=Math.max(.8,w*.5);c.stroke();
+    if(septate){pts.forEach((p,i)=>{if(i%3===1){const px=-Math.sin(p[2])*(w*.55+1),py=Math.cos(p[2])*(w*.55+1);c.beginPath();c.moveTo(p[0]-px,p[1]-py);c.lineTo(p[0]+px,p[1]+py);c.strokeStyle='rgba(50,42,30,.95)';c.lineWidth=Math.max(1,w*.22);c.stroke();}});}
+    else if(hi){pts.forEach((p,i)=>{if(i%4===2){c.beginPath();c.arc(p[0],p[1],Math.max(1,w*.17),0,7);c.fillStyle='rgba(70,60,45,.75)';c.fill();}});}
+    return pts;
+  }
+  function network(){
+    const n=[26,14,7,4][oi],w=[1.1,1.8,3.4,5.8][oi];
+    for(let i=0;i<n;i++){
+      const pts=hypha(rnd()*S,rnd()*S,rnd()*6.28,(260+rnd()*260)*k,w,asp?.35:.7,asp);
+      for(let b=0;b<2;b++){const p=pts[Math.floor(rnd()*pts.length)];hypha(p[0],p[1],p[2]+(rnd()>.5?1:-1)*(.7+rnd()*.5),(120+rnd()*140)*k,w*.75,.6,asp);}
+    }
+  }
+  function rhizopus(cx,cy){
+    const L=150*k,R=34*k;
+    hypha(cx-130*k,cy,0,260*k,3.2*k,.25,false);               // stolon
+    [[1.2,-0.2],[1.57,0],[1.95,.2]].forEach(([a])=>hypha(cx,cy,a,(55+rnd()*30)*k,1.3*k,.7,false)); // rizoid
+    const top=[cx+(rnd()-.5)*18*k,cy-L];
+    c.beginPath();c.moveTo(cx,cy);c.quadraticCurveTo(cx+10*k,cy-L/2,top[0],top[1]);
+    c.strokeStyle='rgba(62,54,40,.9)';c.lineWidth=2.8*k+1.6;c.stroke();
+    c.strokeStyle='rgba(222,218,196,.85)';c.lineWidth=1.4*k;c.stroke();
+    const g=c.createRadialGradient(top[0]-R*.3,top[1]-R*.3,R*.1,top[0],top[1],R);
+    g.addColorStop(0,sample==='nasi'?'#8a8a76':'#4a4030');g.addColorStop(1,sp.sporeCss);
+    c.beginPath();c.arc(top[0],top[1],R,0,7);c.fillStyle=g;c.fill();c.strokeStyle='rgba(0,0,0,.6)';c.lineWidth=1.5;c.stroke();
+    const sd=hi?40:14;for(let i=0;i<sd;i++){const a=rnd()*6.28,r=Math.sqrt(rnd())*R*.88;c.beginPath();c.arc(top[0]+Math.cos(a)*r,top[1]+Math.sin(a)*r,hi?2.2:1,0,7);c.fillStyle='rgba(20,16,10,.8)';c.fill();}
+    if(hi){c.beginPath();c.arc(top[0],top[1]+R*.55,R*.3,0,7);c.fillStyle='rgba(200,190,160,.55)';c.fill();c.strokeStyle='rgba(60,50,35,.7)';c.stroke();} // kolumela
+  }
+  function aspergillus(cx,cy){
+    const L=140*k,R=20*k;
+    hypha(cx-120*k,cy,0,240*k,3*k,.25,true);
+    const top=[cx,cy-L];
+    c.beginPath();c.moveTo(cx,cy);c.lineTo(top[0],top[1]);c.strokeStyle='rgba(62,54,40,.9)';c.lineWidth=3.2*k+1.6;c.stroke();c.strokeStyle='rgba(222,218,196,.85)';c.lineWidth=1.6*k;c.stroke();
+    const n=hi?20:12,cl=hi?5:2;
+    for(let i=0;i<n;i++){const a=i/n*6.283+rnd()*.2;let px=top[0]+Math.cos(a)*R,py=top[1]+Math.sin(a)*R;
+      const ph=10*k;c.beginPath();c.moveTo(px,py);px+=Math.cos(a)*ph;py+=Math.sin(a)*ph;c.lineTo(px,py);c.strokeStyle='rgba(60,50,35,.9)';c.lineWidth=Math.max(1,1.4*k);c.stroke();
+      for(let j=0;j<cl;j++){px+=Math.cos(a)*4.6*k;py+=Math.sin(a)*4.6*k;c.beginPath();c.arc(px,py,Math.max(1.3,2.3*k),0,7);c.fillStyle=sp.sporeCss;c.fill();}}
+    const g=c.createRadialGradient(top[0]-R*.3,top[1]-R*.3,R*.1,top[0],top[1],R);g.addColorStop(0,'#c8bd96');g.addColorStop(1,'#6a5a3a');
+    c.beginPath();c.arc(top[0],top[1],R,0,7);c.fillStyle=g;c.fill();c.strokeStyle='rgba(40,30,18,.8)';c.lineWidth=1.5;c.stroke();
+  }
+  network();
+  const units=[12,7,3,1][oi];
+  for(let i=0;i<units;i++){
+    let x,y;
+    if(i===0&&oi>=2){x=S/2;y=S/2+(oi===3?190:120);}
+    else{x=170+rnd()*(S-340);y=300+rnd()*(S-420);}
+    asp?aspergillus(x,y):rhizopus(x,y);
+  }
+  fieldCache[key]=cv;return cv;
+}
+
+/* ===================================================================
+   4. EKSPLORASI MIKROSKOP 3D
+=================================================================== */
+const E={r:null};
+const S={power:false,obj:0,oil:false,coarse:20,fine:30,sx:0,sy:0,light:0,sel:1,pins:false,spec:'tempe'};
+E.meshes=[];E.pm=new Map();E.pinEls=[];
+E.sph={r:44,t:.55,p:1.15};E.tsph={r:44,t:.55,p:1.15};
+function initExplore(){
+  const c=$('exCanvas'),w=c.clientWidth||800,h=c.clientHeight||600;
+  E.scene=new THREE.Scene();E.cam=new THREE.PerspectiveCamera(40,w/h,.1,300);
+  E.r=new THREE.WebGLRenderer({antialias:true,alpha:true});E.r.setSize(w,h);E.r.setPixelRatio(window.IS_TOUCH?1:Math.min(devicePixelRatio,1.5));c.appendChild(E.r.domElement);
+  E.look=new THREE.Vector3(0,16,0);E.tlook=new THREE.Vector3(0,16,0);
+  E.scene.add(new THREE.AmbientLight(0xffffff,.7));
+  const d1=new THREE.DirectionalLight(0xffffff,.9);d1.position.set(25,45,30);E.scene.add(d1);
+  const d2=new THREE.DirectionalLight(0x38bdf8,.45);d2.position.set(-28,25,-20);E.scene.add(d2);
+  const fl=new THREE.Mesh(new THREE.CylinderGeometry(18,19,.8,48),new THREE.MeshStandardMaterial({color:0x0f172a,roughness:.5,metalness:.2}));fl.position.y=-.4;E.scene.add(fl);
+  const m=buildMicroscope((mesh,id)=>{mesh.userData.pid=id;if(mesh.material){mesh.material=mesh.material.clone();mesh.userData.oe=mesh.material.emissive?mesh.material.emissive.getHex():0;}E.meshes.push(mesh);if(!E.pm.has(id))E.pm.set(id,[]);E.pm.get(id).push(mesh);});
+  E.scene.add(m.group);E.m=m.refs;
+  // preparat di meja
+  const pg=new THREE.Group();
+  const gm=new THREE.MeshPhysicalMaterial({color:0xdff1ff,transparent:true,opacity:.4,roughness:.05});
+  pg.add(new THREE.Mesh(new THREE.BoxGeometry(5.5,.14,2),gm));
+  E.smear=new THREE.Mesh(new THREE.CylinderGeometry(.6,.6,.1,24),new THREE.MeshStandardMaterial({color:0xe8dcc0,roughness:.6}));E.smear.position.y=.1;pg.add(E.smear);
+  const cvr=new THREE.Mesh(new THREE.BoxGeometry(1.5,.08,1.5),gm);cvr.position.y=.2;pg.add(cvr);
+  pg.position.set(0,.5,.5);pg.visible=false;m.refs.stage.add(pg);E.prep=pg;
+  // pin
+  const pl=$('pinsLayer');
+  PARTS.forEach(p=>{const el=document.createElement('div');el.className='pin';el.textContent=p.id;el.onclick=e=>{e.stopPropagation();selectPart(p.id,true);};pl.appendChild(el);E.pinEls.push({id:p.id,el,v:new THREE.Vector3(...p.pin)});});
+  // input
+  const dom=E.r.domElement;let drag=false,pv={x:0,y:0},p0={x:0,y:0};
+  dom.addEventListener('pointerdown',e=>{drag=true;pv={x:e.clientX,y:e.clientY};p0={...pv};try{dom.setPointerCapture(e.pointerId);}catch(_){}});
+  window.addEventListener('pointermove',e=>{if(!drag)return;const sp=e.pointerType==='touch'?.012:.008;E.tsph.t-=(e.clientX-pv.x)*sp;E.tsph.p=Math.max(.15,Math.min(Math.PI-.15,E.tsph.p-(e.clientY-pv.y)*sp));pv={x:e.clientX,y:e.clientY};});
+  window.addEventListener('pointerup',e=>{if(!drag)return;drag=false;if(Math.hypot(e.clientX-p0.x,e.clientY-p0.y)<8){
+    const rc=dom.getBoundingClientRect(),mo=new THREE.Vector2(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1),rcst=new THREE.Raycaster();rcst.setFromCamera(mo,E.cam);
+    const hit=rcst.intersectObjects(E.meshes,false);if(hit.length)selectPart(hit[0].object.userData.pid,true);}});
+  dom.addEventListener('wheel',e=>{e.preventDefault();E.tsph.r=Math.max(16,Math.min(80,E.tsph.r+e.deltaY*.03));},{passive:false});
+  renderParts();selectPart(1,false);updateScope();
+}
+function renderParts(){
+  const q=($('searchPart').value||'').toLowerCase(),el=$('partsList');el.innerHTML='';
+  PARTS.forEach(p=>{if(q&&!p.name.toLowerCase().includes(q)&&!p.cat.toLowerCase().includes(q))return;
+    const b=document.createElement('button');b.className='partbtn'+(p.id===S.sel?' sel':'');b.onclick=()=>selectPart(p.id,true);
+    b.innerHTML=`<i>${p.id}</i><div style="overflow:hidden"><div style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden">${p.name}</div><div style="font-size:10px;color:#94a3b8;font-weight:500">${p.cat}</div></div>`;el.appendChild(b);});
+}
+function selectPart(id,mv){
+  const p=PARTS.find(x=>x.id===id);if(!p)return;beep(660);S.sel=id;
+  E.pinEls.forEach(x=>x.el.classList.toggle('active',x.id===id));
+  E.meshes.forEach(m=>{if(!m.material||!m.material.emissive)return;if(m.userData.pid===id){m.material.emissive.setHex(0x1d4ed8);m.material.emissiveIntensity=.45;}else{m.material.emissive.setHex(m.userData.oe||0);m.material.emissiveIntensity=(m===E.m.bulb)?S.light:0;}});
+  $('pBadge').textContent=`#${p.id} • ${p.cat}`;$('pTitle').textContent=p.name;$('pFunc').textContent=p.func;$('pUse').textContent=p.use;$('pAct').textContent=p.act;
+  $('statusText').innerHTML=`Terpilih: <b style="color:#1d4ed8">${p.id}. ${p.name}</b>`;
+  renderParts();
+  if(mv){const t=new THREE.Vector3(...p.tg);E.tlook.copy(t);E.tsph.r=26;E.tsph.t=.6;E.tsph.p=1.25;}
+}
+function partAction(){
+  beep(780);const id=S.sel;
+  if(id===5||id===6)selObj((S.obj+1)%4);
+  else if(id===12||id===15)togglePower();
+  else if(id===13){const s=$('sCoarse');s.value=(+s.value+25)%100;updateScope();}
+  else if(id===14){const s=$('sFine');s.value=(+s.value+20)%100;updateScope();}
+  else if(id===3)E.m.head.rotation.y+=Math.PI/3;
+  else if(id===8)E.m.clip.rotation.y=E.m.clip.rotation.y===0?.35:0;
+  else if(id===9){const s=$('sX');s.value=+s.value>=8?-8:+s.value+4;updateScope();}
+  else (E.pm.get(id)||[]).forEach(m=>{if(m.material&&m.material.emissive){m.material.emissive.setHex(0xf59e0b);setTimeout(()=>m.material.emissive.setHex(0x1d4ed8),450);}});
+}
+function camAngle(a){beep(620);E.tlook.set(0,16,0);E.tsph=a==='front'?{r:42,t:0,p:1.2}:a==='side'?{r:42,t:Math.PI/2,p:1.2}:a==='back'?{r:42,t:Math.PI,p:1.2}:{r:42,t:0,p:.25};}
+function togglePins(){S.pins=!S.pins;$('pinsLayer').style.display=S.pins?'block':'none';$('btnPins').classList.toggle('on',S.pins);beep(600);}
+function togglePower(){
+  S.power=!S.power;beep(S.power?880:440);
+  const b=$('btnPower');b.style.background=S.power?'#059669':'#e2e8f0';b.style.color=S.power?'#fff':'#475569';$('pwLbl').textContent=S.power?'ON':'OFF';
+  updateScope();
+  $('statusText').innerHTML=S.power?'Lampu menyala. Atur objektif &amp; fokus.':'Mikroskop dimatikan.';
+}
+function selObj(i){
+  S.obj=i;beep(520+i*80);
+  for(let k=0;k<4;k++)$('ob'+k).classList.toggle('on',k===i);
+  $('magBadge').textContent=[40,100,400,1000][i]+'x Total';
+  if(i===3&&!S.oil)$('statusText').innerHTML='<span style="color:#b45309">Objektif 100× aktif: teteskan minyak imersi agar tajam!</span>';
+  if(E.m)E.m.nose.rotation.y=-i*Math.PI/2;
+  drawOcular();
+}
+function toggleOil(){S.oil=!S.oil;beep(S.oil?840:480);$('oilLbl').textContent=S.oil?'Aktif':'Minyak';$('btnOil').style.background=S.oil?'#d1fae5':'#fef3c7';drawOcular();}
+function updateScope(){
+  const dim=+$('sDim').value;S.coarse=+$('sCoarse').value;S.fine=+$('sFine').value;S.sx=+$('sX').value;S.sy=+$('sY').value;
+  S.light=S.power?dim/100:0;
+  $('dimLbl').textContent=dim+'%';$('coLbl').textContent=S.coarse+'%';$('fiLbl').textContent=S.fine+'%';$('xyLbl').textContent=S.sx+','+S.sy;
+  const R=E.m;if(R){
+    R.beam.visible=S.light>.02;R.beam.material.opacity=S.light*.28;R.spot.intensity=S.light*1.5;R.bulb.material.emissiveIntensity=S.light;
+    if(R.stage.userData.bx===undefined){R.stage.userData.bx=R.stage.position.x;R.stage.userData.bz=R.stage.position.z;}
+    R.stage.position.y=13.5+S.coarse/100*3+S.fine/100*.3;R.stage.position.x=R.stage.userData.bx+S.sx*.25;R.stage.position.z=R.stage.userData.bz-S.sy*.2;
+    R.coarse.rotation.x=S.coarse/100*Math.PI*2;R.fine.rotation.x=S.fine/100*Math.PI*4;}
+  drawOcular();
+}
+function drawOcular(){
+  const cv=$('ocular');if(!cv)return;const c=cv.getContext('2d'),w=cv.width,h=cv.height,fs=$('focusTxt');
+  S.spec=$('specSel').value;
+  $('prepTxt').textContent=bs.placed?SAMPLES[bs.sample].name.split(' ')[0]:'belum dipasang';
+  c.clearRect(0,0,w,h);
+  if(!S.power||S.light<=.02){c.fillStyle='#020617';c.fillRect(0,0,w,h);fs.innerHTML='<span style="color:#f43f5e">Lampu mati</span>';return;}
+  const pen=(S.obj===3&&!S.oil)?4.2:0,blur=Math.abs(S.coarse-50)*.18+Math.abs(S.fine-50)*.05+pen;
+  if(pen)fs.innerHTML='<span style="color:#d97706;cursor:pointer;text-decoration:underline" onclick="toggleOil()">💧 Teteskan minyak imersi (100×)</span>';
+  else if(blur<1.2)fs.innerHTML='<span style="color:#059669">✔ Fokus optimal</span>';
+  else if(blur<4)fs.innerHTML='<span style="color:#d97706">Sedikit kabur</span>';else fs.innerHTML='<span style="color:#e11d48">Tidak fokus</span>';
+  c.save();c.filter=`blur(${blur.toFixed(1)}px) brightness(${(.3+S.light*.9).toFixed(2)})`;
+  const im=MICRO[S.spec];
+  if(imgOK(im)){
+    const iw=im.naturalWidth,ih=im.naturalHeight,sq=Math.min(iw,ih),zoom=[1.1,1.1,1.4,1.9][S.obj]||1.1,cw=sq/zoom;
+    const pk=cw*.012*(1+S.obj*.25);
+    const sx=Math.max(0,Math.min(iw-cw,(iw-cw)/2-S.sx*pk)),sy=Math.max(0,Math.min(ih-cw,(ih-cw)/2+S.sy*pk));
+    c.drawImage(im,sx,sy,cw,cw,0,0,w,h);c.restore();
+  }else{
+  const f=getField(S.spec,S.obj),SF=f.width,V=512,k=w*.025*(1+S.obj*.35)*(V/w);
+  const sx=Math.max(0,Math.min(SF-V,(SF-V)/2-S.sx*k)),sy=Math.max(0,Math.min(SF-V,(SF-V)/2+S.sy*k));
+  c.drawImage(f,sx,sy,V,V,0,0,w,h);c.restore();}
+  const vg=c.createRadialGradient(w/2,h/2,w*.38,w/2,h/2,w*.5);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(.85,'rgba(15,12,8,.2)');vg.addColorStop(.96,'rgba(10,8,5,.6)');vg.addColorStop(1,'rgba(2,2,2,.95)');c.fillStyle=vg;c.fillRect(0,0,w,h);
+  if(!pen&&blur<1.2&&S.obj>=2&&bs.placed&&S.spec===bs.sample&&!bs.observed){bs.observed=true;refreshSteps();toast('✅ Pengamatan jelas!',true);}
+}
+
+/* ===================================================================
+   5. SIMULASI MEJA LAB 3D
+=================================================================== */
+const B={r:null};
+let bs={sample:null,taken:false,smeared:false,filled:false,watered:false,covered:false,placed:false,observed:false,waitDrip:false};
+const H={beaker:new THREE.Vector3(-9,0,.2),dish_tempe:new THREE.Vector3(-6,0,-2.6),dish_roti:new THREE.Vector3(-2.4,0,-2.6),dish_nasi:new THREE.Vector3(1.2,0,-2.6),needle:new THREE.Vector3(-1.2,.25,5),slide:new THREE.Vector3(-1.5,.1,1),cover:new THREE.Vector3(2,.08,3),dropper:new THREE.Vector3(4.3,.35,5),microscope:new THREE.Vector3(8.6,0,.2)};
+const STEPS=['Seret Jarum Pentul ke salah satu cawan sampel (tempe, roti, atau nasi) untuk mengambil sedikit sampel','Seret Jarum ke Kaca Objek untuk mengoleskan sampel','Seret Pipet ke Beker Aquades untuk mengisi pipet','Seret Pipet ke Kaca Objek lalu ketuk Pipet untuk meneteskan aquades','Seret Kaca Penutup ke atas Kaca Objek','Seret Kaca Objek berpreparat ke Meja Mikroskop','Amati: mulai 10×10 lalu objektif 10×40 (fokus tajam)'];
+const OPTIONAL=[2,3];
+const glassMat=()=>new THREE.MeshPhysicalMaterial({color:0xdff1ff,transparent:true,opacity:.36,roughness:.05,metalness:.05,clearcoat:1,depthWrite:false});
+const stdMat=(c,r=.5,m=.1)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const hitbox=(w,h,d,x=0,y=0,z=0)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));m.position.set(x,y,z);return m;};
+function sampleTex(key){
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const c=cv.getContext('2d');let s=key.length*977;const rnd=()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296;};
+  if(key==='tempe'){c.fillStyle='#e2d3a8';c.fillRect(0,0,256,256);for(let i=0;i<60;i++){c.beginPath();c.ellipse(rnd()*256,rnd()*256,8+rnd()*8,5+rnd()*5,rnd()*3,0,7);c.fillStyle='rgba(245,236,205,.8)';c.fill();}
+    for(let i=0;i<420;i++){c.strokeStyle='rgba(255,255,255,.6)';c.lineWidth=1;c.beginPath();const x=rnd()*256,y=rnd()*256;c.moveTo(x,y);c.lineTo(x+rnd()*14-7,y+rnd()*14-7);c.stroke();}}
+  else if(key==='roti'){c.fillStyle='#d9b77a';c.fillRect(0,0,256,256);for(let i=0;i<90;i++){c.beginPath();c.arc(rnd()*256,rnd()*256,2+rnd()*6,0,7);c.fillStyle=rnd()>.5?'rgba(40,40,30,.75)':'rgba(90,110,80,.6)';c.fill();}
+    for(let i=0;i<30;i++){c.beginPath();c.arc(rnd()*256,rnd()*256,10+rnd()*14,0,7);c.fillStyle='rgba(120,120,100,.28)';c.fill();}}
+  else{c.fillStyle='#f5f5ee';c.fillRect(0,0,256,256);for(let i=0;i<150;i++){c.beginPath();c.ellipse(rnd()*256,rnd()*256,9,4,rnd()*3,0,7);c.fillStyle='rgba(255,255,250,.95)';c.fill();c.strokeStyle='rgba(200,200,185,.8)';c.stroke();}
+    for(let i=0;i<30;i++){c.beginPath();c.arc(rnd()*256,rnd()*256,8+rnd()*14,0,7);c.fillStyle='rgba(150,155,135,.4)';c.fill();}}
+  return new THREE.CanvasTexture(cv);
+}
+function buildBeaker(){const g=new THREE.Group(),gm=glassMat();
+  const w=new THREE.Mesh(new THREE.CylinderGeometry(1.45,1.45,3.2,36,1,true),gm);w.position.y=1.6;
+  const b=new THREE.Mesh(new THREE.CylinderGeometry(1.45,1.45,.12,36),gm);b.position.y=.06;
+  const l=new THREE.Mesh(new THREE.CylinderGeometry(1.36,1.36,2,36),new THREE.MeshPhysicalMaterial({color:0x7dd3fc,transparent:true,opacity:.6,roughness:.1,depthWrite:false}));l.position.y=1.06;
+  // skala
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const c=cv.getContext('2d');c.strokeStyle='#fff';c.fillStyle='#fff';c.lineWidth=3;c.font='bold 16px sans-serif';
+  [['250',50],['200',90],['150',130],['100',170],['50',210]].forEach(([t,y])=>{c.beginPath();c.moveTo(100,y);c.lineTo(130,y);c.stroke();c.fillText(t,138,y+5);});
+  const sc=new THREE.Mesh(new THREE.CylinderGeometry(1.46,1.46,3.1,36,1,true),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthWrite:false,side:THREE.DoubleSide}));sc.position.y=1.6;sc.rotation.y=Math.PI*.9;
+  g.add(w,b,l,sc);return g;}
+function rbox(w,h,d,r,seed){ // kotak membulat + sedikit tonjolan organik
+  const g=new THREE.BoxGeometry(w,h,d,12,5,8),p=g.attributes.position,v=new THREE.Vector3(),hw=w/2-r,hh=h/2-r,hd=d/2-r;let k=seed||1;const rn=()=>{k=(k*1664525+1013904223)%4294967296;return k/4294967296;};
+  for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);const c=new THREE.Vector3(Math.max(-hw,Math.min(hw,v.x)),Math.max(-hh,Math.min(hh,v.y)),Math.max(-hd,Math.min(hd,v.z)));
+    const dir=v.clone().sub(c);if(dir.length()>1e-5)v.copy(c).add(dir.normalize().multiplyScalar(r));
+    v.x+=(Math.sin(v.y*9+v.z*7)+Math.cos(v.x*8))*.012;v.y+=(Math.sin(v.x*11+v.z*5))*.014;p.setXYZ(i,v.x,v.y,v.z);}
+  g.computeVertexNormals();return g;}
+function moldDots(pts,r,col){const im=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,6),stdMat(col,.85,0),pts.length),m=new THREE.Matrix4(),q=new THREE.Quaternion();
+  pts.forEach((p,i)=>{const z=r*(.55+Math.random()*.9);m.compose(new THREE.Vector3(p[0],p[1],p[2]),q,new THREE.Vector3(z,z*.8,z));im.setMatrixAt(i,m);});return im;}
+function moldHairs(pts,len,col,op){const pos=[];pts.forEach(p=>{const l=len*(.5+Math.random());pos.push(p[0],p[1],p[2],p[0]+(Math.random()-.5)*len*.9,p[1]+l,p[2]+(Math.random()-.5)*len*.9);});
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op}));}
+function moldFuzz(pts,r,col,op){const g=new THREE.Group(),m=new THREE.MeshStandardMaterial({color:col,transparent:true,opacity:op,roughness:1,depthWrite:false});
+  pts.forEach(p=>{const z=r*(.6+Math.random()*.8),f=new THREE.Mesh(new THREE.SphereGeometry(z,10,8),m);f.scale.y=.3;f.position.set(p[0],p[1],p[2]);g.add(f);});return g;}
+const n0=(c,z)=>c?z*.3:z;
+function buildDish(key){
+  const g=new THREE.Group(),texMats=[],rn=()=>Math.random();
+  // piring
+  const plate=new THREE.Mesh(new THREE.CylinderGeometry(2.25,1.8,.16,48),stdMat(0xf8fafc,.35,.05));plate.position.y=.08;
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(2.2,.06,10,48),stdMat(0xe2e8f0,.35,.05));rim.rotation.x=Math.PI/2;rim.position.y=.16;
+  g.add(plate,rim);
+  const fm=(map)=>{const m=new THREE.MeshStandardMaterial({map:sampleTex(key),roughness:.92,metalness:0});texMats.push(m);return m;};
+  if(key==='tempe'){
+    const cy=.16+.475,hx=1.6,hy=.475,hz=.95;
+    const blk=new THREE.Mesh(rbox(3.2,.95,1.9,.28,7),fm());blk.position.y=cy;g.add(blk);g.userData.sampleMesh=blk;
+    // titik acak di seluruh permukaan balok (atas + 4 sisi) beserta arah normalnya
+    const surf=()=>{const r=rn();let p,n;
+      if(r<.45){p=[(rn()*2-1)*hx*.93,hy,(rn()*2-1)*hz*.9];n=[0,1,0];}
+      else if(r<.67){p=[(rn()*2-1)*hx*.93,(rn()*2-1)*hy*.8,hz];n=[0,0,1];}
+      else if(r<.89){p=[(rn()*2-1)*hx*.93,(rn()*2-1)*hy*.8,-hz];n=[0,0,-1];}
+      else if(r<.945){p=[hx,(rn()*2-1)*hy*.8,(rn()*2-1)*hz*.9];n=[1,0,0];}
+      else{p=[-hx,(rn()*2-1)*hy*.8,(rn()*2-1)*hz*.9];n=[-1,0,0];}
+      return {p:[p[0],p[1]+cy,p[2]],n};};
+    const white=new THREE.MeshStandardMaterial({color:0xfbfaf4,transparent:true,opacity:.62,roughness:1,depthWrite:false});
+    const sg=new THREE.SphereGeometry(1,10,8);
+    for(let i=0;i<110;i++){const q=surf(),z=.16+rn()*.26,m=new THREE.Mesh(sg,white);
+      m.scale.set(n0(q.n[0],z),n0(q.n[1],z),n0(q.n[2],z));m.position.set(q.p[0]+q.n[0]*.03,q.p[1]+q.n[1]*.03,q.p[2]+q.n[2]*.03);g.add(m);}
+    const pos=[],tips=[];
+    for(let i=0;i<900;i++){const q=surf(),l=.1+rn()*.2,j=()=>(rn()-.5)*.18;
+      pos.push(q.p[0],q.p[1],q.p[2],q.p[0]+q.n[0]*l+(q.n[0]?0:j()),q.p[1]+q.n[1]*l+(q.n[1]?0:j()),q.p[2]+q.n[2]*l+(q.n[2]?0:j()));}
+    const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.85})));
+    // serabut panjang berwarna putih (tanpa bagian gelap)
+    const pl=[];for(let i=0;i<160;i++){const q=surf(),l=.28+rn()*.22,j=()=>(rn()-.5)*.3;pl.push(q.p[0],q.p[1],q.p[2],q.p[0]+q.n[0]*l+j()*.5,q.p[1]+q.n[1]*l+j()*.5,q.p[2]+q.n[2]*l+j()*.5);tips.push([pl[pl.length-3],pl[pl.length-2],pl[pl.length-1]]);}
+    const lg2=new THREE.BufferGeometry();lg2.setAttribute('position',new THREE.Float32BufferAttribute(pl,3));
+    g.add(new THREE.LineSegments(lg2,new THREE.LineBasicMaterial({color:0xf3f1e8,transparent:true,opacity:.9})));
+    g.add(moldDots(tips.slice(0,60),.035,0xffffff));
+  }else if(key==='roti'){
+    const sh=new THREE.Shape();sh.moveTo(.35,0);sh.lineTo(2.85,0);sh.quadraticCurveTo(3.0,.05,3.0,.4);sh.lineTo(3.0,1.8);sh.bezierCurveTo(3.45,2.0,3.35,3.15,2.4,3.15);sh.lineTo(.8,3.15);sh.bezierCurveTo(-.15,3.15,-.25,2.0,.2,1.8);sh.lineTo(.2,.4);sh.quadraticCurveTo(.2,.05,.35,0);
+    const eg=new THREE.ExtrudeGeometry(sh,{depth:.42,bevelEnabled:true,bevelThickness:.07,bevelSize:.07,bevelSegments:3,curveSegments:14});eg.translate(-1.6,-1.6,0);
+    const crust=new THREE.MeshStandardMaterial({color:0x9a6a32,roughness:.85});
+    const face=fm();face.userData={rep:1/3.6};
+    const sl=new THREE.Mesh(eg,[face,crust]);sl.rotation.x=-Math.PI/2;sl.scale.set(.98,.98,1);sl.position.set(0,.17,.1);g.add(sl);g.userData.sampleMesh=sl;
+    const top=.17+.42+.07,pts=[],sp=[],gp=[];
+    const inside=()=>{let x,z;do{x=(rn()-.5)*2.9;z=(rn()-.5)*2.9;}while(Math.abs(x)>1.25||z<-1.25||z>1.35||(z<-.35&&Math.abs(x)>1.15)&&false);return [x,z];};
+    for(let i=0;i<70;i++){const [x,z]=inside();sp.push([x,top,z+.1]);}
+    for(let i=0;i<90;i++){const [x,z]=inside();pts.push([x,top,z+.1]);}
+    for(let i=0;i<14;i++){const [x,z]=inside();gp.push([x,top-.02,z+.1]);}
+    g.add(moldFuzz(gp,.3,0x6f7a60,.6),moldDots(sp,.08,0x15110b),moldHairs(pts,.1,0x3d3a30,.7));
+  }else{
+    const dome=new THREE.Mesh(new THREE.SphereGeometry(1,40,24,0,Math.PI*2,0,Math.PI/2),fm());dome.scale.set(1.75,.95,1.6);dome.position.y=.16;g.add(dome);g.userData.sampleMesh=dome;
+    // butiran nasi
+    const gm=stdMat(0xf7f6ee,.55,0),gi=new THREE.InstancedMesh(new THREE.SphereGeometry(.14,8,6),gm,170),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler(),pts=[],sp=[];
+    for(let i=0;i<170;i++){const u=rn()*Math.PI*2,v=Math.acos(rn()*.92+.08),x=Math.sin(v)*Math.cos(u)*1.75,y=Math.cos(v)*.95,z=Math.sin(v)*Math.sin(u)*1.6;
+      e.set(rn()*3,rn()*3,rn()*3);q.setFromEuler(e);m4.compose(new THREE.Vector3(x*1.02,.16+y*1.02,z*1.02),q,new THREE.Vector3(1.9,.8,.8));gi.setMatrixAt(i,m4);
+      if(i<80){pts.push([x*.98,.16+y,z*.98]);}if(i<26)sp.push([x,.16+y+.01,z]);}
+    g.add(gi,moldFuzz(pts.slice(0,36),.3,0xe9e9e0,.5),moldHairs(pts,.15,0xdcdcd0,.7),moldDots(sp,.06,0x4b4b40));
+    const tips=[],ln=[];for(let i=0;i<30;i++){const u=rn()*6.28,v=Math.acos(rn()*.7+.3),x=Math.sin(v)*Math.cos(u)*1.6,y=Math.cos(v)*.9+.16,z=Math.sin(v)*Math.sin(u)*1.5,h=.16+rn()*.14;ln.push(x,y,z,x,y+h,z);tips.push([x,y+h+.03,z]);}
+    const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute(ln,3));g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0xd8d8cc})),moldDots(tips,.045,0x2a2a24));
+  }
+  // sampel diperkecil 50% & diletakkan di dalam cawan petri
+  const sg=new THREE.Group();g.children.filter(o=>o!==plate&&o!==rim).forEach(o=>sg.add(o));g.remove(plate,rim);
+  sg.scale.setScalar(.5);sg.position.y=-.02;g.add(sg);
+  const gm2=new THREE.MeshPhysicalMaterial({color:0xdff1ff,transparent:true,opacity:.3,roughness:.05,clearcoat:1,depthWrite:false,side:THREE.DoubleSide});
+  const pb=new THREE.Mesh(new THREE.CylinderGeometry(1.32,1.32,.06,56),new THREE.MeshPhysicalMaterial({color:0xeaf6ff,transparent:true,opacity:.55,roughness:.1,clearcoat:1,depthWrite:false}));pb.position.y=.03;
+  const pw=new THREE.Mesh(new THREE.CylinderGeometry(1.32,1.32,.4,56,1,true),gm2);pw.position.y=.2;
+  const pr=new THREE.Mesh(new THREE.TorusGeometry(1.32,.035,8,56),new THREE.MeshStandardMaterial({color:0xcfe8f7,transparent:true,opacity:.8,roughness:.2}));pr.rotation.x=Math.PI/2;pr.position.y=.4;
+  g.add(pb,pw,pr);
+  g.userData.texMats=texMats;g.userData.key=key;applyDishImg(g,key);return g;}
+function applyDishImg(g,key){
+  const im=SIMG[key];if(!imgOK(im)||!g.userData.texMats)return;
+  g.userData.texMats.forEach(m=>{const t=new THREE.Texture(im);t.needsUpdate=true;if(THREE.sRGBEncoding)t.encoding=THREE.sRGBEncoding;
+    if(m.userData&&m.userData.rep){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(m.userData.rep,m.userData.rep);t.offset.set(.5,.5);}
+    m.map=t;m.needsUpdate=true;});}
+function buildNeedle(){const g=new THREE.Group(),n=new THREE.Group(),st=stdMat(0xe2e8f0,.2,.88);
+  const sh=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,3.4,10),st);sh.rotation.z=Math.PI/2;
+  const hd=new THREE.Mesh(new THREE.SphereGeometry(.2,16,12),stdMat(0xef4444,.35));hd.position.x=1.7;
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(.045,.3,10),st);tip.rotation.z=Math.PI/2;tip.position.x=-1.8;
+  const ts=new THREE.Mesh(new THREE.SphereGeometry(.12,12,10),stdMat(0xe8dcc0,.9));ts.position.x=-1.9;ts.visible=false;
+  n.add(sh,hd,tip,ts);n.scale.setScalar(.5);   // 50% lebih kecil
+  g.add(n,hitbox(2.4,1.1,1.3));g.userData.tipSample=ts;return g;}
+function buildSlide(){const g=new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(2.6,.08,1),glassMat()));
+  const fr=new THREE.Mesh(new THREE.BoxGeometry(.45,.09,1),stdMat(0xffffff));fr.position.x=-1.05;g.add(fr);
+  const sm=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.05,24),stdMat(0xe8dcc0,.9));sm.position.set(.2,.06,0);sm.visible=false;
+  const dr=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.06,24),new THREE.MeshStandardMaterial({color:0x7dd3fc,transparent:true,opacity:.55,roughness:.1}));dr.position.set(.2,.08,0);dr.visible=false;
+  const cv=new THREE.Mesh(new THREE.BoxGeometry(.9,.05,.9),glassMat());cv.position.set(.2,.14,0);cv.visible=false;
+  g.add(sm,dr,cv,hitbox(3.2,1.2,1.8));g.userData={smear:sm,drop:dr,cover:cv};return g;}
+function buildCover(){const g=new THREE.Group();g.add(new THREE.Mesh(new THREE.BoxGeometry(.9,.05,.9),glassMat()),hitbox(2,1.2,2));return g;}
+const dropperPose=up=>{if(B.obj&&B.obj.dropper)B.obj.dropper.rotation.set(0,0,up?0:Math.PI/2);};
+function buildDropper(){const g=new THREE.Group(),gm=glassMat();
+  const bu=new THREE.Mesh(new THREE.SphereGeometry(.36,20,16),stdMat(0xef4444,.4));bu.scale.set(.8,1.4,.8);bu.position.y=2.1;
+  const tu=new THREE.Mesh(new THREE.CylinderGeometry(.16,.06,1.8,20),gm);tu.position.y=.95;
+  const lq=new THREE.Mesh(new THREE.CylinderGeometry(.12,.04,1.1,16),new THREE.MeshStandardMaterial({color:0x7dd3fc,transparent:true,opacity:.85}));lq.position.y=.7;lq.visible=false;
+  g.add(bu,tu,lq,hitbox(1.8,3.2,1.8,0,1.3,0));g.userData.liquid=lq;return g;}
+
+function initBench(){
+  const c=$('benchCanvas'),w=c.clientWidth||900,h=c.clientHeight||560;
+  B.scene=new THREE.Scene();B.cam=new THREE.PerspectiveCamera(42,w/h,.1,200);
+  B.r=new THREE.WebGLRenderer({antialias:true,alpha:true});B.r.setSize(w,h);B.r.setPixelRatio(window.IS_TOUCH?1:Math.min(devicePixelRatio,1.5));c.appendChild(B.r.domElement);
+  B.sph={r:26,t:0,p:1.02};B.tsph={r:26,t:0,p:1.02};B.look=new THREE.Vector3(0,1.8,.5);B.obj={};B.showLabels=true;
+  B.scene.add(new THREE.AmbientLight(0xffffff,.82));
+  const k=new THREE.DirectionalLight(0xffffff,.95);k.position.set(16,28,22);B.scene.add(k);
+  const f=new THREE.DirectionalLight(0xbae6fd,.5);f.position.set(-18,15,-12);B.scene.add(f);
+  // ruangan
+  const fc=document.createElement('canvas');fc.width=fc.height=256;const x=fc.getContext('2d');x.fillStyle='#475569';x.fillRect(0,0,256,256);
+  for(let r=0;r<2;r++)for(let q=0;q<2;q++){x.fillStyle=(r+q)%2?'#526277':'#64748b';x.fillRect(q*128+3,r*128+3,122,122);}
+  const ft=new THREE.CanvasTexture(fc);ft.wrapS=ft.wrapT=THREE.RepeatWrapping;ft.repeat.set(14,10);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(80,60),new THREE.MeshStandardMaterial({map:ft,roughness:.55}));fl.rotation.x=-Math.PI/2;fl.position.y=-8.5;B.scene.add(fl);
+  const wm=stdMat(0x475569,.75,.05);
+  const bw=new THREE.Mesh(new THREE.BoxGeometry(56,26,.8),wm);bw.position.set(0,4.5,-10.5);B.scene.add(bw);
+  [[-28],[28]].forEach(([px])=>{const sw=new THREE.Mesh(new THREE.BoxGeometry(.8,26,36),wm);sw.position.set(px,4.5,7);B.scene.add(sw);});
+  // Papan tulis hijau gelap (gaya Si IBi) + catatan
+  const bg=new THREE.Group();
+  const bfr=new THREE.Mesh(new THREE.BoxGeometry(24.8,9.6,.35),new THREE.MeshStandardMaterial({color:0x78350f,roughness:.55,metalness:.1}));
+  const cb=document.createElement('canvas');cb.width=1024;cb.height=384;const cx=cb.getContext('2d');
+  const gr=cx.createLinearGradient(0,0,1024,384);gr.addColorStop(0,'#0f2e22');gr.addColorStop(.5,'#143d2d');gr.addColorStop(1,'#0b241a');cx.fillStyle=gr;cx.fillRect(0,0,1024,384);
+  cx.fillStyle='rgba(255,255,255,.88)';cx.font='bold 30px Inter, sans-serif';cx.fillText('LABORATORIUM BIOLOGI — PRAKTIKUM MORFOLOGI JAMUR',50,56);
+  cx.strokeStyle='rgba(253,224,71,.75)';cx.lineWidth=3;cx.beginPath();cx.moveTo(50,72);cx.lineTo(974,72);cx.stroke();
+  cx.fillStyle='rgba(224,242,254,.9)';cx.font='22px Inter, sans-serif';
+  ['• Spesimen   : Rhizopus stolonifer, Aspergillus niger, Rhizopus oryzae','• Sampel     : Tempe segar, roti basi, dan nasi basi (kapang)','• Reproduksi : Aseksual melalui spora (sporangiospora / konidia)','• Pengamatan : Perbesaran 10×10 dan 10×40 — hifa & sporangium'].forEach((t,i)=>cx.fillText(t,50,110+i*36));
+  cx.strokeStyle='rgba(255,255,255,.25)';cx.setLineDash([8,8]);cx.beginPath();cx.moveTo(50,262);cx.lineTo(760,262);cx.stroke();cx.setLineDash([]);
+  cx.fillStyle='rgba(253,224,71,.95)';cx.font='bold 21px Inter, sans-serif';cx.fillText('✎ Catatan:',50,290);
+  cx.fillStyle='rgba(254,243,199,.92)';cx.font='19px Inter, sans-serif';
+  ['1. Hifa Rhizopus tidak bersekat; hifa Aspergillus bersekat (septat).','2. Mulai dari perbesaran lemah, fokus kasar dulu, lalu fokus halus.','3. Ambil sampel sedikit saja agar preparat tipis dan jernih.'].forEach((t,i)=>cx.fillText(t,50,319+i*29));
+  cx.strokeStyle='rgba(167,243,208,.85)';cx.lineWidth=3;
+  cx.beginPath();cx.arc(850,226,56,0,Math.PI*2);cx.stroke();                       // sporangium
+  cx.beginPath();cx.moveTo(850,282);cx.lineTo(852,356);cx.stroke();                 // sporangiofor
+  cx.beginPath();cx.moveTo(800,358);cx.lineTo(912,358);cx.stroke();                 // stolon
+  cx.fillStyle='rgba(253,224,71,.9)';cx.font='18px Inter, sans-serif';cx.fillText('Sporangium',912,214);cx.fillText('Sporangiofor',866,320);cx.fillText('Hifa / Stolon',920,364);
+  const bsf=new THREE.Mesh(new THREE.PlaneGeometry(23.8,8.6),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(cb),roughness:.85,metalness:.02}));bsf.position.z=.19;
+  const tray=new THREE.Mesh(new THREE.BoxGeometry(24.8,.28,.85),new THREE.MeshStandardMaterial({color:0x5c280b,roughness:.6}));tray.position.set(0,-4.65,.35);
+  bg.add(bfr,bsf,tray);bg.position.set(0,7.6,-9.9);B.scene.add(bg);
+  // meja
+  const tb=new THREE.Mesh(new THREE.BoxGeometry(28,1.2,16),stdMat(0x1e293b,.35,.15));tb.position.set(0,-.6,.5);B.scene.add(tb);
+  const tr=new THREE.Mesh(new THREE.BoxGeometry(28.2,.25,16.2),stdMat(0x0284c7,.3,.5));tr.position.set(0,-.05,.5);B.scene.add(tr);
+  const lm=stdMat(0x334155,.4,.6);
+  [[-12.6,-6.2],[12.6,-6.2],[-12.6,7.2],[12.6,7.2]].forEach(([lx,lz])=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,7.3,20),lm);l.position.set(lx,-4.85,lz);B.scene.add(l);});
+  const cbar=new THREE.Mesh(new THREE.CylinderGeometry(.28,.28,25.2,12),lm);cbar.rotation.z=Math.PI/2;cbar.position.set(0,-6.8,-6.2);B.scene.add(cbar);
+  // objek
+  const reg=(key,g)=>{g.userData.key=key;g.traverse(o=>{if(o.isMesh)o.userData.key=key;});g.position.copy(H[key]);B.scene.add(g);B.obj[key]=g;};
+  reg('beaker',buildBeaker());['tempe','roti','nasi'].forEach(k=>reg('dish_'+k,buildDish(k)));
+  reg('needle',buildNeedle());reg('slide',buildSlide());reg('cover',buildCover());reg('dropper',buildDropper());dropperPose(false);
+  const mg=new THREE.Group(),mic=buildMicroscope(null);mic.group.scale.setScalar(.28);mg.add(mic.group,hitbox(3.6,10,4.6,0,4.8,.4));
+  mic.refs.bulb.material.emissiveIntensity=0;reg('microscope',mg);
+  // label
+  const lc=$('benchLabels');lc.innerHTML='';B.flabs=[];
+  [['beaker','Beker Aquades',3.6],['dish_tempe','Tempe',1.3],['dish_roti','Roti',1.3],['dish_nasi','Nasi',1.3],['needle','Jarum Pentul',1],['slide','Kaca Objek',.9],['cover','Kaca Penutup',.9],['dropper','Pipet Tetes',3],['microscope','Mikroskop',10]].forEach(([k,t,dy])=>{
+    const e=document.createElement('div');e.className='flab';e.textContent=t;lc.appendChild(e);B.flabs.push({k,e,dy});});
+  B.ray=new THREE.Raycaster();B.mouse=new THREE.Vector2();B.plane=new THREE.Plane(new THREE.Vector3(0,1,0),-1.4);B.pt=new THREE.Vector3();B.drag=null;B.orbit=false;B.pp={x:0,y:0};B.parts=[];B.bub=[];
+  const dom=B.r.domElement;
+  dom.addEventListener('pointerdown',benchDown);window.addEventListener('pointermove',benchMove);window.addEventListener('pointerup',benchUp);window.addEventListener('pointercancel',benchUp);
+  dom.addEventListener('wheel',e=>{e.preventDefault();B.tsph.r=Math.max(14,Math.min(38,B.tsph.r+e.deltaY*.02));},{passive:false});
+  refreshSteps();
+}
+function selectSample(k){
+  bs.sample=k;
+  B.obj.slide.userData.smear.material.color.set(SAMPLES[k].acc);B.obj.needle.userData.tipSample.material.color.set(SAMPLES[k].acc);
+  if(E.smear)E.smear.material.color.set(SAMPLES[k].acc);
+  $('specSel').value=k;
+}
+function stepDone(){return [bs.taken,bs.smeared,bs.filled||bs.covered,bs.watered||bs.covered,bs.covered,bs.placed,bs.observed];}
+function refreshSteps(){
+  const d=stepDone(),cur=d.indexOf(false);
+  $('stepList').innerHTML=STEPS.map((t,i)=>`<div class="step ${d[i]?'done':i===cur?'cur':''}"><i>${d[i]?'✓':i+1}</i><span>${t}${OPTIONAL.includes(i)?'<span class="opt">opsional</span>':''}</span></div>`).join('');
+  const n=d.filter(Boolean).length;$('progText').textContent=n+'/7';$('progBar').style.width=n/7*100+'%';
+  $('btnGoLabel').classList.toggle('hidden',!bs.observed);
+  const hints=['Sampel tempe, roti, dan nasi ada di meja. Seret Jarum Pentul ke salah satu cawan.','Seret Jarum (berisi sampel) ke Kaca Objek.','Opsional: seret Pipet ke Beker Aquades — atau langsung tutup dengan Kaca Penutup.','Seret Pipet ke atas Kaca Objek, lalu ketuk Pipet untuk meneteskan.','Seret Kaca Penutup ke atas Kaca Objek.','Seret Kaca Objek ke Mikroskop.','Preparat terpasang — buka menu Eksplorasi 3D, nyalakan mikroskop, dan amati.'];
+  if(bs.waitDrip)$('benchHint').textContent='Pipet di atas Kaca Objek — KETUK Pipet untuk meneteskan!';
+  else if(cur===-1)$('benchHint').textContent='✅ Praktikum selesai! Lanjutkan ke Identifikasi Label.';
+  else if(cur===3&&bs.filled)$('benchHint').textContent=hints[3];
+  else $('benchHint').textContent=hints[Math.min(cur,6)];
+  $('btnInfSim').disabled=!bs.placed;
+}
+function setHint(t){$('benchHint').textContent=t;}
+function resetBench(silent){
+  if(!B.r)return;if(!silent)beep(500);
+  bs={sample:null,taken:false,smeared:false,filled:false,watered:false,covered:false,placed:false,observed:false,waitDrip:false};
+  Object.keys(H).forEach(k=>{if(B.obj[k]){B.obj[k].position.copy(H[k]);B.obj[k].visible=true;}});dropperPose(false);
+  B.obj.needle.rotation.set(0,0,0);B.obj.needle.userData.tipSample.visible=false;
+  const u=B.obj.slide.userData;u.smear.visible=u.drop.visible=u.cover.visible=false;B.obj.dropper.userData.liquid.visible=false;
+  if(E.prep)E.prep.visible=false;
+  refreshSteps();
+}
+function benchPick(e){
+  const rc=B.r.domElement.getBoundingClientRect();B.mouse.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);B.ray.setFromCamera(B.mouse,B.cam);
+  const ms=[];Object.values(B.obj).forEach(g=>{if(g.visible)g.traverse(c=>{if(c.isMesh)ms.push(c);});});
+  return {hits:B.ray.intersectObjects(ms,false)};
+}
+function benchDown(e){
+  if(e.isPrimary===false)return;try{B.r.domElement.setPointerCapture(e.pointerId);}catch(_){}
+  const {hits}=benchPick(e);
+  if(hits.length){const k=hits[0].object.userData.key;
+    if(k==='dropper'&&bs.waitDrip){doDrip();return;}
+    if(k==='microscope'&&bs.placed){switchTab('explore');return;}
+    if(['needle','dropper','cover','slide'].includes(k)){if(!bs.taken&&k!=='needle'){setHint('⚠️ Ambil sampel dulu: seret Jarum Pentul ke cawan tempe, roti, atau nasi.');return;}B.drag=k;if(k==='dropper')dropperPose(true);beep(540);return;}}
+  if(window.IS_TOUCH||e.pointerType==='touch'){
+    const p=new THREE.Vector3();if(B.ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0),-.6),p)){let best=null,bd=1.9;(bs.taken?['needle','dropper','cover','slide']:['needle']).forEach(k=>{const o=B.obj[k];if(o.visible){const d=distXZ(o.position,p);if(d<bd){bd=d;best=k;}}});if(best){B.drag=best;if(best==='dropper')dropperPose(true);beep(540);return;}}}
+  B.orbit=true;B.pp={x:e.clientX,y:e.clientY};
+}
+function benchMove(e){
+  if(CUR!=='sim'||e.isPrimary===false)return;
+  if(B.drag){
+    const rc=B.r.domElement.getBoundingClientRect();B.mouse.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);B.ray.setFromCamera(B.mouse,B.cam);
+    if(B.ray.ray.intersectPlane(B.plane,B.pt)){const o=B.obj[B.drag];o.position.set(Math.max(-12,Math.min(12,B.pt.x)),1.4,Math.max(-5,Math.min(6,B.pt.z)));
+      if(B.drag==='slide'&&bs.covered&&!bs.placed&&nearScope(o.position)){benchUp(e);}}
+    return;}
+  if(B.orbit){const sp=e.pointerType==='touch'?.011:.007,mt=Math.PI*.42;B.tsph.t=Math.max(-mt,Math.min(mt,B.tsph.t-(e.clientX-B.pp.x)*sp));B.tsph.p=Math.max(.45,Math.min(1.38,B.tsph.p-(e.clientY-B.pp.y)*sp));B.pp={x:e.clientX,y:e.clientY};}
+}
+function benchUp(e){
+  try{B.r.domElement.releasePointerCapture(e.pointerId);}catch(_){}
+  if(B.drag){const k=B.drag;B.drag=null;handleDrop(k);}B.orbit=false;
+}
+const nearScope=p=>distXZ(p,H.microscope)<4.4;
+function handleDrop(k){
+  const o=B.obj[k],p=o.position,home=()=>{o.position.copy(H[k]);if(k==='dropper')dropperPose(false);};
+  if(k==='needle'){
+    if(!bs.taken){let dk=null,bd=2.3;['tempe','roti','nasi'].forEach(q=>{const d=distXZ(p,H['dish_'+q]);if(d<bd){bd=d;dk=q;}});
+      if(dk){selectSample(dk);doTake();}else setHint('Seret jarum ke salah satu cawan sampel (tempe, roti, atau nasi).');}
+    else if(bs.taken&&!bs.smeared&&distXZ(p,B.obj.slide.position)<3.2)doSmear();
+    else if(bs.taken&&!bs.smeared)setHint('Sampel sudah di jarum — seret ke Kaca Objek.');
+    home();
+  }else if(k==='dropper'){
+    if(!bs.filled&&!bs.watered&&distXZ(p,H.beaker)<3.6){doFill();home();}
+    else if(bs.filled&&bs.smeared&&!bs.watered&&distXZ(p,B.obj.slide.position)<3.4){o.position.set(B.obj.slide.position.x+.2,1.45,B.obj.slide.position.z);bs.waitDrip=true;beep(780);refreshSteps();}
+    else{if(bs.filled&&!bs.smeared)setHint('Oleskan sampel ke Kaca Objek lebih dulu.');home();}
+  }else if(k==='cover'){
+    if(bs.smeared&&!bs.covered&&distXZ(p,B.obj.slide.position)<3.4)doCover();
+    else{if(!bs.smeared&&distXZ(p,B.obj.slide.position)<3.4)setHint('Oleskan sampel ke Kaca Objek sebelum menutup.');home();}
+  }else if(k==='slide'){
+    if(bs.covered&&!bs.placed&&nearScope(p))doPlace();
+    else if(!bs.placed){if(!bs.covered&&nearScope(p))setHint('Tutup preparat dengan Kaca Penutup sebelum dipasang ke mikroskop.');home();}
+  }
+  refreshSteps();
+}
+function spawnPuff(pos,col){for(let i=0;i<10;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.08,8,8),new THREE.MeshBasicMaterial({color:col}));m.position.set(pos.x+(Math.random()-.5)*.8,pos.y+2.6+Math.random()*.5,pos.z+(Math.random()-.5)*.8);B.scene.add(m);B.parts.push({m,vy:.07+Math.random()*.05,floor:pos.y+.5});}}
+function doTake(){bs.taken=true;B.obj.needle.userData.tipSample.visible=true;spawnPuff(H['dish_'+bs.sample],0xe8dcc0);beep(700);toast('✅ Sampel '+SAMPLES[bs.sample].name.split(' ')[0]+' diambil',true);refreshSteps();}
+function doSmear(){bs.smeared=true;B.obj.needle.userData.tipSample.visible=false;B.obj.slide.userData.smear.visible=true;beep(760);toast('✅ Sampel dioleskan',true);refreshSteps();}
+function doFill(){bs.filled=true;B.obj.dropper.userData.liquid.visible=true;beep(740);toast('✅ Pipet terisi aquades',true);refreshSteps();}
+function doDrip(){bs.waitDrip=false;bs.watered=true;bs.filled=false;B.obj.dropper.userData.liquid.visible=false;B.obj.slide.userData.drop.visible=true;B.obj.dropper.position.copy(H.dropper);dropperPose(false);beep(820);toast('💧 Aquades diteteskan',true);refreshSteps();}
+function doCover(){bs.covered=true;B.obj.cover.visible=false;B.obj.slide.userData.cover.visible=true;beep(840);toast('✅ Preparat tertutup',true);refreshSteps();}
+function doPlace(){
+  bs.placed=true;B.obj.slide.position.set(H.microscope.x,4.38,H.microscope.z+.42);beep(900);
+  if(S.power)togglePower();
+  if(E.prep){E.prep.visible=true;}
+  $('specSel').value=bs.sample;S.spec=bs.sample;refreshSteps();
+  setHint('Preparat terpasang! Membuka Eksplorasi 3D Mikroskop…');
+  setTimeout(()=>{switchTab('explore');setTimeout(()=>{if(!E.r)return;if(E.prep)E.prep.visible=true;$('statusText').innerHTML='<span style="color:#1d4ed8;font-weight:700"><i class="fa-solid fa-power-off" style="color:#e11d48"></i> Preparat terpasang! Nyalakan sakelar daya (ON) untuk mulai.</span>';},120);},450);
+}
+function quickStep(){
+  if(!B.r)return;beep(750);const d=stepDone(),cur=d.indexOf(false);
+  if(cur===0){if(!bs.sample)selectSample('tempe');doTake();}else if(cur===1)doSmear();else if(cur===2)doFill();
+  else if(cur===3){if(bs.filled)doDrip();}
+  else if(cur===4)doCover();else if(cur===5)doPlace();else if(cur===6)switchTab('explore');
+  refreshSteps();
+}
+function toggleBenchLabels(){B.showLabels=!B.showLabels;$('benchLabels').style.display=B.showLabels?'block':'none';beep(600);}
+function updateBenchLabels(){
+  if(!B.showLabels)return;const c=$('benchLabels'),w=c.clientWidth,h=c.clientHeight;
+  B.flabs.forEach(it=>{const o=B.obj[it.k];if(!o||!o.visible){it.e.style.display='none';return;}
+    const v=o.position.clone();v.y+=it.dy;v.project(B.cam);if(v.z>1){it.e.style.display='none';return;}
+    it.e.style.display='block';it.e.style.left=(v.x*.5+.5)*w+'px';it.e.style.top=(-(v.y*.5)+.5)*h+'px';});
+}
+/* Inspeksi 3D alat & bahan */
+const TOOLS=[
+ {id:'beaker',name:'Beker Glass Aquades',cat:'Alat gelas',desc:'Wadah kaca berskala berisi aquades (air suling) untuk mengisi pipet dan melembapkan preparat.',use:'Isi pipet dengan menyentuhkan ujungnya ke permukaan aquades.'},
+ {id:'dish',name:'Cawan Sampel',cat:'Bahan percobaan',desc:'Cawan petri berisi sampel yang ditumbuhi kapang: tempe segar, roti basi, atau nasi basi.',use:'Sentuh sedikit permukaan sampel yang berserabut/berbulu dengan ujung jarum pentul.'},
+ {id:'needle',name:'Jarum Pentul',cat:'Alat pengambil sampel',desc:'Jarum berujung runcing untuk mengambil sedikit miselium kapang tanpa merusak struktur hifa.',use:'Ambil sedikit sampel, lalu oleskan tipis pada kaca objek.'},
+ {id:'slide',name:'Kaca Objek',cat:'Alat preparat',desc:'Lempeng kaca jernih sebagai alas sampel yang akan diamati di meja mikroskop.',use:'Oleskan sampel tipis di bagian tengah agar cahaya dapat menembus.'},
+ {id:'cover',name:'Kaca Penutup',cat:'Alat preparat',desc:'Kaca tipis kecil untuk menutup sampel agar rata dan melindungi lensa objektif dari kontak langsung.',use:'Letakkan perlahan dari satu sisi di atas sampel.'},
+ {id:'dropper',name:'Pipet Tetes',cat:'Alat pemindah cairan',desc:'Pipet kaca berkaret penghisap untuk memindahkan aquades setetes demi setetes.',use:'Isi dari beker lalu teteskan satu tetes pada sampel di kaca objek.'},
+ {id:'mic',name:'Mikroskop Binokuler',cat:'Alat optik',desc:'Instrumen untuk mengamati hifa dan sporangium yang tidak tampak oleh mata telanjang.',use:'Mulai dari perbesaran lemah (10×10), lalu naik ke kuat (10×40).'}
+];
+const I={r:null,sel:'beaker',sph:{r:6,t:.5,p:1.2},tsph:{r:6,t:.5,p:1.2}};
+function openToolInspector(){
+  beep(680);$('modal').classList.remove('hidden');
+  $('modalBox').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px"><div><h3 style="font-size:18px;font-weight:800">🧊 Inspeksi 3D Alat &amp; Bahan Praktikum</h3><p style="font-size:11.5px;color:var(--muted)">Pilih alat di kiri, putar model 3D, baca fungsi &amp; cara pakainya.</p></div><button class="btn btn-s" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div style="display:grid;grid-template-columns:260px 1fr;gap:14px"><div id="toolList" style="display:flex;flex-direction:column;gap:6px;max-height:430px;overflow-y:auto"></div>
+  <div><div class="canvaswrap" style="height:250px;border-radius:14px;border:1px solid #334155;cursor:grab"><div id="toolVp" style="width:100%;height:100%"></div></div>
+  <div class="card" style="margin-top:10px;background:#f8fafc;padding:12px"><span id="tiCat" style="background:var(--pale);color:var(--primary);font:800 10px 'Outfit';letter-spacing:.06em;text-transform:uppercase;padding:2px 10px;border-radius:99px"></span><h4 id="tiName" style="font-size:16px;font-weight:800;margin:4px 0"></h4><p id="tiDesc"></p><div class="box ba"><b><i class="fa-solid fa-flask"></i> Cara penggunaan:</b> <span id="tiUse"></span></div></div></div></div>`;
+  setTimeout(()=>{initInspector();selectTool(I.sel);},40);
+}
+function initInspector(){
+  const vp=$('toolVp'),w=vp.clientWidth||520,h=vp.clientHeight||250;
+  I.scene=new THREE.Scene();I.cam=new THREE.PerspectiveCamera(38,w/h,.1,100);I.r=new THREE.WebGLRenderer({antialias:true,alpha:true});I.r.setSize(w,h);vp.innerHTML='';vp.appendChild(I.r.domElement);
+  I.scene.add(new THREE.AmbientLight(0xffffff,.85));const d=new THREE.DirectionalLight(0xffffff,.95);d.position.set(6,10,8);I.scene.add(d);
+  I.grp=new THREE.Group();I.scene.add(I.grp);let dr=false,pv={x:0,y:0};const dom=I.r.domElement;dom.style.touchAction='none';
+  dom.addEventListener('pointerdown',e=>{dr=true;I.drag=true;pv={x:e.clientX,y:e.clientY};try{dom.setPointerCapture(e.pointerId);}catch(_){}});
+  dom.addEventListener('pointermove',e=>{if(!dr)return;I.tsph.t-=(e.clientX-pv.x)*.012;I.tsph.p=Math.max(.3,Math.min(2.6,I.tsph.p-(e.clientY-pv.y)*.012));pv={x:e.clientX,y:e.clientY};});
+  dom.addEventListener('pointerup',()=>{dr=false;I.drag=false;});
+  dom.addEventListener('wheel',e=>{e.preventDefault();I.tsph.r=Math.max(3,Math.min(14,I.tsph.r+e.deltaY*.005));},{passive:false});
+}
+function selectTool(id){
+  beep(660);I.sel=id;
+  $('toolList').innerHTML=TOOLS.map((t,i)=>`<button class="sbtn ${t.id===id?'on':''}" onclick="selectTool('${t.id}')"><span>${i+1}. ${t.name}<small>${t.cat}</small></span></button>`).join('');
+  const t=TOOLS.find(x=>x.id===id);$('tiCat').textContent=t.cat;$('tiName').textContent=t.name;$('tiDesc').textContent=t.desc;$('tiUse').textContent=t.use;
+  while(I.grp.children.length)I.grp.remove(I.grp.children[0]);
+  let g,sc=1,oy=0;
+  if(id==='beaker'){g=buildBeaker();oy=-1.6;sc=1.15;}else if(id==='dish'){g=buildDish(bs.sample||'tempe');oy=-.3;sc=2.2;}else if(id==='needle'){g=buildNeedle();sc=2.2;}
+  else if(id==='slide'){g=buildSlide();g.userData.smear.visible=true;g.userData.drop.visible=true;sc=1.4;}else if(id==='cover'){g=buildCover();sc=2.6;g.rotation.x=.35;}
+  else if(id==='dropper'){g=buildDropper();g.userData.liquid.visible=true;oy=-1.2;}else{g=buildMicroscope(null).group;sc=.12;oy=-2;}
+  g.scale.multiplyScalar(sc);g.position.y+=oy;I.grp.add(g);I.tsph={r:id==='mic'?7:6,t:.5,p:1.2};
+}
+function closeModal(){beep(520);$('modal').classList.add('hidden');}
+
+/* ===================================================================
+   6. INFERENSI HASIL
+=================================================================== */
+function openInference(){
+  beep(760);const k=(bs.placed?bs.sample:S.spec)||'tempe',sp=SAMPLES[k],tot=[40,100,400,1000][S.obj];
+  const yes=v=>v?'<b style="color:#047857">✓ Selesai</b>':'<b style="color:#94a3b8">– Belum</b>';
+  $('modal').classList.remove('hidden');
+  $('modalBox').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px"><h3 style="font-size:18px;font-weight:800;color:var(--primary)"><i class="fa-solid fa-lightbulb" style="color:var(--accent)"></i> Inferensi Hasil Praktikum: ${sp.name}</h3><button class="btn btn-s" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="card" style="background:#f8fafc;margin-bottom:10px"><div class="ct">1. Data hasil pengamatan</div>
+   <div class="g2" style="margin:0;font-size:12px"><div>Sampel diambil &amp; dioleskan: ${yes(bs.smeared)}</div><div>Aquades diteteskan: ${bs.watered?yes(true):'<b style="color:#92400e">Tidak (preparat kering)</b>'}</div><div>Preparat ditutup kaca penutup: ${yes(bs.covered)}</div><div>Preparat di meja mikroskop: ${yes(bs.placed)}</div><div>Perbesaran terakhir: <b>${tot}×</b> (10 × ${tot/10})</div><div>Pengamatan fokus tajam ≥ 40×: ${yes(bs.observed)}</div></div></div>
+  <div class="box bb" style="font-size:12.5px"><div class="ct">2. Interpretasi</div>• Spesies: <b><i>${sp.sp}</i></b> (${sp.group}).<br>• Hifa: <b>${sp.hifa}</b>.<br>• ${sp.desc}<br>• Struktur yang teramati: ${sp.struct}.</div>
+  <div class="box bg" style="font-size:12.5px"><div class="ct">3. Kesimpulan</div>• Kapang adalah fungi multiseluler berhifa yang membentuk miselium dan bereproduksi aseksual dengan spora.<br>• <i>Rhizopus</i> (tempe &amp; nasi) berhifa tak bersekat dengan sporangium; <i>Aspergillus niger</i> (roti) berhifa bersekat dengan konidiofor dan konidia.<br>• Perbesaran lemah memperlihatkan sebaran miselium; perbesaran kuat memperlihatkan detail sporangium/konidiofor.</div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="closeModal();switchTab('label')">Lanjut ke Identifikasi &amp; Label <i class="fa-solid fa-arrow-right"></i></button><button class="btn btn-s" onclick="closeModal()">Tutup</button></div>`;
+}
+
+/* ===================================================================
+   7. IDENTIFIKASI & LABEL 2D
+=================================================================== */
+const L={init:false};const LBL={sample:'tempe',sel:null};
+const LHOT={tempe:[[21,20],[40,43],[64,69],[23,70]],roti:[[55,15],[44,27],[42,50],[49,81]],nasi:[[42,21],[42,48],[67,73],[44,83]]};
+function initLabel3D(){
+  L.init=true;
+  for(let i=1;i<=4;i++)$('z'+i).onclick=function(){zoneClick(this);};
+  $('lblTabs').innerHTML=Object.entries(SAMPLES).map(([k,s])=>`<button class="btn btn-s" id="lt-${k}" onclick="setLabelSample('${k}')">${s.icon} ${s.name.split(' ')[0]}</button>`).join('');
+}
+function setLabelSample(k){
+  if(!L.init)return;LBL.sample=k;LBL.sel=null;
+  $('lblImg').src=SAMPLES[k].micro;
+  LHOT[k].forEach((h,i)=>{const z=$('z'+(i+1));z.style.left=h[0]+'%';z.style.top=h[1]+'%';});
+  document.querySelectorAll('#lblTabs .btn').forEach(b=>{b.style.background='';b.style.color='';});const t=$('lt-'+k);if(t){t.style.background='var(--mid)';t.style.color='#fff';}
+  $('lblTitle').innerHTML=`Identifikasi Struktur Kapang — <i>${SAMPLES[k].sp}</i>`;
+  const sp=SAMPLES[k];
+  [...sp.zones].sort((a,b)=>a.localeCompare(b)).reverse().length;
+  const shuffled=[...sp.zones].sort(()=>Math.random()-.5);
+  $('chipPool').innerHTML=shuffled.map(l=>`<div class="chip" data-label="${l}"><i class="fa-solid fa-hand-pointer" style="margin-right:6px;color:#bfdbfe"></i>${l}</div>`).join('');
+  initChips();resetLabels(true);
+}
+function initChips(){
+  document.querySelectorAll('.chip').forEach(ch=>{
+    ch.addEventListener('pointerdown',e=>{
+      e.preventDefault();const lab=ch.dataset.label,x0=e.clientX,y0=e.clientY;let moved=0,ghost=null;
+      const mv=ev=>{moved=Math.max(moved,Math.hypot(ev.clientX-x0,ev.clientY-y0));if(moved>6){if(!ghost){ghost=document.createElement('div');ghost.textContent=lab;ghost.style.cssText='position:fixed;z-index:9999;pointer-events:none;background:#f59e0b;color:#0c1a3a;font:800 12px "Plus Jakarta Sans";padding:6px 14px;border-radius:99px;box-shadow:0 6px 18px rgba(0,0,0,.35);transform:translate(-50%,-50%)';document.body.appendChild(ghost);}ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';}};
+      const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);if(ghost)ghost.remove();
+        if(moved<=6){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));ch.classList.add('sel');LBL.sel=lab;beep(640);$('lblFeedback').innerHTML=`📌 Label <b>"${lab}"</b> terpilih. Ketuk lingkaran nomor 1–4 pada gambar.`;}
+        else{const el=document.elementFromPoint(ev.clientX,ev.clientY),z=el&&el.closest?el.closest('.zone'):null;if(z)assignZone(z,lab);}};
+      window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);});
+  });
+}
+function zoneClick(z){if(LBL.sel)assignZone(z,LBL.sel);else{beep(480);$('lblFeedback').innerHTML=`💡 Pilih dulu salah satu label di kiri, lalu ketuk nomor <b>${z.dataset.num}</b> pada gambar.`;}}
+function assignZone(z,lab){
+  beep(740);document.querySelectorAll('.zone').forEach(o=>{if(o!==z&&o.dataset.value===lab){o.dataset.value='';o.className='zone';o.querySelector('.zt').classList.add('hidden');o.querySelector('.zt').textContent='';}});
+  z.dataset.value=lab;z.className='zone set';const t=z.querySelector('.zt');t.textContent=lab;t.classList.remove('hidden');
+}
+function checkLabels(){
+  const sp=SAMPLES[LBL.sample];let ok=0;
+  document.querySelectorAll('.zone').forEach((z,i)=>{const good=z.dataset.value===sp.zones[i];if(good)ok++;z.className='zone '+(good?'ok':'bad');});
+  const fb=$('lblFeedback');
+  if(ok===4){beep(920);fb.className='box bg';fb.innerHTML=`🎉 <b>Luar biasa!</b> Semua 4 label struktur <i>${sp.sp}</i> benar.`;toast('🎉 Semua benar!',true);}
+  else{beep(420);fb.className='box';fb.style.cssText='background:#fff1f2;border-color:#fda4af;color:#881337;font-weight:600';fb.innerHTML=`⚠️ Benar <b>${ok} dari 4</b>. Pin merah belum tepat — coba atur ulang labelnya.`;}
+}
+function resetLabels(silent){
+  if(!silent)beep(520);LBL.sel=null;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.zone').forEach(z=>{z.dataset.value='';z.className='zone';const t=z.querySelector('.zt');t.textContent='';t.classList.add('hidden');});
+  const fb=$('lblFeedback');fb.className='box bb';fb.style.cssText='font-weight:600';fb.innerHTML='💡 Pilih label di atas, lalu ketuk lingkaran nomor pada gambar.';
+}
+
+/* ===================================================================
+   8. DISKUSI
+=================================================================== */
+const DQ_IDS=['id1','id2','id3','dq1','dq2','dq3','dq4'];
+function saveDQ(k,v){try{localStorage.setItem('dq_jamur3d_'+k,v);}catch(e){}}
+function clearDQ(){beep(500);DQ_IDS.forEach(k=>{try{localStorage.removeItem('dq_jamur3d_'+k);}catch(e){}$(k).value='';});}
+function printDQ(){
+  const items=[['Sampel 1 — Tempe (identifikasi)','id1'],['Sampel 2 — Roti (identifikasi)','id2'],['Sampel 3 — Nasi (identifikasi)','id3'],['1. Fungsi aquades pada percobaan','dq1'],['2. Mengapa tempe segar, roti & nasi basi?','dq2'],['3. Perbedaan khamir, kapang, dan jamur','dq3'],['4. Kesimpulan','dq4']];
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const rows=items.map((it,i)=>`<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #cbd5e1"><div style="font-weight:700;margin-bottom:4px">${i+1}. ${it[0]}</div><div style="background:#f8fafc;border:1px solid #e2e8f0;padding:8px 12px;border-radius:6px;white-space:pre-wrap;min-height:46px">${esc($(it[1]).value.trim()||'Belum diisi')}</div></div>`).join('');
+  const w=window.open('','_blank','width=850,height=700');
+  if(w){w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Laporan Praktikum Morfologi Jamur</title></head><body style="font-family:Arial,sans-serif;padding:32px;color:#1e293b"><h2 style="color:#1d4ed8;margin:0 0 4px">Lab Maya Biologi 3D — Laporan Morfologi Jamur (Fungi)</h2><p style="font-size:12px;color:#64748b;margin:0 0 20px">Dicetak: ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>${rows}<script>window.onload=function(){window.print();}<\/script></body></html>`);w.document.close();}
+}
+
+/* ===================================================================
+   9. LOOP RENDER
+=================================================================== */
+const lerp=(o,t,k=.1)=>{o.r+=(t.r-o.r)*k;o.t+=(t.t-o.t)*k;o.p+=(t.p-o.p)*k;};
+const sphPos=(s,l)=>[l.x+s.r*Math.sin(s.p)*Math.sin(s.t),l.y+s.r*Math.cos(s.p),l.z+s.r*Math.sin(s.p)*Math.cos(s.t)];
+function animate(){
+  requestAnimationFrame(animate);
+  if(CUR==='explore'&&E.r){
+    lerp(E.sph,E.tsph);E.look.lerp(E.tlook,.1);E.cam.position.set(...sphPos(E.sph,E.look));E.cam.lookAt(E.look);
+    if(S.pins){const c=$('exCanvas'),w=c.clientWidth,h=c.clientHeight;E.pinEls.forEach(p=>{const v=p.v.clone().project(E.cam);if(v.z>1){p.el.style.display='none';return;}p.el.style.display='flex';p.el.style.left=(v.x*.5+.5)*w+'px';p.el.style.top=(-(v.y*.5)+.5)*h+'px';});}
+    E.r.render(E.scene,E.cam);
+  }
+  if(CUR==='sim'&&B.r){
+    lerp(B.sph,B.tsph);B.cam.position.set(...sphPos(B.sph,B.look));B.cam.lookAt(B.look);
+    for(let i=B.parts.length-1;i>=0;i--){const p=B.parts[i];p.m.position.y-=p.vy;if(p.m.position.y<p.floor){B.scene.remove(p.m);B.parts.splice(i,1);}}
+    updateBenchLabels();B.r.render(B.scene,B.cam);
+  }
+  if(!$('modal').classList.contains('hidden')&&I.r&&I.grp){
+    if(!I.drag)I.tsph.t+=.008;lerp(I.sph,I.tsph,.12);I.cam.position.set(...sphPos(I.sph,{x:0,y:0,z:0}));I.cam.lookAt(0,0,0);I.r.render(I.scene,I.cam);}
+}
+window.addEventListener('load',()=>{
+  DQ_IDS.forEach(k=>{try{const v=localStorage.getItem('dq_jamur3d_'+k);if(v)$(k).value=v;}catch(e){}});
+  initExplore();   // dibangun lebih awal agar preparat dari simulasi dapat dipasang
+  animate();
+});
+$('modal').addEventListener('pointerdown',e=>{if(e.target===$('modal'))closeModal();});
+</script>
+</body>
+</html>
