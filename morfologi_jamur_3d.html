@@ -2,29 +2,58 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1280, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0c1a3a">
 <title>Lab Maya Biologi 3D — Morfologi Jamur (Fungi)</title>
 <script>
-// Perangkat sentuh: paksa tata letak desktop & landscape
+// Perangkat sentuh (HP/tablet): paksa tampilan "desktop" pada landscape (sama seperti Lab Ragi 3D)
 (function () {
     var touch = (navigator.maxTouchPoints > 0) && window.matchMedia('(pointer: coarse)').matches;
     window.IS_TOUCH = touch;
     if (!touch) return;
     document.documentElement.classList.add('is-touch');
-    var meta = document.querySelector('meta[name=viewport]');
-    function dw() {
-        var a = Math.max(screen.width, screen.height), b = Math.min(screen.width, screen.height);
-        return Math.max(1280, Math.ceil(760 * a / b));
+    // PANGGUNG DESKTOP: seluruh aplikasi digambar pada kanvas desktop (min. 1280 px) lalu diskalakan agar pas
+    // di layar. Tidak bergantung pada <meta viewport>, sehingga normal & layar penuh tampil sama dengan desktop.
+    var lastKey = '', busy = false;
+    function layoutStage() {
+        var b = document.body;
+        if (!b) return;
+        var iw = window.innerWidth, ih = window.innerHeight;
+        if (!iw || !ih) return;
+        var aspect = iw / ih;
+        var dw = Math.max(1280, Math.ceil(620 * aspect));
+        var dh = Math.round(dw / aspect);
+        var sc = iw / dw;
+        window.STAGE_SCALE = sc;
+        var root = document.documentElement.style;
+        root.setProperty('--stage-w', dw + 'px');
+        root.setProperty('--stage-h', dh + 'px');
+        b.style.width = dw + 'px';
+        b.style.height = dh + 'px';
+        b.style.transform = 'scale(' + sc + ')';
+        var key = dw + 'x' + dh + '@' + sc.toFixed(4);
+        if (key !== lastKey) {
+            lastKey = key;
+            busy = true;
+            try { window.dispatchEvent(new Event('resize')); } finally { busy = false; }
+        }
     }
-    function apply() { meta.setAttribute('content', 'width=' + dw() + ', user-scalable=no, viewport-fit=cover'); }
-    apply();
-    function settle() { [0, 150, 500, 1200].forEach(function (t) { setTimeout(function () { apply(); if (t > 0) window.dispatchEvent(new Event('resize')); }, t); }); }
+    function settle() { [0, 100, 300, 700, 1500].forEach(function (t) { setTimeout(layoutStage, t); }); }
+    window.addEventListener('resize', function () { if (!busy) layoutStage(); });
     window.addEventListener('orientationchange', settle);
     document.addEventListener('fullscreenchange', settle);
+    document.addEventListener('webkitfullscreenchange', settle);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { if (!busy) layoutStage(); });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Layar "putar ke landscape" & gerbang layar penuh harus di luar panggung yang diskalakan
+        ['rotateOverlay', 'fsGate'].forEach(function (id) { var e = document.getElementById(id); if (e) document.documentElement.appendChild(e); });
+        layoutStage();
+        settle();
+    });
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+    document.addEventListener('dblclick', function (e) { e.preventDefault(); });
     window.lockLandscape = function () {
         try {
             var el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
@@ -137,6 +166,10 @@ textarea:focus{outline:none;border-color:var(--light);background:#fff}
 #rotateOverlay{display:none;position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 30%,#1e3a8a,#0c1a3a 70%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8vw}
 #rotateOverlay h2{font-size:5.4vw;margin-bottom:2vw}#rotateOverlay p{font-size:3.2vw;color:rgba(255,255,255,.78)}
 @media(orientation:portrait){html.is-touch #rotateOverlay{display:flex}}
+html.is-touch,html.is-touch body{overscroll-behavior:none;-webkit-touch-callout:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.is-touch{width:100%;height:100%;overflow:hidden;background:#0c1a3a}
+html.is-touch body{position:absolute;left:0;top:0;transform-origin:0 0}
+html.is-touch button,html.is-touch [onclick],html.is-touch input[type=range],html.is-touch select{touch-action:manipulation}
 #fsGate{display:none;position:fixed;inset:0;z-index:99998;background:radial-gradient(circle at 50% 30%,#1e3a8a,#0c1a3a 70%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8vw}
 html.is-touch.need-fs #fsGate{display:flex}
 #fsGate h2{font-size:3vw;margin-bottom:1vw}#fsGate p{font-size:1.6vw;color:rgba(255,255,255,.8);max-width:70vw;margin-bottom:2vw}
@@ -1034,7 +1067,7 @@ function initChips(){
   document.querySelectorAll('.chip').forEach(ch=>{
     ch.addEventListener('pointerdown',e=>{
       e.preventDefault();const lab=ch.dataset.label,x0=e.clientX,y0=e.clientY;let moved=0,ghost=null;
-      const mv=ev=>{moved=Math.max(moved,Math.hypot(ev.clientX-x0,ev.clientY-y0));if(moved>6){if(!ghost){ghost=document.createElement('div');ghost.textContent=lab;ghost.style.cssText='position:fixed;z-index:9999;pointer-events:none;background:#f59e0b;color:#0c1a3a;font:800 12px "Plus Jakarta Sans";padding:6px 14px;border-radius:99px;box-shadow:0 6px 18px rgba(0,0,0,.35);transform:translate(-50%,-50%)';document.body.appendChild(ghost);}ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';}};
+      const mv=ev=>{moved=Math.max(moved,Math.hypot(ev.clientX-x0,ev.clientY-y0));if(moved>6){if(!ghost){ghost=document.createElement('div');ghost.textContent=lab;ghost.style.cssText='position:fixed;z-index:9999;pointer-events:none;background:#f59e0b;color:#0c1a3a;font:800 12px "Plus Jakarta Sans";padding:6px 14px;border-radius:99px;box-shadow:0 6px 18px rgba(0,0,0,.35);transform:translate(-50%,-50%)';document.documentElement.appendChild(ghost);}ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';}};
       const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);if(ghost)ghost.remove();
         if(moved<=6){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));ch.classList.add('sel');LBL.sel=lab;beep(640);$('lblFeedback').innerHTML=`📌 Label <b>"${lab}"</b> terpilih. Ketuk lingkaran nomor 1–4 pada gambar.`;}
         else{const el=document.elementFromPoint(ev.clientX,ev.clientY),z=el&&el.closest?el.closest('.zone'):null;if(z)assignZone(z,lab);}};
