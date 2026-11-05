@@ -17,7 +17,7 @@
     var meta = document.querySelector('meta[name=viewport]');
     function dw() {
         var a = Math.max(screen.width, screen.height), b = Math.min(screen.width, screen.height);
-        return Math.max(1280, Math.ceil(620 * a / b));
+        return Math.max(1280, Math.ceil(760 * a / b));
     }
     function apply() { meta.setAttribute('content', 'width=' + dw() + ', user-scalable=no, viewport-fit=cover'); }
     apply();
@@ -137,10 +137,27 @@ textarea:focus{outline:none;border-color:var(--light);background:#fff}
 #rotateOverlay{display:none;position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 30%,#1e3a8a,#0c1a3a 70%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8vw}
 #rotateOverlay h2{font-size:5.4vw;margin-bottom:2vw}#rotateOverlay p{font-size:3.2vw;color:rgba(255,255,255,.78)}
 @media(orientation:portrait){html.is-touch #rotateOverlay{display:flex}}
+#fsGate{display:none;position:fixed;inset:0;z-index:99998;background:radial-gradient(circle at 50% 30%,#1e3a8a,#0c1a3a 70%);color:#fff;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8vw}
+html.is-touch.need-fs #fsGate{display:flex}
+#fsGate h2{font-size:3vw;margin-bottom:1vw}#fsGate p{font-size:1.6vw;color:rgba(255,255,255,.8);max-width:70vw;margin-bottom:2vw}
+#fsGate button{font:800 1.8vw 'Outfit',sans-serif;padding:1.2vw 3.2vw;border-radius:2vw;border:0;background:linear-gradient(135deg,#f59e0b,#d97706);color:#0c1a3a;box-shadow:0 8px 24px rgba(0,0,0,.4);cursor:pointer}
 </style>
 </head>
 <body>
-<div id="rotateOverlay"><div style="font-size:12vw;margin-bottom:4vw">📱↻</div><h2>Putar Perangkat ke Landscape</h2><p>Lab virtual ini memakai layar mendatar agar semua fitur tampil seperti di komputer.</p></div>
+<div id="rotateOverlay"><div style="font-size:12vw;margin-bottom:4vw">📱↻</div><h2>Putar Perangkat ke Landscape</h2><p>Putar HP/tablet ke mode mendatar (landscape), lalu masuk mode layar penuh agar tampilan sama seperti di komputer.</p></div>
+<div id="fsGate"><div style="font-size:6vw;margin-bottom:1.5vw">🔬</div><h2>Lab Maya Biologi 3D</h2><p>Untuk memulai, gunakan mode <b>landscape</b> dan <b>layar penuh</b>. Tampilan akan sama seperti mode desktop.</p><button onclick="startLab()"><span id="fsGateTxt">⛶ Masuk Layar Penuh &amp; Mulai</span></button></div>
+<script>
+(function(){
+  if(!window.IS_TOUCH)return;
+  var el=document.documentElement,canFs=!!(el.requestFullscreen||el.webkitRequestFullscreen),started=false;
+  function inFs(){return !!(document.fullscreenElement||document.webkitFullscreenElement);}
+  function upd(){el.classList.toggle('need-fs',canFs?!inFs():!started);}
+  window.startLab=function(){started=true;if(window.lockLandscape)window.lockLandscape();upd();};
+  if(!canFs){var t=document.getElementById('fsGateTxt');if(t)t.textContent='▶ Mulai';}
+  ['fullscreenchange','webkitfullscreenchange','orientationchange','resize'].forEach(function(e){(e==='resize'||e==='orientationchange'?window:document).addEventListener(e,upd);});
+  upd();
+})();
+</script>
 
 <header>
   <div class="brand"><div class="brand-i">🍄</div><div><b>Lab Maya <span>Biologi 3D</span></b><small>Morfologi Jamur (Fungi) – Kelas X</small></div></div>
